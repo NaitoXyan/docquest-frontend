@@ -52,7 +52,6 @@ const EstaffDashboard = () => {
         <Topbar />
         <div className="flex flex-col mt-14">
           <h1 className="text-2xl font-semibold m-7">Documents Overview</h1>
-          <h1 className="text-2xl font-semibold m-7">Documents Overview</h1>
 
           {/* Documents Section */}
           <div className="mx-7 bg-white rounded-lg shadow-xl p-6">

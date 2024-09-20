@@ -42,7 +42,7 @@ const EstaffDashboard = () => {
 
   return (
     <div className="bg-gray-200 min-h-screen flex">
-      {/* Sidebar with fixed width */}
+      {/* Sidebar with fixed widthh */}
       <div className="w-1/5 fixed h-full">
         <Sidebar />
       </div>

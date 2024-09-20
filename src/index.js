@@ -3,12 +3,13 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import EstaffDashboard from './pages/estaff/EstaffDashboard';
-
+import LoginPage from './pages/login/LoginPage';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <EstaffDashboard />
+    <LoginPage />
   </React.StrictMode>
 );
 

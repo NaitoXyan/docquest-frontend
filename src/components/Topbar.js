@@ -6,9 +6,17 @@ function Topbar() {
       <div className="w-5/6">
         <img src="/images/notif-bell-none.png" alt="Notification" className="w-7" />
       </div>
-      <div>
-        <h1 className="text-sm w-44">Emmanuelle James Duallo</h1>
-        <h2 className="text-xs text-gray-500">Project Leader</h2>
+      <div className="flex items-center">
+        {/* Circle Profile Picture */}
+        <img
+          src="/images/userprofile.png"
+          alt="Profile"
+          className="w-8 h-8 rounded-full mr-3"
+        />
+        <div>
+          <h1 className="text-sm w-44">Emmanuelle James Duallo</h1>
+          <h2 className="text-xs text-gray-500">Project Leader</h2>
+        </div>
       </div>
     </div>
   );

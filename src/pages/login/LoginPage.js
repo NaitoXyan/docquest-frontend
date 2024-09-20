@@ -24,8 +24,11 @@ const LoginPage = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+      <div className="w-full max-w-md p-8 ">
+      <div class="mb-3 flex justify-center">
+        <img src="/images/logo1.png" alt="DocQuestLogo" style={{ width: '200px' }}/>
+
+      </div>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -55,7 +58,7 @@ const LoginPage = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="w-full bg-vlu text-white py-2 px-4 rounded-md shadow-sm hover:bg-vluu focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Login
           </button>

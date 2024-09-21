@@ -11,7 +11,7 @@ import ProjLeadDashboard from "./pages/projectlead/ProjLeadDashboard";
 function App() {
   return (
     <div className="App">
-      <ProjLeadDashboard />
+      <EstaffDashboard />
     </div>
   );
 }

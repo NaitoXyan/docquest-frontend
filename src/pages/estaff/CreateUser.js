@@ -3,14 +3,26 @@ import Sidebar from "../../components/Sidebar";
 import Topbar from "../../components/Topbar";
 
 const CreateUser = () => {
+  // State for user form inputs
+  const [formData, setFormData] = useState({
+    firstName: "",
+    middleInitial: "",
+    lastName: "",
+    email: "",
+    contactNumber: "",
+    password: "",
+    confirmPassword: "",
+    campus: "",
+    college: "",
+    department: "",
+  });
+
   // State for controlling the dropdowns
   const [campusDropdownOpen, setCampusDropdownOpen] = useState(false);
   const [collegeDropdownOpen, setCollegeDropdownOpen] = useState(false);
   const [departmentDropdownOpen, setDepartmentDropdownOpen] = useState(false);
-  const [selectedCampus, setSelectedCampus] = useState("Campus");
-  const [selectedCollege, setSelectedCollege] = useState("College");
-  const [selectedDepartment, setSelectedDepartment] = useState("Department");
 
+  // Toggle functions for dropdowns
   const toggleDropdownCampus = () => {
     setCampusDropdownOpen(!campusDropdownOpen);
   };
@@ -23,19 +35,88 @@ const CreateUser = () => {
     setDepartmentDropdownOpen(!departmentDropdownOpen);
   };
 
+  // Handle input changes
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Handle dropdown selections
   const handleSelectCampus = (campus) => {
-    setSelectedCampus(campus);
+    setFormData({ ...formData, campus });
     setCampusDropdownOpen(false);
+    // Optionally, reset dependent fields if needed
+    setFormData((prev) => ({ ...prev, college: "", department: "" }));
   };
 
   const handleSelectCollege = (college) => {
-    setSelectedCollege(college);
+    setFormData({ ...formData, college });
     setCollegeDropdownOpen(false);
+    // Optionally, reset dependent fields if needed
+    setFormData((prev) => ({ ...prev, department: "" }));
   };
 
   const handleSelectDepartment = (department) => {
-    setSelectedDepartment(department);
+    setFormData({ ...formData, department });
     setDepartmentDropdownOpen(false);
+  };
+
+  // Handle form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Basic validation
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.contactNumber ||
+      !formData.password ||
+      !formData.campus ||
+      !formData.college ||
+      !formData.department
+    ) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    // Example POST request to create the user
+    try {
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert("User created successfully!");
+        // Optionally, reset the form here
+        setFormData({
+          firstName: "",
+          middleInitial: "",
+          lastName: "",
+          email: "",
+          contactNumber: "",
+          password: "",
+          confirmPassword: "",
+          campus: "",
+          college: "",
+          department: "",
+        });
+      } else {
+        alert(`Error: ${result.message || "Failed to create user."}`);
+      }
+    } catch (error) {
+      alert("Failed to create user. Please try again.");
+      console.error("Error creating user:", error);
+    }
   };
 
   return (
@@ -50,246 +131,313 @@ const CreateUser = () => {
         <Topbar />
         <div className="flex flex-col mt-14">
           <h1 className="text-2xl font-semibold m-7">Create User Account</h1>
-          <div className="flex flex-col mx-10 mb-7 bg-white rounded-xl p-16 h-fit">
+          <form
+            className="flex flex-col mx-10 mb-7 bg-white rounded-xl p-16 h-fit"
+            onSubmit={handleSubmit}
+          >
+            {/* User Information Inputs */}
             <div className="flex flex-row mx-1">
+              {/* First Name */}
               <div className="flex-1 flex-col mb-2 mx-2">
-                <h1 className="font-semibold text-blue-900">First Name</h1>
+                <label className="font-semibold text-blue-900" htmlFor="firstName">
+                  First Name<span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
+                  name="firstName"
+                  id="firstName"
+                  value={formData.firstName}
+                  onChange={handleChange}
                   placeholder="First Name"
                   className="w-full bg-gray-200 p-2 pl-10 rounded-md"
+                  required
                 />
               </div>
+              {/* Middle Initial */}
               <div className="flex-1 flex-col mb-2 mx-2">
-                <h1 className="font-semibold text-blue-900">Middle Initial</h1>
+                <label className="font-semibold text-blue-900" htmlFor="middleInitial">
+                  Middle Initial
+                </label>
                 <input
                   type="text"
+                  name="middleInitial"
+                  id="middleInitial"
+                  value={formData.middleInitial}
+                  onChange={handleChange}
                   placeholder="Middle Initial"
                   className="w-full bg-gray-200 p-2 pl-10 rounded-md"
                 />
               </div>
+              {/* Last Name */}
               <div className="flex-1 flex-col mb-2 mx-2">
-                <h1 className="font-semibold text-blue-900">Last Name</h1>
+                <label className="font-semibold text-blue-900" htmlFor="lastName">
+                  Last Name<span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
+                  name="lastName"
+                  id="lastName"
+                  value={formData.lastName}
+                  onChange={handleChange}
                   placeholder="Last Name"
                   className="w-full bg-gray-200 p-2 pl-10 rounded-md"
+                  required
                 />
               </div>
             </div>
 
             <div className="flex flex-row mx-1">
+              {/* Email */}
               <div className="flex-1 flex-col mb-2 mx-2">
-                <h1 className="font-semibold text-blue-900">Email</h1>
+                <label className="font-semibold text-blue-900" htmlFor="email">
+                  Email<span className="text-red-500">*</span>
+                </label>
                 <input
                   type="email"
+                  name="email"
+                  id="email"
+                  value={formData.email}
+                  onChange={handleChange}
                   placeholder="Email"
                   className="w-full bg-gray-200 p-2 pl-10 rounded-md"
+                  required
                 />
               </div>
+              {/* Contact Number */}
               <div className="flex-1 flex-col mb-2 mx-2">
-                <h1 className="font-semibold text-blue-900">Contact Number</h1>
+                <label className="font-semibold text-blue-900" htmlFor="contactNumber">
+                  Contact Number<span className="text-red-500">*</span>
+                </label>
                 <input
                   type="text"
+                  name="contactNumber"
+                  id="contactNumber"
+                  value={formData.contactNumber}
+                  onChange={handleChange}
                   placeholder="Contact Number"
                   className="w-full bg-gray-200 p-2 pl-10 rounded-md"
+                  required
                 />
               </div>
             </div>
 
             <div className="flex flex-row mx-1">
+              {/* Password */}
               <div className="flex-1 flex-col mb-2 mx-2">
-                <h1 className="font-semibold text-blue-900">Password</h1>
+                <label className="font-semibold text-blue-900" htmlFor="password">
+                  Password<span className="text-red-500">*</span>
+                </label>
                 <input
                   type="password"
+                  name="password"
+                  id="password"
+                  value={formData.password}
+                  onChange={handleChange}
                   placeholder="Password"
                   className="w-full bg-gray-200 p-2 pl-10 rounded-md"
+                  required
                 />
               </div>
+              {/* Confirm Password */}
               <div className="flex-1 flex-col mb-2 mx-2">
-                <h1 className="font-semibold text-blue-900">Confirm Password</h1>
+                <label className="font-semibold text-blue-900" htmlFor="confirmPassword">
+                  Confirm Password<span className="text-red-500">*</span>
+                </label>
                 <input
                   type="password"
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
                   placeholder="Confirm Password"
                   className="w-full bg-gray-200 p-2 pl-10 rounded-md"
+                  required
                 />
               </div>
             </div>
 
-            {/* Dropdown for Campus */}
-            <div className="flex items-center mb-2 mr-2 w-full">
-              <div className="flex-1 flex-col">
-                <h1 className="font-semibold text-blue-900">Campus</h1>
-                <div className="relative flex">
+            {/* Dropdowns for Campus, College, Department */}
+            <div className="flex flex-row mx-1">
+              {/* Campus Dropdown */}
+              <div className="flex-1 flex-col mb-2 mx-2">
+                <label className="font-semibold text-blue-900" htmlFor="campus">
+                  Campus<span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
                   <input
                     type="text"
-                    value={selectedCampus}
+                    id="campus"
+                    value={formData.campus || "Select Campus"}
                     onClick={toggleDropdownCampus}
-                    className="w-full bg-gray-200 p-2 rounded-l-md"
+                    className="w-full bg-gray-200 p-2 pl-4 pr-10 rounded-md cursor-pointer"
                     readOnly
                   />
                   <button
+                    type="button"
                     onClick={toggleDropdownCampus}
-                    className="bg-gray-200 p-2 rounded-r-md border-l border-gray-300"
+                    className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 text-gray-500"
+                      className="h-5 w-5"
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
                       <path
                         fillRule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                         clipRule="evenodd"
                       />
                     </svg>
                   </button>
                   {campusDropdownOpen && (
-                    <div className="absolute right-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
+                    <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
                       <div className="py-1">
-                        <a
-                          href="#"
+                        <button
+                          type="button"
                           onClick={() => handleSelectCampus("Cagayan de Oro")}
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
                         >
                           Cagayan de Oro
-                        </a>
-                        <a
-                          href="#"
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => handleSelectCampus("Claveria")}
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
                         >
                           Claveria
-                        </a>
-                        <a
-                          href="#"
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => handleSelectCampus("Villanueva")}
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
                         >
                           Villanueva
-                        </a>
+                        </button>
                       </div>
                     </div>
                   )}
                 </div>
               </div>
-            </div>
 
-            {/* Similar structure for College and Department dropdowns */}
-            {/* College Dropdown */}
-            <div className="flex items-center mb-2 mr-2 w-full">
-              <div className="flex-1 flex-col">
-                <h1 className="font-semibold text-blue-900">College</h1>
-                <div className="relative flex">
+              {/* College Dropdown */}
+              <div className="flex-1 flex-col mb-2 mx-2">
+                <label className="font-semibold text-blue-900" htmlFor="college">
+                  College<span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
                   <input
                     type="text"
-                    value={selectedCollege}
+                    id="college"
+                    value={formData.college || "Select College"}
                     onClick={toggleDropdownCollege}
-                    className="w-full bg-gray-200 p-2 rounded-l-md"
+                    className="w-full bg-gray-200 p-2 pl-4 pr-10 rounded-md cursor-pointer"
                     readOnly
                   />
                   <button
+                    type="button"
                     onClick={toggleDropdownCollege}
-                    className="bg-gray-200 p-2 rounded-r-md border-l border-gray-300"
+                    className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 text-gray-500"
+                      className="h-5 w-5"
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
                       <path
                         fillRule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                         clipRule="evenodd"
                       />
                     </svg>
                   </button>
                   {collegeDropdownOpen && (
-                    <div className="absolute right-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
+                    <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
                       <div className="py-1">
-                        <a
-                          href="#"
+                        <button
+                          type="button"
                           onClick={() => handleSelectCollege("COCST")}
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
                         >
                           COCST
-                        </a>
-                        <a
-                          href="#"
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => handleSelectCollege("CAFES")}
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
                         >
                           CAFES
-                        </a>
-                        <a
-                          href="#"
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => handleSelectCollege("CAS")}
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
                         >
                           CAS
-                        </a>
+                        </button>
                       </div>
                     </div>
                   )}
                 </div>
               </div>
-            </div>
 
-            {/* Department Dropdown */}
-            <div className="flex items-center mb-2 mr-2 w-full">
-              <div className="flex-1 flex-col">
-                <h1 className="font-semibold text-blue-900">Department</h1>
-                <div className="relative flex">
+              {/* Department Dropdown */}
+              <div className="flex-1 flex-col mb-2 mx-2">
+                <label className="font-semibold text-blue-900" htmlFor="department">
+                  Department<span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
                   <input
                     type="text"
-                    value={selectedDepartment}
+                    id="department"
+                    value={formData.department || "Select Department"}
                     onClick={toggleDropdownDepartment}
-                    className="w-full bg-gray-200 p-2 rounded-l-md"
+                    className="w-full bg-gray-200 p-2 pl-4 pr-10 rounded-md cursor-pointer"
                     readOnly
                   />
                   <button
+                    type="button"
                     onClick={toggleDropdownDepartment}
-                    className="bg-gray-200 p-2 rounded-r-md border-l border-gray-300"
+                    className="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 text-gray-500"
+                      className="h-5 w-5"
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
                       <path
                         fillRule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                         clipRule="evenodd"
                       />
                     </svg>
                   </button>
                   {departmentDropdownOpen && (
-                    <div className="absolute right-0 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
+                    <div className="absolute mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg z-10">
                       <div className="py-1">
-                        <a
-                          href="#"
+                        <button
+                          type="button"
                           onClick={() => handleSelectDepartment("IT")}
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
                         >
                           IT
-                        </a>
-                        <a
-                          href="#"
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => handleSelectDepartment("Engineering")}
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
                         >
                           Engineering
-                        </a>
-                        <a
-                          href="#"
+                        </button>
+                        <button
+                          type="button"
                           onClick={() => handleSelectDepartment("Business")}
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
                         >
                           Business
-                        </a>
+                        </button>
                       </div>
                     </div>
                   )}
@@ -297,12 +445,16 @@ const CreateUser = () => {
               </div>
             </div>
 
+            {/* Submit Button */}
             <div className="flex justify-end items-end mt-3 mx-1">
-              <button className="bg-blue-900 text-white px-10 py-2 rounded-md hover:bg-blue-800">
+              <button
+                type="submit"
+                className="bg-blue-900 text-white px-10 py-2 rounded-md hover:bg-blue-800"
+              >
                 Create
               </button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

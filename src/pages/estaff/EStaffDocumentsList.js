@@ -1,57 +1,119 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/Sidebar";
 import Topbar from "../../components/Topbar";
-import SearchBar from "../../components/SearchBar";
+import axios from 'axios';
 
 const EstaffDocumentsList = () => {
+    const [documents, setDocuments] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [search, setSearch] = useState('');
+    const [documentType, setDocumentType] = useState('');
+
+    useEffect(() => {
+        fetchDocuments();
+    }, [currentPage, search, documentType]);
+
+    const fetchDocuments = async () => {
+        try {
+            const response = await axios.get('http://localhost:5000/api/documents', {
+                params: { page: currentPage, search, type: documentType }
+            });
+            setDocuments(response.data.documents);
+            setTotalPages(response.data.totalPages);
+        } catch (error) {
+            console.error('Error fetching documents:', error);
+        }
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    };
+
+    const handlePreviousPage = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    };
+
+    const handleSearch = (e) => {
+        setSearch(e.target.value);
+    };
+
+    const handleDocumentTypeFilter = (e) => {
+        setDocumentType(e.target.value);
+    };
+
     return (
         <div className="bg-gray-200 min-h-screen flex">
-            {/* Sidebar with fixed width */}
             <div className="w-1/5 fixed h-full">
                 <Sidebar />
             </div>
-            {/* Main content area */}
-            <div className="flex-1 ml-[20%]"> {/* 20% left margin to match Sidebar width */}
+            <div className="flex-1 ml-[20%]">
                 <Topbar />
-                <div className="flex flex-col mt-14">
-                    <h1 className="text-2xl font-semibold m-7">Documents</h1>
-                    <div className="mx-7 bg-white rounded-lg shadow-xl p-6">
-                        <div className=" flex justify-end">
-                            <a className="mr-5">Search by:</a>
-                            <a className="mr-5">Seach Box</a>
-                        </div>
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-                                <thead className="bg-blue-900 text-white">
-                                    <tr>
-                                        <th className="px-6 py-3 text-left text-sm leading-4">Project Leader</th>
-                                        <th className="px-6 py-3 text-left text-sm leading-4">Document Type</th>
-                                        <th className="px-6 py-3 text-left text-sm leading-4">Date</th>
-                                        <th className="px-6 py-3 text-left text-sm leading-4"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <td className="px-6 py-4 border-b border-gray-200 text-sm">Valueno, Rabosa A.</td>
-                                    <td className="px-6 py-4 border-b border-gray-200 text-sm">Project Proposal</td>
-                                    <td className="px-6 py-4 border-b border-gray-200 text-sm">03/31/2019</td>
-                                    <td className="px-6 py-4 border-b border-gray-200 text-sm">
-                                        <a href="#" className="flex items-center text-blue-900 hover:text-blue-900">
-                                            <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M8.5 6.5a1.5 1.5 0 1 1 3 0v3a1.5 1.5 0 0 1-3 0v-3z" />
-                                                <path fill-rule="evenodd" d="M10 2a7.5 7.5 0 1 0 0 15h.75V15H10a6.5 6.5 0 1 1 0-13h3.5A6.5 6.5 0 1 1 10 15h.75V17H10a7.5 7.5 0 1 0 0-15z" clip-rule="evenodd" />
-                                            </svg>
-                                            View
-                                        </a>
-                                    </td>
-                                </tbody>
-                            </table>
-                            
+                <div className="flex flex-col mt-14 px-10 pt-5">
+                    <div className="flex justify-between mb-5">
+                        <h1 className="text-2xl font-semibold">Documents</h1>
+                        <div className="flex">
+                            <input
+                                type="text"
+                                placeholder="Search by Project Leader"
+                                className="p-2 border"
+                                value={search}
+                                onChange={handleSearch}
+                            />
+                            <select
+                                className="ml-3 p-2 border"
+                                value={documentType}
+                                onChange={handleDocumentTypeFilter}
+                            >
+                                <option value="">All Document Types</option>
+                                <option value="Project Proposal">Project Proposal</option>
+                                <option value="Load Trainers">Load Trainers</option>
+                            </select>
                         </div>
                     </div>
+                    <table className="min-w-full bg-white border">
+                        <thead>
+                            <tr className="bg-vlu text-white"> {/* Blue background, white text */}
+                                <th className="py-2 px-4">Project Leader</th>
+                                <th className="py-2 px-4">Document Type</th>
+                                <th className="py-2 px-4">Date</th>
+                                <th className="py-2 px-4">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {documents.map((doc, index) => (
+                                <tr key={index} className="bg-white"> {/* White background for document rows */}
+                                    <td className="py-2 px-4">{doc.projectLeader}</td>
+                                    <td className="py-2 px-4">{doc.documentType}</td>
+                                    <td className="py-2 px-4">{doc.date}</td>
+                                    <td className="py-2 px-4">
+                                        <a href="#" className="text-blue-500">View</a> | <a href="#" className="text-green-500">Download</a>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <div className="flex justify-between mt-5">
+                        <button
+                            onClick={handlePreviousPage}
+                            disabled={currentPage === 1}
+                            className="px-4 py-2 bg-gray-300 disabled:opacity-50"
+                        >
+                            Previous
+                        </button>
+                        <button
+                            onClick={handleNextPage}
+                            disabled={currentPage === totalPages}
+                            className="px-4 py-2 bg-gray-300 disabled:opacity-50"
+                        >
+                            Next
+                        </button>
+                    </div>
+                    <p className="mt-3">Page {currentPage} of {totalPages}</p>
                 </div>
             </div>
         </div>
     );
-}
+};
 
 export default EstaffDocumentsList;

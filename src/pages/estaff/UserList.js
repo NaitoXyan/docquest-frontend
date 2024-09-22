@@ -1,82 +1,144 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/Sidebar";
 import Topbar from "../../components/Topbar";
+// import axios from "axios"; // Comment out axios import
+// import ReactPaginate from "react-paginate"; // Comment out react-paginate import
 
 const UserList = () => {
+    const [users, setUsers] = useState([]); // Store fetched users
+    const [currentPage, setCurrentPage] = useState(0); // Track current page for pagination
+    const [searchTerm, setSearchTerm] = useState(""); // Store search input
+
+    const usersPerPage = 10;
+
+    // Fetch users from the database
+    useEffect(() => {
+        // Comment out axios-related code to avoid errors
+        /*
+        const fetchUsers = async () => {
+            try {
+                const response = await axios.get("/api/users"); // Replace with your actual API endpoint
+                setUsers(response.data);
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        };
+        fetchUsers();
+        */
+    }, []);
+
+    // Handle search input
+    const handleSearch = (event) => {
+        setSearchTerm(event.target.value);
+        setCurrentPage(0); // Reset to first page when searching
+    };
+
+    // For now, we'll use a static array of users for testing
+    const filteredUsers = [
+        { fullName: "Valueno, Rabosa A.", email: "valueno.rabosa@gmail.com", position: "Project Leader" },
+        // Add more sample users if needed
+    ].filter((user) =>
+        user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Pagination logic (comment out react-paginate for now)
+    const pageCount = Math.ceil(filteredUsers.length / usersPerPage);
+    const offset = currentPage * usersPerPage;
+    const displayedUsers = filteredUsers.slice(offset, offset + usersPerPage);
+
+    const handlePageClick = ({ selected }) => {
+        setCurrentPage(selected);
+    };
+
     return (
-        <div className="bg-gray-200 min-h-screen flex">
+        <div className="bg-gray-100 min-h-screen flex">
             {/* Sidebar */}
             <div className="w-1/5 fixed h-full">
                 <Sidebar />
             </div>
-            {/* Main content area */}
-            <div className="flex-1 ml-64"> {/* Updated margin to fit Sidebar */}
-                <Topbar />
-                <div className="flex flex-col mt-14">
-                    <h1 className="text-2xl font-semibold m-7">Registered Account Users</h1>
-                    <div className="mx-7 bg-white rounded-lg shadow-lg p-6">
-                        {/* Search input */}
-                        <div className="relative mb-4">
-                            <input 
-                                type="text" 
-                                className="w-full p-2 pl-10 border border-gray-300 rounded-md" 
-                                placeholder="Search by name, email..."
-                            />
-                            <svg className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fillRule="evenodd" d="M12.9 14.32a7.5 7.5 0 1 1 1.42-1.42l4.25 4.26a1 1 0 0 1-1.42 1.42l-4.25-4.26zM10 15.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11z" clipRule="evenodd"></path>
-                            </svg>
-                        </div>
 
-                        {/* Users Table */}
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-                                <thead className="bg-blue-900 text-white">
-                                    <tr>
-                                        <th className="px-6 py-3 text-left text-sm leading-4">Full Name</th>
-                                        <th className="px-6 py-3 text-left text-sm leading-4">Email</th>
-                                        <th className="px-6 py-3 text-left text-sm leading-4">Position</th>
-                                        <th className="px-6 py-3 text-left text-sm leading-4">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {/* User 1 */}
-                                    <tr>
-                                        <td className="px-6 py-4 border-b border-gray-200 text-sm">John Doe</td>
-                                        <td className="px-6 py-4 border-b border-gray-200 text-sm">johndoe@example.com</td>
-                                        <td className="px-6 py-4 border-b border-gray-200 text-sm">Manager</td>
-                                        <td className="px-6 py-4 border-b border-gray-200 text-sm flex justify-end items-center space-x-2">
-                                            <a href="#" className="flex items-center text-blue-900 hover:text-blue-700">
-                                                <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M8.5 6.5a1.5 1.5 0 1 1 3 0v3a1.5 1.5 0 0 1-3 0v-3z" />
-                                                    <path fillRule="evenodd" d="M10 2a7.5 7.5 0 1 0 0 15h.75V15H10a6.5 6.5 0 1 1 0-13h3.5A6.5 6.5 0 1 1 10 15h.75V17H10a7.5 7.5 0 1 0 0-15z" clipRule="evenodd" />
-                                                </svg>
+            {/* Main content area */}
+            <div className="flex-1 ml-[20%]">
+                <Topbar />
+                <div className="flex flex-col mt-14 px-7">
+                    <h1 className="text-2xl font-semibold mb-4">Registered Account Users</h1>
+
+                    {/* Search Bar */}
+                    <div className="flex justify-between items-center mb-4">
+                        <div className="flex space-x-4 items-center">
+                            <span className="text-gray-500">Search by: </span>
+                            <select className="border border-gray-300 rounded-lg p-2">
+                                <option value="name">Name</option>
+                                <option value="email">Email</option>
+                            </select>
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Search"
+                            value={searchTerm}
+                            onChange={handleSearch}
+                            className="border border-gray-300 rounded-lg p-2 w-1/3"
+                        />
+                    </div>
+
+                    {/* User Table */}
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full table-auto bg-white shadow-md">
+                            <thead className="bg-vlu text-white">
+                                <tr>
+                                    <th className="py-4 px-6 text-left font-medium">Full Name</th>
+                                    <th className="py-4 px-6 text-left font-medium">Email</th>
+                                    <th className="py-4 px-6 text-left font-medium">Position</th>
+                                    <th className="py-4 px-6 text-left font-medium">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {displayedUsers.map((user, index) => (
+                                    <tr
+                                        key={index}
+                                        className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}
+                                    >
+                                        <td className="py-4 px-6">{user.fullName}</td>
+                                        <td className="py-4 px-6">{user.email}</td>
+                                        <td className="py-4 px-6">{user.position}</td>
+                                        <td className="py-4 px-6 flex items-center space-x-4">
+                                            <button className="text-blue-600 hover:text-blue-800 font-medium">
                                                 View
-                                            </a>
-                                            <a href="#" className="flex items-center text-green-500 hover:text-green-700">
-                                                <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" d="M7.5 5a1.5 1.5 0 0 1 1.5-1.5h7A1.5 1.5 0 0 1 17.5 5v10a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 7.5 15V5zm1 0V15h7V5h-7z" clipRule="evenodd" />
-                                                    <path fillRule="evenodd" d="M4.5 6a1.5 1.5 0 0 1 1.5-1.5h1.75v1.5H6v9h2.25V17H6a2.5 2.5 0 0 1-2.5-2.5v-9A1.5 1.5 0 0 1 4.5 6zm0-1.5A2.5 2.5 0 0 0 2 7v9a2.5 2.5 0 0 0 2.5 2.5h2.25v1.5h1.75v-1.5h7v-1.5H6v-9h9v9H6V7H5.25v1.5H4.5V7a1.5 1.5 0 0 1 1.5-1.5zm4.25 2.5H13.5V7h-3.5V6z" clipRule="evenodd" />
-                                                </svg>
+                                            </button>
+                                            <button className="text-blue-600 hover:text-blue-800 font-medium">
                                                 Edit
-                                            </a>
-                                            <a href="#" className="flex items-center text-red-500 hover:text-red-700">
-                                                <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" d="M6.5 4.5A1.5 1.5 0 0 1 8 3h4a1.5 1.5 0 0 1 1.5 1.5V4h4v1.5H16V15.5a3.5 3.5 0 0 1-3.5 3.5h-5A3.5 3.5 0 0 1 4 15.5V6h-2V4.5h4v-1zm2 0h4v-1h-4v1z" clipRule="evenodd" />
-                                                </svg>
+                                            </button>
+                                            <button className="text-red-600 hover:text-red-800 font-medium">
                                                 Delete
-                                            </a>
+                                            </button>
                                         </td>
                                     </tr>
-
-                                    {/* Add more user rows as needed */}
-                                </tbody>
-                            </table>
-                        </div>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
+
+                    {/* Pagination - commented out for now */}
+                    {/* 
+                    {filteredUsers.length > usersPerPage && (
+                        <ReactPaginate
+                            previousLabel={"<"}
+                            nextLabel={">"}
+                            pageCount={pageCount}
+                            onPageChange={handlePageClick}
+                            containerClassName={"pagination flex justify-center mt-5 space-x-4"}
+                            activeClassName={"bg-blue-900 text-white px-3 py-2 rounded-lg"}
+                            pageClassName={"px-3 py-2 text-blue-600 hover:bg-gray-200 rounded-lg"}
+                            previousClassName={"px-3 py-2 text-blue-600"}
+                            nextClassName={"px-3 py-2 text-blue-600"}
+                            disabledClassName={"text-gray-400"}
+                        />
+                    )}
+                    */}
                 </div>
             </div>
         </div>
     );
-}
+};
 
 export default UserList;

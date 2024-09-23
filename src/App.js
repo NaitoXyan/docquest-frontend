@@ -1,4 +1,5 @@
 import React from "react";
+import {BrowserRouter, Routers, Routes, Route, Navigate} from  "react-router-dom";
 import LoginPage from "./pages/login/LoginPage";
 import CoordinatorTab from "./pages/coordinator/CoordinatorTab";
 import UserList from "./pages/estaff/UserList";
@@ -12,16 +13,20 @@ import DeptOffSideBar from './components/DeptOffSideBar';
 import DeptOffDashboard from "./pages/deptoff/DeptOffDashboard";
 import DeptOffGenerateDocument from "./pages/deptoff/DeptOffGenerateDocument";
 import DeptOffProfilePage from "./pages/deptoff/DeptOffProfilePage";
+import CoordinatorDashboard from "./pages/coordinator/CoordinatorDashboard";
+import SignatoryDashboard from "./pages/signatory/SignatoryDashboard";
 
 function App() {
   return (
-    <div className="App">
-<<<<<<< Updated upstream
-      <DeptOffProfilePage/>
-=======
-      <LoginPage />
->>>>>>> Stashed changes
-    </div>
+    <Routes>
+      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/login" element={ <LoginPage /> } />
+      <Route path="/user" element={ <ProjLeadDashboard /> } />
+      <Route path="/estaff" element={ <EstaffDashboard /> } />
+      <Route path="/deptoff" element={ <DeptOffDashboard /> } />
+      <Route path="/coordinator" element={ <CoordinatorDashboard /> } />
+      <Route path="/signatory" element={ <SignatoryDashboard /> } />
+    </Routes>
   );
 }
 

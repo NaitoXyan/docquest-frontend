@@ -16,7 +16,11 @@ import DeptOffProfilePage from "./pages/deptoff/DeptOffProfilePage";
 function App() {
   return (
     <div className="App">
+<<<<<<< Updated upstream
       <DeptOffProfilePage/>
+=======
+      <LoginPage />
+>>>>>>> Stashed changes
     </div>
   );
 }

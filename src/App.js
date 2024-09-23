@@ -13,12 +13,14 @@ import DeptOffDashboard from "./pages/deptoff/DeptOffDashboard";
 import DeptOffGenerateDocument from "./pages/deptoff/DeptOffGenerateDocument";
 import DeptOffProfilePage from "./pages/deptoff/DeptOffProfilePage";
 import ProjLeadProposalForm from "./pages/projectlead/ProjLeadProposalForm";
+import ProjLeadProjectStatus from "./pages/projectlead/ProjLeadProjectStatus";
 
 function App() {
   return (
     <div className="App">
-      <ProjLeadProposalForm/>
+      <ProjLeadProjectStatus/>
     </div>
+    
   );
 }
 

@@ -1,25 +1,73 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
+  const [roles, setRoles] = useState([]);
+
+  const navigate =  useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission
+
+    // Post the credentials to log in
     axios({
       method: 'post',
-      url: 'https://docquest-production.up.railway.app/login',
+      url: 'https://docquest-production.up.railway.app/auth/token/login/',
       data: {
-        email,
-        password
+        email: email,
+        password: password,
       }
-    }).then(function (response) {
-      console.log(response.data);
-    }).catch(function (error) {
-      console.log(error);
     })
+    .then(function (response) {
+      // Extract the token from the response
+      const token = response.data.auth_token;
+
+      // Use the token to make the second request
+      return axios({
+        method: 'get',
+        url: 'https://docquest-production.up.railway.app/name_and_roles',
+        headers: {
+          'Authorization': `Token ${token}`,
+        }
+      });
+    })
+    .then(function (response) {
+      // Extract firstname, lastname, and roles from the response
+      const { firstname, lastname, roles } = response.data;
+
+      // Set the state for firstname, lastname, and roles
+      setFirstname(firstname);
+      setLastname(lastname);
+
+      // Extract roles into a list of strings
+      const rolesList = roles.map(roleObj => roleObj.role);
+      setRoles(rolesList);
+      console.log("State updated with user data:", { firstname, lastname, rolesList });
+
+      if (rolesList.includes('regular')) {
+        navigate('/user');
+      } else if (
+        rolesList.includes('program chair') | 
+        rolesList.includes('college dean') |
+        rolesList.includes('ECR director') |
+        rolesList.includes('VCAA') |
+        rolesList.includes('VCRI') |
+        rolesList.includes('accountant') |
+        rolesList.includes('chancellor')
+      ) {
+        navigate('/signatory');
+      }
+    })
+    .catch(function (error) {
+      // Handle any errors from both requests
+      console.log(error);
+    });
   };
 
   return (

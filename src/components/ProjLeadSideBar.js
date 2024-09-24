@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
-function ProjLeadSidebar() {
+function ProjLeadSidebar({ onFilterChange }) {
     const [isSubMenuVisible, setIsSubMenuVisible] = useState(false);
 
     const toggleSubMenu = () => {
-        setIsSubMenuVisible(!isSubMenuVisible)
+        setIsSubMenuVisible(!isSubMenuVisible);
     };
 
     return (
@@ -23,13 +23,24 @@ function ProjLeadSidebar() {
                         </button>
                         <ul className={`${isSubMenuVisible ? '' : 'hidden'} bg-indigo-900`}>
                             <li><a href="#" className="block px-6 py-3 hover:text-yellow-500">Create Proposal</a></li>
-                            <li><a href="#" className="block px-6 py-3 hover:text-yellow-500">Approved</a></li>
-                            <li><a href="#" className="block px-6 py-3 hover:text-yellow-500">Ongoing</a></li>
-                            <li><a href="#" className="block px-6 py-3 hover:text-yellow-500">Denied</a></li>
+                            {/* Add onClick handlers to change the filter based on the clicked item */}
+                            <li>
+                                <a href="#" className="block px-6 py-3 hover:text-yellow-500" onClick={() => onFilterChange('Approved')}>Approved</a>
+                            </li>
+                            <li>
+                                <a href="#" className="block px-6 py-3 hover:text-yellow-500" onClick={() => onFilterChange('Ongoing')}>Ongoing</a>
+                            </li>
+                            <li>
+                                <a href="#" className="block px-6 py-3 hover:text-yellow-500" onClick={() => onFilterChange('Disapproved')}>Disapproved</a>
+                            </li>
                         </ul>
                     </li>
-                    <li><a href="#" className="text-lg block px-6 py-3 hover:text-yellow-500">Create MOA/MOU</a></li>
-                    <li><a href="#" className="text-lg block px-6 py-3 hover:text-yellow-500">Log out</a></li>
+                    <li>
+                        <a href="#" className="text-lg block px-6 py-3 hover:text-yellow-500">Create MOA/MOU</a>
+                    </li>
+                    <li>
+                        <a href="#" className="text-lg block px-6 py-3 hover:text-yellow-500">Log out</a>
+                    </li>
                 </ul>
             </nav>
         </div>

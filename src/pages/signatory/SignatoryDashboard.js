@@ -2,7 +2,7 @@ import React from "react";
 import Topbar from "../../components/Topbar";
 import SignatorySidebar from "../../components/SignatorySideBar";
 
-const ProjLeadDashboard = () => {
+const SignatoryDashboard = () => {
     return (
         <div className="bg-gray-200 min-h-screen flex">
             {/* Sidebar with fixed width */}
@@ -95,4 +95,4 @@ const ProjLeadDashboard = () => {
     );
 }
 
-export default ProjLeadDashboard;
+export default SignatoryDashboard;

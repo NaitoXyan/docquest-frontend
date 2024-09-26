@@ -15,13 +15,18 @@ import DeptOffGenerateDocument from "./pages/deptoff/DeptOffGenerateDocument";
 import DeptOffProfilePage from "./pages/deptoff/DeptOffProfilePage";
 import CoordinatorDashboard from "./pages/coordinator/CoordinatorDashboard";
 import SignatoryDashboard from "./pages/signatory/SignatoryDashboard";
+import ProjLeadProposalForm from "./pages/projectlead/ProjLeadProposalForm";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={ <LoginPage /> } />
+      
+      {/* Project Lead routes */}
       <Route path="/user" element={ <ProjLeadDashboard /> } />
+      <Route path="/create_proposal" element={ <ProjLeadProposalForm /> } />
+
       <Route path="/estaff" element={ <EstaffDashboard /> } />
       <Route path="/deptoff" element={ <DeptOffDashboard /> } />
       <Route path="/coordinator" element={ <CoordinatorDashboard /> } />

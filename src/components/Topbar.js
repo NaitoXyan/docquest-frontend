@@ -6,6 +6,10 @@ const Topbar = () => {
   const [notifications, setNotifications] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] =  useState('');
+  const [roles, setRoles] = useState([]);
+
   // Simulate fetching notifications
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -30,6 +34,40 @@ const Topbar = () => {
     if (notifications.length === 0) {
       setHasNotifications(false);
     }
+  };
+
+  useEffect(() => {
+    const storedFirstname = JSON.parse(localStorage.getItem('firstname'));
+    const storedLastname = JSON.parse(localStorage.getItem('lastname'));
+    const storedRoles = JSON.parse(localStorage.getItem('roles'));
+
+    if (storedFirstname) setFirstname(storedFirstname);
+    if (storedLastname) setLastname(storedLastname);
+    if (storedRoles) setRoles(storedRoles);
+  }, []);
+
+  const formatRoles = () => {
+    return roles.map(role => {
+      if (role === 'regular') {
+        return 'Project Leader';
+      } else if (role === 'program chair') {
+        return 'Program Chair';
+      } else if (role === 'college  dean') {
+        return 'College Dean'
+      } else if (role === 'ECR director') {
+        return 'Director, Extension & Community Relations'
+      } else if (role === 'VCAA') {
+        return 'Vice - Chancellor for Academic Affairs';
+      } else if (role === 'VCRI') {
+        return 'Vice - Chancellor for Research and Innovation';
+      } else if (role === 'accountant') {
+        return 'Accountant III'
+      }else if (role === 'chancellor') {
+        return 'Chancellor, USTP CDO'
+      } else {
+        return role;
+      }
+    }).join(', ');
   };
 
   return (
@@ -70,8 +108,8 @@ const Topbar = () => {
           className="w-8 h-8 rounded-full mr-3"
         />
         <div>
-          <h1 className="text-sm w-44">Emmanuelle James Duallo</h1>
-          <h2 className="text-xs text-gray-500">Project Leader</h2>
+          <h1 className="text-sm w-44">{firstname} {lastname}</h1>
+          <h2 className="text-xs text-gray-500">{formatRoles()}</h2>
         </div>
       </div>
     </div>

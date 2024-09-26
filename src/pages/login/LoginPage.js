@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -6,6 +6,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const [token, setToken] = useState('');
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [roles, setRoles] = useState([]);
@@ -26,7 +27,10 @@ const LoginPage = () => {
     })
     .then(function (response) {
       // Extract the token from the response
+
       const token = response.data.auth_token;
+      setToken(response.data.auth_token);
+      localStorage.setItem('token', token);
 
       // Use the token to make the second request
       return axios({
@@ -42,12 +46,18 @@ const LoginPage = () => {
       const { firstname, lastname, roles } = response.data;
 
       // Set the state for firstname, lastname, and roles
-      setFirstname(firstname);
-      setLastname(lastname);
+      // setFirstname(firstname);
+      // setLastname(lastname);
+      // setRoles(roles);
 
       // Extract roles into a list of strings
       const rolesList = roles.map(roleObj => roleObj.role);
-      setRoles(rolesList);
+      // setRoles(rolesList);
+
+      localStorage.setItem('firstname', JSON.stringify(firstname));
+      localStorage.setItem('lastname', JSON.stringify(lastname));
+      localStorage.setItem('roles', JSON.stringify(rolesList));
+
       console.log("State updated with user data:", { firstname, lastname, rolesList });
 
       if (rolesList.includes('regular')) {

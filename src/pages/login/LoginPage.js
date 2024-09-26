@@ -7,7 +7,6 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission
     axios({
       method: 'post',
       url: 'https://docquest-production.up.railway.app/login',

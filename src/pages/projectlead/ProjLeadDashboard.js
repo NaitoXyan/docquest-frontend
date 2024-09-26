@@ -5,31 +5,24 @@ import ProjLeadSidebar from "../../components/ProjLeadSideBar";
 const ProjLeadDashboard = () => {
     return (
         <div className="bg-gray-200 min-h-screen flex">
-            {/* Sidebar with fixed width */}
             <div className="w-1/5 fixed h-full">
                 <ProjLeadSidebar />
             </div>
-            {/* Main content area */}
-            <div className="flex-1 ml-[20%]"> {/* 20% left margin to match Sidebar width */}
+            <div className="flex-1 ml-[20%]">
                 <Topbar />
                 <div className="flex flex-col mt-14 px-10">
                     <h1 className="text-2xl font-semibold mb-5">Projects Overview</h1>
-
-                    {/* Approved, Pending, Rejected UI */}
                     <div className="grid grid-cols-3 gap-4 mb-10">
-                        {/* Approved */}
                         <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Approved</h2>
                             <h2 className="text-4xl font-bold">2</h2>
                             <button className="mt-2 underline">View</button>
                         </div>
-                        {/* Pending */}
                         <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Pending</h2>
                             <h2 className="text-4xl font-bold">10</h2>
                             <button className="mt-2 underline">View</button>
                         </div>
-                        {/* Rejected */}
                         <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Rejected</h2>
                             <h2 className="text-4xl font-bold">3</h2>
@@ -38,8 +31,6 @@ const ProjLeadDashboard = () => {
                     </div>
 
                     <h1 className="text-2xl font-semibold mb-5">Projects</h1>
-
-                    {/* Projects table */}
                     <div className="bg-white shadow-lg rounded-lg p-6">
                         <div className="overflow-x-auto">
                             <table className="min-w-full table-auto">

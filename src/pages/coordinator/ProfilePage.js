@@ -12,7 +12,7 @@ const AdminProfilePage = () => {
     password: 'adminPass',
     office: 'Headquarters',
     role: 'Administrator',
-    avatar: 'https://via.placeholder.com/150', // Placeholder avatar image
+    avatar: 'https://via.placeholder.com/150',
   };
 
   return (

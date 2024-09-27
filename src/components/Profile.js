@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 
 const UserProfile = ({ user }) => {
-  // State for avatar upload
   const [avatar, setAvatar] = useState(user.avatar || 'https://via.placeholder.com/150');
   const [userInfo, setUserInfo] = useState({ ...user });
-  const [isEditing, setIsEditing] = useState(false); // Default is false
+  const [isEditing, setIsEditing] = useState(false);
 
-  // Handle avatar upload
   const handleAvatarUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -18,20 +16,17 @@ const UserProfile = ({ user }) => {
     }
   };
 
-  // Handle input change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setUserInfo({ ...userInfo, [name]: value });
   };
 
-  // Toggle edit mode
   const toggleEditMode = () => {
     setIsEditing(!isEditing);
   };
 
   return (
     <div className="flex flex-col mx-10 mb-7 bg-white rounded-xl p-16 h-fit">
-      {/* Avatar Upload */}
       <div className="flex justify-center mb-8">
         <div className="relative group">
           <input
@@ -53,7 +48,6 @@ const UserProfile = ({ user }) => {
         </div>
       </div>
 
-      {/* User Information Form */}
       <form className="flex flex-col space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
@@ -135,7 +129,6 @@ const UserProfile = ({ user }) => {
           </div>
         </div>
 
-        {/* Edit/Save Button */}
         <div className="flex justify-end">
           <button
             type="button"

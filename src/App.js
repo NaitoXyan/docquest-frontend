@@ -16,6 +16,8 @@ import DeptOffProfilePage from "./pages/deptoff/DeptOffProfilePage";
 import CoordinatorDashboard from "./pages/coordinator/CoordinatorDashboard";
 import SignatoryDashboard from "./pages/signatory/SignatoryDashboard";
 import ProjLeadProposalForm from "./pages/projectlead/ProjLeadProposalForm";
+import MyDocument from "./components/GeneratePdf";
+import { PDFViewer } from "@react-pdf/renderer";
 
 function App() {
   return (
@@ -32,6 +34,12 @@ function App() {
       <Route path="/coordinator" element={ <CoordinatorDashboard /> } />
       <Route path="/signatory" element={ <SignatoryDashboard /> } />
     </Routes>
+
+    // <div style={{ height: '100vh' }}>
+    //   <PDFViewer style={{ width: '100%', height: '100%' }}>
+    //     <MyDocument />
+    //   </PDFViewer>
+    // </div>
   );
 }
 

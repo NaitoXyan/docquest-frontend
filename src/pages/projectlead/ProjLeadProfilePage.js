@@ -1,5 +1,5 @@
 import React from 'react';
-import Sidebar from '../../components/Sidebar';
+import ProjLeadSideBar from '../../components/ProjLeadSideBar';
 import Topbar from '../../components/Topbar';
 import Profile from '../../components/Profile';
 
@@ -18,13 +18,13 @@ const AdminProfilePage = () => {
   return (
     <div className="bg-gray-200 min-h-screen flex">
       <div className="w-1/5 fixed h-full">
-        <Sidebar />
+        <ProjLeadSideBar />
       </div>
 
       <div className="flex-1 ml-[20%]">
         <Topbar />
         <h1 className="text-2xl font-semibold m-7 mt-20">User Profile</h1>
-        <Profile user={eStaff} isEditable={true} />
+        <Profile />
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     // Post the credentials to log in
     axios({
       method: 'post',
@@ -27,11 +27,10 @@ const LoginPage = () => {
     })
     .then(function (response) {
       // Extract the token from the response
-
       const token = response.data.auth_token;
-      setToken(response.data.auth_token);
+      setToken(token);
       localStorage.setItem('token', token);
-
+  
       // Use the token to make the second request
       return axios({
         method: 'get',
@@ -42,33 +41,28 @@ const LoginPage = () => {
       });
     })
     .then(function (response) {
-      // Extract firstname, lastname, and roles from the response
-      const { firstname, lastname, roles } = response.data;
-
-      // Set the state for firstname, lastname, and roles
-      // setFirstname(firstname);
-      // setLastname(lastname);
-      // setRoles(roles);
-
-      // Extract roles into a list of strings
-      const rolesList = roles.map(roleObj => roleObj.role);
-      // setRoles(rolesList);
-
+      // Extract userid, firstname, lastname, and roles from the response
+      const { userid, firstname, lastname, roles } = response.data;
+  
+      // Set localStorage with user data
+      localStorage.setItem('userid', userid); // Store userid
       localStorage.setItem('firstname', JSON.stringify(firstname));
       localStorage.setItem('lastname', JSON.stringify(lastname));
+  
+      // Convert roles to a list of strings and store in localStorage
+      const rolesList = roles.map(roleObj => roleObj.role);
       localStorage.setItem('roles', JSON.stringify(rolesList));
-
-      console.log("State updated with user data:", { firstname, lastname, rolesList });
-
+  
+      // Navigate based on user roles
       if (rolesList.includes('regular')) {
         navigate('/user');
       } else if (
-        rolesList.includes('program chair') | 
-        rolesList.includes('college dean') |
-        rolesList.includes('ECR director') |
-        rolesList.includes('VCAA') |
-        rolesList.includes('VCRI') |
-        rolesList.includes('accountant') |
+        rolesList.includes('program chair') || 
+        rolesList.includes('college dean') ||
+        rolesList.includes('ECR director') ||
+        rolesList.includes('VCAA') ||
+        rolesList.includes('VCRI') ||
+        rolesList.includes('accountant') ||
         rolesList.includes('chancellor')
       ) {
         navigate('/signatory');
@@ -79,6 +73,7 @@ const LoginPage = () => {
       console.log(error);
     });
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

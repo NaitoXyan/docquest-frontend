@@ -63,6 +63,9 @@ function ProjLeadSidebar({ onFilterChange }) {
                         </ul>
                     </li>
                     <li>
+                        <button className="text-lg block px-6 py-3 hover:text-yellow-500" onClick={() => handleNavigation('/load_trainer')}>Load Trainer</button>
+                    </li>
+                    <li>
                         <a href="#" className="text-lg block px-6 py-3 hover:text-yellow-500">Create MOA/MOU</a>
                     </li>
                     <button className="text-lg block px-6 py-3 hover:text-yellow-500" onClick={handleLogout}>Log out</button>

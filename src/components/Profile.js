@@ -24,7 +24,7 @@ const UserProfile = () => {
 
   // Get token and userID from localStorage
   const token = localStorage.getItem('token');
-  const userID = localStorage.getItem('user_id');
+  const userID = localStorage.getItem('userid');
 
   // Navigation hook
   const navigate = useNavigate();
@@ -126,7 +126,7 @@ const UserProfile = () => {
       payload.password = formData.password;
     }
 
-    axios.put(`https://docquest-production.up.railway.app/edit_user_details/{userID}/`, payload, {
+    axios.put(`https://docquest-production.up.railway.app/edit_user_details/${userID}/`, payload, {
       headers: {
         'Authorization': `Token ${token}`,
         'Content-Type': 'application/json',

@@ -191,23 +191,9 @@ const UserProfile = () => {
 
   return (
     <div className="flex flex-col mx-10 mb-7 bg-white rounded-xl p-16 h-fit">
-      <h2 className="text-2xl font-bold mb-6 text-center">User Information</h2>
+      <h2 className="text-2xl font-bold mb-6 text-center"></h2>
       <form className="flex flex-col space-y-4">
         <div className="grid grid-cols-2 gap-4">
-          {/* Email Field */}
-          <div>
-            <label className="font-semibold text-gray-700">Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className={`w-full p-2 border rounded ${
-                isEditing ? 'bg-white' : 'bg-gray-200'
-              }`}
-            />
-          </div>
 
           {/* First Name */}
           <div>
@@ -223,14 +209,14 @@ const UserProfile = () => {
               }`}
             />
           </div>
-
-          {/* Middle Name */}
+          
+          {/* Contact Number */}
           <div>
-            <label className="font-semibold text-gray-700">Middle Name</label>
+            <label className="font-semibold text-gray-700">Contact Number</label>
             <input
               type="text"
-              name="middlename"
-              value={formData.middlename}
+              name="contactNumber"
+              value={formData.contactNumber}
               onChange={handleInputChange}
               disabled={!isEditing}
               className={`w-full p-2 border rounded ${
@@ -269,6 +255,21 @@ const UserProfile = () => {
             />
           </div>
 
+           {/* Middle Name */}
+           <div>
+            <label className="font-semibold text-gray-700">Middle Name</label>
+            <input
+              type="text"
+              name="middlename"
+              value={formData.middlename}
+              onChange={handleInputChange}
+              disabled={!isEditing}
+              className={`w-full p-2 border rounded ${
+                isEditing ? 'bg-white' : 'bg-gray-200'
+              }`}
+            />
+          </div>
+
           {/* College */}
           <div>
             <label className="font-semibold text-gray-700">College</label>
@@ -284,13 +285,13 @@ const UserProfile = () => {
             />
           </div>
 
-          {/* Department */}
+          {/* Email Field */}
           <div>
-            <label className="font-semibold text-gray-700">Department</label>
+            <label className="font-semibold text-gray-700">Email</label>
             <input
-              type="text"
-              name="department"
-              value={formData.department}
+              type="email"
+              name="email"
+              value={formData.email}
               onChange={handleInputChange}
               disabled={!isEditing}
               className={`w-full p-2 border rounded ${
@@ -299,13 +300,13 @@ const UserProfile = () => {
             />
           </div>
 
-          {/* Contact Number */}
+          {/* Department */}
           <div>
-            <label className="font-semibold text-gray-700">Contact Number</label>
+            <label className="font-semibold text-gray-700">Department</label>
             <input
               type="text"
-              name="contactNumber"
-              value={formData.contactNumber}
+              name="department"
+              value={formData.department}
               onChange={handleInputChange}
               disabled={!isEditing}
               className={`w-full p-2 border rounded ${

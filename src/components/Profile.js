@@ -126,7 +126,7 @@ const UserProfile = () => {
       payload.password = formData.password;
     }
 
-    axios.put(`https://docquest-production.up.railway.app/edit_user_details/${userID}/`, payload, {
+    axios.patch(`https://docquest-production.up.railway.app/edit_user_details/${userID}/`, payload, {
       headers: {
         'Authorization': `Token ${token}`,
         'Content-Type': 'application/json',

@@ -1,5 +1,7 @@
 import { BellIcon } from '@heroicons/react/outline'; // Import the Bell Icon
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
 
 const Topbar = () => {
   const [hasNotifications, setHasNotifications] = useState(false);
@@ -108,8 +110,11 @@ const Topbar = () => {
           className="w-8 h-8 rounded-full mr-3"
         />
         <div>
-          <h1 className="text-sm w-44">{firstname} {lastname}</h1>
-          <h2 className="text-xs text-gray-500">{formatRoles()}</h2>
+          <Link to="/profile">
+            <h1 className="text-sm w-44">{firstname} {lastname}</h1>
+            <h2 className="text-xs text-gray-500">{formatRoles()}</h2>
+          </Link>
+
         </div>
       </div>
     </div>

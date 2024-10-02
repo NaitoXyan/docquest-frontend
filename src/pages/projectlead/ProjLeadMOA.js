@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Topbar from "../../components/Topbar";
 import ProjLeadSidebar from "../../components/ProjLeadSideBar";
 
-const ProjLeadProgress = () => {
+const ProjLeadMOA = () => {
     // State to hold the list of "Whereas" descriptions
     const [whereasList, setWhereasList] = useState(["", ""]); // Initialize with two empty strings
 
@@ -446,4 +446,4 @@ const ProjLeadProgress = () => {
     );
 }
 
-export default ProjLeadProgress;
+export default ProjLeadMOA;

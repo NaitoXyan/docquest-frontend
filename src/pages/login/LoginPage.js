@@ -42,10 +42,10 @@ const LoginPage = () => {
     })
     .then(function (response) {
       // Extract userid, firstname, lastname, and roles from the response
-      const { userid, firstname, lastname, roles } = response.data;
+      const { userID, firstname, lastname, roles } = response.data;
   
       // Set localStorage with user data
-      localStorage.setItem('userid', userid); // Store userid
+      localStorage.setItem('userid', userID); // Store userid
       localStorage.setItem('firstname', JSON.stringify(firstname));
       localStorage.setItem('lastname', JSON.stringify(lastname));
   

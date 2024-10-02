@@ -123,7 +123,7 @@ const ProposalFormSecondPage = () => {
                                 PROJECT OBJECTIVE
                             </label>
                             <textarea
-                                name="targetGroups"
+                                name="objective"
                                 value
                                 onChange
                                 className="w-full p-2 border border-gray-300 rounded"

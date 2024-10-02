@@ -18,6 +18,7 @@ import SignatoryDashboard from "./pages/signatory/SignatoryDashboard";
 import ProjLeadProposalForm from "./pages/projectlead/ProjLeadProposalForm";
 import MyDocument from "./components/GeneratePdf";
 import { PDFViewer } from "@react-pdf/renderer";
+import ProposalFormSecondPage from "./components/ProposalFormSecondPage";
 
 function App() {
   return (
@@ -28,6 +29,9 @@ function App() {
       {/* Project Lead routes */}
       <Route path="/user" element={ <ProjLeadDashboard /> } />
       <Route path="/create_proposal" element={ <ProjLeadProposalForm /> } />
+
+      {/* create proposal routes */}
+      <Route path="/proposal_form_second_page" element={ <ProposalFormSecondPage /> }/>
 
       <Route path="/estaff" element={ <EstaffDashboard /> } />
       <Route path="/deptoff" element={ <DeptOffDashboard /> } />

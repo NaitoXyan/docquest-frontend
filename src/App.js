@@ -18,6 +18,7 @@ import CoordinatorProfilePage from "./pages/coordinator/ProfilePage";
 import SignatoryDashboard from "./pages/signatory/SignatoryDashboard";
 import ProjLeadProposalForm from "./pages/projectlead/ProjLeadProposalForm";
 import ProjLeadProfilePage from "./pages/projectlead/ProjLeadProfilePage";
+import ProjLeadLoadTrainer from "./pages/projectlead/ProjLeadLoadTrainer";
 
 function App() {
   return (
@@ -29,11 +30,15 @@ function App() {
       {/* Project Lead routes */}
       <Route path="/user" element={ <ProjLeadDashboard /> } />
       <Route path="/create_proposal" element={ <ProjLeadProposalForm /> } />
+      <Route path="/profile" element={ <ProjLeadProfilePage /> } />
+      <Route path="/load_trainer" element={ <ProjLeadLoadTrainer /> } />
+
+      {/* Other Unorganized */}
       <Route path="/estaff" element={ <EstaffDashboard /> } />
       <Route path="/deptoff" element={ <DeptOffDashboard /> } />
       <Route path="/coordinator" element={ <CoordinatorDashboard /> } />
       <Route path="/signatory" element={ <SignatoryDashboard /> } />
-      <Route path="/profile" element={ <ProjLeadProfilePage /> } />
+    
     </Routes>
   );
 }

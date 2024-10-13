@@ -1,7 +1,9 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 
 const ProposalFormFirstPage = () => {
-  const userID = JSON.parse(localStorage.getItem('userID'));
+  const userID = localStorage.getItem('userid');
+  const token = localStorage.getItem('token');
   const storedFirstname = JSON.parse(localStorage.getItem('firstname'));
   const storedLastname = JSON.parse(localStorage.getItem('lastname'));
 
@@ -17,22 +19,41 @@ const ProposalFormFirstPage = () => {
     program: "",
     accreditationLevel: "",
     college: "",
-    addressID: "", //idea ani is: input address, save to db, return id, save in form.
-    targetDateImplementation: "",
-    totalHours: "",
+    projectLocationID: 1, //idea ani is: input address, save to db, return id, save in form.
+    agency: [1], //get agencyID
+    targetImplementation: "",
+    totalHours: 0,
     background: "",
     projectComponent: "",
     beneficiaries: "",
-    totalBudget: "",
+    totalBudget: 0,
 
-    goalsAndObjectives: [''],
+    targetGroups: [{
+      targetGroup: ""
+    }],
 
-    budgetaryRequirements: [
+    goalsAndObjectives: [
+      { goalsAndObjectives: "" }
+    ],
+
+    monitoringPlanSchedules: [
       {
-        itemName: "",
-        ustpAmount: "",
-        partnerAmount: "",
-        totalAmount: "",
+          approach: "",
+          dataGatheringStrategy: "",
+          schedule: "",
+          implementationPhase: "Before Implementation Phase"
+      },
+      {
+          approach: "",
+          dataGatheringStrategy: "",
+          schedule: "",
+          implementationPhase: "During Project Implementation"
+      },
+      {
+          approach: "",
+          dataGatheringStrategy: "",
+          schedule: "",
+          implementationPhase: "After Project Implementation"
       }
     ],
 
@@ -67,40 +88,75 @@ const ProposalFormFirstPage = () => {
       }
     ],
 
-    monitoringPlanSchedules: [
+    budgetaryRequirements: [
       {
-          approach: "",
-          dataGatheringStrategy: "",
-          schedule: "",
-          implementationPhase: "Before Implementation Phase"
-      },
-      {
-          approach: "",
-          dataGatheringStrategy: "",
-          schedule: "",
-          implementationPhase: "During Project Implementation"
-      },
-      {
-          approach: "",
-          dataGatheringStrategy: "",
-          schedule: "",
-          implementationPhase: "After Project Implementation"
+        itemName: "",
+        ustpAmount: 0,
+        partnerAmount: 0,
+        totalAmount: 0,
       }
     ],
 
-    projectObjective: "",
-    involved: "",
-    targetDate: "",
-    personResponsible: "",
+    projectActivities: [
+      {
+        objective: "",
+        involved: "",
+        targetDate: "",
+        personResponsible: ""
+      }
+    ],
 
+    loadingOfTrainers: [
+      {
+        faculty: "",
+        trainingLoad: "",
+        hours: 0,
+        ustpBudget: 0,
+        agencyBudget: 0,
+        totalBudgetRequirement: 0,
+      }
+    ],
+
+    signatories: [{
+      userID: 2,
+      approvalStatus: false
+    }],
+
+    proponents: [{ proponent: "" }],
+    
     budgetUSTP: "",
     budgetPartnerAgency: "",
-
-    proponents: [''],
-    partnerAgency: "", //get agencyID
     programChair: "", //get userid of prog chair. make input selectable
     collegeDean: "", //get userid aning dean
   });
+
+  const handleActivityChange = (index, event) => {
+    const { name, value } = event.target;
+    const updatedActivities = [...formData.projectActivities];
+    updatedActivities[index][name] = value;
+    setFormData({ ...formData, projectActivities: updatedActivities });
+  };
+
+  const addActivityRow = () => {
+    setFormData({
+      ...formData,
+      projectActivities: [
+        ...formData.projectActivities,
+        {
+          objective: "",
+          involved: "",
+          targetDate: "",
+          personResponsible: ""
+        }
+      ]
+    });
+  };
+
+  const removeActivityRow = (index) => {
+    const updatedActivities = formData.projectActivities.filter((_, i) => i !== index);
+    setFormData({ ...formData, projectActivities: updatedActivities });
+  };
+  
 
   const handleRowChange = (index, field, value) => {
     setFormData((prevData) => {
@@ -114,22 +170,53 @@ const ProposalFormFirstPage = () => {
     });
   };
   
+  const handleTrainerChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedTrainers = formData.loadingOfTrainers.map((trainer, i) => {
+      if (i === index) {
+        let updatedTrainer = { ...trainer, [name]: value };
+  
+        // Automatically calculate totalBudgetRequirement when budget values change
+        if (name === 'ustpBudget' || name === 'agencyBudget') {
+          updatedTrainer.totalBudgetRequirement = parseFloat(updatedTrainer.ustpBudget) + parseFloat(updatedTrainer.agencyBudget);
+        }
+        return updatedTrainer;
+      }
+      return trainer;
+    });
+  
+    setFormData({ ...formData, loadingOfTrainers: updatedTrainers });
+  };
+  
+  const addTrainerRow = () => {
+    setFormData({
+      ...formData,
+      loadingOfTrainers: [
+        ...formData.loadingOfTrainers,
+        { faculty: "", trainingLoad: "", hours: 0, ustpBudget: 0, agencyBudget: 0, totalBudgetRequirement: 0 }
+      ]
+    });
+  };
 
+  const removeTrainerRow = (index) => {
+    const updatedTrainers = formData.loadingOfTrainers.filter((_, i) => i !== index);
+    setFormData({ ...formData, loadingOfTrainers: updatedTrainers });
+  };
     
   // Function to handle changes in proponents inputs
   const handleProponentChange = (index, value) => {
-    const newProponents = [...formData.proponents];
-    newProponents[index] = value;
-    setFormData({ ...formData, proponents: newProponents });
+    const updatedProponents = [...formData.proponents];
+    updatedProponents[index].proponent = value; // Update the 'proponent' field
+    setFormData({ ...formData, proponents: updatedProponents });
   };
+  
 
-    // Function to handle changes in objectives inputs
   const handleObjectiveChange = (index, value) => {
-    const newObjectives = [...formData.goalsAndObjectives];
-    newObjectives[index] = value;
-    setFormData({ ...formData, goalsAndObjectives: newObjectives });
+    const updatedObjectives = [...formData.goalsAndObjectives];
+    updatedObjectives[index].goalsAndObjectives = value;
+    setFormData({ ...formData, goalsAndObjectives: updatedObjectives });
   };
-
+  
   // Function to handle form change for each row
   const handleEvaluationChange = (index, field, value) => {
     const updatedEvaluation = formData.evaluationAndMonitorings.map((item, i) => {
@@ -143,45 +230,59 @@ const ProposalFormFirstPage = () => {
 
 
     // Function to add a new proponent field
-  const handleButtonClick = () => {
-    setFormData({
-    ...formData,
-    proponents: [...formData.proponents, ''],
-    });
-  };
+    const handleButtonClick = () => {
+      setFormData({
+        ...formData,
+        proponents: [...formData.proponents, { proponent: "" }], // Add new object with 'proponent' key
+      });
+    };
 
-  // Function to add a new objectives field
   const handleObjectiveButtonClick = () => {
     setFormData({
-    ...formData,
-    goalsAndObjectives: [...formData.goalsAndObjectives, ''],
+      ...formData,
+      goalsAndObjectives: [
+        ...formData.goalsAndObjectives,
+        { goalsAndObjectives: "" }
+      ]
     });
   };
+  
+  const handleObjectiveRemoveClick = () => {
+    if (formData.goalsAndObjectives.length > 1) {
+      const updatedObjectives = formData.goalsAndObjectives.slice(0, -1);
+      setFormData({ ...formData, goalsAndObjectives: updatedObjectives });
+    }
+  };
+  
 
   // Function to remove the last proponent field
   const handleRemoveClick = () => {
     if (formData.proponents.length > 1) {
-    setFormData({
-      ...formData,
-      proponents: formData.proponents.slice(0, formData.proponents.length - 1),
-    });
+      const updatedProponents = formData.proponents.slice(0, -1); // Remove the last proponent
+      setFormData({ ...formData, proponents: updatedProponents });
     }
   };
-
-  // Function to remove the last proponent field
-  const handleObjectiveRemoveClick = () => {
-    if (formData.goalsAndObjectives.length > 1) {
-    setFormData({
-      ...formData,
-      goalsAndObjectives: formData.goalsAndObjectives.slice(0, formData.goalsAndObjectives.length - 1),
-    });
-    }
-  };
+  
     
     // Function to handle changes in form inputs
+    // const handleFormChange = (e) => {
+    //   setFormData({ ...formData, [e.target.name]: e.target.value });
+    // };
     const handleFormChange = (e) => {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
+      const { name, value } = e.target;
+    
+      setFormData((prevData) => {
+        const updatedData = { ...prevData, [name]: value };
+    
+        // If beneficiaries are updated, update targetGroups as well
+        if (name === 'beneficiaries') {
+          updatedData.targetGroups[0].targetGroup = value;
+        }
+    
+        return updatedData;
+      });
     };
+    
 
     // Calculate and update the total budget whenever USTP or Partner Agency budget changes
     useEffect(() => {
@@ -211,13 +312,47 @@ const ProposalFormFirstPage = () => {
     });
   };
 
-
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent page refresh
-    console.log("Form Data Submitted:", formData);
-    // Further submit logic like API calls can be added here
-  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    // Create a copy of formData
+    const modifiedData = { ...formData };
+  
+    // Remove the specific fields
+    delete modifiedData.budgetUSTP;
+    delete modifiedData.budgetPartnerAgency;
+    delete modifiedData.programChair;
+    delete modifiedData.collegeDean;
+  
+    console.log("Modified Data to be sent:", modifiedData); // Check the structure
+  
+    try {
+      // Send POST request
+      const response = await axios({
+        method: 'post',
+        url: 'https://docquest-production.up.railway.app/create_project',
+        headers: {
+          'Authorization': `Token ${token}`,
+          'Content-Type': 'application/json',
+        },
+        data: modifiedData, // Axios automatically stringifies the object to JSON
+      });
+  
+      // Handle successful response
+      console.log('Successfully submitted:', response.data); // Response data from the server
+    } catch (error) {
+      // Handle errors, particularly validation errors from Django
+      if (error.response) {
+        // Server responded with a status other than 200
+        console.error('Error:', error.response.data); // Display specific error messages
+        alert('Submission failed. Please check your input.'); // You can provide better user feedback here
+      } else {
+        // Other errors (network issues, etc.)
+        console.error('Request failed:', error.message);
+        alert('An error occurred. Please try again later.');
+      }
+    }
+  };  
 
   return (
     <div className="flex flex-col mt-14 px-10">
@@ -326,16 +461,17 @@ const ProposalFormFirstPage = () => {
               </div>
 
                 {/* Render input fields for each proponent */}
-                {formData.proponents.map((proponent, index) => (
-                <input
-                    key={index} // Use index as key for simplicity; in production, use a unique ID
-                    name={`proponent-${index}`} // Dynamic name for each input
-                    value={proponent}
-                    onChange={(e) => handleProponentChange(index, e.target.value)} // Update value on change
+                {formData.proponents.map((proponentObj, index) => (
+                  <input
+                    key={index}
+                    name={`proponent-${index}`}
+                    value={proponentObj.proponent} // Access 'proponent' field in the object
+                    onChange={(e) => handleProponentChange(index, e.target.value)}
                     className="w-full p-2 border border-gray-300 rounded mt-2"
                     placeholder={`Proponent ${index + 1}`}
-                />
+                  />
                 ))}
+
 
                 <div className="flex space-x-2 mt-2">
                   <button 
@@ -364,7 +500,8 @@ const ProposalFormFirstPage = () => {
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option>Select...</option>
+                <option value="" disabled hidden>Select</option>
+                <option value="sample program">sample program</option>
               </select>
             </div>
 
@@ -378,7 +515,8 @@ const ProposalFormFirstPage = () => {
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option>Select...</option>
+                <option value="" disabled hidden>Select</option>
+                <option value="sample level">sample LEVEL</option>
               </select>
             </div>
 
@@ -390,7 +528,8 @@ const ProposalFormFirstPage = () => {
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option>Select...</option>
+                <option value="" disabled hidden>Select</option>
+                <option value="CITC">CITC</option>
               </select>
             </div>
           </div>
@@ -416,11 +555,12 @@ const ProposalFormFirstPage = () => {
               <label className="block mb-2 font-semibold">PARTNER AGENCY</label>
               <select
                 name="partnerAgency"
-                value={formData.partnerAgency}
+                value={formData.agency}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option>Select...</option>
+                <option value="" disabled hidden>Select</option>
+                <option value="Sample Agency">Sample Agency</option>
               </select>
             </div>
           </div>
@@ -430,8 +570,8 @@ const ProposalFormFirstPage = () => {
             <div>
               <label className="block mb-2 font-semibold">TARGET DATE OF IMPLEMENTATION</label>
               <input
-                name="targetDateImplementation"
-                value={formData.targetDateImplementation}
+                name="targetImplementation"
+                value={formData.targetImplementation}
                 onChange={handleFormChange}
                 type="date"
                 className="w-full p-2 border border-gray-300 rounded"
@@ -444,7 +584,7 @@ const ProposalFormFirstPage = () => {
                 name="totalHours"
                 value={formData.totalHours}
                 onChange={handleFormChange}
-                type="text"
+                type="number"
                 className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
@@ -561,9 +701,9 @@ const ProposalFormFirstPage = () => {
               <label className="block mb-2 font-semibold">Address</label>
               <input
                 name="address"
-                value={formData.addressID}
+                value={formData.projectLocationID}
                 onChange={handleFormChange}
-                type="text"
+                type="number"
                 className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
@@ -585,6 +725,7 @@ const ProposalFormFirstPage = () => {
                   ></textarea>
               </div>
           </div>
+
           {/* row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
@@ -595,35 +736,36 @@ const ProposalFormFirstPage = () => {
                 </label>
               </div>
 
-                {/* Render input fields for each proponent */}
-                {formData.goalsAndObjectives.map((goalsAndObjectives, index) => (
+              {/* Render input fields for each objective */}
+              {formData.goalsAndObjectives.map((goal, index) => (
                 <input
-                    key={index} // Use index as key for simplicity; in production, use a unique ID
-                    name={`objective-${index}`} // Dynamic name for each input
-                    value={goalsAndObjectives}
-                    onChange={(e) => handleObjectiveChange(index, e.target.value)} // Update value on change
-                    className="w-full p-2 border border-gray-300 rounded mt-2"
-                    placeholder={`Objective ${index + 1}`}
+                  key={index} // Use index as key for simplicity; in production, use a unique ID
+                  name={`objective-${index}`} // Dynamic name for each input
+                  value={goal.goalsAndObjectives}
+                  onChange={(e) => handleObjectiveChange(index, e.target.value)} // Update value on change
+                  className="w-full p-2 border border-gray-300 rounded mt-2"
+                  placeholder={`Objective ${index + 1}`}
                 />
-                ))}
+              ))}
 
-                <div className="flex space-x-2 mt-2">
-                  <button 
-                    type="button" // Prevent default form submission
-                    onClick={handleObjectiveButtonClick} 
-                    className="bg-blue-500 text-white px-4 py-2 rounded">
-                    Add Objective
-                  </button>
-                  <button 
-                    type="button" // Prevent default form submission
-                    onClick={handleObjectiveRemoveClick}
-                    className="bg-red-500 text-white px-4 py-2 rounded">
-                    Remove Objective
-                  </button>
-                </div>
+              <div className="flex space-x-2 mt-2">
+                <button
+                  type="button" // Prevent default form submission
+                  onClick={handleObjectiveButtonClick}
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Add Objective
+                </button>
+                <button
+                  type="button" // Prevent default form submission
+                  onClick={handleObjectiveRemoveClick}
+                  className="bg-red-500 text-white px-4 py-2 rounded"
+                >
+                  Remove Objective
+                </button>
+              </div>
             </div>
           </div>
-
 
           {/* row */}
           <div className="grid grid-cols-1 gap-4"> 
@@ -643,62 +785,81 @@ const ProposalFormFirstPage = () => {
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
-              <div>
-                  <label className="block mb-2 font-semibold">
-                      PROJECT IMPLEMENTATION PLAN AND MANAGEMENT
-                  </label>
-              </div>
+            <div>
+              <label className="block mb-2 font-semibold">
+                PROJECT IMPLEMENTATION PLAN AND MANAGEMENT
+              </label>
+            </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-4">
-            <div>
-              <label className="block mb-2 font-semibold">
-                  PROJECT OBJECTIVE
-              </label>
-              <textarea
+          {/* Project Activities Rows */}
+          {formData.projectActivities.map((activity, index) => (
+            <div key={index} className="grid grid-cols-4 gap-4 mb-4">
+              <div>
+                <label className="block mb-2 font-semibold">PROJECT OBJECTIVE</label>
+                <textarea
                   name="objective"
-                  value={formData.projectObjective}
-                  onChange={handleFormChange}
+                  value={activity.objective}
+                  onChange={(e) => handleActivityChange(index, e)}
                   className="w-full p-2 border border-gray-300 rounded"
-              ></textarea>
-            </div>
+                ></textarea>
+              </div>
 
-            <div>
-              <label className="block mb-2 font-semibold">
-                ACTIVITIES INVOLVED
-              </label>
-              <textarea
-                name="involved"
-                value={formData.involved}
-                onChange={handleFormChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              ></textarea>
-            </div>
+              <div>
+                <label className="block mb-2 font-semibold">ACTIVITIES INVOLVED</label>
+                <textarea
+                  name="involved"
+                  value={activity.involved}
+                  onChange={(e) => handleActivityChange(index, e)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                ></textarea>
+              </div>
 
-            <div>
-              <label className="block mb-2 font-semibold">
-                TARGET DATE
-              </label>
-              <input
-                name="targetDate"
-                value={formData.targetDate}
-                onChange={handleFormChange}
-                type="date"
-                className="w-full p-2 border border-gray-300 rounded"
-              ></input>
-            </div>
+              <div>
+                <label className="block mb-2 font-semibold">TARGET DATE</label>
+                <input
+                  name="targetDate"
+                  value={activity.targetDate}
+                  onChange={(e) => handleActivityChange(index, e)}
+                  type="date"
+                  className="w-full p-2 border border-gray-300 rounded"
+                ></input>
+              </div>
 
-            <div>
-              <label className="block mb-2 font-semibold">
-                PERSON RESPONSIBLE
-              </label>
-              <input
-                name="personResponsible"
-                value={formData.personResponsible}
-                onChange={handleFormChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              ></input>
+              <div>
+                <label className="block mb-2 font-semibold">PERSON RESPONSIBLE</label>
+                <input
+                  name="personResponsible"
+                  value={activity.personResponsible}
+                  onChange={(e) => handleActivityChange(index, e)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                ></input>
+              </div>
+
+              {/* Remove Button */}
+              {formData.projectActivities.length > 1 && (
+                <div className="col-span-4 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => removeActivityRow(index)}
+                    className="text-red-500 hover:underline mt-2"
+                  >
+                    - Remove Row
+                  </button>
+                </div>
+              )}
             </div>
+          ))}
+
+          {/* Add Button */}
+          <div className="flex justify-end mt-4">
+            <button
+              type="button"
+              onClick={addActivityRow}
+              className="text-green-500 hover:underline"
+            >
+              + Add Row
+            </button>
           </div>
         </div>
 
@@ -877,6 +1038,160 @@ const ProposalFormFirstPage = () => {
           </div>
         </div>
 
+        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
+          <div className="relative">
+            <label className="block mb-2 font-semibold">Trainers:</label>
+            <div className="overflow-x-auto">
+              <table className="min-w-full border">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2 border bg-gray-300">Name of Faculty</th>
+                    <th className="px-4 py-2 border bg-gray-300">Training Load</th>
+                    <th className="px-4 py-2 border bg-gray-300">No. of Hours</th>
+                    <th className="px-4 py-2 border bg-gray-300">USTP Budget</th>
+                    <th className="px-4 py-2 border bg-gray-300">Partner Agency Budget</th>
+                    <th className="px-4 py-2 border bg-gray-300">Total Budgetary Requirement</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {formData.loadingOfTrainers.map((trainer, index) => (
+                    <tr key={index}>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="faculty"
+                          value={trainer.faculty}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="text"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Faculty Name"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="trainingLoad"
+                          value={trainer.trainingLoad}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="text"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Training Load"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="hours"
+                          value={trainer.hours}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="number"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Hours"
+                          min="0"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="ustpBudget"
+                          value={trainer.ustpBudget}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="number"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="USTP Budget"
+                          min="0"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="agencyBudget"
+                          value={trainer.agencyBudget}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="number"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Partner Agency Budget"
+                          min="0"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="totalBudgetRequirement"
+                          value={trainer.totalBudgetRequirement}
+                          readOnly
+                          type="number"
+                          className="w-full p-1 border border-gray-300 rounded bg-gray-100"
+                          placeholder="Total"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {/* Add and Remove Buttons */}
+            <div className="flex justify-between mt-2">
+              <button
+                type="button"
+                onClick={addTrainerRow}
+                className="text-green-500 hover:underline"
+              >
+                + Add Row
+              </button>
+              {formData.loadingOfTrainers.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeTrainerRow(formData.loadingOfTrainers.length - 1)}
+                  className="text-red-500 hover:underline"
+                  title="Remove Last Row"
+                >
+                  - Remove Row
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-2 font-semibold">
+                ENDORSED BY PROGRAM CHAIR
+              </label>
+              <select
+                name="programChair"
+                value={formData.programChair}
+                onChange={handleFormChange}
+                className="w-full p-2 border border-gray-300 rounded"
+              >
+                <option>Select...</option>
+                <option value={"guylord"}>Guylord</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block mb-2 font-semibold">
+                ENDORSED BY COLLEGE DEAN
+              </label>
+              <select
+                name="collegeDean"
+                value={formData.collegeDean}
+                onChange={handleFormChange}
+                className="w-full p-2 border border-gray-300 rounded"
+              >
+                <option>Select...</option>
+                <option value={"EJ"}>EJ</option>
+              </select>
+            </div>
+          </div>
+
+          {/* row */}
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <label className="block mb-2 font-semibold">SUBMITTED BY: {username}</label>
+            </div>
+          </div>
+        </div>
 
         {/* submit naa */}
         <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-4">

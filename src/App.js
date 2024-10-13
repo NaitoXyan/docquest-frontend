@@ -26,32 +26,32 @@ import ProposalFormSecondPage from "./components/ProposalFormSecondPage";
 function App() {
   return (
     
-    <Routes>
-      {/* Login */}
-      <Route path="/" element={<Navigate to="/login" />} />
-      <Route path="/login" element={ <LoginPage /> } />
-      {/* Project Lead routes */}
-      <Route path="/user" element={ <ProjLeadDashboard /> } />
-      <Route path="/create_proposal" element={ <ProjLeadProposalForm /> } />
-      <Route path="/profile" element={ <ProjLeadProfilePage /> } />
-      <Route path="/load_trainer" element={ <ProjLeadLoadTrainer /> } />
+    // <Routes>
+    //   {/* Login */}
+    //   <Route path="/" element={<Navigate to="/login" />} />
+    //   <Route path="/login" element={ <LoginPage /> } />
+    //   {/* Project Lead routes */}
+    //   <Route path="/user" element={ <ProjLeadDashboard /> } />
+    //   <Route path="/create_proposal" element={ <ProjLeadProposalForm /> } />
+    //   <Route path="/profile" element={ <ProjLeadProfilePage /> } />
+    //   <Route path="/load_trainer" element={ <ProjLeadLoadTrainer /> } />
 
-      {/* create proposal routes */}
-      <Route path="/proposal_form_second_page" element={ <ProposalFormSecondPage /> }/>
+    //   {/* create proposal routes */}
+    //   <Route path="/proposal_form_second_page" element={ <ProposalFormSecondPage /> }/>
 
-      {/* Other Unorganized */}
-      <Route path="/estaff" element={ <EstaffDashboard /> } />
-      <Route path="/deptoff" element={ <DeptOffDashboard /> } />
-      <Route path="/coordinator" element={ <CoordinatorDashboard /> } />
-      <Route path="/signatory" element={ <SignatoryDashboard /> } />
+    //   {/* Other Unorganized */}
+    //   <Route path="/estaff" element={ <EstaffDashboard /> } />
+    //   <Route path="/deptoff" element={ <DeptOffDashboard /> } />
+    //   <Route path="/coordinator" element={ <CoordinatorDashboard /> } />
+    //   <Route path="/signatory" element={ <SignatoryDashboard /> } />
     
-    </Routes>
+    // </Routes>
 
-    // <div style={{ height: '100vh' }}>
-    //   <PDFViewer style={{ width: '100%', height: '100%' }}>
-    //     <MyDocument />
-    //   </PDFViewer>
-    // </div>
+    <div style={{ height: '100vh' }}>
+      <PDFViewer style={{ width: '100%', height: '100%' }}>
+        <MyDocument />
+      </PDFViewer>
+    </div>
   );
 }
 

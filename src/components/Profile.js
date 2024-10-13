@@ -41,7 +41,7 @@ const UserProfile = () => {
       navigate('/login');
       return;
     }
-
+    console.log(userID);
     // Fetch user details
     axios.get('https://docquest-production.up.railway.app/get_user_details', {
       headers: {

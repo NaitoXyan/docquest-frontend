@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   textCenter: {
     textAlign: 'center',
   },
-  rowNormal:{
+  rowNormal: {
     flexDirection: 'row',
     border: 'solid',
     borderWidth: 1,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
 
     borderColor: '#bfbfbf',
   },
-  
+
   header2: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -123,7 +123,7 @@ const MyDocument = () => (
       {/* kaning view ga contain og logo, ustp, lugar */}
       <View>
         <View>
-            {/* diri ang USTP logo */}
+          {/* diri ang USTP logo */}
         </View>
         <View>
           <View>
@@ -143,18 +143,18 @@ const MyDocument = () => (
           <View style={styles.rowNormal}>
             <View style={styles.tableColthree}>
               <Text style={styles.textCenter}>
-                Document Code No.
+                Document Code No.{/* diri ang USTP logo */}
               </Text>
             </View>
-          </View> 
+          </View>
         </View>
         <View style={styles.right}>
-        <View style={styles.rowNormal}>
-          <View style={styles.tableColthree}>
-            <Text style={styles.textCenter}>
-              FM-USTP-ECRD-01a
-            </Text>
-          </View>
+          <View style={styles.rowNormal}>
+            <View style={styles.tableColthree}>
+              <Text style={styles.textCenter}>
+                FM-USTP-ECRD-01a
+              </Text>
+            </View>
           </View>
         </View>
         <View style={styles.right}>
@@ -162,17 +162,17 @@ const MyDocument = () => (
             <View style={styles.rowNormal}>
               <View style={styles.tableColthree}>
                 <Text style={styles.textCenter}>
-                 Rev. No.
+                  Rev. No.
                 </Text>
               </View>
               <View style={styles.tableColthree}>
                 <Text style={styles.textCenter}>
-                 Effective Date
+                  Effective Date
                 </Text>
               </View>
               <View style={styles.tableColthree}>
                 <Text style={styles.textCenter}>
-                 Page No.
+                  Page No.
                 </Text>
               </View>
             </View>
@@ -180,17 +180,17 @@ const MyDocument = () => (
             <View style={styles.tableRow}>
               <View style={styles.tableCol3}>
                 <Text style={styles.tableCellHeader}>
-                 02
+                  02
                 </Text>
               </View>
               <View style={styles.tableCol3}>
                 <Text style={styles.tableCellHeader}>
-                 08.01.23
+                  08.01.23
                 </Text>
               </View>
               <View style={styles.tableCol3}>
                 <Text style={styles.tableCellHeader}>
-                 01
+                  01
                 </Text>
               </View>
             </View>
@@ -292,7 +292,7 @@ const MyDocument = () => (
             <Text>{/* PARTNER AGENCY BUDGET */}</Text>
           </View>
           <View style={styles.tableCol1}>
-          <Text>{/* TOTAL BUDGET */} </Text>
+            <Text>{/* TOTAL BUDGET */} </Text>
           </View>
         </View>
         <View style={styles.tableRow}>
@@ -335,13 +335,13 @@ const MyDocument = () => (
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableCol2}>
-              <Text>JOCELYN B. BARBOSA</Text>
-              <Text>Vice - Chancellor for Accademic Affairs</Text>
-            </View>
-            <View style={styles.tableCol2}>
-              <Text>JOCELYN B. BARBOSA</Text>
-              <Text>Vice - Chancellor for Research and Innovation</Text>
-            </View>
+            <Text>JOCELYN B. BARBOSA</Text>
+            <Text>Vice - Chancellor for Accademic Affairs</Text>
+          </View>
+          <View style={styles.tableCol2}>
+            <Text>JOCELYN B. BARBOSA</Text>
+            <Text>Vice - Chancellor for Research and Innovation</Text>
+          </View>
         </View>
 
         <View style={styles.tableRow}>
@@ -352,16 +352,16 @@ const MyDocument = () => (
         </View>
         <View style={styles.tableRow}>
           <View style={styles.tableCol2}>
-              <Text>CHERRY ANN S. VILLARTE. CPA</Text>
-              <Text>Accountant III</Text>
-            </View>
-            <View style={styles.tableCol2}>
-              <Text>ATTY. DIONEL 0. ALBINA</Text>
-              <Text>Chancellor, USTP CDO</Text>
-            </View>
+            <Text>CHERRY ANN S. VILLARTE. CPA</Text>
+            <Text>Accountant III</Text>
+          </View>
+          <View style={styles.tableCol2}>
+            <Text>ATTY. DIONEL 0. ALBINA</Text>
+            <Text>Chancellor, USTP CDO</Text>
+          </View>
         </View>
 
-        
+
 
         {/* Add more rows as needed */}
       </View>
@@ -372,7 +372,7 @@ const MyDocument = () => (
       {/* kaning view ga contain og logo, ustp, lugar */}
       <View>
         <View>
-            {/* diri ang USTP logo */}
+          {/* diri ang USTP logo */}
         </View>
         <View>
           <View>
@@ -387,40 +387,41 @@ const MyDocument = () => (
           </View>
         </View>
       </View>
-
-      <View style={styles.table1}>
-        <View style={styles.header2}>
-          <View style={styles.tableCol3}>
-            <Text style={styles.tableCellHeader}>
-              Document Code No.
-            </Text>
-          </View> 
+      <View style={styles.tableNormal}>
+        <View style={styles.right}>
+          <View style={styles.rowNormal}>
+            <View style={styles.tableColthree}>
+              <Text style={styles.textCenter}>
+                Document Code No.{/* diri ang USTP logo */}
+              </Text>
+            </View>
+          </View>
         </View>
-
-        <View style={styles.header2}>
-          <View style={styles.tableCol3}>
-            <Text style={styles.tableCellHeader}>
-              FM-USTP-ECRD-01a
-            </Text>
-          </View> 
+        <View style={styles.right}>
+          <View style={styles.rowNormal}>
+            <View style={styles.tableColthree}>
+              <Text style={styles.textCenter}>
+                FM-USTP-ECRD-01a
+              </Text>
+            </View>
+          </View>
         </View>
-
-        <View style={styles.header2}>
-          <View style={styles.tableCol3}>
-            <View style={styles.tableRow}>
-              <View style={styles.tableCol3}>
-                <Text style={styles.tableCellHeader}>
-                 Rev. No.
+        <View style={styles.right}>
+          <View style={styles.tableColthree}>
+            <View style={styles.rowNormal}>
+              <View style={styles.tableColthree}>
+                <Text style={styles.textCenter}>
+                  Rev. No.
                 </Text>
               </View>
-              <View style={styles.tableCol3}>
-                <Text style={styles.tableCellHeader}>
-                 Effective Date
+              <View style={styles.tableColthree}>
+                <Text style={styles.textCenter}>
+                  Effective Date
                 </Text>
               </View>
-              <View style={styles.tableCol3}>
-                <Text style={styles.tableCellHeader}>
-                 Page No.
+              <View style={styles.tableColthree}>
+                <Text style={styles.textCenter}>
+                  Page No.
                 </Text>
               </View>
             </View>
@@ -428,17 +429,17 @@ const MyDocument = () => (
             <View style={styles.tableRow}>
               <View style={styles.tableCol3}>
                 <Text style={styles.tableCellHeader}>
-                 02
+                  02
                 </Text>
               </View>
               <View style={styles.tableCol3}>
                 <Text style={styles.tableCellHeader}>
-                 08.01.23
+                  08.01.23
                 </Text>
               </View>
               <View style={styles.tableCol3}>
                 <Text style={styles.tableCellHeader}>
-                 01
+                  01
                 </Text>
               </View>
             </View>
@@ -715,66 +716,67 @@ const MyDocument = () => (
           </View>
         </View>
 
-        
+
 
         {/* Add more rows as needed */}
       </View>
     </Page>
-    
+
     {/* Third page */}
     <Page style={styles.page}>
       {/* kaning view ga contain og logo, ustp, lugar */}
       <View>
         <View>
-            {/* diri ang USTP logo */}
+          {/* diri ang USTP logo */}
         </View>
         <View>
           <View>
-            <Text style={styles.headerUSTP}>
+            <Text style={styles.header1}>
               University of Science and Technology of Southern Philippines
             </Text>
           </View>
           <View>
-            <Text style={styles.headerCampus}>
+            <Text style={styles.header1}>
               Alubijid | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon
             </Text>
           </View>
         </View>
       </View>
-
-      <View style={styles.table1}>
-        <View style={styles.header2}>
-          <View style={styles.tableCol3}>
-            <Text style={styles.tableCellHeader}>
-              Document Code No.
-            </Text>
-          </View> 
+      <View style={styles.tableNormal}>
+        <View style={styles.right}>
+          <View style={styles.rowNormal}>
+            <View style={styles.tableColthree}>
+              <Text style={styles.textCenter}>
+                Document Code No.{/* diri ang USTP logo */}
+              </Text>
+            </View>
+          </View>
         </View>
-
-        <View style={styles.header2}>
-          <View style={styles.tableCol3}>
-            <Text style={styles.tableCellHeader}>
-              FM-USTP-ECRD-01a
-            </Text>
-          </View> 
+        <View style={styles.right}>
+          <View style={styles.rowNormal}>
+            <View style={styles.tableColthree}>
+              <Text style={styles.textCenter}>
+                FM-USTP-ECRD-01a
+              </Text>
+            </View>
+          </View>
         </View>
-
-        <View style={styles.header2}>
-          <View style={styles.tableCol3}>
-            <View style={styles.tableRow}>
-              <View style={styles.tableCol3}>
-                <Text style={styles.tableCellHeader}>
-                 Rev. No.
+        <View style={styles.right}>
+          <View style={styles.tableColthree}>
+            <View style={styles.rowNormal}>
+              <View style={styles.tableColthree}>
+                <Text style={styles.textCenter}>
+                  Rev. No.
                 </Text>
               </View>
-              <View style={styles.tableCol3}>
-                <Text style={styles.tableCellHeader}>
-                 Effective Date
+              <View style={styles.tableColthree}>
+                <Text style={styles.textCenter}>
+                  Effective Date
                 </Text>
               </View>
-              <View style={styles.tableCol3}>
-                <Text style={styles.tableCellHeader}>
-                 Page No.
+              <View style={styles.tableColthree}>
+                <Text style={styles.textCenter}>
+                  Page No.
                 </Text>
               </View>
             </View>
@@ -782,17 +784,17 @@ const MyDocument = () => (
             <View style={styles.tableRow}>
               <View style={styles.tableCol3}>
                 <Text style={styles.tableCellHeader}>
-                 02
+                  02
                 </Text>
               </View>
               <View style={styles.tableCol3}>
                 <Text style={styles.tableCellHeader}>
-                 08.01.23
+                  08.01.23
                 </Text>
               </View>
               <View style={styles.tableCol3}>
                 <Text style={styles.tableCellHeader}>
-                 01
+                  01
                 </Text>
               </View>
             </View>
@@ -801,69 +803,69 @@ const MyDocument = () => (
 
       </View>
 
-        <View style={styles.tableRow}>
-          <View style={styles.tableCol1}>
-            <Text> </Text>
-            <Text>Monitoring Plan and Schedule</Text>
-          </View>
+      <View style={styles.tableRow}>
+        <View style={styles.tableCol1}>
+          <Text> </Text>
+          <Text>Monitoring Plan and Schedule</Text>
         </View>
-        <View style={styles.tableRow}>
-          <View style={styles.tableCol4}>
-            <Text>Monitoring Phase</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>M & E</Text>
-            <Text>Instrument/Approach</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>Format or Strategy for Data Gathering</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>Schedule</Text>
-          </View>
+      </View>
+      <View style={styles.tableRow}>
+        <View style={styles.tableCol4}>
+          <Text>Monitoring Phase</Text>
         </View>
-        <View style={styles.tableRow}>
-          <View style={styles.tableCol4}>
-            <Text>Before Project Implementation</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>*</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>*</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>*</Text>
-          </View>
+        <View style={styles.tableCol4}>
+          <Text>M & E</Text>
+          <Text>Instrument/Approach</Text>
         </View>
-        <View style={styles.tableRow}>
-          <View style={styles.tableCol4}>
-            <Text>During Project Implementation</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>*</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>*</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>*</Text>
-          </View>
+        <View style={styles.tableCol4}>
+          <Text>Format or Strategy for Data Gathering</Text>
         </View>
-        <View style={styles.tableRow}>
-          <View style={styles.tableCol4}>
-            <Text>After Project Implementation</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>*</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>*</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>*</Text>
-          </View>
+        <View style={styles.tableCol4}>
+          <Text>Schedule</Text>
         </View>
+      </View>
+      <View style={styles.tableRow}>
+        <View style={styles.tableCol4}>
+          <Text>Before Project Implementation</Text>
+        </View>
+        <View style={styles.tableCol4}>
+          <Text>*</Text>
+        </View>
+        <View style={styles.tableCol4}>
+          <Text>*</Text>
+        </View>
+        <View style={styles.tableCol4}>
+          <Text>*</Text>
+        </View>
+      </View>
+      <View style={styles.tableRow}>
+        <View style={styles.tableCol4}>
+          <Text>During Project Implementation</Text>
+        </View>
+        <View style={styles.tableCol4}>
+          <Text>*</Text>
+        </View>
+        <View style={styles.tableCol4}>
+          <Text>*</Text>
+        </View>
+        <View style={styles.tableCol4}>
+          <Text>*</Text>
+        </View>
+      </View>
+      <View style={styles.tableRow}>
+        <View style={styles.tableCol4}>
+          <Text>After Project Implementation</Text>
+        </View>
+        <View style={styles.tableCol4}>
+          <Text>*</Text>
+        </View>
+        <View style={styles.tableCol4}>
+          <Text>*</Text>
+        </View>
+        <View style={styles.tableCol4}>
+          <Text>*</Text>
+        </View>
+      </View>
     </Page>
 
     {/* forth page */}
@@ -871,7 +873,7 @@ const MyDocument = () => (
       {/* kaning view ga contain og logo, ustp, lugar */}
       <View>
         <View>
-            {/* diri ang USTP logo */}
+          {/* diri ang USTP logo */}
         </View>
         <View>
           <View>
@@ -886,40 +888,41 @@ const MyDocument = () => (
           </View>
         </View>
       </View>
-
-      <View style={styles.table1}>
-        <View style={styles.header2}>
-          <View style={styles.tableCol3}>
-            <Text style={styles.tableCellHeader}>
-              Document Code No.
-            </Text>
-          </View> 
+      <View style={styles.tableNormal}>
+        <View style={styles.right}>
+          <View style={styles.rowNormal}>
+            <View style={styles.tableColthree}>
+              <Text style={styles.textCenter}>
+                Document Code No.{/* diri ang USTP logo */}
+              </Text>
+            </View>
+          </View>
         </View>
-
-        <View style={styles.header2}>
-          <View style={styles.tableCol3}>
-            <Text style={styles.tableCellHeader}>
-              FM-USTP-ECRD-01a
-            </Text>
-          </View> 
+        <View style={styles.right}>
+          <View style={styles.rowNormal}>
+            <View style={styles.tableColthree}>
+              <Text style={styles.textCenter}>
+                FM-USTP-ECRD-01a
+              </Text>
+            </View>
+          </View>
         </View>
-
-        <View style={styles.header2}>
-          <View style={styles.tableCol3}>
-            <View style={styles.tableRow}>
-              <View style={styles.tableCol3}>
-                <Text style={styles.tableCellHeader}>
-                 Rev. No.
+        <View style={styles.right}>
+          <View style={styles.tableColthree}>
+            <View style={styles.rowNormal}>
+              <View style={styles.tableColthree}>
+                <Text style={styles.textCenter}>
+                  Rev. No.
                 </Text>
               </View>
-              <View style={styles.tableCol3}>
-                <Text style={styles.tableCellHeader}>
-                 Effective Date
+              <View style={styles.tableColthree}>
+                <Text style={styles.textCenter}>
+                  Effective Date
                 </Text>
               </View>
-              <View style={styles.tableCol3}>
-                <Text style={styles.tableCellHeader}>
-                 Page No.
+              <View style={styles.tableColthree}>
+                <Text style={styles.textCenter}>
+                  Page No.
                 </Text>
               </View>
             </View>
@@ -927,102 +930,103 @@ const MyDocument = () => (
             <View style={styles.tableRow}>
               <View style={styles.tableCol3}>
                 <Text style={styles.tableCellHeader}>
-                 02
+                  02
                 </Text>
               </View>
               <View style={styles.tableCol3}>
                 <Text style={styles.tableCellHeader}>
-                 08.01.23
+                  08.01.23
                 </Text>
               </View>
               <View style={styles.tableCol3}>
                 <Text style={styles.tableCellHeader}>
-                 01
+                  01
                 </Text>
               </View>
             </View>
           </View>
         </View>
+
       </View>
 
-        <View style={styles.tableRow}>
-          <View style={styles.tableCol1}>
-            <Text> </Text>
-            <Text>LOADING OF TRAINERS FOR EXTENSION SERVICES</Text>
-            <Text>Project Title:</Text>
-            <Text>Partner Agency: </Text>
-          </View>
+      <View style={styles.tableRow}>
+        <View style={styles.tableCol1}>
+          <Text> </Text>
+          <Text>LOADING OF TRAINERS FOR EXTENSION SERVICES</Text>
+          <Text>Project Title:</Text>
+          <Text>Partner Agency: </Text>
         </View>
-        <View style={styles.tableRow}>
-          <View style={styles.tableCol4}>
-            <Text>Name of Faculty</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>Training Load</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>Number of Hours</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <View style={styles.tableRow}>
+      </View>
+      <View style={styles.tableRow}>
+        <View style={styles.tableCol4}>
+          <Text>Name of Faculty</Text>
+        </View>
+        <View style={styles.tableCol4}>
+          <Text>Training Load</Text>
+        </View>
+        <View style={styles.tableCol4}>
+          <Text>Number of Hours</Text>
+        </View>
+        <View style={styles.tableCol4}>
+          <View style={styles.tableRow}>
             <View style={styles.tableCol1}>
-            <Text>Number of Hours</Text>
-          </View>
+              <Text>Number of Hours</Text>
             </View>
-            <View style={styles.tableRow}>
+          </View>
+          <View style={styles.tableRow}>
             <View style={styles.tableCol2}>
-            <Text>Number of Hours</Text>
-          </View>
-          <View style={styles.tableCol2}>
-            <Text>Number of Hours</Text>
-          </View>
+              <Text>Number of Hours</Text>
+            </View>
+            <View style={styles.tableCol2}>
+              <Text>Number of Hours</Text>
             </View>
           </View>
-          <View style={styles.tableCol4}>
-            <Text>Schedule</Text>
-          </View>
         </View>
-        <View style={styles.tableRow}>
-          <View style={styles.tableCol4}>
-            <Text>*</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>*</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <Text>*</Text>
-          </View>
-          <View style={styles.tableCol4}>
-            <View style={styles.tableRow}>
-              <View style={styles.tableCol2}>
-                <Text>*</Text>
-              </View>
-              <View style={styles.tableCol2}>
-                <Text>*</Text>
-              </View>
+        <View style={styles.tableCol4}>
+          <Text>Schedule</Text>
+        </View>
+      </View>
+      <View style={styles.tableRow}>
+        <View style={styles.tableCol4}>
+          <Text>*</Text>
+        </View>
+        <View style={styles.tableCol4}>
+          <Text>*</Text>
+        </View>
+        <View style={styles.tableCol4}>
+          <Text>*</Text>
+        </View>
+        <View style={styles.tableCol4}>
+          <View style={styles.tableRow}>
+            <View style={styles.tableCol2}>
+              <Text>*</Text>
+            </View>
+            <View style={styles.tableCol2}>
+              <Text>*</Text>
             </View>
           </View>
-          <View style={styles.tableCol4}>
-            <Text>*</Text>
-          </View>
         </View>
-        <View style={styles.tableRow}>
-          <View style={styles.tableCol1}>
-            <Text>Total</Text>
-          </View>
-          <View style={styles.tableCol}>
-            <Text>*</Text>
-          </View>
+        <View style={styles.tableCol4}>
+          <Text>*</Text>
         </View>
-        <View style={styles.tableRow}>
-          <View style={styles.tableCol1}>
-            <Text> </Text>
-            <Text>Prepared By: </Text>
-            <Text>* </Text>
-            <Text>Approved: </Text>
-            <Text>* </Text>
-          </View>
-        </View> 
+      </View>
+      <View style={styles.tableRow}>
+        <View style={styles.tableCol1}>
+          <Text>Total</Text>
+        </View>
+        <View style={styles.tableCol}>
+          <Text>*</Text>
+        </View>
+      </View>
+      <View style={styles.tableRow}>
+        <View style={styles.tableCol1}>
+          <Text> </Text>
+          <Text>Prepared By: </Text>
+          <Text>* </Text>
+          <Text>Approved: </Text>
+          <Text>* </Text>
+        </View>
+      </View>
     </Page>
   </Document>
 );

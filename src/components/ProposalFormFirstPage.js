@@ -9,6 +9,11 @@ const ProposalFormFirstPage = () => {
 
   const username = storedFirstname + " " + storedLastname;
 
+  const [regions, setRegions] = useState([]);
+  const [province, setProvince] = useState([]);
+  const [city, setCity] = useState([]);
+  const [barangay, setBarangay] = useState([]);
+
   const [formData, setFormData] = useState({
     userID: userID,
     programCategory: "",
@@ -19,7 +24,7 @@ const ProposalFormFirstPage = () => {
     program: "",
     accreditationLevel: "",
     college: "",
-    projectLocationID: 1, //idea ani is: input address, save to db, return id, save in form.
+    projectLocation: "", //idea ani is: input address, save to db, return id, save in form.
     agency: [1], //get agencyID
     targetImplementation: "",
     totalHours: 0,
@@ -128,6 +133,11 @@ const ProposalFormFirstPage = () => {
     budgetPartnerAgency: "",
     programChair: "", //get userid of prog chair. make input selectable
     collegeDean: "", //get userid aning dean
+
+    region: '',
+    province: '',
+    city: '',
+    barangay: '',
   });
 
   const handleActivityChange = (index, event) => {
@@ -158,7 +168,7 @@ const ProposalFormFirstPage = () => {
   };
   
 
-  const handleRowChange = (index, field, value) => {
+  const handleMonitoringPlanScheduleRowChange = (index, field, value) => {
     setFormData((prevData) => {
       const updatedSchedules = prevData.monitoringPlanSchedules.map((row, i) => {
         if (i === index) {
@@ -210,7 +220,6 @@ const ProposalFormFirstPage = () => {
     setFormData({ ...formData, proponents: updatedProponents });
   };
   
-
   const handleObjectiveChange = (index, value) => {
     const updatedObjectives = [...formData.goalsAndObjectives];
     updatedObjectives[index].goalsAndObjectives = value;
@@ -228,14 +237,13 @@ const ProposalFormFirstPage = () => {
     setFormData({ ...formData, evaluationAndMonitorings: updatedEvaluation });
   };
 
-
-    // Function to add a new proponent field
-    const handleButtonClick = () => {
-      setFormData({
-        ...formData,
-        proponents: [...formData.proponents, { proponent: "" }], // Add new object with 'proponent' key
-      });
-    };
+  // Function to add a new proponent field
+  const handleProponentButtonClick = () => {
+    setFormData({
+      ...formData,
+      proponents: [...formData.proponents, { proponent: "" }], // Add new object with 'proponent' key
+    });
+  };
 
   const handleObjectiveButtonClick = () => {
     setFormData({
@@ -254,41 +262,28 @@ const ProposalFormFirstPage = () => {
     }
   };
   
-
   // Function to remove the last proponent field
-  const handleRemoveClick = () => {
+  const handleProponentRemoveClick = () => {
     if (formData.proponents.length > 1) {
       const updatedProponents = formData.proponents.slice(0, -1); // Remove the last proponent
       setFormData({ ...formData, proponents: updatedProponents });
     }
   };
   
-    
-    // Function to handle changes in form inputs
-    // const handleFormChange = (e) => {
-    //   setFormData({ ...formData, [e.target.name]: e.target.value });
-    // };
-    const handleFormChange = (e) => {
-      const { name, value } = e.target;
-    
-      setFormData((prevData) => {
-        const updatedData = { ...prevData, [name]: value };
-    
-        // If beneficiaries are updated, update targetGroups as well
-        if (name === 'beneficiaries') {
-          updatedData.targetGroups[0].targetGroup = value;
-        }
-    
-        return updatedData;
-      });
-    };
-    
-
-    // Calculate and update the total budget whenever USTP or Partner Agency budget changes
-    useEffect(() => {
-      const total = parseFloat(formData.budgetUSTP || 0) + parseFloat(formData.budgetPartnerAgency || 0);
-      setFormData((prevData) => ({ ...prevData, totalBudget: total }));
-    }, [formData.budgetUSTP, formData.budgetPartnerAgency]);
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+  
+    setFormData((prevData) => {
+      const updatedData = { ...prevData, [name]: value };
+  
+      // If beneficiaries are updated, update targetGroups as well
+      if (name === 'beneficiaries') {
+        updatedData.targetGroups[0].targetGroup = value;
+      }
+  
+      return updatedData;
+    });
+  };
 
   // Function to handle form change for budgetary requirements
   const handleBudgetChange = (index, field, value) => {
@@ -330,7 +325,7 @@ const ProposalFormFirstPage = () => {
       // Send POST request
       const response = await axios({
         method: 'post',
-        url: 'https://docquest-production.up.railway.app/create_project',
+        url: 'http://127.0.0.1:8000/create_project',
         headers: {
           'Authorization': `Token ${token}`,
           'Content-Type': 'application/json',
@@ -352,7 +347,74 @@ const ProposalFormFirstPage = () => {
         alert('An error occurred. Please try again later.');
       }
     }
-  };  
+  };
+  
+  // kuha region
+  useEffect(() => {
+    const fetchRegions = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/get_regions');
+        setRegions(response.data);
+      } catch (error) {
+        console.error('Error fetching regions:', error);
+      }
+    };
+
+    fetchRegions();
+  }, []); // Empty dependency array means this will run only once on mount
+
+  useEffect(() => {
+    const fetchProvinces = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/get_provinces');
+        setProvince(response.data);
+      } catch (error) {
+        console.error('Error fetching province:', error);
+      }
+    };
+
+    fetchProvinces();
+  }, []);
+
+  useEffect(() => {
+    const fetchCity = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/get_cities');
+        setCity(response.data);
+      } catch (error) {
+        console.error('Error fetching city:', error);
+      }
+    };
+
+    fetchCity();
+  }, []);
+
+  useEffect(() => {
+    const fetchBarangay = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/get_barangays');
+        setBarangay(response.data);
+      } catch (error) {
+        console.error('Error fetching barangays:', error);
+      }
+    };
+
+    fetchBarangay();
+  }, []);
+
+  // Calculate and update the total budget whenever USTP or Partner Agency budget changes
+  useEffect(() => {
+    const total = parseFloat(formData.budgetUSTP || 0) + parseFloat(formData.budgetPartnerAgency || 0);
+    setFormData((prevData) => ({ ...prevData, totalBudget: total }));
+  }, [formData.budgetUSTP, formData.budgetPartnerAgency]); // Only run when these values change
+
+  const handleBudgetFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   return (
     <div className="flex flex-col mt-14 px-10">
@@ -476,13 +538,13 @@ const ProposalFormFirstPage = () => {
                 <div className="flex space-x-2 mt-2">
                   <button 
                     type="button" // Prevent default form submission
-                    onClick={handleButtonClick} 
+                    onClick={handleProponentButtonClick} 
                     className="bg-blue-500 text-white px-4 py-2 rounded">
                     Add Proponent
                   </button>
                   <button 
                     type="button" // Prevent default form submission
-                    onClick={handleRemoveClick}
+                    onClick={handleProponentRemoveClick}
                     className="bg-red-500 text-white px-4 py-2 rounded">
                     Remove Proponent
                   </button>
@@ -494,15 +556,14 @@ const ProposalFormFirstPage = () => {
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block mb-2 font-semibold">PROGRAM</label>
-              <select
+              <input
                 name="program"
                 value={formData.program}
-                onChange={handleFormChange}
+                onChange={(e) => handleFormChange(e.target.name, e.target.value.toUpperCase())}
+                type="text"
+                placeholder="Ex: BSIT"
                 className="w-full p-2 border border-gray-300 rounded"
-              >
-                <option value="" disabled hidden>Select</option>
-                <option value="sample program">sample program</option>
-              </select>
+              />
             </div>
 
             <div>
@@ -516,21 +577,24 @@ const ProposalFormFirstPage = () => {
                 className="w-full p-2 border border-gray-300 rounded"
               >
                 <option value="" disabled hidden>Select</option>
-                <option value="sample level">sample LEVEL</option>
+                <option value="I">I</option>
+                <option value="II">II</option>
+                <option value="III">III</option>
+                <option value="IV">IV</option>
+                <option value="V">V</option>
               </select>
             </div>
 
             <div>
               <label className="block mb-2 font-semibold">COLLEGE</label>
-              <select
+              <input
                 name="college"
                 value={formData.college}
-                onChange={handleFormChange}
+                onChange={(e) => handleFormChange(e.target.name, e.target.value.toUpperCase())}
+                type="text"
+                placeholder="Ex: CITC"
                 className="w-full p-2 border border-gray-300 rounded"
-              >
-                <option value="" disabled hidden>Select</option>
-                <option value="CITC">CITC</option>
-              </select>
+              />
             </div>
           </div>
 
@@ -604,7 +668,7 @@ const ProposalFormFirstPage = () => {
               <input
                 name="budgetUSTP"
                 value={formData.budgetUSTP}
-                onChange={handleFormChange}
+                onChange={handleBudgetFormChange}
                 type="number"
                 placeholder="Enter Amount"
                 className="w-full p-2 border border-gray-300 rounded"
@@ -616,7 +680,7 @@ const ProposalFormFirstPage = () => {
               <input
                 name="budgetPartnerAgency"
                 value={formData.budgetPartnerAgency}
-                onChange={handleFormChange}
+                onChange={handleBudgetFormChange}
                 type="number"
                 placeholder="Enter Amount"
                 className="w-full p-2 border border-gray-300 rounded"
@@ -654,7 +718,12 @@ const ProposalFormFirstPage = () => {
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option>Select...</option>
+                <option value="" disabled hidden>Select</option>
+                {regions.map((region) => (
+                  <option key={region.regionID} value={region.regionID}>
+                    {region.region}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -666,7 +735,12 @@ const ProposalFormFirstPage = () => {
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option>Select...</option>
+                <option value="" disabled hidden>Select</option>
+                {province.map((province) => (
+                  <option key={province.provinceID} value={province.provinceID}>
+                    {province.province}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -678,7 +752,12 @@ const ProposalFormFirstPage = () => {
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option>Select...</option>
+                <option value="" disabled hidden>Select</option>
+                {city.map((city) => (
+                  <option key={city.cityID} value={city.cityID}>
+                    {city.city}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -690,7 +769,12 @@ const ProposalFormFirstPage = () => {
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option>Select...</option>
+                <option value="" disabled hidden>Select</option>
+                {barangay.map((barangay) => (
+                  <option key={barangay.barangayID} value={barangay.barangayID}>
+                    {barangay.barangay}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -701,7 +785,7 @@ const ProposalFormFirstPage = () => {
               <label className="block mb-2 font-semibold">Address</label>
               <input
                 name="address"
-                value={formData.projectLocationID}
+                value={formData.projectLocation}
                 onChange={handleFormChange}
                 type="number"
                 className="w-full p-2 border border-gray-300 rounded"
@@ -1005,7 +1089,7 @@ const ProposalFormFirstPage = () => {
                       <textarea
                         name="approach"
                         value={row.approach}
-                        onChange={(e) => handleRowChange(index, "approach", e.target.value)}
+                        onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "approach", e.target.value)}
                         className="w-full p-1 border rounded"
                         rows="2"
                         placeholder="Enter M&E Instrument/Approach"
@@ -1015,7 +1099,7 @@ const ProposalFormFirstPage = () => {
                       <textarea
                         name="dataGatheringStrategy"
                         value={row.dataGatheringStrategy}
-                        onChange={(e) => handleRowChange(index, "dataGatheringStrategy", e.target.value)}
+                        onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "dataGatheringStrategy", e.target.value)}
                         className="w-full p-1 border rounded"
                         rows="2"
                         placeholder="Enter Strategy for Data Gathering"
@@ -1025,7 +1109,7 @@ const ProposalFormFirstPage = () => {
                       <textarea
                         name="schedule"
                         value={row.schedule}
-                        onChange={(e) => handleRowChange(index, "schedule", e.target.value)}
+                        onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "schedule", e.target.value)}
                         className="w-full p-1 border rounded"
                         rows="2"
                         placeholder="Enter Schedule"

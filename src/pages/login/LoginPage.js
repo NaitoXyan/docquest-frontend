@@ -23,7 +23,7 @@ const LoginPage = () => {
 
     try {
       // First request: Login to get the token
-      const loginResponse = await axios.post('https://docquest-production.up.railway.app/auth/token/login/', {
+      const loginResponse = await axios.post('http://127.0.0.1:8000/auth/token/login/', {
         email,
         password,
       });
@@ -33,7 +33,7 @@ const LoginPage = () => {
       localStorage.setItem('token', token);
 
       // Second request: Get user details
-      const userResponse = await axios.get('https://docquest-production.up.railway.app/name_and_roles', {
+      const userResponse = await axios.get('http://127.0.0.1:8000/name_and_roles', {
         headers: {
           'Authorization': `Token ${token}`,
         },

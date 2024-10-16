@@ -13,6 +13,7 @@ const ProposalFormFirstPage = () => {
   const [province, setProvince] = useState([]);
   const [city, setCity] = useState([]);
   const [barangay, setBarangay] = useState([]);
+  const [error, setError] = useState([]);
 
   const [formData, setFormData] = useState({
     userID: userID,
@@ -162,11 +163,12 @@ const ProposalFormFirstPage = () => {
     });
   };
 
-  const removeActivityRow = (index) => {
-    const updatedActivities = formData.projectActivities.filter((_, i) => i !== index);
-    setFormData({ ...formData, projectActivities: updatedActivities });
-  };
-  
+  const removeLastActivityRow = () => {
+    if (formData.projectActivities.length > 1) {
+      const projectActivities = formData.projectActivities.slice(0, -1);
+      setFormData({ ...formData, projectActivities: projectActivities });
+    }
+  };  
 
   const handleMonitoringPlanScheduleRowChange = (index, field, value) => {
     setFormData((prevData) => {
@@ -365,42 +367,64 @@ const ProposalFormFirstPage = () => {
 
   useEffect(() => {
     const fetchProvinces = async () => {
+      if (!formData.region) {
+        // If no region is selected, show error and don't fetch provinces
+        setError('Please select a region first.');
+        return;
+      }
+
       try {
-        const response = await axios.get('http://127.0.0.1:8000/get_provinces');
+        const response = await axios.get(`http://127.0.0.1:8000/get_provinces/${formData.region}`);
         setProvince(response.data);
+        setError(''); // Clear error when provinces are successfully fetched
       } catch (error) {
         console.error('Error fetching province:', error);
+        setError('Error fetching province data.');
       }
     };
 
     fetchProvinces();
-  }, []);
+  }, [formData.region]); // Re-run when formData.region changes
 
   useEffect(() => {
     const fetchCity = async () => {
+      if (!formData.province) {
+        setError('Please select a province first.');
+        return;
+      }
+
       try {
-        const response = await axios.get('http://127.0.0.1:8000/get_cities');
+        const response = await axios.get(`http://127.0.0.1:8000/get_cities/${formData.province}`);
         setCity(response.data);
+        setError('');
       } catch (error) {
         console.error('Error fetching city:', error);
+        setError('Error fetching province data.');
       }
     };
 
     fetchCity();
-  }, []);
+  }, [formData.province]);
 
   useEffect(() => {
     const fetchBarangay = async () => {
+      if (!formData.city) {
+        setError('Please select a city first');
+        return;
+      }
+
       try {
-        const response = await axios.get('http://127.0.0.1:8000/get_barangays');
+        const response = await axios.get(`http://127.0.0.1:8000/get_barangays/${formData.city}`);
         setBarangay(response.data);
+        setError('');
       } catch (error) {
         console.error('Error fetching barangays:', error);
+        setError('Error fetching province data.');
       }
     };
 
     fetchBarangay();
-  }, []);
+  }, [formData.city]);
 
   // Calculate and update the total budget whenever USTP or Partner Agency budget changes
   useEffect(() => {
@@ -545,7 +569,11 @@ const ProposalFormFirstPage = () => {
                   <button 
                     type="button" // Prevent default form submission
                     onClick={handleProponentRemoveClick}
-                    className="bg-red-500 text-white px-4 py-2 rounded">
+                    className={
+                      formData.goalsAndObjectives.length === 1
+                        ? "bg-gray-400 text-gray-300 px-4 py-2 rounded"
+                        : "bg-red-500 text-white px-4 py-2 rounded"
+                    }>
                     Remove Proponent
                   </button>
                 </div>
@@ -733,9 +761,14 @@ const ProposalFormFirstPage = () => {
                 name="province"
                 value={formData.province}
                 onChange={handleFormChange}
+                disabled={!formData.region}//disabled till region selected
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option value="" disabled hidden>Select</option>
+                {!formData.region ? (
+                  <option value="" disabled>Select region first</option>
+                ) : (
+                  <option value="" disabled hidden>Select</option>
+                )}
                 {province.map((province) => (
                   <option key={province.provinceID} value={province.provinceID}>
                     {province.province}
@@ -750,9 +783,14 @@ const ProposalFormFirstPage = () => {
                 name="city"
                 value={formData.city}
                 onChange={handleFormChange}
+                disabled={!formData.province}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option value="" disabled hidden>Select</option>
+                {!formData.province ? (
+                  <option value="" disabled>Select province first</option>
+                ) : (
+                  <option value="" disabled hidden>Select</option>
+                )}
                 {city.map((city) => (
                   <option key={city.cityID} value={city.cityID}>
                     {city.city}
@@ -767,9 +805,14 @@ const ProposalFormFirstPage = () => {
                 name="barangay"
                 value={formData.barangay}
                 onChange={handleFormChange}
+                disabled={!formData.city}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option value="" disabled hidden>Select</option>
+                {!formData.city ? (
+                  <option value="" disabled>Select city first</option>
+                ) : (
+                  <option value="" disabled hidden>Select</option>
+                )}
                 {barangay.map((barangay) => (
                   <option key={barangay.barangayID} value={barangay.barangayID}>
                     {barangay.barangay}
@@ -787,7 +830,7 @@ const ProposalFormFirstPage = () => {
                 name="address"
                 value={formData.projectLocation}
                 onChange={handleFormChange}
-                type="number"
+                type="text"
                 className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
@@ -822,7 +865,7 @@ const ProposalFormFirstPage = () => {
 
               {/* Render input fields for each objective */}
               {formData.goalsAndObjectives.map((goal, index) => (
-                <input
+                <textarea
                   key={index} // Use index as key for simplicity; in production, use a unique ID
                   name={`objective-${index}`} // Dynamic name for each input
                   value={goal.goalsAndObjectives}
@@ -843,7 +886,11 @@ const ProposalFormFirstPage = () => {
                 <button
                   type="button" // Prevent default form submission
                   onClick={handleObjectiveRemoveClick}
-                  className="bg-red-500 text-white px-4 py-2 rounded"
+                  className={
+                    formData.goalsAndObjectives.length === 1
+                      ? "bg-gray-400 text-gray-300 px-4 py-2 rounded"
+                      : "bg-red-500 text-white px-4 py-2 rounded"
+                  }
                 >
                   Remove Objective
                 </button>
@@ -919,30 +966,30 @@ const ProposalFormFirstPage = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                 ></input>
               </div>
-
-              {/* Remove Button */}
-              {formData.projectActivities.length > 1 && (
-                <div className="col-span-4 flex justify-end">
-                  <button
-                    type="button"
-                    onClick={() => removeActivityRow(index)}
-                    className="text-red-500 hover:underline mt-2"
-                  >
-                    - Remove Row
-                  </button>
-                </div>
-              )}
             </div>
           ))}
 
-          {/* Add Button */}
-          <div className="flex justify-end mt-4">
+          {/* Add Button and remove bttn*/}
+          <div className="flex space-x-2 mt-2">
             <button
               type="button"
               onClick={addActivityRow}
-              className="text-green-500 hover:underline"
+              className="mt-4 p-2 bg-blue-500 text-white rounded"
             >
-              + Add Row
+              Add Row
+            </button>
+
+            <button
+              type="button"
+              disabled={formData.projectActivities.length === 1}
+              onClick={removeLastActivityRow} // Function to remove the last row
+              className={
+                formData.projectActivities.length === 1
+                 ? "mt-4 p-2 bg-gray-400 text-gray-200 rounded"
+                 : "mt-4 p-2 bg-red-500 text-white rounded"
+              }
+            >
+              Remove Last Row
             </button>
           </div>
         </div>

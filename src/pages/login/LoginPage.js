@@ -46,20 +46,20 @@ const LoginPage = () => {
       localStorage.setItem('firstname', JSON.stringify(firstname));
       localStorage.setItem('lastname', JSON.stringify(lastname));
 
-      const rolesList = roles.map(roleObj => roleObj.role);
+      const rolesList = roles.map(roleObj => roleObj.code);
       localStorage.setItem('roles', JSON.stringify(rolesList));
 
       // Navigate based on roles
-      if (rolesList.includes('regular')) {
+      if (rolesList.includes('rglr')) {
         navigate('/user');
       } else if (
-        rolesList.includes('program chair') || 
-        rolesList.includes('college dean') ||
-        rolesList.includes('ECR director') ||
-        rolesList.includes('VCAA') ||
-        rolesList.includes('VCRI') ||
-        rolesList.includes('accountant') ||
-        rolesList.includes('chancellor')
+        rolesList.includes('prch') || 
+        rolesList.includes('cldn') ||
+        rolesList.includes('ecrd') ||
+        rolesList.includes('vcaa') ||
+        rolesList.includes('vcri') ||
+        rolesList.includes('acnt') ||
+        rolesList.includes('cclr')
       ) {
         navigate('/signatory');
       }

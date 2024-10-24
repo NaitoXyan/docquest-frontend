@@ -1,36 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, NavLink } from "react-router-dom";
 
 function ProjLeadSidebar({ onFilterChange }) {
     const [isSubMenuVisible, setIsSubMenuVisible] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
 
-    const toggleSubMenu = () => {
-        setIsSubMenuVisible(!isSubMenuVisible);
-    };
+    // Determine if the current path is under Projects Management
+    const isProjectsManagementActive = location.pathname.startsWith("/create_proposal") ||
+                                        location.pathname.startsWith("/approved") ||
+                                        location.pathname.startsWith("/ongoing") ||
+                                        location.pathname.startsWith("/disapproved");
 
-    const handleLogout = () => {
+    useEffect(() => {
+        if (isProjectsManagementActive) {
+            setIsSubMenuVisible(true);
+        } else {
+            setIsSubMenuVisible(false);
+        }
+    }, [isProjectsManagementActive]);
+
+    const handleLogout = async () => {
         const token = localStorage.getItem('token');
-        console.log(token)
+        console.log(token);
         
-        axios({
-            method: 'post',
-            url: 'https://docquest-production.up.railway.app/auth/token/logout/',
-            headers: {
-              'Authorization': `Token ${token}`,
-            },
-            data: {}
-          });
+        try {
+            await axios.post('https://docquest-production.up.railway.app/auth/token/logout/', {}, {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                },
+            });
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
 
         localStorage.removeItem('token');
-        
         navigate('/login');
-      };
-
-      const handleNavigation = (path) => {
-        navigate(path);
-      };
+    };
 
     return (
         <div className="w-1/5 bg-vlu text-white h-screen fixed z-50">
@@ -40,38 +47,112 @@ function ProjLeadSidebar({ onFilterChange }) {
             <nav>
                 <ul>
                     <li>
-                        {/* <a href="#" className="text-lg font-bold block px-6 py-3 text-yellow-500">Dashboard</a> */}
-                        <button className="text-lg font-bold block px-6 py-3 text-yellow-500" onClick={() => handleNavigation('/user')}>Dashboard</button>
+                        <NavLink
+                            to="/user"
+                            className={({ isActive }) =>
+                                `text-lg block px-6 py-3 ${
+                                    isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                }`
+                            }
+                        >
+                            Dashboard
+                        </NavLink>
                     </li>
                     <li>
-                        <button onClick={toggleSubMenu} className="text-lg w-full text-left block px-6 py-3 hover:text-yellow-500 focus:outline-none">
+                        <button
+                            onClick={() => setIsSubMenuVisible(!isSubMenuVisible)}
+                            className={`text-lg w-full text-left block px-6 py-3 ${
+                                isProjectsManagementActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                            } focus:outline-none`}
+                        >
                             Projects Management
                         </button>
                         <ul className={`${isSubMenuVisible ? '' : 'hidden'} bg-indigo-900`}>
-                            {/* <li><a href="#" className="block px-6 py-3 hover:text-yellow-500">Create Proposal</a></li> */}
-                            <button className="block px-6 py-3 hover:text-yellow-500" onClick={() => handleNavigation('/create_proposal')}>Create Proposal</button>
-                            {/* Add onClick handlers to change the filter based on the clicked item */}
                             <li>
-                                <a href="#" className="block px-6 py-3 hover:text-yellow-500" onClick={() => onFilterChange('Approved')}>Approved</a>
+                                <NavLink
+                                    to="/create_proposal"
+                                    className={({ isActive }) =>
+                                        `block px-6 py-3 ${
+                                            isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                        }`
+                                    }
+                                >
+                                    Create Proposal
+                                </NavLink>
                             </li>
                             <li>
-                                <a href="#" className="block px-6 py-3 hover:text-yellow-500" onClick={() => onFilterChange('Ongoing')}>Ongoing</a>
+                                <NavLink
+                                    to="/approved"
+                                    className={({ isActive }) =>
+                                        `block px-6 py-3 ${
+                                            isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                        }`
+                                    }
+                                    onClick={() => onFilterChange('Approved')}
+                                >
+                                    Approved
+                                </NavLink>
                             </li>
                             <li>
-                                <a href="#" className="block px-6 py-3 hover:text-yellow-500" onClick={() => onFilterChange('Disapproved')}>Disapproved</a>
+                                <NavLink
+                                    to="/ongoing"
+                                    className={({ isActive }) =>
+                                        `block px-6 py-3 ${
+                                            isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                        }`
+                                    }
+                                    onClick={() => onFilterChange('Ongoing')}
+                                >
+                                    Ongoing
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
+                                    to="/disapproved"
+                                    className={({ isActive }) =>
+                                        `block px-6 py-3 ${
+                                            isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                        }`
+                                    }
+                                    onClick={() => onFilterChange('Disapproved')}
+                                >
+                                    Disapproved
+                                </NavLink>
                             </li>
                         </ul>
                     </li>
                     <li>
-                        <button className="text-lg block px-6 py-3 hover:text-yellow-500" onClick={() => handleNavigation('/load_trainer')}>Load Trainer</button>
+                        <NavLink
+                            to="/load_trainer"
+                            className={({ isActive }) =>
+                                `text-lg block px-6 py-3 ${
+                                    isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                }`
+                            }
+                        >
+                            Load Trainer
+                        </NavLink>
                     </li>
                     <li>
-                        <a href="#" className="text-lg block px-6 py-3 hover:text-yellow-500">Create MOA/MOU</a>
+                        <NavLink
+                            to="/create_moa_mou" // Update this path as per your routing
+                            className={({ isActive }) =>
+                                `text-lg block px-6 py-3 ${
+                                    isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                }`
+                            }
+                        >
+                            Create MOA/MOU
+                        </NavLink>
                     </li>
-                    <button className="text-lg block px-6 py-3 hover:text-yellow-500" onClick={handleLogout}>Log out</button>
-                    {/* <li>
-                        <a href="#" className="text-lg block px-6 py-3 hover:text-yellow-500">Log out</a>
-                    </li> */}
+                    <li>
+                        <button
+                            onClick={handleLogout}
+                            className="text-lg block px-6 py-3 hover:text-yellow-500 w-full text-left"
+                        >
+                            Log out
+                        </button>
+                    </li>
                 </ul>
             </nav>
         </div>

@@ -22,6 +22,7 @@ import ProjLeadLoadTrainer from "./pages/projectlead/ProjLeadLoadTrainer";
 import MyDocument from "./components/GeneratePdf";
 import { PDFViewer } from "@react-pdf/renderer";
 import ProposalFormSecondPage from "./components/ProposalFormSecondPage";
+import ProjLeadProjectStatus from "./pages/projectlead/ProjLeadProjectStatus";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
       <Route path="/create_proposal" element={ <ProjLeadProposalForm /> } />
       <Route path="/profile" element={ <ProjLeadProfilePage /> } />
       <Route path="/load_trainer" element={ <ProjLeadLoadTrainer /> } />
+      <Route path="/project_status" element={ <ProjLeadProjectStatus /> } />
 
       {/* create proposal routes */}
       <Route path="/proposal_form_second_page" element={ <ProposalFormSecondPage /> }/>

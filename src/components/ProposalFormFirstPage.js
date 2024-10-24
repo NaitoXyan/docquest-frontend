@@ -1,11 +1,19 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 
 const ProposalFormFirstPage = () => {
-  const userID = JSON.parse(localStorage.getItem('userID'));
+  const userID = localStorage.getItem('userid');
+  const token = localStorage.getItem('token');
   const storedFirstname = JSON.parse(localStorage.getItem('firstname'));
   const storedLastname = JSON.parse(localStorage.getItem('lastname'));
 
   const username = storedFirstname + " " + storedLastname;
+
+  const [regions, setRegions] = useState([]);
+  const [province, setProvince] = useState([]);
+  const [city, setCity] = useState([]);
+  const [barangay, setBarangay] = useState([]);
+  const [error, setError] = useState([]);
 
   const [formData, setFormData] = useState({
     userID: userID,
@@ -17,22 +25,41 @@ const ProposalFormFirstPage = () => {
     program: "",
     accreditationLevel: "",
     college: "",
-    addressID: "", //idea ani is: input address, save to db, return id, save in form.
-    targetDateImplementation: "",
-    totalHours: "",
+    projectLocation: "", //idea ani is: input address, save to db, return id, save in form.
+    agency: [1], //get agencyID
+    targetImplementation: "",
+    totalHours: 0,
     background: "",
     projectComponent: "",
     beneficiaries: "",
-    totalBudget: "",
+    totalBudget: 0,
 
-    goalsAndObjectives: [''],
+    targetGroups: [{
+      targetGroup: ""
+    }],
 
-    budgetaryRequirements: [
+    goalsAndObjectives: [
+      { goalsAndObjectives: "" }
+    ],
+
+    monitoringPlanSchedules: [
       {
-        itemName: "",
-        ustpAmount: "",
-        partnerAmount: "",
-        totalAmount: "",
+          approach: "",
+          dataGatheringStrategy: "",
+          schedule: "",
+          implementationPhase: "Before Implementation Phase"
+      },
+      {
+          approach: "",
+          dataGatheringStrategy: "",
+          schedule: "",
+          implementationPhase: "During Project Implementation"
+      },
+      {
+          approach: "",
+          dataGatheringStrategy: "",
+          schedule: "",
+          implementationPhase: "After Project Implementation"
       }
     ],
 
@@ -67,42 +94,83 @@ const ProposalFormFirstPage = () => {
       }
     ],
 
-    monitoringPlanSchedules: [
+    budgetaryRequirements: [
       {
-          approach: "",
-          dataGatheringStrategy: "",
-          schedule: "",
-          implementationPhase: "Before Implementation Phase"
-      },
-      {
-          approach: "",
-          dataGatheringStrategy: "",
-          schedule: "",
-          implementationPhase: "During Project Implementation"
-      },
-      {
-          approach: "",
-          dataGatheringStrategy: "",
-          schedule: "",
-          implementationPhase: "After Project Implementation"
+        itemName: "",
+        ustpAmount: 0,
+        partnerAmount: 0,
+        totalAmount: 0,
       }
     ],
 
-    projectObjective: "",
-    involved: "",
-    targetDate: "",
-    personResponsible: "",
+    projectActivities: [
+      {
+        objective: "",
+        involved: "",
+        targetDate: "",
+        personResponsible: ""
+      }
+    ],
 
+    loadingOfTrainers: [
+      {
+        faculty: "",
+        trainingLoad: "",
+        hours: 0,
+        ustpBudget: 0,
+        agencyBudget: 0,
+        totalBudgetRequirement: 0,
+      }
+    ],
+
+    signatories: [{
+      userID: 2,
+      approvalStatus: false
+    }],
+
+    proponents: [{ proponent: "" }],
+    
     budgetUSTP: "",
     budgetPartnerAgency: "",
-
-    proponents: [''],
-    partnerAgency: "", //get agencyID
     programChair: "", //get userid of prog chair. make input selectable
     collegeDean: "", //get userid aning dean
+
+    region: '',
+    province: '',
+    city: '',
+    barangay: '',
   });
 
-  const handleRowChange = (index, field, value) => {
+  const handleActivityChange = (index, event) => {
+    const { name, value } = event.target;
+    const updatedActivities = [...formData.projectActivities];
+    updatedActivities[index][name] = value;
+    setFormData({ ...formData, projectActivities: updatedActivities });
+  };
+
+  const addActivityRow = () => {
+    setFormData({
+      ...formData,
+      projectActivities: [
+        ...formData.projectActivities,
+        {
+          objective: "",
+          involved: "",
+          targetDate: "",
+          personResponsible: ""
+        }
+      ]
+    });
+  };
+
+  const removeLastActivityRow = () => {
+    if (formData.projectActivities.length > 1) {
+      const projectActivities = formData.projectActivities.slice(0, -1);
+      setFormData({ ...formData, projectActivities: projectActivities });
+    }
+  };  
+
+  const handleMonitoringPlanScheduleRowChange = (index, field, value) => {
     setFormData((prevData) => {
       const updatedSchedules = prevData.monitoringPlanSchedules.map((row, i) => {
         if (i === index) {
@@ -114,22 +182,52 @@ const ProposalFormFirstPage = () => {
     });
   };
   
+  const handleTrainerChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedTrainers = formData.loadingOfTrainers.map((trainer, i) => {
+      if (i === index) {
+        let updatedTrainer = { ...trainer, [name]: value };
+  
+        // Automatically calculate totalBudgetRequirement when budget values change
+        if (name === 'ustpBudget' || name === 'agencyBudget') {
+          updatedTrainer.totalBudgetRequirement = parseFloat(updatedTrainer.ustpBudget) + parseFloat(updatedTrainer.agencyBudget);
+        }
+        return updatedTrainer;
+      }
+      return trainer;
+    });
+  
+    setFormData({ ...formData, loadingOfTrainers: updatedTrainers });
+  };
+  
+  const addTrainerRow = () => {
+    setFormData({
+      ...formData,
+      loadingOfTrainers: [
+        ...formData.loadingOfTrainers,
+        { faculty: "", trainingLoad: "", hours: 0, ustpBudget: 0, agencyBudget: 0, totalBudgetRequirement: 0 }
+      ]
+    });
+  };
 
+  const removeTrainerRow = (index) => {
+    const updatedTrainers = formData.loadingOfTrainers.filter((_, i) => i !== index);
+    setFormData({ ...formData, loadingOfTrainers: updatedTrainers });
+  };
     
   // Function to handle changes in proponents inputs
   const handleProponentChange = (index, value) => {
-    const newProponents = [...formData.proponents];
-    newProponents[index] = value;
-    setFormData({ ...formData, proponents: newProponents });
+    const updatedProponents = [...formData.proponents];
+    updatedProponents[index].proponent = value; // Update the 'proponent' field
+    setFormData({ ...formData, proponents: updatedProponents });
   };
-
-    // Function to handle changes in objectives inputs
+  
   const handleObjectiveChange = (index, value) => {
-    const newObjectives = [...formData.goalsAndObjectives];
-    newObjectives[index] = value;
-    setFormData({ ...formData, goalsAndObjectives: newObjectives });
+    const updatedObjectives = [...formData.goalsAndObjectives];
+    updatedObjectives[index].goalsAndObjectives = value;
+    setFormData({ ...formData, goalsAndObjectives: updatedObjectives });
   };
-
+  
   // Function to handle form change for each row
   const handleEvaluationChange = (index, field, value) => {
     const updatedEvaluation = formData.evaluationAndMonitorings.map((item, i) => {
@@ -141,53 +239,53 @@ const ProposalFormFirstPage = () => {
     setFormData({ ...formData, evaluationAndMonitorings: updatedEvaluation });
   };
 
-
-    // Function to add a new proponent field
-  const handleButtonClick = () => {
+  // Function to add a new proponent field
+  const handleProponentButtonClick = () => {
     setFormData({
-    ...formData,
-    proponents: [...formData.proponents, ''],
+      ...formData,
+      proponents: [...formData.proponents, { proponent: "" }], // Add new object with 'proponent' key
     });
   };
 
-  // Function to add a new objectives field
   const handleObjectiveButtonClick = () => {
     setFormData({
-    ...formData,
-    goalsAndObjectives: [...formData.goalsAndObjectives, ''],
-    });
-  };
-
-  // Function to remove the last proponent field
-  const handleRemoveClick = () => {
-    if (formData.proponents.length > 1) {
-    setFormData({
       ...formData,
-      proponents: formData.proponents.slice(0, formData.proponents.length - 1),
+      goalsAndObjectives: [
+        ...formData.goalsAndObjectives,
+        { goalsAndObjectives: "" }
+      ]
     });
-    }
   };
-
-  // Function to remove the last proponent field
+  
   const handleObjectiveRemoveClick = () => {
     if (formData.goalsAndObjectives.length > 1) {
-    setFormData({
-      ...formData,
-      goalsAndObjectives: formData.goalsAndObjectives.slice(0, formData.goalsAndObjectives.length - 1),
-    });
+      const updatedObjectives = formData.goalsAndObjectives.slice(0, -1);
+      setFormData({ ...formData, goalsAndObjectives: updatedObjectives });
     }
   };
-    
-    // Function to handle changes in form inputs
-    const handleFormChange = (e) => {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    // Calculate and update the total budget whenever USTP or Partner Agency budget changes
-    useEffect(() => {
-      const total = parseFloat(formData.budgetUSTP || 0) + parseFloat(formData.budgetPartnerAgency || 0);
-      setFormData((prevData) => ({ ...prevData, totalBudget: total }));
-    }, [formData.budgetUSTP, formData.budgetPartnerAgency]);
+  
+  // Function to remove the last proponent field
+  const handleProponentRemoveClick = () => {
+    if (formData.proponents.length > 1) {
+      const updatedProponents = formData.proponents.slice(0, -1); // Remove the last proponent
+      setFormData({ ...formData, proponents: updatedProponents });
+    }
+  };
+  
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+  
+    setFormData((prevData) => {
+      const updatedData = { ...prevData, [name]: value };
+  
+      // If beneficiaries are updated, update targetGroups as well
+      if (name === 'beneficiaries') {
+        updatedData.targetGroups[0].targetGroup = value;
+      }
+  
+      return updatedData;
+    });
+  };
 
   // Function to handle form change for budgetary requirements
   const handleBudgetChange = (index, field, value) => {
@@ -211,12 +309,135 @@ const ProposalFormFirstPage = () => {
     });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  
+    // Create a copy of formData
+    const modifiedData = { ...formData };
+  
+    // Remove the specific fields
+    delete modifiedData.budgetUSTP;
+    delete modifiedData.budgetPartnerAgency;
+    delete modifiedData.programChair;
+    delete modifiedData.collegeDean;
+  
+    console.log("Modified Data to be sent:", modifiedData); // Check the structure
+  
+    try {
+      // Send POST request
+      const response = await axios({
+        method: 'post',
+        url: 'http://127.0.0.1:8000/create_project',
+        headers: {
+          'Authorization': `Token ${token}`,
+          'Content-Type': 'application/json',
+        },
+        data: modifiedData, // Axios automatically stringifies the object to JSON
+      });
+  
+      // Handle successful response
+      console.log('Successfully submitted:', response.data); // Response data from the server
+    } catch (error) {
+      // Handle errors, particularly validation errors from Django
+      if (error.response) {
+        // Server responded with a status other than 200
+        console.error('Error:', error.response.data); // Display specific error messages
+        alert('Submission failed. Please check your input.'); // You can provide better user feedback here
+      } else {
+        // Other errors (network issues, etc.)
+        console.error('Request failed:', error.message);
+        alert('An error occurred. Please try again later.');
+      }
+    }
+  };
+  
+  // kuha region
+  useEffect(() => {
+    const fetchRegions = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/get_regions');
+        setRegions(response.data);
+      } catch (error) {
+        console.error('Error fetching regions:', error);
+      }
+    };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent page refresh
-    console.log("Form Data Submitted:", formData);
-    // Further submit logic like API calls can be added here
+    fetchRegions();
+  }, []); // Empty dependency array means this will run only once on mount
+
+  useEffect(() => {
+    const fetchProvinces = async () => {
+      if (!formData.region) {
+        // If no region is selected, show error and don't fetch provinces
+        setError('Please select a region first.');
+        return;
+      }
+
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/get_provinces/${formData.region}`);
+        setProvince(response.data);
+        setError(''); // Clear error when provinces are successfully fetched
+      } catch (error) {
+        console.error('Error fetching province:', error);
+        setError('Error fetching province data.');
+      }
+    };
+
+    fetchProvinces();
+  }, [formData.region]); // Re-run when formData.region changes
+
+  useEffect(() => {
+    const fetchCity = async () => {
+      if (!formData.province) {
+        setError('Please select a province first.');
+        return;
+      }
+
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/get_cities/${formData.province}`);
+        setCity(response.data);
+        setError('');
+      } catch (error) {
+        console.error('Error fetching city:', error);
+        setError('Error fetching province data.');
+      }
+    };
+
+    fetchCity();
+  }, [formData.province]);
+
+  useEffect(() => {
+    const fetchBarangay = async () => {
+      if (!formData.city) {
+        setError('Please select a city first');
+        return;
+      }
+
+      try {
+        const response = await axios.get(`http://127.0.0.1:8000/get_barangays/${formData.city}`);
+        setBarangay(response.data);
+        setError('');
+      } catch (error) {
+        console.error('Error fetching barangays:', error);
+        setError('Error fetching province data.');
+      }
+    };
+
+    fetchBarangay();
+  }, [formData.city]);
+
+  // Calculate and update the total budget whenever USTP or Partner Agency budget changes
+  useEffect(() => {
+    const total = parseFloat(formData.budgetUSTP || 0) + parseFloat(formData.budgetPartnerAgency || 0);
+    setFormData((prevData) => ({ ...prevData, totalBudget: total }));
+  }, [formData.budgetUSTP, formData.budgetPartnerAgency]); // Only run when these values change
+
+  const handleBudgetFormChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   return (
@@ -326,28 +547,33 @@ const ProposalFormFirstPage = () => {
               </div>
 
                 {/* Render input fields for each proponent */}
-                {formData.proponents.map((proponent, index) => (
-                <input
-                    key={index} // Use index as key for simplicity; in production, use a unique ID
-                    name={`proponent-${index}`} // Dynamic name for each input
-                    value={proponent}
-                    onChange={(e) => handleProponentChange(index, e.target.value)} // Update value on change
+                {formData.proponents.map((proponentObj, index) => (
+                  <input
+                    key={index}
+                    name={`proponent-${index}`}
+                    value={proponentObj.proponent} // Access 'proponent' field in the object
+                    onChange={(e) => handleProponentChange(index, e.target.value)}
                     className="w-full p-2 border border-gray-300 rounded mt-2"
                     placeholder={`Proponent ${index + 1}`}
-                />
+                  />
                 ))}
+
 
                 <div className="flex space-x-2 mt-2">
                   <button 
                     type="button" // Prevent default form submission
-                    onClick={handleButtonClick} 
+                    onClick={handleProponentButtonClick} 
                     className="bg-blue-500 text-white px-4 py-2 rounded">
                     Add Proponent
                   </button>
                   <button 
                     type="button" // Prevent default form submission
-                    onClick={handleRemoveClick}
-                    className="bg-red-500 text-white px-4 py-2 rounded">
+                    onClick={handleProponentRemoveClick}
+                    className={
+                      formData.goalsAndObjectives.length === 1
+                        ? "bg-gray-400 text-gray-300 px-4 py-2 rounded"
+                        : "bg-red-500 text-white px-4 py-2 rounded"
+                    }>
                     Remove Proponent
                   </button>
                 </div>
@@ -358,14 +584,14 @@ const ProposalFormFirstPage = () => {
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block mb-2 font-semibold">PROGRAM</label>
-              <select
+              <input
                 name="program"
                 value={formData.program}
-                onChange={handleFormChange}
+                onChange={(e) => handleFormChange(e.target.name, e.target.value.toUpperCase())}
+                type="text"
+                placeholder="Ex: BSIT"
                 className="w-full p-2 border border-gray-300 rounded"
-              >
-                <option>Select...</option>
-              </select>
+              />
             </div>
 
             <div>
@@ -378,20 +604,25 @@ const ProposalFormFirstPage = () => {
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option>Select...</option>
+                <option value="" disabled hidden>Select</option>
+                <option value="I">I</option>
+                <option value="II">II</option>
+                <option value="III">III</option>
+                <option value="IV">IV</option>
+                <option value="V">V</option>
               </select>
             </div>
 
             <div>
               <label className="block mb-2 font-semibold">COLLEGE</label>
-              <select
+              <input
                 name="college"
                 value={formData.college}
-                onChange={handleFormChange}
+                onChange={(e) => handleFormChange(e.target.name, e.target.value.toUpperCase())}
+                type="text"
+                placeholder="Ex: CITC"
                 className="w-full p-2 border border-gray-300 rounded"
-              >
-                <option>Select...</option>
-              </select>
+              />
             </div>
           </div>
 
@@ -416,11 +647,12 @@ const ProposalFormFirstPage = () => {
               <label className="block mb-2 font-semibold">PARTNER AGENCY</label>
               <select
                 name="partnerAgency"
-                value={formData.partnerAgency}
+                value={formData.agency}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option>Select...</option>
+                <option value="" disabled hidden>Select</option>
+                <option value="Sample Agency">Sample Agency</option>
               </select>
             </div>
           </div>
@@ -430,8 +662,8 @@ const ProposalFormFirstPage = () => {
             <div>
               <label className="block mb-2 font-semibold">TARGET DATE OF IMPLEMENTATION</label>
               <input
-                name="targetDateImplementation"
-                value={formData.targetDateImplementation}
+                name="targetImplementation"
+                value={formData.targetImplementation}
                 onChange={handleFormChange}
                 type="date"
                 className="w-full p-2 border border-gray-300 rounded"
@@ -444,7 +676,7 @@ const ProposalFormFirstPage = () => {
                 name="totalHours"
                 value={formData.totalHours}
                 onChange={handleFormChange}
-                type="text"
+                type="number"
                 className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
@@ -464,7 +696,7 @@ const ProposalFormFirstPage = () => {
               <input
                 name="budgetUSTP"
                 value={formData.budgetUSTP}
-                onChange={handleFormChange}
+                onChange={handleBudgetFormChange}
                 type="number"
                 placeholder="Enter Amount"
                 className="w-full p-2 border border-gray-300 rounded"
@@ -476,7 +708,7 @@ const ProposalFormFirstPage = () => {
               <input
                 name="budgetPartnerAgency"
                 value={formData.budgetPartnerAgency}
-                onChange={handleFormChange}
+                onChange={handleBudgetFormChange}
                 type="number"
                 placeholder="Enter Amount"
                 className="w-full p-2 border border-gray-300 rounded"
@@ -514,7 +746,12 @@ const ProposalFormFirstPage = () => {
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option>Select...</option>
+                <option value="" disabled hidden>Select</option>
+                {regions.map((region) => (
+                  <option key={region.regionID} value={region.regionID}>
+                    {region.region}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -524,9 +761,19 @@ const ProposalFormFirstPage = () => {
                 name="province"
                 value={formData.province}
                 onChange={handleFormChange}
+                disabled={!formData.region}//disabled till region selected
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option>Select...</option>
+                {!formData.region ? (
+                  <option value="" disabled>Select region first</option>
+                ) : (
+                  <option value="" disabled hidden>Select</option>
+                )}
+                {province.map((province) => (
+                  <option key={province.provinceID} value={province.provinceID}>
+                    {province.province}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -536,9 +783,19 @@ const ProposalFormFirstPage = () => {
                 name="city"
                 value={formData.city}
                 onChange={handleFormChange}
+                disabled={!formData.province}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option>Select...</option>
+                {!formData.province ? (
+                  <option value="" disabled>Select province first</option>
+                ) : (
+                  <option value="" disabled hidden>Select</option>
+                )}
+                {city.map((city) => (
+                  <option key={city.cityID} value={city.cityID}>
+                    {city.city}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -548,9 +805,19 @@ const ProposalFormFirstPage = () => {
                 name="barangay"
                 value={formData.barangay}
                 onChange={handleFormChange}
+                disabled={!formData.city}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option>Select...</option>
+                {!formData.city ? (
+                  <option value="" disabled>Select city first</option>
+                ) : (
+                  <option value="" disabled hidden>Select</option>
+                )}
+                {barangay.map((barangay) => (
+                  <option key={barangay.barangayID} value={barangay.barangayID}>
+                    {barangay.barangay}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -561,7 +828,7 @@ const ProposalFormFirstPage = () => {
               <label className="block mb-2 font-semibold">Address</label>
               <input
                 name="address"
-                value={formData.addressID}
+                value={formData.projectLocation}
                 onChange={handleFormChange}
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded"
@@ -585,6 +852,7 @@ const ProposalFormFirstPage = () => {
                   ></textarea>
               </div>
           </div>
+
           {/* row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
@@ -595,35 +863,40 @@ const ProposalFormFirstPage = () => {
                 </label>
               </div>
 
-                {/* Render input fields for each proponent */}
-                {formData.goalsAndObjectives.map((goalsAndObjectives, index) => (
-                <input
-                    key={index} // Use index as key for simplicity; in production, use a unique ID
-                    name={`objective-${index}`} // Dynamic name for each input
-                    value={goalsAndObjectives}
-                    onChange={(e) => handleObjectiveChange(index, e.target.value)} // Update value on change
-                    className="w-full p-2 border border-gray-300 rounded mt-2"
-                    placeholder={`Objective ${index + 1}`}
+              {/* Render input fields for each objective */}
+              {formData.goalsAndObjectives.map((goal, index) => (
+                <textarea
+                  key={index} // Use index as key for simplicity; in production, use a unique ID
+                  name={`objective-${index}`} // Dynamic name for each input
+                  value={goal.goalsAndObjectives}
+                  onChange={(e) => handleObjectiveChange(index, e.target.value)} // Update value on change
+                  className="w-full p-2 border border-gray-300 rounded mt-2"
+                  placeholder={`Objective ${index + 1}`}
                 />
-                ))}
+              ))}
 
-                <div className="flex space-x-2 mt-2">
-                  <button 
-                    type="button" // Prevent default form submission
-                    onClick={handleObjectiveButtonClick} 
-                    className="bg-blue-500 text-white px-4 py-2 rounded">
-                    Add Objective
-                  </button>
-                  <button 
-                    type="button" // Prevent default form submission
-                    onClick={handleObjectiveRemoveClick}
-                    className="bg-red-500 text-white px-4 py-2 rounded">
-                    Remove Objective
-                  </button>
-                </div>
+              <div className="flex space-x-2 mt-2">
+                <button
+                  type="button" // Prevent default form submission
+                  onClick={handleObjectiveButtonClick}
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Add Objective
+                </button>
+                <button
+                  type="button" // Prevent default form submission
+                  onClick={handleObjectiveRemoveClick}
+                  className={
+                    formData.goalsAndObjectives.length === 1
+                      ? "bg-gray-400 text-gray-300 px-4 py-2 rounded"
+                      : "bg-red-500 text-white px-4 py-2 rounded"
+                  }
+                >
+                  Remove Objective
+                </button>
+              </div>
             </div>
           </div>
-
 
           {/* row */}
           <div className="grid grid-cols-1 gap-4"> 
@@ -643,62 +916,81 @@ const ProposalFormFirstPage = () => {
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
-              <div>
-                  <label className="block mb-2 font-semibold">
-                      PROJECT IMPLEMENTATION PLAN AND MANAGEMENT
-                  </label>
-              </div>
+            <div>
+              <label className="block mb-2 font-semibold">
+                PROJECT IMPLEMENTATION PLAN AND MANAGEMENT
+              </label>
+            </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-4">
-            <div>
-              <label className="block mb-2 font-semibold">
-                  PROJECT OBJECTIVE
-              </label>
-              <textarea
+          {/* Project Activities Rows */}
+          {formData.projectActivities.map((activity, index) => (
+            <div key={index} className="grid grid-cols-4 gap-4 mb-4">
+              <div>
+                <label className="block mb-2 font-semibold">PROJECT OBJECTIVE</label>
+                <textarea
                   name="objective"
-                  value={formData.projectObjective}
-                  onChange={handleFormChange}
+                  value={activity.objective}
+                  onChange={(e) => handleActivityChange(index, e)}
                   className="w-full p-2 border border-gray-300 rounded"
-              ></textarea>
-            </div>
+                ></textarea>
+              </div>
 
-            <div>
-              <label className="block mb-2 font-semibold">
-                ACTIVITIES INVOLVED
-              </label>
-              <textarea
-                name="involved"
-                value={formData.involved}
-                onChange={handleFormChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              ></textarea>
-            </div>
+              <div>
+                <label className="block mb-2 font-semibold">ACTIVITIES INVOLVED</label>
+                <textarea
+                  name="involved"
+                  value={activity.involved}
+                  onChange={(e) => handleActivityChange(index, e)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                ></textarea>
+              </div>
 
-            <div>
-              <label className="block mb-2 font-semibold">
-                TARGET DATE
-              </label>
-              <input
-                name="targetDate"
-                value={formData.targetDate}
-                onChange={handleFormChange}
-                type="date"
-                className="w-full p-2 border border-gray-300 rounded"
-              ></input>
-            </div>
+              <div>
+                <label className="block mb-2 font-semibold">TARGET DATE</label>
+                <input
+                  name="targetDate"
+                  value={activity.targetDate}
+                  onChange={(e) => handleActivityChange(index, e)}
+                  type="date"
+                  className="w-full p-2 border border-gray-300 rounded"
+                ></input>
+              </div>
 
-            <div>
-              <label className="block mb-2 font-semibold">
-                PERSON RESPONSIBLE
-              </label>
-              <input
-                name="personResponsible"
-                value={formData.personResponsible}
-                onChange={handleFormChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              ></input>
+              <div>
+                <label className="block mb-2 font-semibold">PERSON RESPONSIBLE</label>
+                <input
+                  name="personResponsible"
+                  value={activity.personResponsible}
+                  onChange={(e) => handleActivityChange(index, e)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                ></input>
+              </div>
             </div>
+          ))}
+
+          {/* Add Button and remove bttn*/}
+          <div className="flex space-x-2 mt-2">
+            <button
+              type="button"
+              onClick={addActivityRow}
+              className="mt-4 p-2 bg-blue-500 text-white rounded"
+            >
+              Add Row
+            </button>
+
+            <button
+              type="button"
+              disabled={formData.projectActivities.length === 1}
+              onClick={removeLastActivityRow} // Function to remove the last row
+              className={
+                formData.projectActivities.length === 1
+                 ? "mt-4 p-2 bg-gray-400 text-gray-200 rounded"
+                 : "mt-4 p-2 bg-red-500 text-white rounded"
+              }
+            >
+              Remove Last Row
+            </button>
           </div>
         </div>
 
@@ -844,7 +1136,7 @@ const ProposalFormFirstPage = () => {
                       <textarea
                         name="approach"
                         value={row.approach}
-                        onChange={(e) => handleRowChange(index, "approach", e.target.value)}
+                        onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "approach", e.target.value)}
                         className="w-full p-1 border rounded"
                         rows="2"
                         placeholder="Enter M&E Instrument/Approach"
@@ -854,7 +1146,7 @@ const ProposalFormFirstPage = () => {
                       <textarea
                         name="dataGatheringStrategy"
                         value={row.dataGatheringStrategy}
-                        onChange={(e) => handleRowChange(index, "dataGatheringStrategy", e.target.value)}
+                        onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "dataGatheringStrategy", e.target.value)}
                         className="w-full p-1 border rounded"
                         rows="2"
                         placeholder="Enter Strategy for Data Gathering"
@@ -864,7 +1156,7 @@ const ProposalFormFirstPage = () => {
                       <textarea
                         name="schedule"
                         value={row.schedule}
-                        onChange={(e) => handleRowChange(index, "schedule", e.target.value)}
+                        onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "schedule", e.target.value)}
                         className="w-full p-1 border rounded"
                         rows="2"
                         placeholder="Enter Schedule"
@@ -877,6 +1169,160 @@ const ProposalFormFirstPage = () => {
           </div>
         </div>
 
+        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
+          <div className="relative">
+            <label className="block mb-2 font-semibold">Trainers:</label>
+            <div className="overflow-x-auto">
+              <table className="min-w-full border">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2 border bg-gray-300">Name of Faculty</th>
+                    <th className="px-4 py-2 border bg-gray-300">Training Load</th>
+                    <th className="px-4 py-2 border bg-gray-300">No. of Hours</th>
+                    <th className="px-4 py-2 border bg-gray-300">USTP Budget</th>
+                    <th className="px-4 py-2 border bg-gray-300">Partner Agency Budget</th>
+                    <th className="px-4 py-2 border bg-gray-300">Total Budgetary Requirement</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {formData.loadingOfTrainers.map((trainer, index) => (
+                    <tr key={index}>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="faculty"
+                          value={trainer.faculty}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="text"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Faculty Name"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="trainingLoad"
+                          value={trainer.trainingLoad}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="text"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Training Load"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="hours"
+                          value={trainer.hours}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="number"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Hours"
+                          min="0"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="ustpBudget"
+                          value={trainer.ustpBudget}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="number"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="USTP Budget"
+                          min="0"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="agencyBudget"
+                          value={trainer.agencyBudget}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="number"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Partner Agency Budget"
+                          min="0"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="totalBudgetRequirement"
+                          value={trainer.totalBudgetRequirement}
+                          readOnly
+                          type="number"
+                          className="w-full p-1 border border-gray-300 rounded bg-gray-100"
+                          placeholder="Total"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {/* Add and Remove Buttons */}
+            <div className="flex justify-between mt-2">
+              <button
+                type="button"
+                onClick={addTrainerRow}
+                className="text-green-500 hover:underline"
+              >
+                + Add Row
+              </button>
+              {formData.loadingOfTrainers.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeTrainerRow(formData.loadingOfTrainers.length - 1)}
+                  className="text-red-500 hover:underline"
+                  title="Remove Last Row"
+                >
+                  - Remove Row
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-2 font-semibold">
+                ENDORSED BY PROGRAM CHAIR
+              </label>
+              <select
+                name="programChair"
+                value={formData.programChair}
+                onChange={handleFormChange}
+                className="w-full p-2 border border-gray-300 rounded"
+              >
+                <option>Select...</option>
+                <option value={"guylord"}>Guylord</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block mb-2 font-semibold">
+                ENDORSED BY COLLEGE DEAN
+              </label>
+              <select
+                name="collegeDean"
+                value={formData.collegeDean}
+                onChange={handleFormChange}
+                className="w-full p-2 border border-gray-300 rounded"
+              >
+                <option>Select...</option>
+                <option value={"EJ"}>EJ</option>
+              </select>
+            </div>
+          </div>
+
+          {/* row */}
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <label className="block mb-2 font-semibold">SUBMITTED BY: {username}</label>
+            </div>
+          </div>
+        </div>
 
         {/* submit naa */}
         <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-4">

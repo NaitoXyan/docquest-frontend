@@ -22,19 +22,20 @@ import ProjLeadLoadTrainer from "./pages/projectlead/ProjLeadLoadTrainer";
 import MyDocument from "./components/GeneratePdf";
 import { PDFViewer } from "@react-pdf/renderer";
 import ProposalFormSecondPage from "./components/ProposalFormSecondPage";
+import ProjLeadProjectStatus from "./pages/projectlead/ProjLeadProjectStatus";
 
 function App() {
   return (
-    
-    // <Routes>
-    //   {/* Login */}
-    //   <Route path="/" element={<Navigate to="/login" />} />
-    //   <Route path="/login" element={ <LoginPage /> } />
-    //   {/* Project Lead routes */}
-    //   <Route path="/user" element={ <ProjLeadDashboard /> } />
-    //   <Route path="/create_proposal" element={ <ProjLeadProposalForm /> } />
-    //   <Route path="/profile" element={ <ProjLeadProfilePage /> } />
-    //   <Route path="/load_trainer" element={ <ProjLeadLoadTrainer /> } />
+    <Routes>
+      {/* Login */}
+      <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/login" element={ <LoginPage /> } />
+      {/* Project Lead routes */}
+      <Route path="/user" element={ <ProjLeadDashboard /> } />
+      <Route path="/create_proposal" element={ <ProjLeadProposalForm /> } />
+      <Route path="/profile" element={ <ProjLeadProfilePage /> } />
+      <Route path="/load_trainer" element={ <ProjLeadLoadTrainer /> } />
+      <Route path="/project_status" element={ <ProjLeadProjectStatus /> } />
 
     //   {/* create proposal routes */}
     //   <Route path="/proposal_form_second_page" element={ <ProposalFormSecondPage /> }/>

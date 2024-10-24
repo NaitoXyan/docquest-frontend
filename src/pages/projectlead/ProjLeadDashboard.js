@@ -1,8 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Topbar from "../../components/Topbar";
 import ProjLeadSidebar from "../../components/ProjLeadSideBar";
 
 const ProjLeadDashboard = () => {
+    const [projects, setProjects] = useState([]);
+    const [statusCounts, setStatusCounts] = useState({ approved: 0, pending: 0, rejected: 0 });
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                const response = await fetch("http://127.0.0.1:8000/get_project_status/10/");
+                const data = await response.json();
+                setProjects(data);
+
+                // Calculate status counts
+                const counts = data.reduce((acc, project) => {
+                    acc[project.status] = (acc[project.status] || 0) + 1;
+                    return acc;
+                }, { approved: 0, pending: 0, rejected: 0 });
+
+                setStatusCounts(counts);
+            } catch (error) {
+                console.error("Error fetching projects:", error);
+            }
+        };
+
+        fetchProjects();
+    }, []);
+
     return (
         <div className="bg-gray-200 min-h-screen flex">
             <div className="w-1/5 fixed h-full">
@@ -15,17 +40,17 @@ const ProjLeadDashboard = () => {
                     <div className="grid grid-cols-3 gap-4 mb-10">
                         <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Approved</h2>
-                            <h2 className="text-4xl font-bold">2</h2>
+                            <h2 className="text-4xl font-bold">{statusCounts.approved}</h2>
                             <button className="mt-2 underline">View</button>
                         </div>
                         <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Pending</h2>
-                            <h2 className="text-4xl font-bold">10</h2>
+                            <h2 className="text-4xl font-bold">{statusCounts.pending}</h2>
                             <button className="mt-2 underline">View</button>
                         </div>
                         <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Rejected</h2>
-                            <h2 className="text-4xl font-bold">3</h2>
+                            <h2 className="text-4xl font-bold">{statusCounts.rejected}</h2>
                             <button className="mt-2 underline">View</button>
                         </div>
                     </div>
@@ -38,41 +63,26 @@ const ProjLeadDashboard = () => {
                                     <tr>
                                         <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project ID</th>
                                         <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Name</th>
-                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Type</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Created</th>
                                         <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
-                                    <tr>
-                                        <td className="px-6 py-4 whitespace-nowrap">1021210010</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">Scalability Enhancements</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">Project proposal</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">Approved</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="px-6 py-4 whitespace-nowrap">1021210011</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">Encryption Upgrades</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">Project proposal</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">Approved</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="px-6 py-4 whitespace-nowrap">1021210012</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">Chatbot Implementation</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">Project proposal</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">Pending</td>
-                                    </tr>
-                                    <tr>
-                                        <td className="px-6 py-4 whitespace-nowrap">1021210013</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">Multi-Language Support</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">Project proposal</td>
-                                        <td className="px-6 py-4 whitespace-nowrap">Rejected</td>
-                                    </tr>
+                                    {projects.map((project, index) => (
+                                        <tr key={index}>
+                                            <td className="px-6 py-4 whitespace-nowrap">{project.uniqueCode}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{project.projectTitle}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{new Date(project.dateCreated).toLocaleDateString()}</td>
+                                            <td className="px-6 py-4 whitespace-nowrap">{project.status}</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
                         <div className="mt-4 flex justify-between items-center">
-                            <div>Showing 1 to 4 of 11 entries</div>
+                            <div>Showing 1 to {projects.length} of {projects.length} entries</div>
                             <div className="flex space-x-2">
+                                {/* Pagination buttons can be implemented here */}
                                 <button className="px-3 py-1 bg-gray-300 rounded-lg">1</button>
                                 <button className="px-3 py-1 bg-gray-100 rounded-lg">2</button>
                                 <button className="px-3 py-1 bg-gray-100 rounded-lg">...</button>

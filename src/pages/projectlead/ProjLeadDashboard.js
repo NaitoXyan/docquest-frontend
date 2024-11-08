@@ -5,11 +5,12 @@ import ProjLeadSidebar from "../../components/ProjLeadSideBar";
 const ProjLeadDashboard = () => {
     const [projects, setProjects] = useState([]);
     const [statusCounts, setStatusCounts] = useState({ approved: 0, pending: 0, rejected: 0 });
+    const userID = localStorage.getItem('userid');
 
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const response = await fetch("http://127.0.0.1:8000/get_project_status/10/");
+                const response = await fetch(`http://127.0.0.1:8000/get_project_status/${userID}/`);
                 const data = await response.json();
                 setProjects(data);
 

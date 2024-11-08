@@ -4,9 +4,6 @@ import { useNavigate } from 'react-router-dom';
 
 const ProjectTable = () => {
   const [projects, setProjects] = useState([]);
-  const storedFirstname = JSON.parse(localStorage.getItem('firstname'));
-  const storedLastname = JSON.parse(localStorage.getItem('lastname'));
-  const username = storedFirstname + " " + storedLastname;
   const userID = localStorage.getItem('userid');
   const navigate = useNavigate();
 
@@ -28,6 +25,12 @@ const ProjectTable = () => {
     navigate(`/pdf-viewer/${projectID}`);
   };
 
+  // Handler for editing project
+  const handleEditProject = (projectID) => {
+    console.log('Editing project ID:', projectID);
+    navigate(`/edit-project/${projectID}`);
+  };
+
   return (
     <div style={{ padding: '20px' }}>
       <h2>Project List</h2>
@@ -39,6 +42,7 @@ const ProjectTable = () => {
             <th style={{ border: '1px solid #ddd', padding: '8px' }}>Proposed Date of Implementation</th>
             <th style={{ border: '1px solid #ddd', padding: '8px' }}>Document Status</th>
             <th style={{ border: '1px solid #ddd', padding: '8px' }}>View Document</th>
+            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Edit Project</th>
           </tr>
         </thead>
         <tbody>
@@ -67,6 +71,12 @@ const ProjectTable = () => {
                     <button onClick={() => handleViewPDF(project.projectID)}>
                     View PDF
                     </button>
+                </td>
+                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                  {/* Edit project button */}
+                  <button onClick={() => handleEditProject(project.projectID)}>
+                    Edit Project
+                  </button>
                 </td>
               </tr>
             ))

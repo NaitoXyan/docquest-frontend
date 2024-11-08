@@ -23,36 +23,38 @@ import MyDocument from "./components/GeneratePdf";
 import { PDFViewer } from "@react-pdf/renderer";
 import ProposalFormSecondPage from "./components/ProposalFormSecondPage";
 import ProjLeadProjectStatus from "./pages/projectlead/ProjLeadProjectStatus";
+import ProjectPDFViewer from "./components/ProjectPDFViewer";
 
 function App() {
   return (
-    // <Routes>
-    //     {/* Login */}
-    //     <Route path="/" element={<Navigate to="/login" />} />
-    //     <Route path="/login" element={<LoginPage />} />
+    <Routes>
+        {/* Login */}
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<LoginPage />} />
         
-    //     {/* Project Lead routes */}
-    //     <Route path="/user" element={<ProjLeadDashboard />} />
-    //     <Route path="/create_proposal" element={<ProjLeadProposalForm />} />
-    //     <Route path="/profile" element={<ProjLeadProfilePage />} />
-    //     <Route path="/load_trainer" element={<ProjLeadLoadTrainer />} />
-    //     <Route path="/project_status" element={<ProjLeadProjectStatus />} />
+        {/* Project Lead routes */}
+        <Route path="/user" element={<ProjLeadDashboard />} />
+        <Route path="/create_proposal" element={<ProjLeadProposalForm />} />
+        <Route path="/profile" element={<ProjLeadProfilePage />} />
+        <Route path="/load_trainer" element={<ProjLeadLoadTrainer />} />
+        <Route path="/project_status" element={<ProjLeadProjectStatus />} />
 
-    //     {/* Create proposal routes */}
-    //     <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} />
+        {/* Create proposal routes */}
+        <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} />
 
-    //     {/* Other Unorganized */}
-    //     <Route path="/estaff" element={<EstaffDashboard />} />
-    //     <Route path="/deptoff" element={<DeptOffDashboard />} />
-    //     <Route path="/coordinator" element={<CoordinatorDashboard />} />
-    //     <Route path="/signatory" element={<SignatoryDashboard />} />
-    //   </Routes>
+        {/* Other Unorganized */}
+        <Route path="/pdf-viewer/:projectID" element={<ProjectPDFViewer />} />
+        <Route path="/estaff" element={<EstaffDashboard />} />
+        <Route path="/deptoff" element={<DeptOffDashboard />} />
+        <Route path="/coordinator" element={<CoordinatorDashboard />} />
+        <Route path="/signatory" element={<SignatoryDashboard />} />
+      </Routes>
 
-      <div style={{ height: '100vh' }}>
-        <PDFViewer style={{ width: '100%', height: '100%' }}>
-          <MyDocument />
-        </PDFViewer>
-      </div>
+      // <div style={{ height: '100vh' }}>
+      //   <PDFViewer style={{ width: '100%', height: '100%' }}>
+      //     <MyDocument projectID={11} />
+      //   </PDFViewer>
+      // </div>
   );
 }
 

@@ -4,16 +4,17 @@ import axios from 'axios';
 
 Font.register({
   family: 'Arial',
-  src: 'fonts/arial.TTF',
+  src: '/fonts/arial.TTF',
 });
 Font.register({
   family: 'ArialB',
-  src: 'fonts/arialb.TTF',
+  src: '/fonts/arialb.TTF',
 });
 Font.register({
   family: 'Zapf',
-  src: 'fonts/zapf.ttf',
+  src: '/fonts/zapf.ttf',
 });
+
 // fonts: Arial, Zapf Calligraphic // color #a4b494 #1A1851
 const styles = StyleSheet.create({
   page: {

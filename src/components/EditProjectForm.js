@@ -35,9 +35,9 @@ const EditProposalForm = () => {
 
   const [formData, setFormData] = useState({
     userID: userID,
-    programCategory: response.data.programCategory,
-    projectTitle: response.data.projectTitle,
-    projectType: response.data.projectType,
+    programCategory: "",
+    projectTitle: "",
+    projectType: "",
     projectCategory: "",
     researchTitle: "",
     program: "",
@@ -182,26 +182,43 @@ const EditProposalForm = () => {
 
   const fetchData = async () => {
     try {
-      console.log("fetch data using: ", projectID);
-      // const response = await axios.get();
-      const response = await axios({
-        method: 'get',
-        url: `http://127.0.0.1:8000/get_project/${projectID}/`,
+      console.log("Fetching data using projectID:", projectID);
+      const response = await axios.get(`http://127.0.0.1:8000/get_project/${projectID}/`, {
         headers: {
           'Authorization': `Token ${token}`,
           'Content-Type': 'application/json',
         }
       });
-      console.log("Fetched data:", response.data); // Log the fetched data
+      console.log("Fetched data:", response.data); // Log fetched data for debugging
+  
+      // Use spread syntax to update formData fields individually
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        ...response.data,
+        projectLocationID: {
+          ...prevFormData.projectLocationID,
+          ...(response.data.projectLocationID || {})
+        },
+        programChair: {
+          ...prevFormData.programChair,
+          ...(response.data.signatories.find(signatory => signatory.title === "Program Chair") || {})
+        },
+        collegeDean: {
+          ...prevFormData.collegeDean,
+          ...(response.data.signatories.find(signatory => signatory.title === "College Dean") || {})
+        },
+        // Add other nested fields here as needed
+      }));
+  
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
-
+  
   // Fetch data when the component mounts
   useEffect(() => {
     fetchData();
-  }, [projectID])
+  }, [projectID]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

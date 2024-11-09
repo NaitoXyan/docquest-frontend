@@ -24,6 +24,7 @@ import { PDFViewer } from "@react-pdf/renderer";
 import ProposalFormSecondPage from "./components/ProposalFormSecondPage";
 import ProjLeadProjectStatus from "./pages/projectlead/ProjLeadProjectStatus";
 import ProjectPDFViewer from "./components/ProjectPDFViewer";
+import EditProposalForm from "./components/EditProjectForm";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
 
         {/* Other Unorganized */}
         <Route path="/pdf-viewer/:projectID" element={<ProjectPDFViewer />} />
+        <Route path="/edit-project/:projectID" element={<EditProposalForm />} />
         <Route path="/estaff" element={<EstaffDashboard />} />
         <Route path="/deptoff" element={<DeptOffDashboard />} />
         <Route path="/coordinator" element={<CoordinatorDashboard />} />

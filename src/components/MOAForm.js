@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const ProposalFormFirstPage = () => {
+const MOAForm = () => {
   const userID = JSON.parse(localStorage.getItem('userID'));
   const storedFirstname = JSON.parse(localStorage.getItem('firstname'));
   const storedLastname = JSON.parse(localStorage.getItem('lastname'));
@@ -253,4 +253,4 @@ const ProposalFormFirstPage = () => {
   );
 };
 
-export default ProposalFormFirstPage;
+export default MOAForm;

@@ -358,7 +358,7 @@ const MyDocument = () => (
             CHERRY ANN S. VILLARTE. CPA  {/* GET: Accountant name */}
           </Text>
           <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB', }]}>
-            ATTY. DIONEL 0. ALBINA  {/* GET: Chancellor,, USTP CDO name */}
+            ATTY. DIONEL 0. ALBINA  {/* GET: Chancellor, USTP CDO name */}
           </Text>
         </View>
         <View style={[{ flexDirection: 'row', paddingBottom: '5%' }]}>
@@ -446,14 +446,14 @@ const MyDocument = () => (
       </View>
       <View style={[{ justifyContent: 'center', alignItems: 'center', marginTop: '1%', marginBottom: '1%' }]}>
         <Text>
-          *
+          {/* GET: project title */}
         </Text>
       </View>
       <Text style={[{ fontFamily: 'ArialB' }]}>
         I. Background of the Project
       </Text>
       <Text style={[{ padding: '1%' }]}>
-        Background of the Project
+        {/* GET: background of the project */}
       </Text>
       <Text style={[{ fontFamily: 'ArialB' }]}>
         II. Goals and Objectives of the Project
@@ -462,13 +462,13 @@ const MyDocument = () => (
         Specifically, the objectives of the project are:
       </Text>
       <Text style={[{ padding: '1%', }]}>
-        1.
+        1. {/* GET: Revision Number, also this text increases numbers depending on number of objectives get */}
       </Text>
       <Text style={[{ fontFamily: 'ArialB' }]}>
         III. Project Component (i.e. Training Design and Content)
       </Text>
       <Text style={[{ padding: '1%' }]}>
-        Project Component
+        {/* GET: project component */}
       </Text>
       <Text style={[{ fontFamily: 'ArialB' }]}>
         IV. Project Implementation Plan and Management
@@ -498,47 +498,48 @@ const MyDocument = () => (
           </Text>
         </View>
       </View>
+      {/* GET: rows below this is a dynamic table if there are more than 1 row in this table add more*/}
       <View style={[{ flexDirection: 'row' }]}>
         <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
           <Text>
-            *
+            {/* GET: Project objective 1*/}
           </Text>
         </View>
         <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
           <Text>
-            *
+            {/* GET: activities involved 1*/}
           </Text>
         </View>
         <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
           <Text>
-            *
+            {/* GET: Target Date 1*/}
           </Text>
         </View>
         <View style={[styles.tableColfour, { borderBottom: 0, }]}>
           <Text>
-            *
+            {/* GET: person responsible 1*/}
           </Text>
         </View>
       </View>
       <View style={[{ flexDirection: 'row' }]}>
         <View style={[styles.tableColfour, { borderRight: 0, }]}>
           <Text>
-            *
+            {/* GET: Project objective 2*/}
           </Text>
         </View>
         <View style={[styles.tableColfour, { borderRight: 0, }]}>
           <Text>
-            *
+            {/* GET: activities involved 2*/}
           </Text>
         </View>
         <View style={[styles.tableColfour, { borderRight: 0, }]}>
           <Text>
-            *
+            {/* GET: target date 2*/}
           </Text>
         </View>
         <View style={styles.tableColfour}>
           <Text>
-            *
+            {/* GET: person responsible 2*/}
           </Text>
         </View>
       </View>
@@ -546,7 +547,13 @@ const MyDocument = () => (
         B. Project Location and Beneficiaries
       </Text>
       <Text style={[{ padding: '1%' }]}>
+        {/* GET: project  location and beneficiaries */}
+      </Text>
+      <Text style={[{ padding: '1%' }]}>
         C. Project Management Team/Trainer
+      </Text>
+      <Text style={[{ padding: '1%' }]}>
+        {/* GET: project management team/trainer */}
       </Text>
       <Text style={[{ fontFamily: 'ArialB', marginBottom: '1%' }]}>
         V. Budgetary Requirements
@@ -590,19 +597,19 @@ const MyDocument = () => (
           <View style={[{ flexDirection: 'row' }]}>
             <View style={[styles.tableColtwo, { borderRight: 1 }]}>
               <Text>
-                *
+                {/* GET: ustp1 honorarium budget */}
               </Text>
             </View>
             <View style={[styles.tableColtwo, {}]}>
               <Text>
-                *
+                {/* GET: partner_agency1 honorrariumm budget */}
               </Text>
             </View>
           </View>
         </View>
         <View style={[styles.tableColthree, { border: 1, borderBottom: 0, }]}>
           <Text>
-            *
+            {/* ustp1 + partner_agency1 ammount = total1 here */}
           </Text>
         </View>
       </View>
@@ -616,19 +623,19 @@ const MyDocument = () => (
           <View style={[{ flexDirection: 'row' }]}>
             <View style={[styles.tableColtwo, { borderRight: 1 }]}>
               <Text>
-                *
+                {/* GET: ustp2 supplies and materials budget */}
               </Text>
             </View>
             <View style={[styles.tableColtwo, {}]}>
               <Text>
-                *
+                {/* GET: partner_agency2 supplies and materials budget */}
               </Text>
             </View>
           </View>
         </View>
         <View style={[styles.tableColthree, { border: 1, borderBottom: 0, }]}>
           <Text>
-            *
+            {/* ustp2 + partner_agency2 ammount = total2 here */}
           </Text>
         </View>
       </View>
@@ -642,19 +649,19 @@ const MyDocument = () => (
           <View style={[{ flexDirection: 'row' }]}>
             <View style={[styles.tableColtwo, { borderRight: 1 }]}>
               <Text>
-                *
+                {/* GET: ustp3 trace allowance budget */}
               </Text>
             </View>
             <View style={[styles.tableColtwo, {}]}>
               <Text>
-                *
+                {/* GET: partner_agency3 trace allowance budget */}
               </Text>
             </View>
           </View>
         </View>
         <View style={[styles.tableColthree, { border: 1, borderBottom: 0, }]}>
           <Text>
-            *
+            {/* GET: ustp3 + partner_agency3 = total3 here */}
           </Text>
         </View>
       </View>
@@ -680,7 +687,7 @@ const MyDocument = () => (
         </View>
         <View style={[styles.tableColthree, { border: 1, }]}>
           <Text>
-            *
+            {/* GET: total1+total2+total3 = total here */}
           </Text>
         </View>
       </View>
@@ -725,26 +732,27 @@ const MyDocument = () => (
         </View>
         <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
           <Text>
-
+            {/* GET: goal project summary */}
           </Text>
         </View>
         <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
           <Text>
-
+            {/* GET: goal indicators */}
           </Text>
         </View>
         <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
           <Text>
-
+            {/* GET: goal means of verification */}
           </Text>
         </View>
         <View style={[styles.tableColfive, { borderBottom: 0, }]}>
           <Text>
-
+            {/* GET: goal risk and assumptions */}
           </Text>
         </View>
       </View>
       <View style={[{ flexDirection: 'row' }]}>
+        {/* GET: same from above just this time this is the outcome row */}
         <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
           <Text>
             Outcome
@@ -772,9 +780,10 @@ const MyDocument = () => (
         </View>
       </View>
       <View style={[{ flexDirection: 'row' }]}>
+        {/* GET: same above this just output row */}
         <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
           <Text>
-            outputs
+            Outputs
           </Text>
         </View>
         <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
@@ -798,7 +807,8 @@ const MyDocument = () => (
           </Text>
         </View>
       </View>
-      <View style={[{ flexDirection: 'row' , marginBottom: 10}]}>
+      <View style={[{ flexDirection: 'row', marginBottom: 10 }]}>
+        {/* GET: same above this just activities row */}
         <View style={[styles.tableColfive, { borderRight: 0, }]}>
           <Text>
             Activities
@@ -819,7 +829,7 @@ const MyDocument = () => (
 
           </Text>
         </View>
-        <View style={[styles.tableColfive, { }]}>
+        <View style={[styles.tableColfive, {}]}>
           <Text>
 
           </Text>
@@ -861,17 +871,17 @@ const MyDocument = () => (
         </View>
         <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
           <Text>
-
+            {/* GET: before project implementation m & e instrument/ approach */}
           </Text>
         </View>
         <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
           <Text>
-
+            {/* GET: before project implementation format or strategy for data gathering */}
           </Text>
         </View>
         <View style={[styles.tableColfour, { borderBottom: 0, }]}>
           <Text>
-
+            {/* GET: before project implementation schedule */}
           </Text>
         </View>
       </View>
@@ -886,22 +896,22 @@ const MyDocument = () => (
         </View>
         <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
           <Text>
-
+            {/* GET: during project implementation m & e instrument/ approach */}
           </Text>
         </View>
         <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
           <Text>
-
+            {/* GET: during project implementation format or strategy for data gathering */}
           </Text>
         </View>
         <View style={[styles.tableColfour, { borderBottom: 0, }]}>
           <Text>
-
+            {/* GET: during project implementation schedule */}
           </Text>
         </View>
       </View>
       <View style={[{ flexDirection: 'row' }]}>
-        <View style={[styles.tableColfour, { borderRight: 0,}]}>
+        <View style={[styles.tableColfour, { borderRight: 0, }]}>
           <Text>
             After Project
           </Text>
@@ -909,23 +919,23 @@ const MyDocument = () => (
             Implementation
           </Text>
         </View>
-        <View style={[styles.tableColfour, { borderRight: 0,}]}>
+        <View style={[styles.tableColfour, { borderRight: 0, }]}>
           <Text>
-
+            {/* GET: after project implementation m & e instrument/ approach */}
           </Text>
         </View>
-        <View style={[styles.tableColfour, { borderRight: 0,}]}>
+        <View style={[styles.tableColfour, { borderRight: 0, }]}>
           <Text>
-
+            {/* GET: after project implementation format of strategy for data gathering */}
           </Text>
         </View>
         <View style={[styles.tableColfour, {}]}>
           <Text>
-
+            {/* GET: after project implementation schedule */}
           </Text>
         </View>
       </View>
-      <Text style={[{marginTop: 10, color: '#FF0000'}]}>
+      <Text style={[{ marginTop: 10, color: '#FF0000' }]}>
         Please attach monitoring tools
       </Text>
     </Page>
@@ -1003,12 +1013,12 @@ const MyDocument = () => (
         </Text>
       </View>
       <Text style={[{ paddingtop: '2%' }]}>
-        Project Title
+        Project Title: {/* GET: project title */}
       </Text>
       <Text style={[{ paddingBottom: '2%' }]}>
-        Partner Agency
+        Partner Agency: {/* GET: partner agency */}
       </Text>
-      <View style={[{ flexDirection: 'row', textAlign: 'center', backgroundColor: '#DCDCDC'}]}>
+      <View style={[{ flexDirection: 'row', textAlign: 'center', backgroundColor: '#DCDCDC' }]}>
         <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
           <Text>
             Name of Faculty
@@ -1047,42 +1057,44 @@ const MyDocument = () => (
           </Text>
         </View>
       </View>
+      {/* first row */}
       <View style={[{ flexDirection: 'row' }]}>
         <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0, }]}>
           <Text>
-            *
+            *{/* GET: name of faculty1 */}
           </Text>
         </View>
         <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0, }]}>
           <Text>
-            *
+            *{/* GET: training load  */}
           </Text>
         </View>
         <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0, }]}>
           <Text>
-            *
+            *{/* GET: number of hours */}
           </Text>
         </View>
         <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0, }]}>
           <View style={[{ flexDirection: 'row' }]}>
             <View style={[styles.tableColtwo, { borderRight: 1 }]}>
               <Text>
-                *
+                *{/* GET: ustp budget for this faculty */}
               </Text>
             </View>
             <View style={[styles.tableColtwo, {}]}>
               <Text>
-                *
+                *{/* GET: partner agency budget for this faculty */}
               </Text>
             </View>
           </View>
         </View>
         <View style={[styles.tableColthree, { border: 1, borderBottom: 0, }]}>
           <Text>
-            *
+            *{/* GET: total budgetary requirement of this faculty */}
           </Text>
         </View>
       </View>
+      {/* GET: this is the same as row above aand this row below only exist if mroe than one faculty is get so this is a dynamic table */}
       <View style={[{ flexDirection: 'row' }]}>
         <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0, }]}>
           <Text>
@@ -1151,7 +1163,7 @@ const MyDocument = () => (
         </View>
         <View style={[styles.tableColfive, { border: 1, }]}>
           <Text>
-            *
+            *{/* GET: sum all total budgetary requirement of each faculty in this table */}
           </Text>
         </View>
       </View>
@@ -1159,22 +1171,22 @@ const MyDocument = () => (
         Prepared by:
       </Text>
       <Text style={[{ padding: '1%' }]}>
-        *
+        *{/* GET: name of main proponent/ project leader */}
       </Text>
       <Text style={[{ padding: '1%' }]}>
-        *
+        *{/* GET: his/her role if this is main proponent or project leader */}
       </Text>
       <Text style={[{ fontFamily: 'ArialB' }]}>
         Approved:
       </Text>
       <Text style={[{ padding: '1%' }]}>
-        *
+        *{/* GET: college dean wh approved this */}
       </Text>
       <Text style={[{ padding: '1%' }]}>
         College Dean
       </Text>
     </Page>
-    
+
   </Document>
 );
 

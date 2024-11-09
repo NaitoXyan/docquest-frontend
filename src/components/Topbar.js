@@ -50,21 +50,21 @@ const Topbar = () => {
 
   const formatRoles = () => {
     return roles.map(role => {
-      if (role === 'regular') {
+      if (role === 'rglr') {
         return 'Project Leader';
-      } else if (role === 'program chair') {
+      } else if (role === 'prch') {
         return 'Program Chair';
-      } else if (role === 'college  dean') {
+      } else if (role === 'cldn') {
         return 'College Dean'
-      } else if (role === 'ECR director') {
+      } else if (role === 'ecrd') {
         return 'Director, Extension & Community Relations'
-      } else if (role === 'VCAA') {
+      } else if (role === 'vcaa') {
         return 'Vice - Chancellor for Academic Affairs';
-      } else if (role === 'VCRI') {
+      } else if (role === 'vcri') {
         return 'Vice - Chancellor for Research and Innovation';
-      } else if (role === 'accountant') {
+      } else if (role === 'acnt') {
         return 'Accountant III'
-      }else if (role === 'chancellor') {
+      }else if (role === 'cclr') {
         return 'Chancellor, USTP CDO'
       } else {
         return role;

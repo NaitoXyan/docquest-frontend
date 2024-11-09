@@ -23,7 +23,7 @@ const LoginPage = () => {
 
     try {
       // First request: Login to get the token
-      const loginResponse = await axios.post('https://docquest-production.up.railway.app/auth/token/login/', {
+      const loginResponse = await axios.post('http://127.0.0.1:8000/auth/token/login/', {
         email,
         password,
       });
@@ -33,7 +33,7 @@ const LoginPage = () => {
       localStorage.setItem('token', token);
 
       // Second request: Get user details
-      const userResponse = await axios.get('https://docquest-production.up.railway.app/name_and_roles', {
+      const userResponse = await axios.get('http://127.0.0.1:8000/name_and_roles', {
         headers: {
           'Authorization': `Token ${token}`,
         },
@@ -46,20 +46,20 @@ const LoginPage = () => {
       localStorage.setItem('firstname', JSON.stringify(firstname));
       localStorage.setItem('lastname', JSON.stringify(lastname));
 
-      const rolesList = roles.map(roleObj => roleObj.role);
+      const rolesList = roles.map(roleObj => roleObj.code);
       localStorage.setItem('roles', JSON.stringify(rolesList));
 
       // Navigate based on roles
-      if (rolesList.includes('regular')) {
+      if (rolesList.includes('rglr')) {
         navigate('/user');
       } else if (
-        rolesList.includes('program chair') || 
-        rolesList.includes('college dean') ||
-        rolesList.includes('ECR director') ||
-        rolesList.includes('VCAA') ||
-        rolesList.includes('VCRI') ||
-        rolesList.includes('accountant') ||
-        rolesList.includes('chancellor')
+        rolesList.includes('prch') || 
+        rolesList.includes('cldn') ||
+        rolesList.includes('ecrd') ||
+        rolesList.includes('vcaa') ||
+        rolesList.includes('vcri') ||
+        rolesList.includes('acnt') ||
+        rolesList.includes('cclr')
       ) {
         navigate('/signatory');
       }

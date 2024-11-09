@@ -1,8 +1,9 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-const ProposalFormFirstPage = () => {
+const EditProposalForm = () => {
   const userID = localStorage.getItem('userid');
   const token = localStorage.getItem('token');
   const storedFirstname = JSON.parse(localStorage.getItem('firstname'));
@@ -28,7 +29,9 @@ const ProposalFormFirstPage = () => {
   var chancellor = "Atty. Dionel O. Albina";
   const [agencies, setAgencies] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const { projectID } = useParams();
 
   const [formData, setFormData] = useState({
     userID: userID,
@@ -176,6 +179,46 @@ const ProposalFormFirstPage = () => {
     city: '',
     barangay: '',
   });
+
+  const fetchData = async () => {
+    try {
+      console.log("Fetching data using projectID:", projectID);
+      const response = await axios.get(`http://127.0.0.1:8000/get_project/${projectID}/`, {
+        headers: {
+          'Authorization': `Token ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+      console.log("Fetched data:", response.data); // Log fetched data for debugging
+  
+      // Use spread syntax to update formData fields individually
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        ...response.data,
+        projectLocationID: {
+          ...prevFormData.projectLocationID,
+          ...(response.data.projectLocationID || {})
+        },
+        programChair: {
+          ...prevFormData.programChair,
+          ...(response.data.signatories.find(signatory => signatory.title === "Program Chair") || {})
+        },
+        collegeDean: {
+          ...prevFormData.collegeDean,
+          ...(response.data.signatories.find(signatory => signatory.title === "College Dean") || {})
+        },
+        // Add other nested fields here as needed
+      }));
+  
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  
+  // Fetch data when the component mounts
+  useEffect(() => {
+    fetchData();
+  }, [projectID]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -1777,4 +1820,4 @@ const handleAgencyFormChange = async (e) => {
   );
 };
 
-export default ProposalFormFirstPage;
+export default EditProposalForm;

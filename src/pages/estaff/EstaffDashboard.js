@@ -11,17 +11,14 @@ const ProjLeadDashboard = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 4;
 
-    // Fetch users and document counts from the API
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch users
                 const response = await fetch('/api/users');
                 const usersData = await response.json();
                 setUsers(usersData);
 
-                // Fetch proposal counts
-                const proposalResponse = await fetch('/api/proposals/counts'); // Replace with your actual API endpoint
+                const proposalResponse = await fetch('/api/proposals/counts');
                 const proposalData = await proposalResponse.json();
 
                 setCampusProposalCount(proposalData.campusProposals || 0);
@@ -63,27 +60,22 @@ const ProjLeadDashboard = () => {
                 <div className="flex flex-col mt-14 px-10">
                     <h1 className="text-2xl font-semibold mb-5">Documents Overview</h1>
 
-                    {/* Responsive Overview Cards */}
                     <div className="grid grid-cols-4 gap-4 mb-10">
-                        {/* Campus Proposal */}
                         <div className="bg-gray-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold text-black">Campus Proposal</h2>
                             <h2 className="text-7xl">{campusProposalCount}</h2>
                             <button className="mt-2 underline text-black">View</button>
                         </div>
-                        {/* Shared Proposal */}
                         <div className="bg-gray-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold text-black">Shared Proposal</h2>
                             <h2 className="text-7xl">{sharedProposalCount}</h2>
                             <button className="mt-2 underline text-black">View</button>
                         </div>
-                        {/* Load Trainers */}
                         <div className="bg-gray-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold text-black">Load Trainers</h2>
                             <h2 className="text-7xl">{loadTrainersCount}</h2>
                             <button className="mt-2 underline text-black">View</button>
                         </div>
-                        {/* MOA/MOU */}
                         <div className="bg-gray-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold text-black">MOA/MOU</h2>
                             <h2 className="text-7xl">{moaMouCount}</h2>
@@ -92,8 +84,6 @@ const ProjLeadDashboard = () => {
                     </div>
 
                     <h1 className="text-2xl font-semibold mb-5">Users</h1>
-
-                    {/* Users table */}
                     <div className="bg-white shadow-lg rounded-lg p-6">
                         <div className="overflow-x-auto">
                             <table className="min-w-full table-auto">
@@ -121,8 +111,6 @@ const ProjLeadDashboard = () => {
                                 </tbody>
                             </table>
                         </div>
-
-                        {/* Pagination */}
                         <div className="mt-4 flex justify-between items-center">
                             <div>Showing {indexOfFirstUser + 1} to {Math.min(indexOfLastUser, users.length)} of {users.length} entries</div>
                             <div className="flex space-x-2">

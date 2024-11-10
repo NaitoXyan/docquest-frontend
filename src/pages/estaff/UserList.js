@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../../components/Sidebar";
 import Topbar from "../../components/Topbar";
-// import axios from "axios"; // Comment out axios import
-// import ReactPaginate from "react-paginate"; // Comment out react-paginate import
+// import axios from "axios";
+// import ReactPaginate from "react-paginate";
 
 const UserList = () => {
-    const [users, setUsers] = useState([]); // Store fetched users
-    const [currentPage, setCurrentPage] = useState(0); // Track current page for pagination
-    const [searchTerm, setSearchTerm] = useState(""); // Store search input
+    const [users, setUsers] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [searchTerm, setSearchTerm] = useState("");
 
     const usersPerPage = 10;
 
-    // Fetch users from the database
     useEffect(() => {
-        // Comment out axios-related code to avoid errors
         /*
         const fetchUsers = async () => {
             try {
@@ -26,22 +24,16 @@ const UserList = () => {
         fetchUsers();
         */
     }, []);
-
-    // Handle search input
     const handleSearch = (event) => {
         setSearchTerm(event.target.value);
-        setCurrentPage(0); // Reset to first page when searching
+        setCurrentPage(0);
     };
-
-    // For now, we'll use a static array of users for testing
     const filteredUsers = [
         { fullName: "Valueno, Rabosa A.", email: "valueno.rabosa@gmail.com", position: "Project Leader" },
-        // Add more sample users if needed
     ].filter((user) =>
         user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Pagination logic (comment out react-paginate for now)
     const pageCount = Math.ceil(filteredUsers.length / usersPerPage);
     const offset = currentPage * usersPerPage;
     const displayedUsers = filteredUsers.slice(offset, offset + usersPerPage);
@@ -52,18 +44,15 @@ const UserList = () => {
 
     return (
         <div className="bg-gray-100 min-h-screen flex">
-            {/* Sidebar */}
             <div className="w-1/5 fixed h-full">
                 <Sidebar />
             </div>
 
-            {/* Main content area */}
             <div className="flex-1 ml-[20%]">
                 <Topbar />
                 <div className="flex flex-col mt-14 px-7">
                     <h1 className="text-2xl font-semibold mb-4">Registered Account Users</h1>
 
-                    {/* Search Bar */}
                     <div className="flex justify-between items-center mb-4">
                         <div className="flex space-x-4 items-center">
                             <span className="text-gray-500">Search by: </span>
@@ -80,8 +69,6 @@ const UserList = () => {
                             className="border border-gray-300 rounded-lg p-2 w-1/3"
                         />
                     </div>
-
-                    {/* User Table */}
                     <div className="overflow-x-auto">
                         <table className="min-w-full table-auto bg-white shadow-md">
                             <thead className="bg-vlu text-white">
@@ -117,8 +104,6 @@ const UserList = () => {
                             </tbody>
                         </table>
                     </div>
-
-                    {/* Pagination - commented out for now */}
                     {/* 
                     {filteredUsers.length > usersPerPage && (
                         <ReactPaginate

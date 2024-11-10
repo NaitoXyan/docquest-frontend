@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Topbar from "../../components/Topbar";
 import ProjLeadSidebar from "../../components/ProjLeadSideBar";
+import { useNavigate } from 'react-router-dom';
 
 const ProjLeadDashboard = () => {
     const [projects, setProjects] = useState([]);
     const [statusCounts, setStatusCounts] = useState({ approved: 0, pending: 0, rejected: 0 });
     const userID = localStorage.getItem('userid');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -29,6 +31,10 @@ const ProjLeadDashboard = () => {
         fetchProjects();
     }, []);
 
+    const handleNavigate = (statusFilter) => {
+        navigate(`/project-status/${statusFilter}`);
+      };
+
     return (
         <div className="bg-gray-200 min-h-screen flex">
             <div className="w-1/5 fixed h-full">
@@ -42,17 +48,26 @@ const ProjLeadDashboard = () => {
                         <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Approved</h2>
                             <h2 className="text-4xl font-bold">{statusCounts.approved}</h2>
-                            <button className="mt-2 underline">View</button>
+                            <button className="mt-2 underline" 
+                            onClick={() => handleNavigate("approved")}>
+                                View
+                            </button>
                         </div>
                         <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Pending</h2>
                             <h2 className="text-4xl font-bold">{statusCounts.pending}</h2>
-                            <button className="mt-2 underline">View</button>
+                            <button className="mt-2 underline" 
+                            onClick={() => handleNavigate("pending")}>
+                                View
+                            </button>
                         </div>
                         <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Rejected</h2>
                             <h2 className="text-4xl font-bold">{statusCounts.rejected}</h2>
-                            <button className="mt-2 underline">View</button>
+                            <button className="mt-2 underline" 
+                            onClick={() => handleNavigate("denied")}>
+                                View
+                            </button>
                         </div>
                     </div>
 

@@ -42,7 +42,7 @@ function App() {
         <Route path="/create_proposal" element={<ProjLeadProposalForm />} />
         <Route path="/profile" element={<ProjLeadProfilePage />} />
         <Route path="/load_trainer" element={<ProjLeadLoadTrainer />} />
-        <Route path="/project_status" element={<ProjLeadProjectStatus />} />
+        <Route path="/project-status/:statusFilterParam" element={<ProjLeadProjectStatus />} />
 
         {/* Create proposal routes */}
         <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} />

@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'bg-login': "url('../img/bg-login.png')",
+        'bg-login': "url('../public/images/bg-login.png')",
       },
       backgroundColor: {
         'vlu': '#1A1851',

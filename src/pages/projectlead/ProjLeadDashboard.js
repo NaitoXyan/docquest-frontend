@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Topbar from "../../components/Topbar";
 import ProjLeadSidebar from "../../components/ProjLeadSideBar";
+import { useNavigate } from 'react-router-dom';
 
 const ProjLeadDashboard = () => {
     const [projects, setProjects] = useState([]);
@@ -8,6 +9,7 @@ const ProjLeadDashboard = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 4;
     const userID = localStorage.getItem('userid');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -112,14 +114,26 @@ const ProjLeadDashboard = () => {
                         <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Approved</h2>
                             <h2 className="text-4xl font-bold">{statusCounts.approved}</h2>
+                            <button className="mt-2 underline" 
+                            onClick={() => handleNavigate("approved")}>
+                                View
+                            </button>
                         </div>
                         <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Pending</h2>
                             <h2 className="text-4xl font-bold">{statusCounts.pending}</h2>
+                            <button className="mt-2 underline" 
+                            onClick={() => handleNavigate("pending")}>
+                                View
+                            </button>
                         </div>
                         <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Rejected</h2>
                             <h2 className="text-4xl font-bold">{statusCounts.rejected}</h2>
+                            <button className="mt-2 underline" 
+                            onClick={() => handleNavigate("denied")}>
+                                View
+                            </button>
                         </div>
                     </div>
 

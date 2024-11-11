@@ -29,6 +29,7 @@ import ProposalFormSecondPage from "./components/ProposalFormSecondPage";
 import ProjLeadProjectStatus from "./pages/projectlead/ProjLeadProjectStatus";
 import ProjectPDFViewer from "./components/ProjectPDFViewer";
 import EditProposalForm from "./components/EditProjectForm";
+import PickProjCreateMoa from "./pages/projectlead/ProjLeadPickProjCreateMoa";
 
 function App() {
   return (
@@ -42,10 +43,12 @@ function App() {
         <Route path="/create_proposal" element={<ProjLeadProposalForm />} />
         <Route path="/profile" element={<ProjLeadProfilePage />} />
         <Route path="/load_trainer" element={<ProjLeadLoadTrainer />} />
-        <Route path="/project_status" element={<ProjLeadProjectStatus />} />
+        <Route path="/project-status/:statusFilterParam" element={<ProjLeadProjectStatus />} />
+        <Route path="/pick-project-create-moa" element={<PickProjCreateMoa/>}/>
+        <Route path="create_moa/:projectID" element={<ProjLeadMOAForm />}/>
 
         {/* Create proposal routes */}
-        <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} />
+        {/* <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} /> */}
 
         {/* Other Unorganized */}
         <Route path="/pdf-viewer/:projectID" element={<ProjectPDFViewer />} />

@@ -73,7 +73,7 @@ const ProjLeadProjectStatus = () => {
           <tr>
             <th style={{ border: '1px solid #ddd', padding: '8px' }}>Project Leader</th>
             <th style={{ border: '1px solid #ddd', padding: '8px' }}>Project Title</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Proposed Date of Implementation</th>
+            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Date Submitted</th>
             <th style={{ border: '1px solid #ddd', padding: '8px' }}>Document Status</th>
             <th style={{ border: '1px solid #ddd', padding: '8px' }}>View Document</th>
             <th style={{ border: '1px solid #ddd', padding: '8px' }}>Edit Project</th>

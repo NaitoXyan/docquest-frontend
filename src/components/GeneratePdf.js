@@ -229,12 +229,12 @@ const MyDocument = ({ projectID }) => {
         </View>
         <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
           <Text>
-            TYPE OF PROJECT:          New Project         Continuing Project {/* GET: Type of Project */}
+            TYPE OF PROJECT: {formData.projectType} {/* GET: Type of Project */}
           </Text>
         </View>
         <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
           <Text>
-            PROJECT CATEGORY: Skills Training/Capacity Building     Training Needs Survey     Techical Advice/Consultancy     Monitoring and Evaluation {/* GET: Project Category */}
+            PROJECT CATEGORY: {formData.projectCategory} {/* GET: Project Category */}
           </Text>
         </View>
         <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>

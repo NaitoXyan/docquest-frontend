@@ -195,9 +195,17 @@ const EditProposalForm = () => {
       setFormData(prevFormData => ({
         ...prevFormData,
         ...response.data,
+        userID: response.data.userID.userID,
+        agency: response.data.agency.agencyID ? [response.data.agency.agencyID] : [],
+        proponents: response.data.proponents.map(proponent => proponent.userID),
+        region: response.data.projectLocationID.barangay.city.province.region.regionID,
+        province: response.data.projectLocationID.barangay.city.province.provinceID,
+        city: response.data.projectLocationID.barangay.city.cityID,
+        barangay: response.data.projectLocationID.barangay.barangayID,
         projectLocationID: {
           ...prevFormData.projectLocationID,
-          ...(response.data.projectLocationID || {})
+          street: response.data.projectLocationID.street || "",
+          barangayID: response.data.projectLocationID.barangay.barangayID || 0,
         },
         programChair: {
           ...prevFormData.programChair,
@@ -209,7 +217,15 @@ const EditProposalForm = () => {
         },
         // Add other nested fields here as needed
       }));
-  
+
+       // Check if `loadingOfTrainers` is empty, set checkbox accordingly
+      if (response.data.loadingOfTrainers && response.data.loadingOfTrainers.length === 0) {
+        setIsChecked(false);      // Check the checkbox if empty
+        setShowTrainers(false);    // Show trainers input if empty
+      } else {
+        setIsChecked(true);      // Uncheck the checkbox if not empty
+        setShowTrainers(true);   // Hide trainers input if not empty
+      }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -261,8 +277,8 @@ const EditProposalForm = () => {
     try {
       // Send POST request
       const response = await axios({
-        method: 'post',
-        url: 'http://127.0.0.1:8000/create_project',
+        method: 'put',
+        url: `http://127.0.0.1:8000/edit_project/${projectID}/`,
         headers: {
           'Authorization': `Token ${token}`,
           'Content-Type': 'application/json',

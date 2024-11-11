@@ -116,7 +116,7 @@ function ProjLeadSidebar({ onFilterChange }) {
                     </li>
                     <li>
                         <NavLink
-                            to="/create_moa_mou" // Update this path as per your routing
+                            to="/create_moa" // Update this path as per your routing
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${
                                     isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'

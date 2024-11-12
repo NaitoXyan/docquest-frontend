@@ -3,7 +3,6 @@ import Sidebar from "../../components/Sidebar";
 import Topbar from "../../components/Topbar";
 
 const CreateUser = () => {
-  // State for user form inputs
   const [formData, setFormData] = useState({
     firstName: "",
     middleInitial: "",
@@ -17,12 +16,11 @@ const CreateUser = () => {
     department: "",
   });
 
-  // State for controlling the dropdowns
+
   const [campusDropdownOpen, setCampusDropdownOpen] = useState(false);
   const [collegeDropdownOpen, setCollegeDropdownOpen] = useState(false);
   const [departmentDropdownOpen, setDepartmentDropdownOpen] = useState(false);
 
-  // Toggle functions for dropdowns
   const toggleDropdownCampus = () => {
     setCampusDropdownOpen(!campusDropdownOpen);
   };
@@ -35,23 +33,20 @@ const CreateUser = () => {
     setDepartmentDropdownOpen(!departmentDropdownOpen);
   };
 
-  // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle dropdown selections
   const handleSelectCampus = (campus) => {
     setFormData({ ...formData, campus });
     setCampusDropdownOpen(false);
-    // Optionally, reset dependent fields if needed
     setFormData((prev) => ({ ...prev, college: "", department: "" }));
   };
 
   const handleSelectCollege = (college) => {
     setFormData({ ...formData, college });
     setCollegeDropdownOpen(false);
-    // Optionally, reset dependent fields if needed
+
     setFormData((prev) => ({ ...prev, department: "" }));
   };
 
@@ -60,11 +55,11 @@ const CreateUser = () => {
     setDepartmentDropdownOpen(false);
   };
 
-  // Handle form submission
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validation
+
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
@@ -84,7 +79,6 @@ const CreateUser = () => {
       return;
     }
 
-    // Example POST request to create the user
     try {
       const response = await fetch("/api/users", {
         method: "POST",
@@ -97,7 +91,6 @@ const CreateUser = () => {
       const result = await response.json();
       if (response.ok) {
         alert("User created successfully!");
-        // Optionally, reset the form here
         setFormData({
           firstName: "",
           middleInitial: "",
@@ -121,12 +114,10 @@ const CreateUser = () => {
 
   return (
     <div className="bg-gray-200 min-h-screen flex">
-      {/* Sidebar with fixed width */}
       <div className="w-1/5 fixed h-full">
         <Sidebar />
       </div>
 
-      {/* Main content area */}
       <div className="flex-1 ml-[20%]">
         <Topbar />
         <div className="flex flex-col mt-14">

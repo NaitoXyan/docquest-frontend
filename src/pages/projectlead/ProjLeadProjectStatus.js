@@ -1,108 +1,128 @@
-import React, { useState, useEffect } from "react";
-import { SomeIcon } from '@heroicons/react/outline';
-import Sidebar from "../../components/ProjLeadSideBar";
-import Topbar from "../../components/Topbar";
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
-const mockData = [
-    { projectLeader: 'Valdueno, Jero A.', projectTitle: 'Tesda Vocational', proposedDate: 'May 6, 2024 1:30pm', documentStatus: 'Approved', officeStatus: 'Submitted' },
-    { projectLeader: 'Valdueno, Jero A.', projectTitle: 'Tesda Vocational', proposedDate: 'May 6, 2024 1:30pm', documentStatus: 'Ongoing', officeStatus: 'Submitted' },
-    { projectLeader: 'Valdueno, Jero A.', projectTitle: 'Tesda Vocational', proposedDate: 'May 6, 2024 1:30pm', documentStatus: 'Disapproved', officeStatus: 'Submitted' }
-];
+import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const ProjLeadProjectStatus = () => {
-    const [filter, setFilter] = useState('Approved'); // Default filter
-    const [filteredDocs, setFilteredDocs] = useState([]);
-    const [searchQuery, setSearchQuery] = useState(''); // For search input
+  const [projects, setProjects] = useState([]);
+  const userID = localStorage.getItem('userid');
+  const navigate = useNavigate();
+  const [statusFilter, setStatusFilter] = useState('');
+  const { statusFilterParam } = useParams();
 
-    useEffect(() => {
-        const fetchDocuments = async () => {
-            try {
-                // Replace mockData with actual API call when ready
-                // const response = await axios.get('/api/documents');
-                // const documents = response.data;
-                const documents = mockData;
+  // Fetch data with GET request
+  useEffect(() => {
+    axios.get(`http://127.0.0.1:8000/get_project_status/${userID}/`)
+      .then(response => {
+        setProjects(response.data);
+        console.log(statusFilterParam)
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, [userID]);
 
-                // Apply filter based on documentStatus
-                const filtered = documents.filter(doc => doc.documentStatus === filter);
+  useEffect(() => {
+    if (statusFilterParam) {
+      console.log(statusFilterParam)
+      setStatusFilter(statusFilterParam.toLowerCase());
+    }
+  }, [statusFilterParam]);
 
-                // Apply search filter based on search query (matching project leader or project title)
-                const searchFiltered = filtered.filter(doc =>
-                    doc.projectLeader.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    doc.projectTitle.toLowerCase().includes(searchQuery.toLowerCase())
-                );
+  // Handler for viewing PDF
+  const handleViewPDF = (projectID) => {
+    console.log('this is projectID: ', projectID)
+    navigate(`/pdf-viewer/${projectID}`);
+  };
 
-                setFilteredDocs(searchFiltered);
-            } catch (error) {
-                console.error('Error fetching documents:', error);
-            }
-        };
+  // Handler for editing project
+  const handleEditProject = (projectID) => {
+    console.log('Editing project ID:', projectID);
+    navigate(`/edit-project/${projectID}`);
+  };
 
-        fetchDocuments();
-    }, [filter, searchQuery]); // Refetch when filter or search query changes
+  const handleStatusFilterChange = (event) => {
+    setStatusFilter(event.target.value);
+  }
 
-    return (
-        <div className="bg-gray-200 min-h-screen flex">
-            <div className="w-1/5 fixed h-full">
-                {/* Pass the filter change handler to Sidebar */}
-                <Sidebar onFilterChange={setFilter} />
-            </div>
-            <div className="flex-1 ml-[20%]">
-                <Topbar />
-                <div className="flex justify-between mb-5">
-                    <h1 className="text-2xl font-semibold">Extension Monitoring</h1>
-                </div>
-                {/* Search bar */}
-                <div className="mb-4">
-                    <input
-                        type="text"
-                        placeholder="Search by Project Leader or Title"
-                        className="border p-2 w-full rounded"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                    />
-                </div>
-                {/* Document Table */}
-                <div className="bg-white p-5 rounded-lg shadow-md">
-                    <h2 className="text-lg font-medium mb-4">Activities {filter}</h2>
-                    <table className="min-w-full bg-white">
-                        <thead>
-                            <tr className="py-2 px-4 border-b text-lg">
-                                <th className="py-2 px-4 border-b">Project Leader</th>
-                                <th className="py-2 px-4 border-b">Project Title</th>
-                                <th className="py-2 px-4 border-b">Proposed Date of Implementation</th>
-                                <th className="py-2 px-4 border-b">Document Status</th>
-                                <th className="py-2 px-4 border-b">Office Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredDocs.length > 0 ? (
-                                filteredDocs.map((doc, index) => (
-                                    <tr key={index}>
-                                        <td className="py-2 px-4 border-b">{doc.projectLeader}</td>
-                                        <td className="py-2 px-4 border-b">{doc.projectTitle}</td>
-                                        <td className="py-2 px-4 border-b">{doc.proposedDate}</td>
-                                        <td className="py-2 px-4 border-b">
-                                            <span className={`py-1 px-3 rounded-full text-white ${doc.documentStatus === 'Approved' ? 'bg-green-500' : doc.documentStatus === 'Ongoing' ? 'bg-yellow-500' : 'bg-red-500'}`}>
-                                                {doc.documentStatus}
-                                            </span>
-                                        </td>
-                                        <td className="py-2 px-4 border-b">{doc.officeStatus}</td>
-                                    </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="5" className="text-center py-4">
-                                        No documents found.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    );
+  const filteredProjects = statusFilter
+    ? projects.filter(project => project.status.toLowerCase() === statusFilter.toLocaleLowerCase())
+    : projects;
+
+  return (
+    <div style={{ padding: '20px' }}>
+      <h2>Project List</h2>
+
+      <div style={{ marginBottom: '20px' }}>
+        <label htmlFor="statusFilter" style={{ marginRight: '10px' }}>Filter by Status:</label>
+        <select
+          id="statusFilter"
+          value={statusFilter}
+          onChange={handleStatusFilterChange}
+          style={{ padding: '8px', borderRadius: '4px' }}
+        >
+          <option value="">All</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+      </div>
+
+      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <thead>
+          <tr>
+            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Project Leader</th>
+            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Project Title</th>
+            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Proposed Date of Implementation</th>
+            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Document Status</th>
+            <th style={{ border: '1px solid #ddd', padding: '8px' }}>View Document</th>
+            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Edit Project</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredProjects.length > 0 ? (
+            filteredProjects.map((project, index) => (
+              <tr key={index}>
+                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                  {`${project.projectUser.firstname} ${project.projectUser.lastname}`}
+                </td>
+                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{project.projectTitle}</td>
+                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                  {new Date(project.dateCreated).toLocaleString('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false, // Set to true for 12-hour format
+                  })}
+                </td>
+                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                  {project.status}
+                </td>
+                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                  {/* View document button */}
+                  <button onClick={() => handleViewPDF(project.projectID)}>
+                    View PDF
+                  </button>
+                </td>
+                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
+                  {/* Edit project button */}
+                  <button onClick={() => handleEditProject(project.projectID)}>
+                    Edit Project
+                  </button>
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="6" style={{ textAlign: 'center', padding: '8px' }}>No projects available</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
 };
 
 export default ProjLeadProjectStatus;

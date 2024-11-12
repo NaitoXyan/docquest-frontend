@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import ProjLeadSidebar from "../../components/ProjLeadSideBar";
 import Topbar from "../../components/Topbar";
-import ProposalFormFirstPage from "../../components/ProposalFormFirstPage";
+import MOAForm from "../../components/MOAForm";
 
 const ProjLeadProposalForm = () => {
   const [formData, setFormData] = useState({
@@ -61,7 +61,7 @@ const ProjLeadProposalForm = () => {
       {/* Main Content */}
       <div className="flex-1 ml-[20%]">
         <Topbar />
-        <ProposalFormFirstPage />
+        <MOAForm />
       </div>
     </div>
   );

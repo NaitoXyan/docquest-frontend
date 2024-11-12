@@ -693,8 +693,8 @@ const handleAgencyFormChange = async (e) => {
 
   return (
     <div className="flex flex-col mt-14 px-10">
-      <h1 className="text-2xl font-semibold mb-5 mt-5">
-        Extension Project Proposal
+      <h1 className="text-2xl font-bold mb-5 mt-5">
+        EXTENSION PROJECT PROPOSAL
       </h1>
 
       <form onSubmit={handleSubmit}>
@@ -1291,7 +1291,7 @@ const handleAgencyFormChange = async (e) => {
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4"> 
             <div>
-                <label className="block mb-2 font-semibold">
+                <label className="block mb-2 font-bold text-base">
                     PROJECT LOCATION AND BENEFICIARIES
                 </label>
                 <textarea
@@ -1307,7 +1307,7 @@ const handleAgencyFormChange = async (e) => {
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-semibold text-base">PROJECT MANAGEMENT TEAM/TRAINERS</label>
+              <label className="block mb-2 font-bold text-base">PROJECT MANAGEMENT TEAM/TRAINERS</label>
 
               {/* Render input fields for each TRAINER */}
               {formData.projectManagementTeam.map((personObj, index) => (
@@ -1671,7 +1671,7 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
 
-          <label className="block mb-2 font-semibold">Recommending Approval:</label>
+          <label className="block mb-2 mt-10 font-semibold">Recommending Approval:</label>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block mb-2 font-semibold">
@@ -1715,7 +1715,7 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
 
-          <label className="block mb-2 font-semibold">Funds Available:</label>
+          {/* <label className="block mb-2 font-semibold">Funds Available:</label> */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block mb-2 font-semibold">
@@ -1753,7 +1753,10 @@ const handleAgencyFormChange = async (e) => {
         </div>
 
         {/* submit naa */}
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-4">
+        <button
+          type="submit"
+          className="bg-[#FCC72C] text-[#060E57] px-4 py-2 rounded-lg mb-10 mt-5 m-auto block w-1/4"
+        >
           Submit
         </button>
       </form>

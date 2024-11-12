@@ -33,6 +33,7 @@ import PickProjCreateMoa from "./pages/projectlead/ProjLeadPickProjCreateMoa";
 import ProjLeadMoaStatus from "./pages/projectlead/ProjLeadMoaStatus";
 import ProjLeadEditProject from "./pages/projectlead/ProjLeadEditProject";
 import ProjLeadEditMoaForm from "./pages/projectlead/ProjLeadEditMoaForm";
+import DirectorReviewProject from "./pages/director/DirectorReviewProject";
 
 function App() {
   return (
@@ -51,6 +52,8 @@ function App() {
         <Route path="/create_moa/:projectID" element={<ProjLeadMOAForm />}/>
         <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
         <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
+
+        <Route path="/review-project/:projectID" element={<DirectorReviewProject/>} />
 
         {/* Create proposal routes */}
         {/* <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} /> */}

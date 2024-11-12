@@ -24,9 +24,6 @@ const ProposalFormFirstPage = () => {
   var director = "Dr. Maria Teresa M. Fajardo";
   var vcaa = "Dr. Jocelyn B. Barbosa";
   var vcri = "Engr. Alex L. Maureal";
-  var director = "Maria Teresa M. Fajardo, Ed.D.";
-  var vcaa = "Jocelyn B. Barbosa";
-  var vcri = "ENGR. Alex L. Maureal";
   var accountant = "Cherry Ann S. Villarte, CPA";
   var chancellor = "Atty. Dionel O. Albina";
   const [agencies, setAgencies] = useState([]);

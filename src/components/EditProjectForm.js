@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
-const EditProposalForm = () => {
+const EditProposalForm = ({ projectID }) => {
   const userID = localStorage.getItem('userid');
   const token = localStorage.getItem('token');
   const storedFirstname = JSON.parse(localStorage.getItem('firstname'));
@@ -31,7 +31,6 @@ const EditProposalForm = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  const { projectID } = useParams();
 
   const [formData, setFormData] = useState({
     userID: userID,

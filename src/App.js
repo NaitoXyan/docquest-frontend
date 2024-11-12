@@ -31,6 +31,9 @@ import ProjectPDFViewer from "./components/ProjectPDFViewer";
 import EditProposalForm from "./components/EditProjectForm";
 import PickProjCreateMoa from "./pages/projectlead/ProjLeadPickProjCreateMoa";
 import ProjLeadMoaStatus from "./pages/projectlead/ProjLeadMoaStatus";
+import ProjLeadEditProject from "./pages/projectlead/ProjLeadEditProject";
+import ProjLeadEditMoaForm from "./pages/projectlead/ProjLeadEditMoaForm";
+import DirectorReviewProject from "./pages/director/DirectorReviewProject";
 
 function App() {
   return (
@@ -48,13 +51,16 @@ function App() {
         <Route path="/pick-project-create-moa" element={<PickProjCreateMoa/>}/>
         <Route path="/create_moa/:projectID" element={<ProjLeadMOAForm />}/>
         <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
+        <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
+
+        <Route path="/review-project/:projectID" element={<DirectorReviewProject/>} />
 
         {/* Create proposal routes */}
         {/* <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} /> */}
 
         {/* Other Unorganized */}
         <Route path="/pdf-viewer/:projectID" element={<ProjectPDFViewer />} />
-        <Route path="/edit-project/:projectID" element={<EditProposalForm />} />
+        <Route path="/edit-project/:projectID" element={<ProjLeadEditProject />} />
         <Route path="/estaff" element={<EstaffDashboard />} />
         <Route path="/deptoff" element={<DeptOffDashboard />} />
         <Route path="/coordinator" element={<CoordinatorDashboard />} />

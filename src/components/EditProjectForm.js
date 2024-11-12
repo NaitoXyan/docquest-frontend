@@ -1,8 +1,9 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-const ProposalFormFirstPage = () => {
+const EditProposalForm = () => {
   const userID = localStorage.getItem('userid');
   const token = localStorage.getItem('token');
   const storedFirstname = JSON.parse(localStorage.getItem('firstname'));
@@ -21,9 +22,6 @@ const ProposalFormFirstPage = () => {
   const [showTrainers, setShowTrainers] = useState(false);
   const [programChair, setProgramChair] = useState("");
   const [collegeDean, setCollegeDean] = useState("");
-  var director = "Dr. Maria Teresa M. Fajardo";
-  var vcaa = "Dr. Jocelyn B. Barbosa";
-  var vcri = "Engr. Alex L. Maureal";
   var director = "Maria Teresa M. Fajardo, Ed.D.";
   var vcaa = "Jocelyn B. Barbosa";
   var vcri = "ENGR. Alex L. Maureal";
@@ -31,7 +29,9 @@ const ProposalFormFirstPage = () => {
   var chancellor = "Atty. Dionel O. Albina";
   const [agencies, setAgencies] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+  const { projectID } = useParams();
 
   const [formData, setFormData] = useState({
     userID: userID,
@@ -180,6 +180,62 @@ const ProposalFormFirstPage = () => {
     barangay: '',
   });
 
+  const fetchData = async () => {
+    try {
+      console.log("Fetching data using projectID:", projectID);
+      const response = await axios.get(`http://127.0.0.1:8000/get_project/${projectID}/`, {
+        headers: {
+          'Authorization': `Token ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
+      console.log("Fetched data:", response.data); // Log fetched data for debugging
+  
+      // Use spread syntax to update formData fields individually
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        ...response.data,
+        userID: response.data.userID.userID,
+        agency: response.data.agency.agencyID ? [response.data.agency.agencyID] : [],
+        proponents: response.data.proponents.map(proponent => proponent.userID),
+        region: response.data.projectLocationID.barangay.city.province.region.regionID,
+        province: response.data.projectLocationID.barangay.city.province.provinceID,
+        city: response.data.projectLocationID.barangay.city.cityID,
+        barangay: response.data.projectLocationID.barangay.barangayID,
+        projectLocationID: {
+          ...prevFormData.projectLocationID,
+          street: response.data.projectLocationID.street || "",
+          barangayID: response.data.projectLocationID.barangay.barangayID || 0,
+        },
+        programChair: {
+          ...prevFormData.programChair,
+          ...(response.data.signatories.find(signatory => signatory.title === "Program Chair") || {})
+        },
+        collegeDean: {
+          ...prevFormData.collegeDean,
+          ...(response.data.signatories.find(signatory => signatory.title === "College Dean") || {})
+        },
+        // Add other nested fields here as needed
+      }));
+
+       // Check if `loadingOfTrainers` is empty, set checkbox accordingly
+      if (response.data.loadingOfTrainers && response.data.loadingOfTrainers.length === 0) {
+        setIsChecked(false);      // Check the checkbox if empty
+        setShowTrainers(false);    // Show trainers input if empty
+      } else {
+        setIsChecked(true);      // Uncheck the checkbox if not empty
+        setShowTrainers(true);   // Hide trainers input if not empty
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  
+  // Fetch data when the component mounts
+  useEffect(() => {
+    fetchData();
+  }, [projectID]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
   
@@ -221,8 +277,8 @@ const ProposalFormFirstPage = () => {
     try {
       // Send POST request
       const response = await axios({
-        method: 'post',
-        url: 'http://127.0.0.1:8000/create_project',
+        method: 'put',
+        url: `http://127.0.0.1:8000/edit_project/${projectID}/`,
         headers: {
           'Authorization': `Token ${token}`,
           'Content-Type': 'application/json',
@@ -1780,4 +1836,4 @@ const handleAgencyFormChange = async (e) => {
   );
 };
 
-export default ProposalFormFirstPage;
+export default EditProposalForm;

@@ -1,126 +1,228 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import Topbar from '../../components/Topbar';
+import ProjLeadSidebar from '../../components/ProjLeadSideBar';
+import { SearchIcon } from '@heroicons/react/solid';
 
 const ProjLeadProjectStatus = () => {
   const [projects, setProjects] = useState([]);
+  const [filteredProjects, setFilteredProjects] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [statusFilter, setStatusFilter] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [characterLimit, setCharacterLimit] = useState(42); // Default limit
+  const itemsPerPage = 8;
   const userID = localStorage.getItem('userid');
   const navigate = useNavigate();
-  const [statusFilter, setStatusFilter] = useState('');
   const { statusFilterParam } = useParams();
 
-  // Fetch data with GET request
   useEffect(() => {
     axios.get(`http://127.0.0.1:8000/get_project_status/${userID}/`)
-      .then(response => {
-        setProjects(response.data);
-        console.log(statusFilterParam)
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-  }, [userID]);
+        .then(response => {
+            const sortedProjects = response.data.sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
+            
+            // Apply the "all" filter to show all projects if statusFilterParam is "all" or not defined
+            const initialFilteredProjects = (!statusFilterParam || statusFilterParam.toLowerCase() === 'all')
+                ? sortedProjects
+                : sortedProjects.filter(project => project.status.toLowerCase() === statusFilterParam.toLowerCase());
+
+            setProjects(sortedProjects);
+            setFilteredProjects(initialFilteredProjects);
+            setStatusFilter(statusFilterParam ? statusFilterParam.toLowerCase() : 'all');
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+}, [userID, statusFilterParam]);
+
+
+  
+
 
   useEffect(() => {
     if (statusFilterParam) {
-      console.log(statusFilterParam)
       setStatusFilter(statusFilterParam.toLowerCase());
+      filterProjects(statusFilterParam.toLowerCase());
     }
   }, [statusFilterParam]);
 
-  // Handler for viewing PDF
-  const handleViewPDF = (projectID) => {
-    console.log('this is projectID: ', projectID)
-    navigate(`/pdf-viewer/${projectID}`);
-  };
-
-  // Handler for editing project
-  const handleEditProject = (projectID) => {
-    console.log('Editing project ID:', projectID);
-    navigate(`/edit-project/${projectID}`);
+  const filterProjects = (status) => {
+    const filtered = status
+      ? projects.filter(project => project.status.toLowerCase() === status)
+      : projects;
+    setFilteredProjects(filtered);
+    setCurrentPage(1);
   };
 
   const handleStatusFilterChange = (event) => {
-    setStatusFilter(event.target.value);
-  }
+    const status = event.target.value;
+    setStatusFilter(status);
+    filterProjects(status);
+  };
 
-  const filteredProjects = statusFilter
-    ? projects.filter(project => project.status.toLowerCase() === statusFilter.toLocaleLowerCase())
-    : projects;
+  const handleSearchChange = (event) => {
+    const term = event.target.value.toLowerCase();
+    setSearchTerm(term);
+    setFilteredProjects(
+      projects.filter(project =>
+        `${project.projectUser.firstname} ${project.projectUser.lastname}`.toLowerCase().includes(term) ||
+        project.projectTitle.toLowerCase().includes(term)
+      )
+    );
+    setCurrentPage(1);
+  };
+
+  const handleViewPDF = (projectID) => {
+    navigate(`/pdf-viewer/${projectID}`);
+  };
+
+  const handleEditProject = (projectID) => {
+    navigate(`/edit-project/${projectID}`);
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentProjects = filteredProjects.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`px-3 py-1 rounded-lg ${i === currentPage ? "bg-vlu text-white" : "bg-gray-100"}`}
+        >
+          {i}
+        </button>
+      );
+    }
+    return pageNumbers;
+  };
+
+  // Adjust character limit based on window width
+  useEffect(() => {
+    const updateCharacterLimit = () => {
+      if (window.innerWidth < 640) {
+        setCharacterLimit(20); // Small screens
+      } else if (window.innerWidth < 1024) {
+        setCharacterLimit(30); // Medium screens
+      } else {
+        setCharacterLimit(42); // Large screens
+      }
+    };
+
+    updateCharacterLimit();
+    window.addEventListener('resize', updateCharacterLimit);
+    return () => window.removeEventListener('resize', updateCharacterLimit);
+  }, []);
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Project List</h2>
-
-      <div style={{ marginBottom: '20px' }}>
-        <label htmlFor="statusFilter" style={{ marginRight: '10px' }}>Filter by Status:</label>
-        <select
-          id="statusFilter"
-          value={statusFilter}
-          onChange={handleStatusFilterChange}
-          style={{ padding: '8px', borderRadius: '4px' }}
-        >
-          <option value="">All</option>
-          <option value="pending">Pending</option>
-          <option value="approved">Approved</option>
-          <option value="rejected">Rejected</option>
-        </select>
+    <div className="bg-gray-200 min-h-screen flex">
+      <div className="w-1/5 fixed h-full">
+        <ProjLeadSidebar />
       </div>
 
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Project Leader</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Project Title</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Date Submitted</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Document Status</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>View Document</th>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Edit Project</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredProjects.length > 0 ? (
-            filteredProjects.map((project, index) => (
-              <tr key={index}>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                  {`${project.projectUser.firstname} ${project.projectUser.lastname}`}
-                </td>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>{project.projectTitle}</td>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                  {new Date(project.dateCreated).toLocaleString('en-US', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false, // Set to true for 12-hour format
-                  })}
-                </td>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                  {project.status}
-                </td>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                  {/* View document button */}
-                  <button onClick={() => handleViewPDF(project.projectID)}>
-                    View PDF
-                  </button>
-                </td>
-                <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                  {/* Edit project button */}
-                  <button onClick={() => handleEditProject(project.projectID)}>
-                    Edit Project
-                  </button>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="6" style={{ textAlign: 'center', padding: '8px' }}>No projects available</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      <div className="flex-1 ml-[20%]">
+        <Topbar />
+        <div className="flex flex-col mt-16 px-4 md:px-10">
+          {/* Title, Filter, and Search Row */}
+          <div className="flex flex-col sm:flex-row flex-wrap justify-between items-center mb-4 space-y-4 sm:space-y-0">
+            <h2 className="text-xl sm:text-2xl font-semibold w-full sm:w-auto">Project List</h2>
+            <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 w-full sm:w-auto">
+              <div className="relative w-full sm:w-48">
+                <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="w-full pl-10 pr-3 py-1.5 border rounded-md"
+                />
+              </div>
+              <div className="w-full sm:w-auto">
+                <label htmlFor="statusFilter" className="mr-2">Filter by Status:</label>
+                <select
+                  id="statusFilter"
+                  value={statusFilter}
+                  onChange={handleStatusFilterChange}
+                  className="w-full sm:w-auto px-3 py-2 border rounded-md"
+                >
+                  <option value="">All</option>
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Project List Table */}
+          <div className="bg-white shadow-lg rounded-lg py-4 px-2 sm:px-4">
+            <div className="overflow-x-auto">
+              <table className="min-w-full table-auto">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Leader</th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Title</th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">View Document</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Edit Project</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {currentProjects.length > 0 ? (
+                    currentProjects.map((project, index) => (
+                      <tr key={index}>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">{`${project.projectUser.firstname} ${project.projectUser.lastname}`}</td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap overflow-hidden text-ellipsis">
+                          <span title={project.projectTitle}>
+                            {project.projectTitle.length > characterLimit ? `${project.projectTitle.slice(0, characterLimit)}...` : project.projectTitle}
+                          </span>
+                        </td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          {new Date(project.dateCreated).toLocaleDateString()}
+                        </td>
+                        <td className="px-3 sm:px-4 py-3">
+                          <span
+                            className={`px-2 py-1 rounded-md text-white ${
+                              project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
+                              project.status.toLowerCase() === 'pending' ? 'bg-yellow-500' :
+                              'bg-red-500'
+                            }`}
+                          >
+                            {project.status}
+                          </span>
+                        </td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
+                          <button className="text-blue-900 underline" onClick={() => handleViewPDF(project.projectID)}>View PDF</button>
+                        </td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
+                          <button className="text-blue-900 underline" onClick={() => handleEditProject(project.projectID)}>Edit Project</button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" className="text-center py-4">No projects available</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-2 flex justify-center items-center space-x-2">
+              {renderPageNumbers()}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

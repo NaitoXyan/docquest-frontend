@@ -43,7 +43,7 @@ const UserProfile = () => {
     }
     console.log(userID);
     // Fetch user details
-    axios.get('https://docquest-production.up.railway.app/get_user_details', {
+    axios.get('http://127.0.0.1:8000/get_user_details', {
       headers: {
         'Authorization': `Token ${token}`,
       }

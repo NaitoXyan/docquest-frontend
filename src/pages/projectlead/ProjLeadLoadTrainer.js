@@ -121,7 +121,7 @@ const LoadTrainer = () => {
       <div className="flex-1 ml-[20%]">
         <Topbar />
         <div className="flex flex-col mt-14 px-10">
-          <h1 className="text-2xl font-semibold mb-5 mt-5">Load Trainer</h1>
+          <h1 className="text-2xl font-bold mb-5 mt-5">LOAD TRAINER</h1>
 
           <form
             className="bg-white p-8 rounded-lg shadow-md space-y-6"
@@ -158,19 +158,21 @@ const LoadTrainer = () => {
 
             {/* Second Row - Trainers Table */}
             <div className="relative">
-              <label className="block mb-2 font-semibold">Trainers:</label>
+              <label className="block mb-2 font-bold">Trainers' Details</label>
               <div className="overflow-x-auto">
                 <table className="min-w-full border">
-                  <thead>
-                    <tr>
-                      <th className="px-4 py-2 border bg-gray-300">Name of Faculty</th>
-                      <th className="px-4 py-2 border bg-gray-300">Training Load</th>
-                      <th className="px-4 py-2 border bg-gray-300">No. of Hours</th>
-                      <th className="px-4 py-2 border bg-gray-300">USTP Budget</th>
-                      <th className="px-4 py-2 border bg-gray-300">Partner Agency Budget</th>
-                      <th className="px-4 py-2 border bg-gray-300">Total Budgetary Requirement</th>
-                    </tr>
-                  </thead>
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2 border bg-gray-300 w-[250px]" style={{ fontSize: '12px' }}>Name of Faculty</th>
+                    <th className="px-4 py-2 border bg-gray-300 w-[300px]" style={{ fontSize: '12px' }}>Training Load</th>
+                    <th className="px-4 py-2 border bg-gray-300 w-[85px]" style={{ fontSize: '12px' }}>No. of Hours</th>
+                    <th className="px-4 py-2 border bg-gray-300 w-[150px]" style={{ fontSize: '12px' }}>USTP Budget</th>
+                    <th className="px-4 py-2 border bg-gray-300 w-[75px]" style={{ fontSize: '12px' }}>Partner Agency Budget</th>
+                    <th className="px-4 py-2 border bg-gray-300 w-[100px]" style={{ fontSize: '12px' }}>Total Budgetary Requirement</th> {/* Add another row/column 6 for the overall total calculation for Total Budgetary Requirement */}
+                  </tr>
+                </thead>
+
+
                   <tbody>
                     {trainers.map((trainer, index) => (
                       <tr key={index}>
@@ -204,7 +206,7 @@ const LoadTrainer = () => {
                             type="number"
                             required
                             className="w-full p-1 border border-gray-300 rounded"
-                            placeholder="Hours"
+                            placeholder="Hrs"
                             min="0"
                           />
                         </td>
@@ -295,7 +297,7 @@ const LoadTrainer = () => {
                   type="text"
                   required
                   className="w-full p-2 border border-gray-300 rounded"
-                  placeholder="Name of approver"
+                  placeholder="Name of Approver"
                 />
               </div>
             </div>

@@ -23,8 +23,8 @@ const EditProposalForm = ({ projectID }) => {
   const [programChair, setProgramChair] = useState("");
   const [collegeDean, setCollegeDean] = useState("");
   var director = "Maria Teresa M. Fajardo, Ed.D.";
-  var vcaa = "Jocelyn B. Barbosa";
-  var vcri = "ENGR. Alex L. Maureal";
+  var vcaa = "Dr. Jocelyn B. Barbosa";
+  var vcri = "Engr. Alex L. Maureal";
   var accountant = "Cherry Ann S. Villarte, CPA";
   var chancellor = "Atty. Dionel O. Albina";
   const [agencies, setAgencies] = useState([]);
@@ -1407,7 +1407,7 @@ const handleAgencyFormChange = async (e) => {
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-bold">BUDGETARY REQUIREMENTS</label>
+              <label className="block mb-2 font-bold">BUDGETARY REQUIREMENTS</label> {/* Walay remove button for Budgetary Requirements */}
             </div>
           </div>
 

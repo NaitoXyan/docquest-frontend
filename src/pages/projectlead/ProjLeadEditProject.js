@@ -3,8 +3,9 @@ import ProjLeadSidebar from "../../components/ProjLeadSideBar";
 import Topbar from "../../components/Topbar";
 import MOAForm from "../../components/MOAForm";
 import { useParams } from "react-router-dom";
+import EditProposalForm from "../../components/EditProjectForm";
 
-const ProjLeadMoaForm = () => {
+const ProjLeadEditProject = () => {
   const { projectID } = useParams();
 
   return (
@@ -17,10 +18,10 @@ const ProjLeadMoaForm = () => {
       {/* Main Content */}
       <div className="flex-1 ml-[20%]">
         <Topbar />
-        <MOAForm projectID={projectID} />
+        <EditProposalForm projectID={projectID} />
       </div>
     </div>
   );
 };
 
-export default ProjLeadMoaForm;
+export default ProjLeadEditProject;

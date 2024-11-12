@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import ProjLeadSidebar from "../../components/ProjLeadSideBar";
 import Topbar from "../../components/Topbar";
-import MOAForm from "../../components/MOAForm";
+import EditMOAForm from "../../components/EditMoaForm";
 import { useParams } from "react-router-dom";
 
-const ProjLeadMoaForm = () => {
-  const { projectID } = useParams();
+const ProjLeadEditMoaForm = () => {
+  const { moaID } = useParams();
 
   return (
     <div className="bg-gray-200 min-h-screen flex">
@@ -17,10 +17,10 @@ const ProjLeadMoaForm = () => {
       {/* Main Content */}
       <div className="flex-1 ml-[20%]">
         <Topbar />
-        <MOAForm projectID={projectID} />
+        <EditMOAForm moaID={moaID} />
       </div>
     </div>
   );
 };
 
-export default ProjLeadMoaForm;
+export default ProjLeadEditMoaForm;

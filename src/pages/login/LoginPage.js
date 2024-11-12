@@ -84,7 +84,12 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-bg-login bg-cover bg-center">
+    <div
+      className="flex items-center justify-center min-h-screen bg-cover bg-center"
+      style={{
+        backgroundImage: "url('/images/bg-login3.png')"
+      }}
+    >
       <div className="w-full max-w-md p-9 ">
         <div className="flex justify-center my-1">
           <img src="/images/logo1.png" alt="DocQuestLogo" className="w-48" />
@@ -99,7 +104,7 @@ const LoginPage = () => {
 
         <form onSubmit={handleSubmit} className="">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="block text-sm font-medium text-black-700" style={{ color: "#060E57" }} >
               Email
             </label>
             <input
@@ -112,9 +117,13 @@ const LoginPage = () => {
             />
           </div>
           <div>
-            <label htmlFor="password" className="block mt-0.5 text-sm font-medium text-gray-700">
-              Password
-            </label>
+          <label
+            htmlFor="password"
+            className="block mt-0.5 text-sm font-medium"
+            style={{ color: "#060E57" }}
+          >
+            Password
+          </label>
             <input
               type="password"
               id="password"

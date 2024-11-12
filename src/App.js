@@ -46,7 +46,7 @@ function App() {
         <Route path="/user" element={<ProjLeadDashboard />} />
         <Route path="/create_proposal" element={<ProjLeadProposalForm />} />
         <Route path="/profile" element={<ProjLeadProfilePage />} />
-        <Route path="/load_trainer" element={<ProjLeadLoadTrainer />} />
+        <Route path="/load_trainer" element={<ProjLeadLoadTrainer />} /> {/* Add another row/column 6 for the overall total calculation for Total Budgetary Requirement */}
         <Route path="/project-status/:statusFilterParam" element={<ProjLeadProjectStatus />} />
         <Route path="/pick-project-create-moa" element={<PickProjCreateMoa/>}/>
         <Route path="/create_moa/:projectID" element={<ProjLeadMOAForm />}/>
@@ -60,7 +60,7 @@ function App() {
 
         {/* Other Unorganized */}
         <Route path="/pdf-viewer/:projectID" element={<ProjectPDFViewer />} />
-        <Route path="/edit-project/:projectID" element={<ProjLeadEditProject />} />
+        <Route path="/edit-project/:projectID" element={<ProjLeadEditProject />} /> {/* Walay remove button for Budgetary Requirements */}
         <Route path="/estaff" element={<EstaffDashboard />} />
         <Route path="/deptoff" element={<DeptOffDashboard />} />
         <Route path="/coordinator" element={<CoordinatorDashboard />} />

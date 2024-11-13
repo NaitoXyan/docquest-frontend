@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
-
 const ProjLeadMoaStatus = () => {
   const [moas, setMoas] = useState([]);
   const userID = localStorage.getItem('userid');

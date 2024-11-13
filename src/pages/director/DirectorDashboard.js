@@ -3,7 +3,7 @@ import Topbar from "../../components/Topbar";
 import ProjLeadSidebar from "../../components/ProjLeadSideBar";
 import { useNavigate } from 'react-router-dom';
 
-const ProjLeadDashboard = () => {
+const DirectorDashboard = () => {
     const [projects, setProjects] = useState([]);
     const [statusCounts, setStatusCounts] = useState({ approved: 0, pending: 0, rejected: 0 });
     const [currentPage, setCurrentPage] = useState(1);
@@ -201,4 +201,4 @@ const ProjLeadDashboard = () => {
     );
 };
 
-export default ProjLeadDashboard;
+export default DirectorDashboard;

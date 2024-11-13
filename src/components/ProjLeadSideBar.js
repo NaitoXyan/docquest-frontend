@@ -1,30 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
 
 function ProjLeadSidebar({ onFilterChange }) {
-    const [isSubMenuVisible, setIsSubMenuVisible] = useState(false);
+    const [activeDropdown, setActiveDropdown] = useState(null); // To track which dropdown is open
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Determine if the current path is under Projects Management
-    const isProjectsManagementActive = location.pathname.startsWith("/create_proposal") ||
-                                        location.pathname.startsWith("/approved") ||
-                                        location.pathname.startsWith("/ongoing") ||
-                                        location.pathname.startsWith("/disapproved");
+    // Helper function to check if the pathname is related to a specific section
+    const isPathActive = (path) => location.pathname.startsWith(path);
 
-    useEffect(() => {
-        if (isProjectsManagementActive) {
-            setIsSubMenuVisible(true);
-        } else {
-            setIsSubMenuVisible(false);
-        }
-    }, [isProjectsManagementActive]);
+    const handleNavigate = (statusFilter = 'all') => {
+        console.log("Navigating to:", `/project-status/${statusFilter}`);
+        navigate(`/project-status/${statusFilter.toLowerCase()}`);
+    };
 
     const handleLogout = async () => {
         const token = localStorage.getItem('token');
-        console.log(token);
-        
         try {
             await axios.post('https://docquest-production.up.railway.app/auth/token/logout/', {}, {
                 headers: {
@@ -34,9 +26,13 @@ function ProjLeadSidebar({ onFilterChange }) {
         } catch (error) {
             console.error("Logout failed:", error);
         }
-
         localStorage.removeItem('token');
         navigate('/login');
+    };
+
+    const toggleDropdown = (dropdown) => {
+        // Toggle the dropdown and close others
+        setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
     };
 
     return (
@@ -50,8 +46,7 @@ function ProjLeadSidebar({ onFilterChange }) {
                         <NavLink
                             to="/user"
                             className={({ isActive }) =>
-                                `text-lg block px-6 py-3 ${
-                                    isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
                                 }`
                             }
                         >
@@ -60,20 +55,52 @@ function ProjLeadSidebar({ onFilterChange }) {
                     </li>
                     <li>
                         <button
-                            onClick={() => setIsSubMenuVisible(!isSubMenuVisible)}
-                            className={`text-lg w-full text-left block px-6 py-3 ${
-                                isProjectsManagementActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
-                            } focus:outline-none`}
+                            onClick={() => toggleDropdown('projectMonitoring')}
+                            className={`text-lg w-full text-left block px-6 py-3 ${isPathActive("/project-status") ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                } focus:outline-none`}
                         >
-                            Projects Management
+                            Project Monitoring
                         </button>
-                        <ul className={`${isSubMenuVisible ? '' : 'hidden'} bg-indigo-900`}>
+                        <ul className={`${activeDropdown === 'projectMonitoring' ? '' : 'hidden'} bg-indigo-900`}>
+                            <li>
+                                <NavLink
+                                    to="/project-status/all"
+                                    onClick={() => handleNavigate('all')}
+                                    className={({ isActive }) =>
+                                        `text-lg pl-10 block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                        }`
+                                    }
+                                >
+                                    Project List
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
+                                    to="/moa-status"
+                                    className={({ isActive }) =>
+                                        `text-lg pl-10 block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                        }`
+                                    }
+                                >
+                                    MOA Status
+                                </NavLink>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <button
+                            onClick={() => toggleDropdown('projectCreation')}
+                            className={`text-lg w-full text-left block px-6 py-3 ${isPathActive("/create_proposal") || isPathActive("/create_moa") || isPathActive("/load_trainer") ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                } focus:outline-none`}
+                        >
+                            Project Creation
+                        </button>
+                        <ul className={`${activeDropdown === 'projectCreation' ? '' : 'hidden'} bg-indigo-900`}>
                             <li>
                                 <NavLink
                                     to="/create_proposal"
                                     className={({ isActive }) =>
-                                        `block px-6 py-3 ${
-                                            isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                        `text-lg pl-10 block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
                                         }`
                                     }
                                 >
@@ -82,60 +109,32 @@ function ProjLeadSidebar({ onFilterChange }) {
                             </li>
                             <li>
                                 <NavLink
-                                    to="/approved"
+                                    to="/create_moa"
                                     className={({ isActive }) =>
-                                        `block px-6 py-3 ${
-                                            isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                        `text-lg pl-10 block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
                                         }`
                                     }
-                                    onClick={() => onFilterChange('Approved')}
                                 >
-                                    Approved
+                                    Create MOA/MOU
                                 </NavLink>
                             </li>
                             <li>
                                 <NavLink
-                                    to="/ongoing"
+                                    to="/load_trainer"
                                     className={({ isActive }) =>
-                                        `block px-6 py-3 ${
-                                            isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                        `text-lg pl-10 block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
                                         }`
                                     }
-                                    onClick={() => onFilterChange('Ongoing')}
                                 >
-                                    Ongoing
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink
-                                    to="/disapproved"
-                                    className={({ isActive }) =>
-                                        `block px-6 py-3 ${
-                                            isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
-                                        }`
-                                    }
-                                    onClick={() => onFilterChange('Disapproved')}
-                                >
-                                    Disapproved
+                                    Load Trainer
                                 </NavLink>
                             </li>
                         </ul>
                     </li>
                     <li>
+
                         <NavLink
-                            to="/load_trainer"
-                            className={({ isActive }) =>
-                                `text-lg block px-6 py-3 ${
-                                    isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
-                                }`
-                            }
-                        >
-                            Load Trainer
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            to="/create_moa_mou" // Update this path as per your routing
+                            to="/pick-project-create-moa" // Update this path as per your routing
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${
                                     isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
@@ -146,9 +145,10 @@ function ProjLeadSidebar({ onFilterChange }) {
                         </NavLink>
                     </li>
                     <li>
+
                         <button
                             onClick={handleLogout}
-                            className="text-lg block px-6 py-3 hover:text-yellow-500 w-full text-left"
+                            className="text-lg text-white block px-6 py-3 hover:text-red-600 w-full text-left"
                         >
                             Log out
                         </button>

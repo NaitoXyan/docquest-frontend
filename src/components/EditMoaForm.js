@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import { useParams } from 'react-router-dom';
 
-const MOAForm = ({ projectID }) => {
+const EditMOAForm = ({ moaID }) => {
   const token = localStorage.getItem('token');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    projectID: projectID,
     partyADescription: "",
     partyBDescription: "",
     termination: "",
@@ -54,6 +54,44 @@ const MOAForm = ({ projectID }) => {
       }
     ]
   });
+
+  const fetchData = async () => {
+    try {
+      console.log("Fetching data using moaID:", moaID);
+      const response = await axios.get(`http://127.0.0.1:8000/get_moa/${moaID}/`, {
+        headers: {
+          'Authorization': `Token ${token}`,
+          'Content-Type': 'application/json',   
+        }
+      });
+      console.log("Fetched data:", response.data); // Log fetched data for debugging
+
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        ...response.data,
+        partyAObligation: response.data.partyObligation
+            .filter(obligation => obligation.party === "party A")
+            .map(obligation => ({
+                obligation: obligation.obligation,
+                party: "party A",
+            })),
+        partyBObligation: response.data.partyObligation
+            .filter(obligation => obligation.party === "party B")
+            .map(obligation => ({
+                obligation: obligation.obligation,
+                party: "party B",
+            })),
+      }));
+      console.log("Form data:", formData);
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [moaID]);
 
   // Handle form change for party descriptions
   const handleFormChange = (e) => {
@@ -248,8 +286,8 @@ const MOAForm = ({ projectID }) => {
     try {
       // Send POST request
       const response = await axios({
-        method: 'post',
-        url: 'http://127.0.0.1:8000/create_moa',
+        method: 'put',
+        url: `http://127.0.0.1:8000/edit_moa/${moaID}/`,
         headers: {
           'Authorization': `Token ${token}`,
           'Content-Type': 'application/json',
@@ -277,7 +315,7 @@ const MOAForm = ({ projectID }) => {
   return (
     <div className="flex flex-col mt-14 px-10">
       <h1 className="text-2xl font-semibold mb-5 mt-5">
-        MEMORANDUM OF AGREEMENT / MEMORANDUM OF UNDERSTANDING
+        MEMORANDUM OF AGREEMENT
       </h1>
 
       <form onSubmit={handleSubmit}>
@@ -585,13 +623,9 @@ const MOAForm = ({ projectID }) => {
         </div>
 
         {/* submit naa */}
-        <button 
-          type="submit" 
-          className="bg-[#FCC72C] text-[#060E57] px-4 py-2 rounded-lg mb-10 mt-5 m-auto block w-1/4"
-        >
+        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-4 mb-4">
           Create
         </button>
-
       </form>
 
       {/* Success Modal */}
@@ -613,4 +647,4 @@ const MOAForm = ({ projectID }) => {
   );
 };
 
-export default MOAForm;
+export default EditMOAForm;

@@ -204,7 +204,7 @@ const MyDocument = ({ projectID }) => {
             </View>
             <View style={[styles.tableColthree, { borderRight: 1, borderColor: '#000', justifyContent: 'center', fontSize: 8, fontFamily: 'ArialB', paddingTop: 1, paddingBottom: 1 }]}>
               <Text>
-                {formData.dateCreated.substring(0, 10)}  {/* GET: Effective Date of proposal */}
+              08.01.23 {/* {formData.dateCreated.substring(0, 10)}  GET: Effective Date of proposal */}
               </Text>
             </View>
             <View style={[styles.tableColthree, { justifyContent: 'center', fontSize: 8, fontFamily: 'ArialB', paddingTop: 1, paddingBottom: 1 }]}>
@@ -367,19 +367,19 @@ const MyDocument = ({ projectID }) => {
             </Text>
           </View>
         </View>
-        <View style={[{ border: 1, borderBottom: 0, paddingLeft: '20%', paddingRight: '20%', fontFamily: 'ArialB', }]}>
+        <View style={[{ border: 1, borderBottom: 0, paddingLeft: '20%', paddingRight: '20%', fontFamily: 'ArialB', paddingTop: '2%' }]}>
           <Text>
             Submitted by:
           </Text>
-          <Text style={[{ textAlign: 'center', paddingTop: 5, textDecoration: 'underline', paddingBottom: 5, }]}>
+          <Text style={[{ textAlign: 'center', paddingTop: '8%', textDecoration: 'underline', paddingBottom: 5, }]}>
             {`${formData.userID?.firstname} ${formData.userID?.lastname}`}
           </Text>
         </View>
-        <View style={[{ border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
+        <View style={[{ border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', paddingTop: '2%' }]}>
           <Text>
             Endorsed by:
           </Text>
-          <View style={[{ flexDirection: 'row', paddingTop: '1%' }]}>
+          <View style={[{ flexDirection: 'row', paddingTop: '5%' }]}>
             <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', }]}>
               "fgfdgdgdgdfg"
             </Text>
@@ -388,7 +388,7 @@ const MyDocument = ({ projectID }) => {
             </Text>
           </View>
           <View style={[{ flexDirection: 'row', paddingBottom: '1%' }]}>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center'}]}>
               Program Chair
             </Text>
             <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
@@ -396,21 +396,21 @@ const MyDocument = ({ projectID }) => {
             </Text>
           </View>
         </View>
-        <View style={[{ border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%' }]}>
+        <View style={[{ border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', paddingTop: '2%' }]}>
           <Text style={{ fontFamily: 'ArialB', }}>
             Recommending Approval:
           </Text>
-          <Text style={[{ textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', }]}>
+          <Text style={[{ textAlign: 'center', textDecoration: 'underline', paddingTop: '5%', fontFamily: 'ArialB', }]}>
             MARIA TERESA M. FRAJARDO. Ed.D. {/* GET: Direcctor of extension office name */}
           </Text>
-          <Text style={[{ textAlign: 'center', }]}>
+          <Text style={[{ textAlign: 'center' }]}>
             Director, Extension & Community Relations
           </Text>
           <View style={[{ flexDirection: 'row', }]}>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', }]}>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: '8%', fontFamily: 'ArialB', }]}>
               DR. JOCELYN B. BARBOSA  {/* GET: Vice - chansellor of accademic affairs */}
             </Text>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', }]}>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: '8%', fontFamily: 'ArialB', }]}>
               ENGR. ALEX L. MAUREAL {/* GET: vice chancellor for research and innovation */}
             </Text>
           </View>
@@ -423,15 +423,15 @@ const MyDocument = ({ projectID }) => {
             </Text>
           </View>
         </View>
-        <View style={[{ border: 1, paddingLeft: '1%', paddingRight: '1%' }]}>
+        <View style={[{ border: 1, paddingLeft: '1%', paddingRight: '1%', paddingTop: '2%' }]}>
           <Text style={[{ fontFamily: 'ArialB', }]}>
             Funds Available:
           </Text>
           <View style={[{ flexDirection: 'row', paddingTop: '1%' }]}>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB', }]}>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB', paddingTop: '8%' }]}>
               CHERRY ANN S. VILLARTE. CPA  {/* GET: Accountant name */}
             </Text>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB', }]}>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB', paddingTop: '8%' }]}>
               ATTY. DIONEL O. ALBINA  {/* GET: Chancellor,, USTP CDO name */}
             </Text>
           </View>
@@ -513,9 +513,9 @@ const MyDocument = ({ projectID }) => {
             </View>
           </View>
         </View>
-        <View style={[{ justifyContent: 'center', alignItems: 'center', marginTop: '1%' }]}>
-          <Text style={[{ fontSize: 13 }]}>
-            Extension Project Proposal
+        <View style={[{ justifyContent: 'center', alignItems: 'center', marginTop: '5%' }]}>
+          <Text style={[{ fontSize: 10, fontFamily: 'ArialB'   }]}>
+            EXTENSION PROJECT PROPOSAL
           </Text>
         </View>
         <View style={[{ justifyContent: 'center', alignItems: 'center', marginTop: '1%', marginBottom: '1%' }]}>
@@ -532,10 +532,10 @@ const MyDocument = ({ projectID }) => {
         <Text style={[{ fontFamily: 'ArialB', padding: '1%', }]}>
           II. Goals and Objectives of the Project
         </Text>
-        <Text>
+        <Text style={[{ paddingLeft: '3%', }]}>
           Specifically, the objectives of the project are:
         </Text>
-        <Text style={[{ padding: '1%', }]}>
+        <Text style={[{ paddingLeft: '3%', padding: '1%' }]}>
           1. {formData.goalsAndObjectives?.length
             ? formData.goalsAndObjectives.map((gaoItem, index) => (
               <Text>
@@ -1267,51 +1267,51 @@ const MyDocument = ({ projectID }) => {
             </View>
           </View>
         </View>
-        <View style={[{ justifyContent: 'center', alignItems: 'center', marginTop: '1%' }]}>
+        <View style={[{ justifyContent: 'center', alignItems: 'center', marginTop: '5%' }]}>
           <Text style={[{ fontSize: 10, fontFamily: 'ArialB' }]}>
             LOADING OF TRAINERS FOR EXTENSION SERVICES
           </Text>
         </View>
-        <Text style={[{ paddingtop: '2%' }]}>
-          Project Title
+        <Text style={[{ paddingTop: '5%' }]}>
+          Project Title: 
         </Text>
-        <Text style={[{ paddingBottom: '2%' }]}>
-          Partner Agency
+        <Text style={[{ paddingBottom: '2%', paddingTop: '2%' }]}>
+          Partner Agency: 
         </Text>
         <View style={[{ flexDirection: 'row', textAlign: 'center', backgroundColor: '#DCDCDC'}]}>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
+          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center', alignItems: 'center' }]}>
             <Text>
               Name of Faculty
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
+          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center', alignItems: 'center' }]}>
             <Text>
               Training Load
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
+          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center', alignItems: 'center' }]}>
             <Text>
               No. of Hours
             </Text>
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
-            <Text style={[{ borderBottom: 1 }]}>
+            <Text style={[{ borderBottom: 1, justifyContent: 'center', alignItems: 'center', paddin: '1%' }]}>
               Budget
             </Text>
             <View style={[{ flexDirection: 'row' }]}>
-              <View style={[styles.tableColtwo, { borderRight: 1 }]}>
+              <View style={[styles.tableColtwo, { borderRight: 1, justifyContent: 'center', alignItems: 'center' }]}>
                 <Text>
                   USTP
                 </Text>
               </View>
-              <View style={[styles.tableColtwo, {}]}>
+              <View style={[styles.tableColtwo, {justifyContent: 'center', alignItems: 'center', padding: '1%'}]}>
                 <Text>
                   Partner Agency
                 </Text>
               </View>
             </View>
           </View>
-          <View style={[styles.tableColfive, { borderBottom: 0, }]}>
+          <View style={[styles.tableColfive, { borderBottom: 0, justifyContent: 'center', alignItems: 'center', padding: '1%' }]}>
             <Text>
               Total Budgetary Requirement
             </Text>
@@ -1412,7 +1412,7 @@ const MyDocument = ({ projectID }) => {
 
                 </Text>
               </View>
-              <View style={[styles.tableColtwo, {}]}>
+              <View style={[styles.tableColtwo, {padding: '1%', fontWeight: 'bold'}]}>
                 <Text>
                   Total
                 </Text>
@@ -1425,7 +1425,7 @@ const MyDocument = ({ projectID }) => {
             </Text>
           </View>
         </View>
-        <Text style={[{ fontFamily: 'ArialB' }]}>
+        <Text style={[{ fontFamily: 'ArialB', paddingTop: '8%' }]}>
           Prepared by:
         </Text>
         <Text style={[{ padding: '1%' }]}>
@@ -1434,7 +1434,7 @@ const MyDocument = ({ projectID }) => {
         <Text style={[{ padding: '1%' }]}>
           *
         </Text>
-        <Text style={[{ fontFamily: 'ArialB' }]}>
+        <Text style={[{ fontFamily: 'ArialB', paddingTop: '5%' }]}>
           Approved:
         </Text>
         <Text style={[{ padding: '1%' }]}>

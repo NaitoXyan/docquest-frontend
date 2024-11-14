@@ -195,6 +195,8 @@ const MyDocument = ({ projectID }) => {
     return text.match(regex).join('\n');
   };
 
+  const paragraphs = formData.background.split('\n').filter(paragraph => paragraph.trim() !== '');
+
   return (
     <Document>
       {/* first page */}
@@ -616,9 +618,13 @@ const MyDocument = ({ projectID }) => {
           <Text style={[{ fontFamily: 'ArialB' }]}>
             I. Background of the Project
           </Text>
-          <Text style={[{ padding: '1%' }]}>
-            {formData.background}
-          </Text>
+          {paragraphs.map((paragraph, index) => (
+            <Text key={index} style={{textAlign: 'justify', textIndent: 15, marginBottom: '2%', paddingTop: '1%', paddingBottom: '1%'}}>
+              {paragraph}
+            </Text>
+          ))}
+
+
           <Text style={[{ padding: '1%' }]}>
 
           </Text>
@@ -695,7 +701,7 @@ const MyDocument = ({ projectID }) => {
                     }}
                   >
                     {/* Column for Project Objective */}
-                    <View style={[styles.tableColfour, { width: '25%', padding: 1, borderTop:0, borderRight: 0,}]}>
+                    <View style={[styles.tableColfour, { width: '25%', padding: 1, borderTop: 0, borderRight: 0, }]}>
                       <Text
                         style={{
                           overflow: 'hidden',
@@ -708,7 +714,7 @@ const MyDocument = ({ projectID }) => {
                     </View>
 
                     {/* Column for Activities Involved */}
-                    <View style={[styles.tableColfour, { width: '25%', padding: 1, borderRight: 0, borderTop:0}]}>
+                    <View style={[styles.tableColfour, { width: '25%', padding: 1, borderRight: 0, borderTop: 0 }]}>
                       <Text
                         style={{
                           overflow: 'hidden',
@@ -721,7 +727,7 @@ const MyDocument = ({ projectID }) => {
                     </View>
 
                     {/* Column for Target Date */}
-                    <View style={[styles.tableColfour, { width: '25%', padding: 1, borderRight: 0, borderTop:0}]}>
+                    <View style={[styles.tableColfour, { width: '25%', padding: 1, borderRight: 0, borderTop: 0 }]}>
                       <Text
                         style={{
                           overflow: 'hidden',
@@ -734,7 +740,7 @@ const MyDocument = ({ projectID }) => {
                     </View>
 
                     {/* Column for Person Responsible */}
-                    <View style={[styles.tableColfour, { width: '25%', padding: 1, borderTop:0}]}>
+                    <View style={[styles.tableColfour, { width: '25%', padding: 1, borderTop: 0 }]}>
                       <Text
                         style={{
                           overflow: 'hidden',

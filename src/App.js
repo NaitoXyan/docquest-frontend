@@ -35,6 +35,9 @@ import ProjLeadMoaStatus from "./pages/projectlead/ProjLeadMoaStatus";
 import ProjLeadEditProject from "./pages/projectlead/ProjLeadEditProject";
 import ProjLeadEditMoaForm from "./pages/projectlead/ProjLeadEditMoaForm";
 import DirectorReviewProject from "./pages/director/DirectorReviewProject";
+import DirectorDashboard from "./pages/director/DirectorDashboard";
+import ProjLeadStatusBar from './pages/projectlead/ProjLeadStatusBar'; // Correct path
+
 
 function App() {
   return (
@@ -54,9 +57,12 @@ function App() {
         <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
         <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
 
-
-
+        {/*director routes  */}
+        <Route path="/director" element={<DirectorDashboard/>} />
         <Route path="/review-project/:projectID" element={<DirectorReviewProject/>} />
+        
+        
+        <Route path="/projectlead" element={<ProjLeadStatusBar />} />
 
         {/* Create proposal routes */}
         {/* <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} /> */}

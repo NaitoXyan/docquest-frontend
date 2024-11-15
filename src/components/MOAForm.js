@@ -277,7 +277,7 @@ const MOAForm = ({ projectID }) => {
   return (
     <div className="flex flex-col mt-14 px-10">
       <h1 className="text-2xl font-semibold mb-5 mt-5">
-        MEMORANDUM OF AGREEMENT
+        MEMORANDUM OF AGREEMENT / MEMORANDUM OF UNDERSTANDING
       </h1>
 
       <form onSubmit={handleSubmit}>
@@ -585,9 +585,13 @@ const MOAForm = ({ projectID }) => {
         </div>
 
         {/* submit naa */}
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-4 mb-4">
+        <button 
+          type="submit" 
+          className="bg-[#FCC72C] text-[#060E57] px-4 py-2 rounded-lg mb-10 mt-5 m-auto block w-1/4"
+        >
           Create
         </button>
+
       </form>
 
       {/* Success Modal */}

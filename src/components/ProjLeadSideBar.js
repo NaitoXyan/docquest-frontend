@@ -132,20 +132,6 @@ function ProjLeadSidebar({ onFilterChange }) {
                         </ul>
                     </li>
                     <li>
-
-                        <NavLink
-                            to="/pick-project-create-moa" // Update this path as per your routing
-                            className={({ isActive }) =>
-                                `text-lg block px-6 py-3 ${
-                                    isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
-                                }`
-                            }
-                        >
-                            Create MOA/MOU
-                        </NavLink>
-                    </li>
-                    <li>
-
                         <button
                             onClick={handleLogout}
                             className="text-lg text-white block px-6 py-3 hover:text-red-600 w-full text-left"

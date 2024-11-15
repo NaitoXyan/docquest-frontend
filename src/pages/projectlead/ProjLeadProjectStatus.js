@@ -19,25 +19,25 @@ const ProjLeadProjectStatus = () => {
 
   useEffect(() => {
     axios.get(`http://127.0.0.1:8000/get_project_status/${userID}/`)
-        .then(response => {
-            const sortedProjects = response.data.sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
-            
-            // Apply the "all" filter to show all projects if statusFilterParam is "all" or not defined
-            const initialFilteredProjects = (!statusFilterParam || statusFilterParam.toLowerCase() === 'all')
-                ? sortedProjects
-                : sortedProjects.filter(project => project.status.toLowerCase() === statusFilterParam.toLowerCase());
+      .then(response => {
+        const sortedProjects = response.data.sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
 
-            setProjects(sortedProjects);
-            setFilteredProjects(initialFilteredProjects);
-            setStatusFilter(statusFilterParam ? statusFilterParam.toLowerCase() : 'all');
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-        });
-}, [userID, statusFilterParam]);
+        // Apply the "all" filter to show all projects if statusFilterParam is "all" or not defined
+        const initialFilteredProjects = (!statusFilterParam || statusFilterParam.toLowerCase() === 'all')
+          ? sortedProjects
+          : sortedProjects.filter(project => project.status.toLowerCase() === statusFilterParam.toLowerCase());
+
+        setProjects(sortedProjects);
+        setFilteredProjects(initialFilteredProjects);
+        setStatusFilter(statusFilterParam ? statusFilterParam.toLowerCase() : 'all');
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, [userID, statusFilterParam]);
 
 
-  
+
 
 
   useEffect(() => {
@@ -74,7 +74,11 @@ const ProjLeadProjectStatus = () => {
   };
 
   const handleViewPDF = (projectID) => {
-    navigate(`/pdf-viewer/${projectID}`);
+    // Assuming you have a URL to the PDF that includes the project ID
+    const pdfUrl = `/pdf-viewer/${projectID}`;
+  
+    // Open the PDF URL in a new tab
+    window.open(pdfUrl, '_blank');
   };
 
   const handleEditProject = (projectID) => {
@@ -105,6 +109,8 @@ const ProjLeadProjectStatus = () => {
     }
     return pageNumbers;
   };
+
+  
 
   // Adjust character limit based on window width
   useEffect(() => {
@@ -192,17 +198,21 @@ const ProjLeadProjectStatus = () => {
                         </td>
                         <td className="px-3 sm:px-4 py-3">
                           <span
-                            className={`px-2 py-1 rounded-md text-white ${
-                              project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
-                              project.status.toLowerCase() === 'pending' ? 'bg-yellow-500' :
-                              'bg-red-500'
-                            }`}
+                            className={`px-2 py-1 rounded-md text-white ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
+                                project.status.toLowerCase() === 'pending' ? 'bg-yellow-500' :
+                                  'bg-red-500'
+                              }`}
                           >
                             {project.status}
                           </span>
                         </td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
-                          <button className="text-blue-900 underline" onClick={() => handleViewPDF(project.projectID)}>View PDF</button>
+                          <button
+                            className="text-blue-900 underline"
+                            onClick={() => handleViewPDF(project.projectID)}
+                          >
+                            View PDF
+                          </button>
                         </td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
                           <button className="text-blue-900 underline" onClick={() => handleEditProject(project.projectID)}>Edit Project</button>

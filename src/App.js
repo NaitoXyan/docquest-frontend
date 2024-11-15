@@ -34,9 +34,11 @@ import PickProjCreateMoa from "./pages/projectlead/ProjLeadPickProjCreateMoa";
 import ProjLeadMoaStatus from "./pages/projectlead/ProjLeadMoaStatus";
 import ProjLeadEditProject from "./pages/projectlead/ProjLeadEditProject";
 import ProjLeadEditMoaForm from "./pages/projectlead/ProjLeadEditMoaForm";
-import DirectorReviewProject from "./pages/director/DirectorReviewProject";
+import DirectorReviewProject from "./pages/director/DirectorReviewProject"
+import ProposalFormFirstPage_Deliverables from "./components/ProposalFormFirstPage_Deliverables";
 import DirectorDashboard from "./pages/director/DirectorDashboard";
 import ProjLeadStatusBar from './pages/projectlead/ProjLeadStatusBar'; // Correct path
+
 
 
 function App() {
@@ -50,10 +52,11 @@ function App() {
         <Route path="/user" element={<ProjLeadDashboard />} />
         <Route path="/create_proposal" element={<ProjLeadProposalForm />} />
         <Route path="/profile" element={<ProjLeadProfilePage />} />
-        <Route path="/load_trainer" element={<ProjLeadLoadTrainer />} /> {/* Add another row/column 6 for the overall total calculation for Total Budgetary Requirement */}
-        <Route path="/project-status/:statusFilterParam" element={<ProjLeadProjectStatus />} />
-        <Route path="/pick-project-create-moa" element={<PickProjCreateMoa/>}/>
+        <Route path="/load_trainer" element={<ProjLeadLoadTrainer />} />
+        <Route path="/project-status/:statusFilterParam" element={<ProjLeadProjectStatus />} /> "need UI/UX"
+        <Route path="/pick-project-create-moa" element={<PickProjCreateMoa/>}/> "need UI/UX"
         <Route path="/create_moa/:projectID" element={<ProjLeadMOAForm />}/>
+          
         <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
         <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
 

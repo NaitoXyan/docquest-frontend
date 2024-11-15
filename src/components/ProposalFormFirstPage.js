@@ -691,6 +691,45 @@ const handleAgencyFormChange = async (e) => {
     setShowTrainers(!showTrainers);
   };
 
+  // Initialize state for program options based on selected college
+  const [programOptions, setProgramOptions] = useState([]);
+
+  // Function to handle college changes and update the program options
+  const handleCollegeChange = (selectedCollege) => {
+    setFormData((prev) => ({
+      ...prev,
+      college: selectedCollege,
+      program: "", // Reset program when college changes
+    }));
+
+    // Update program options based on selected college
+    const programsByCollege = {
+      CITC: ["BSIT", "BSCS", "BSIS"],
+      CEA: ["BSEE", "BSCpE", "BSME"],
+      CSM: ["BSBio", "BSChem", "BSMath"],
+      CoT: ["BSAutotronics", "BSRobotics", "BSMultimediaRobot"],
+      CSTE: ["BSMathEd", "BSSciEd", "BSTVLEd"],
+    };
+
+    setProgramOptions(programsByCollege[selectedCollege] || []);
+  };
+
+  // Generic form change handler
+  const handleProgramChange = (name, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const removeBudgetItem = (index) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      budgetRequirements: prevFormData.budgetRequirements.filter((_, i) => i !== index),
+    }));
+  };
+  
+
   return (
     <div className="flex flex-col mt-14 px-10">
       <h1 className="text-2xl font-semibold mb-5 mt-3">
@@ -871,17 +910,41 @@ const handleAgencyFormChange = async (e) => {
 
           {/* Fourth Row */}
           <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block mb-2 font-semibold">PROGRAM</label>
-              <input
-                name="program"
-                value={formData.program}
-                onChange={(e) => handleFormChange(e.target.name, e.target.value.toUpperCase())}
-                type="text"
-                placeholder="Ex: BSIT"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
+          <div>
+            <label className="block mb-2 font-semibold">COLLEGE</label>
+            <select
+              name="college"
+              value={formData.college}
+              onChange={(e) => handleCollegeChange(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded"
+            >
+              <option value="" disabled>Select College</option>
+              {/* Replace with actual colleges */}
+              <option value="CITC">CITC</option>
+              <option value="CEA">CEA</option>
+              <option value="CSM">CSM</option>
+              <option value="CoT">CoT</option>
+              <option value="CSTE">CSTE</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block mb-2 font-semibold">PROGRAM</label>
+            <select
+              name="program"
+              value={formData.program}
+              onChange={(e) => handleProgramChange(e.target.name, e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded"
+            >
+              <option value="" disabled>Select Program</option>
+              {programOptions.map((program) => (
+                <option key={program} value={program}>
+                  {program}
+                </option>
+              ))}
+            </select>
+          </div>
+
 
             <div>
               <label className="block mb-2 font-semibold">
@@ -900,18 +963,6 @@ const handleAgencyFormChange = async (e) => {
                 <option value="IV">IV</option>
                 <option value="V">V</option>
               </select>
-            </div>
-
-            <div>
-              <label className="block mb-2 font-semibold">COLLEGE</label>
-              <input
-                name="college"
-                value={formData.college}
-                onChange={(e) => handleFormChange(e.target.name, e.target.value.toUpperCase())}
-                type="text"
-                placeholder="Ex: CITC"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
             </div>
           </div>
 
@@ -1208,6 +1259,7 @@ const handleAgencyFormChange = async (e) => {
             </div>
         </div>
 
+        {/* PROJECT IMPLEMENTATION PLAN AND MANAGEMENT */}
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
             <div>
@@ -1291,7 +1343,7 @@ const handleAgencyFormChange = async (e) => {
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4"> 
             <div>
-                <label className="block mb-2 font-semibold">
+                <label className="block mb-2 font-bold text-base">
                     PROJECT LOCATION AND BENEFICIARIES
                 </label>
                 <textarea
@@ -1307,7 +1359,7 @@ const handleAgencyFormChange = async (e) => {
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-semibold text-base">PROJECT MANAGEMENT TEAM/TRAINERS</label>
+              <label className="block mb-2 font-bold text-base">PROJECT MANAGEMENT TEAM/TRAINERS</label>
 
               {/* Render input fields for each TRAINER */}
               {formData.projectManagementTeam.map((personObj, index) => (
@@ -1345,7 +1397,8 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
         </div>
-
+        
+        {/* BUDGETARY REQUIREMENTS */}
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
             <div>
@@ -1354,7 +1407,7 @@ const handleAgencyFormChange = async (e) => {
           </div>
 
           {formData.budgetRequirements.map((budgetItem, index) => (
-            <div key={index} className="grid grid-cols-4 gap-4">
+            <div key={index} className="grid grid-cols-4 gap-4 mb-4">
               <div>
                 <label className="block mb-2 font-semibold">ITEM NAME</label>
                 <input
@@ -1394,13 +1447,47 @@ const handleAgencyFormChange = async (e) => {
                   className="w-full p-2 border border-gray-300 rounded"
                 />
               </div>
+
+              {/* Remove Button for Each Item */}
+              <div className="col-span-4 text-right m-0">
+              <button
+                type="button"
+                onClick={() => removeBudgetItem(index)} // Remove the item at this index
+                disabled={index === 0} // Disable the remove button for the first item
+                className={`p-1 border-1 border-0 bg-transparent rounded ${index === 0 ? "cursor-not-allowed" : "hover:border-red-5 hover:text-white active:border-red-5 active:text-white"}`}
+              >
+                {index === 0 ? (
+                  ""
+                ) : (
+                  <span className="text-red-500">Remove Item</span> // Only this part will be red
+                )}
+              </button>
+              </div>
             </div>
           ))}
 
-          <button type="button" onClick={addBudgetItem} className="mt-4 p-2 bg-blue-500 text-white rounded">
-            Add Budget Item
-          </button>
+          {/* Total Amount Calculation */}
+          <div className="grid grid-cols-4 gap-4 mt-4">
+            <div></div>
+            <div></div>
+            <div className="font-semibold text-right">Total Amount:</div>
+            <div className="font-semibold">
+              {formData.budgetRequirements.reduce((acc, budgetItem) => acc + parseFloat(budgetItem.totalAmount || 0), 0)}
+            </div>
+          </div>
+
+          {/* Add Button */}
+          <div className="flex space-x-2 mt-2">
+            <button
+              type="button"
+              onClick={addBudgetItem}
+              className="mt-4 p-2 bg-blue-500 text-white rounded"
+            >
+              Add Budget Item
+            </button>
+          </div>
         </div>
+
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           {/* Table Headers */}
@@ -1671,7 +1758,7 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
 
-          <label className="block mb-2 font-semibold">Recommending Approval:</label>
+          <label className="block mb-2 mt-10 font-semibold">Recommending Approval:</label>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block mb-2 font-semibold">
@@ -1715,7 +1802,7 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
 
-          <label className="block mb-2 font-semibold">Funds Available:</label>
+          {/* <label className="block mb-2 font-semibold">Funds Available:</label> */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block mb-2 font-semibold">
@@ -1753,7 +1840,10 @@ const handleAgencyFormChange = async (e) => {
         </div>
 
         {/* submit naa */}
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-4">
+        <button
+          type="submit"
+          className="bg-[#FCC72C] text-[#060E57] px-4 py-2 rounded-lg mb-10 mt-5 m-auto block w-1/4"
+        >
           Submit
         </button>
       </form>

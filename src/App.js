@@ -34,6 +34,7 @@ import ProjLeadMoaStatus from "./pages/projectlead/ProjLeadMoaStatus";
 import ProjLeadEditProject from "./pages/projectlead/ProjLeadEditProject";
 import ProjLeadEditMoaForm from "./pages/projectlead/ProjLeadEditMoaForm";
 import DirectorReviewProject from "./pages/director/DirectorReviewProject";
+import EstaffScancopy from "./pages/estaff/EstaffScancopy";
 
 function App() {
   return (
@@ -65,6 +66,7 @@ function App() {
         <Route path="/deptoff" element={<DeptOffDashboard />} />
         <Route path="/coordinator" element={<CoordinatorDashboard />} />
         <Route path="/signatory" element={<SignatoryDashboard />} />
+        <Route path="/estaff/scancopy" element={<EstaffScancopy />} />
       </Routes>
 
       // <div style={{ height: '100vh' }}>

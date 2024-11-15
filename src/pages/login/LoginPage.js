@@ -52,10 +52,11 @@ const LoginPage = () => {
       // Navigate based on roles
       if (rolesList.includes('rglr')) {
         navigate('/user');
+      } else if (rolesList.includes('ecrd')) {
+        navigate('/director');
       } else if (
-        rolesList.includes('prch') || 
+        rolesList.includes('prch') ||
         rolesList.includes('cldn') ||
-        rolesList.includes('ecrd') ||
         rolesList.includes('vcaa') ||
         rolesList.includes('vcri') ||
         rolesList.includes('acnt') ||
@@ -84,10 +85,17 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-        
+    <div
+      className="flex items-center justify-center min-h-screen bg-cover bg-center"
+      style={{
+        backgroundImage: "url('/images/bg-login3.png')"
+      }}
+    >
+      <div className="w-full max-w-md p-9 ">
+        <div className="flex justify-center my-1">
+          <img src="/images/logo1.png" alt="DocQuestLogo" className="w-48" />
+        </div>
+
         {/* Display error message if exists */}
         {error && (
           <div className="mb-4 text-red-500 text-sm">
@@ -95,9 +103,9 @@ const LoginPage = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="email" className="block text-sm font-medium text-black-700" style={{ color: "#060E57" }} >
               Email
             </label>
             <input
@@ -106,27 +114,28 @@ const LoginPage = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 bg-gray-300 rounded-md shadow-sm border focus:outline-none focus:border-indigo-500 sm:text-sm"
             />
           </div>
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
+          <label
+            htmlFor="password"
+            className="block mt-0.5 text-sm font-medium"
+            style={{ color: "#060E57" }}
+          >
+            Password
+          </label>
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              className="mt-1 block w-full px-3 py-2 bg-gray-300 rounded-md shadow-sm border focus:outline-none focus:border-indigo-500 sm:text-sm"
             />
           </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-          >
-            Login
+          <button type="submit" className="w-full mt-6 bg-indigo-950 text-white py-2 px-4 rounded-md shadow-sm hover:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <h1 className='font-semibold'>Login</h1>
           </button>
         </form>
       </div>

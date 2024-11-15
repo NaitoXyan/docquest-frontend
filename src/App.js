@@ -25,6 +25,7 @@ import MyDocument from "./components/GeneratePdf";
 import MOAPDF from "./components/GenerateMOA-PDF";
 import MyDocument1 from "./components/GeneratePdf copy";
 import { PDFViewer } from "@react-pdf/renderer";
+import ProposalFormFirstPage from "./components/ProposalFormFirstPage";
 import ProposalFormSecondPage from "./components/ProposalFormSecondPage";
 import ProjLeadProjectStatus from "./pages/projectlead/ProjLeadProjectStatus";
 import ProjectPDFViewer from "./components/ProjectPDFViewer";
@@ -33,7 +34,12 @@ import PickProjCreateMoa from "./pages/projectlead/ProjLeadPickProjCreateMoa";
 import ProjLeadMoaStatus from "./pages/projectlead/ProjLeadMoaStatus";
 import ProjLeadEditProject from "./pages/projectlead/ProjLeadEditProject";
 import ProjLeadEditMoaForm from "./pages/projectlead/ProjLeadEditMoaForm";
-import DirectorReviewProject from "./pages/director/DirectorReviewProject";
+import DirectorReviewProject from "./pages/director/DirectorReviewProject"
+import ProposalFormFirstPage_Deliverables from "./components/ProposalFormFirstPage_Deliverables";
+import DirectorDashboard from "./pages/director/DirectorDashboard";
+import ProjLeadStatusBar from './pages/projectlead/ProjLeadStatusBar'; // Correct path
+
+
 
 function App() {
   return (
@@ -47,20 +53,26 @@ function App() {
         <Route path="/create_proposal" element={<ProjLeadProposalForm />} />
         <Route path="/profile" element={<ProjLeadProfilePage />} />
         <Route path="/load_trainer" element={<ProjLeadLoadTrainer />} />
-        <Route path="/project-status/:statusFilterParam" element={<ProjLeadProjectStatus />} />
-        <Route path="/pick-project-create-moa" element={<PickProjCreateMoa/>}/>
+        <Route path="/project-status/:statusFilterParam" element={<ProjLeadProjectStatus />} /> "need UI/UX"
+        <Route path="/pick-project-create-moa" element={<PickProjCreateMoa/>}/> "need UI/UX"
         <Route path="/create_moa/:projectID" element={<ProjLeadMOAForm />}/>
+          
         <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
         <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
 
+        {/*director routes  */}
+        <Route path="/director" element={<DirectorDashboard/>} />
         <Route path="/review-project/:projectID" element={<DirectorReviewProject/>} />
+        
+        
+        <Route path="/projectlead" element={<ProjLeadStatusBar />} />
 
         {/* Create proposal routes */}
         {/* <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} /> */}
 
         {/* Other Unorganized */}
         <Route path="/pdf-viewer/:projectID" element={<ProjectPDFViewer />} />
-        <Route path="/edit-project/:projectID" element={<ProjLeadEditProject />} />
+        <Route path="/edit-project/:projectID" element={<ProjLeadEditProject />} /> {/* Walay remove button for Budgetary Requirements */}
         <Route path="/estaff" element={<EstaffDashboard />} />
         <Route path="/deptoff" element={<DeptOffDashboard />} />
         <Route path="/coordinator" element={<CoordinatorDashboard />} />

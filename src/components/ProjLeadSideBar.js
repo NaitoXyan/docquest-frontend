@@ -10,7 +10,12 @@ function ProjLeadSidebar({ onFilterChange }) {
     // Helper function to check if the pathname is related to a specific section
     const isPathActive = (path) => location.pathname.startsWith(path);
 
-    const handleNavigate = (statusFilter = 'all') => {
+    const handleProjectNavigate = (statusFilter = 'all') => {
+        console.log("Navigating to:", `/project-status/${statusFilter}`);
+        navigate(`/project-status/${statusFilter.toLowerCase()}`);
+    };
+
+    const handleMOANavigate = (statusFilter = 'all') => {
         console.log("Navigating to:", `/project-status/${statusFilter}`);
         navigate(`/project-status/${statusFilter.toLowerCase()}`);
     };
@@ -65,7 +70,7 @@ function ProjLeadSidebar({ onFilterChange }) {
                             <li>
                                 <NavLink
                                     to="/project-status/all"
-                                    onClick={() => handleNavigate('all')}
+                                    // onClick={() => handleProjectNavigate('all')}
                                     className={({ isActive }) =>
                                         `text-lg pl-10 block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
                                         }`
@@ -76,7 +81,8 @@ function ProjLeadSidebar({ onFilterChange }) {
                             </li>
                             <li>
                                 <NavLink
-                                    to="/moa-status"
+                                    to="/moa-status/all"
+                                    // onClick={() => handleMOANavigate('all')}
                                     className={({ isActive }) =>
                                         `text-lg pl-10 block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
                                         }`
@@ -109,7 +115,7 @@ function ProjLeadSidebar({ onFilterChange }) {
                             </li>
                             <li>
                                 <NavLink
-                                    to="/create_moa"
+                                    to="/pick-project-create-moa"
                                     className={({ isActive }) =>
                                         `text-lg pl-10 block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
                                         }`
@@ -132,20 +138,6 @@ function ProjLeadSidebar({ onFilterChange }) {
                         </ul>
                     </li>
                     <li>
-
-                        <NavLink
-                            to="/pick-project-create-moa" // Update this path as per your routing
-                            className={({ isActive }) =>
-                                `text-lg block px-6 py-3 ${
-                                    isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
-                                }`
-                            }
-                        >
-                            Create MOA/MOU
-                        </NavLink>
-                    </li>
-                    <li>
-
                         <button
                             onClick={handleLogout}
                             className="text-lg text-white block px-6 py-3 hover:text-red-600 w-full text-left"

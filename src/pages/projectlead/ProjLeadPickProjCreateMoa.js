@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import Topbar from "../../components/Topbar";
+import ProjLeadSidebar from "../../components/ProjLeadSideBar";
 
 const PickProjCreateMoa = () => {
   const [projects, setProjects] = useState([]);
@@ -31,53 +33,61 @@ const PickProjCreateMoa = () => {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="bg-gray-200 min-h-screen flex">
+      <div className="w-1/5 fixed h-full">
+                <ProjLeadSidebar />
+      </div>
       <h2>Approved Projects</h2>
-
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th style={styles.th}>Project Title</th>
-            <th style={styles.th}>Date Submitted</th>
-            <th style={styles.th}>Document Status</th>
-            <th style={styles.th}>Create MOA</th>
-          </tr>
-        </thead>
-        <tbody>
-          {projects.length > 0 ? (
-            projects.map((project, index) => (
-              <tr key={index} style={styles.tr}>
-                <td style={styles.td}>{project.projectTitle}</td>
-                <td style={styles.td}>
-                  {new Date(project.dateCreated).toLocaleString('en-US', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false, // 24-hour format
-                  })}
-                </td>
-                <td style={styles.td}>{project.status}</td>
-                <td style={styles.td}>
-                  <button 
-                    onClick={() => handleCreateMOA(project.projectID)}
-                    style={styles.button}
-                  >
-                    Create MOA
-                  </button>
-                </td>
-              </tr>
-            ))
-          ) : (
+      <div className="flex-1 ml-[10%]">
+         <Topbar />
+        <div className="flex flex-col mt-16 px-10">
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
             <tr>
-              <td colSpan="4" style={{ textAlign: 'center', padding: '8px' }}>
-                No approved projects available.
-              </td>
+              <th style={{ ...styles.th, width: '50%' }}>Project Title</th>       
+              <th style={{ ...styles.th, width: '20%' }}>Date Submitted</th>      
+              <th style={{ ...styles.th, width: '15%' }}>Document Status</th>    
+              <th style={{ ...styles.th, width: '10%' }}>Create MOA</th>         
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+
+            <tbody>
+              {projects.length > 0 ? (
+                projects.map((project, index) => (
+                  <tr key={index} style={styles.tr}>
+                    <td style={styles.td}>{project.projectTitle}</td>
+                    <td style={styles.td}>
+                      {new Date(project.dateCreated).toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false, // 24-hour format
+                      })}
+                    </td>
+                    <td style={styles.td}>{project.status}</td>
+                    <td style={styles.td}>
+                      <button 
+                        onClick={() => handleCreateMOA(project.projectID)}
+                        style={styles.button}
+                      >
+                        Create MOA
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="4" style={{ textAlign: 'center', padding: '8px' }}>
+                    No approved projects available.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };
@@ -85,10 +95,12 @@ const PickProjCreateMoa = () => {
 // Define common styles
 const styles = {
   th: {
-    border: '1px solid #ddd',
+    border: '2px solid #ddd',
     padding: '12px',
     backgroundColor: '#f2f2f2',
-    textAlign: 'left',
+    textAlign: 'center',
+    fontSize: '13px', 
+    color: '#333', 
   },
   td: {
     border: '1px solid #ddd',

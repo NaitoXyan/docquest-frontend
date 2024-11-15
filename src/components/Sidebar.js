@@ -39,7 +39,8 @@ function Sidebar() {
             console.error("Logout failed:", error);
         }
 
-        localStorage.removeItem('token');
+        localStorage.clear();
+
         navigate('/login');
     };
 

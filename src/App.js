@@ -35,6 +35,12 @@ import ProjLeadMoaStatus from "./pages/projectlead/ProjLeadMoaStatus";
 import ProjLeadEditProject from "./pages/projectlead/ProjLeadEditProject";
 import ProjLeadEditMoaForm from "./pages/projectlead/ProjLeadEditMoaForm";
 import DirectorReviewProject from "./pages/director/DirectorReviewProject";
+import ProposalFormFirstPage_Deliverables from "./components/ProposalFormFirstPage_Deliverables";
+import DirectorDashboard from "./pages/director/DirectorDashboard";
+import ProjLeadStatusBar from './pages/projectlead/ProjLeadStatusBar'; // Correct path
+import VPALADashboard from "./pages/vpala/VPALADashboard";
+import VPALASideBar from './components/VPALASideBar';
+import VPALAMemoList from "./pages/vpala/VPALAMemoList";
 
 function App() {
   return (
@@ -51,16 +57,19 @@ function App() {
         <Route path="/project-status/:statusFilterParam" element={<ProjLeadProjectStatus />} /> "need UI/UX"
         <Route path="/pick-project-create-moa" element={<PickProjCreateMoa/>}/> "need UI/UX"
         <Route path="/create_moa/:projectID" element={<ProjLeadMOAForm />}/>
-          
+        <Route path="/projectlead" element={<ProjLeadStatusBar />} />
         <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
         <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
 
         {/*director routes  */}
         <Route path="/director" element={<DirectorDashboard/>} />
         <Route path="/review-project/:projectID" element={<DirectorReviewProject/>} />
+
+        {/*VPAPLA Routes  */}
+        <Route path="/vpala" element={<VPALADashboard/>}/>
         
-        
-        <Route path="/projectlead" element={<ProjLeadStatusBar />} />
+        {/* EStaff routes */}
+        <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>
 
         {/* Create proposal routes */}
         {/* <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} /> */}

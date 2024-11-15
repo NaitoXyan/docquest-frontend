@@ -34,16 +34,13 @@ import PickProjCreateMoa from "./pages/projectlead/ProjLeadPickProjCreateMoa";
 import ProjLeadMoaStatus from "./pages/projectlead/ProjLeadMoaStatus";
 import ProjLeadEditProject from "./pages/projectlead/ProjLeadEditProject";
 import ProjLeadEditMoaForm from "./pages/projectlead/ProjLeadEditMoaForm";
-import DirectorReviewProject from "./pages/director/DirectorReviewProject"
+import DirectorReviewProject from "./pages/director/DirectorReviewProject";
 import ProposalFormFirstPage_Deliverables from "./components/ProposalFormFirstPage_Deliverables";
 import DirectorDashboard from "./pages/director/DirectorDashboard";
 import ProjLeadStatusBar from './pages/projectlead/ProjLeadStatusBar'; // Correct path
 import VPALADashboard from "./pages/vpala/VPALADashboard";
 import VPALASideBar from './components/VPALASideBar';
 import VPALAMemoList from "./pages/vpala/VPALAMemoList";
-
-
-
 
 function App() {
   return (
@@ -84,6 +81,7 @@ function App() {
         <Route path="/deptoff" element={<DeptOffDashboard />} />
         <Route path="/coordinator" element={<CoordinatorDashboard />} />
         <Route path="/signatory" element={<SignatoryDashboard />} />
+        <Route path="/estaff/scancopy" element={<EstaffScancopy />} />
       </Routes>
 
       // <div style={{ height: '100vh' }}>

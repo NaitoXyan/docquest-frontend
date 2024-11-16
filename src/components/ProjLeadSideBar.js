@@ -124,7 +124,7 @@ function ProjLeadSidebar({ onFilterChange }) {
                                     Create MOA/MOU
                                 </NavLink>
                             </li>
-                            <li>
+                            {/* <li>
                                 <NavLink
                                     to="/load_trainer"
                                     className={({ isActive }) =>
@@ -134,7 +134,7 @@ function ProjLeadSidebar({ onFilterChange }) {
                                 >
                                     Load Trainer
                                 </NavLink>
-                            </li>
+                            </li> */}
                         </ul>
                     </li>
                     <li>

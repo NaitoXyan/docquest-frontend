@@ -64,7 +64,7 @@ function ProjLeadSidebar({ onFilterChange }) {
                             className={`text-lg w-full text-left block px-6 py-3 ${isPathActive("/project-status") ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
                                 } focus:outline-none`}
                         >
-                            Project Monitoring
+                            Project Status
                         </button>
                         <ul className={`${activeDropdown === 'projectMonitoring' ? '' : 'hidden'} bg-indigo-900`}>
                             <li>
@@ -76,7 +76,7 @@ function ProjLeadSidebar({ onFilterChange }) {
                                         }`
                                     }
                                 >
-                                    Project List
+                                    Project Status
                                 </NavLink>
                             </li>
                             <li>
@@ -99,7 +99,7 @@ function ProjLeadSidebar({ onFilterChange }) {
                             className={`text-lg w-full text-left block px-6 py-3 ${isPathActive("/create_proposal") || isPathActive("/create_moa") || isPathActive("/load_trainer") ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
                                 } focus:outline-none`}
                         >
-                            Project Creation
+                            Document Creation
                         </button>
                         <ul className={`${activeDropdown === 'projectCreation' ? '' : 'hidden'} bg-indigo-900`}>
                             <li>

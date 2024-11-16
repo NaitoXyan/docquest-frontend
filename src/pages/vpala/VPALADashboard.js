@@ -126,7 +126,7 @@ const VPALADashboard = () => {
                 <Topbar />
                     <div>
                     <div className="p-8 font-sans">
-      <h2 className="text-2xl mt-10 font-bold mb-6">MOA/MOU Overview</h2>
+      <h2 className="text-2xl mt-10 font-bold mb-6">OVERVIEW</h2>
 
       {/* Status Cards */}
       <div className="flex gap-4 justify-center mb-8">
@@ -144,13 +144,13 @@ const VPALADashboard = () => {
 
       {/* Documents Table */}
       <div className="bg-gray-100 p-6 rounded-lg">
-        <h3 className="text-xl font-semibold mb-4">Documents</h3>
+        <h3 className="text-xl font-semibold mb-4">MEMORANDUMS</h3>
         <table className="min-w-full border border-gray-300">
           <thead>
             <tr className="bg-blue-900 text-white justify-center">
-              <th className="py-2 px-4 text-left">Project Title</th>
-              <th className="py-2 px-2 text-center w-1/4">College</th>
-              <th className="py-2 px-2 text-cente w-1/4">Date Submitted</th>
+              <th className="py-2 px-4 text-left">PROJECT TITLE</th>
+              <th className="py-2 px-2 text-center w-1/4">COLLEGE</th>
+              <th className="py-2 px-2 text-cente w-1/4">DATA SUBMITTED</th>
               {/* <th className="py-2 px-4 text-left">Actions</th> */}
             </tr> 
           </thead>

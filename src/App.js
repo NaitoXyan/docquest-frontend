@@ -41,6 +41,7 @@ import ProjLeadStatusBar from './pages/projectlead/ProjLeadStatusBar'; // Correc
 import VPALADashboard from "./pages/vpala/VPALADashboard";
 import VPALASideBar from './components/VPALASideBar';
 import VPALAMemoList from "./pages/vpala/VPALAMemoList";
+import EstaffScancopy from "./pages/estaff/EstaffScancopy";
 
 function App() {
   return (

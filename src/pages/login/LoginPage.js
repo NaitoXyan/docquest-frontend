@@ -61,7 +61,8 @@ const LoginPage = () => {
         rolesList.includes('vcri') ||
         rolesList.includes('acnt') ||
         rolesList.includes('cclr') ||
-        rolesList.includes('estf')
+        rolesList.includes('estf') ||
+        rolesList.includes('vpala')
       ) {
         navigate('/signatory');
       }

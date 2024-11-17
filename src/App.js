@@ -61,6 +61,8 @@ function App() {
         <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
         <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
 
+        <Route path="/deliverables" element={<ProposalFormFirstPage_Deliverables/>}/>
+
         {/*director routes  */}
         <Route path="/director" element={<DirectorDashboard/>} />
         <Route path="/review-project/:projectID" element={<DirectorReviewProject/>} />
@@ -81,7 +83,7 @@ function App() {
         <Route path="/deptoff" element={<DeptOffDashboard />} />
         <Route path="/coordinator" element={<CoordinatorDashboard />} />
         <Route path="/signatory" element={<SignatoryDashboard />} />
-        <Route path="/estaff/scancopy" element={<EstaffScancopy />} />
+        {/* <Route path="/estaff/scancopy" element={<EstaffScancopy />} /> */}
       </Routes>
 
       // <div style={{ height: '100vh' }}>

@@ -75,7 +75,7 @@ const VPALAMemoList = () => {
                                 value={documentType}
                                 onChange={handleDocumentTypeFilter}
                             >
-                                <option value="">Memorandum Status</option>
+                                <option value="">All</option>
                                 <option value="Project Proposal">Pending</option>
                                 <option value="Load Trainers">Approved</option>
                             </select>

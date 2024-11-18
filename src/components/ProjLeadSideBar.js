@@ -23,7 +23,7 @@ function ProjLeadSidebar({ onFilterChange }) {
     const handleLogout = async () => {
         const token = localStorage.getItem('token');
         try {
-            await axios.post('https://docquest-production.up.railway.app/auth/token/logout/', {}, {
+            await axios.post('http://127.0.0.1:8000/auth/token/logout/', {}, {
                 headers: {
                     'Authorization': `Token ${token}`,
                 },
@@ -31,7 +31,7 @@ function ProjLeadSidebar({ onFilterChange }) {
         } catch (error) {
             console.error("Logout failed:", error);
         }
-        localStorage.removeItem('token');
+        localStorage.clear();
         navigate('/login');
     };
 

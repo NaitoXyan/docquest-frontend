@@ -42,6 +42,7 @@ import VPALADashboard from "./pages/vpala/VPALADashboard";
 import VPALASideBar from './components/VPALASideBar';
 import VPALAMemoList from "./pages/vpala/VPALAMemoList";
 import EstaffScancopy from "./pages/estaff/EstaffScancopy";
+import DirectorReviewList from "./pages/director/DirectorProjectReviewList";
 
 function App() {
   return (
@@ -62,9 +63,12 @@ function App() {
         <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
         <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
 
+        <Route path="/deliverables" element={<ProposalFormFirstPage_Deliverables/>}/>
+
         {/*director routes  */}
         <Route path="/director" element={<DirectorDashboard/>} />
         <Route path="/review-project/:projectID" element={<DirectorReviewProject/>} />
+        <Route path="/review-list/:status/:document" element={<DirectorReviewList/>}/>
 
         {/*VPAPLA Routes  */}
         <Route path="/vpala" element={<VPALADashboard/>}/>
@@ -82,7 +86,7 @@ function App() {
         <Route path="/deptoff" element={<DeptOffDashboard />} />
         <Route path="/coordinator" element={<CoordinatorDashboard />} />
         <Route path="/signatory" element={<SignatoryDashboard />} />
-        <Route path="/estaff/scancopy" element={<EstaffScancopy />} />
+        {/* <Route path="/estaff/scancopy" element={<EstaffScancopy />} /> */}
       </Routes>
 
       // <div style={{ height: '100vh' }}>

@@ -42,6 +42,7 @@ import VPALADashboard from "./pages/vpala/VPALADashboard";
 import VPALASideBar from './components/VPALASideBar';
 import VPALAMemoList from "./pages/vpala/VPALAMemoList";
 import EstaffScancopy from "./pages/estaff/EstaffScancopy";
+import DirectorReviewList from "./pages/director/DirectorProjectReviewList";
 
 function App() {
   return (
@@ -67,6 +68,7 @@ function App() {
         {/*director routes  */}
         <Route path="/director" element={<DirectorDashboard/>} />
         <Route path="/review-project/:projectID" element={<DirectorReviewProject/>} />
+        <Route path="/review-list/:status/:document" element={<DirectorReviewList/>}/>
 
         {/*VPAPLA Routes  */}
         <Route path="/vpala" element={<VPALADashboard/>}/>

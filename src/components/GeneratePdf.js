@@ -178,16 +178,16 @@ const MyDocument = ({ projectID }) => {
     }).join(', ');
   };
 
-  useEffect(() => {
-    // Replace with your backend URL
-    axios.get('https://your-backend-url.com/signatories')
-      .then(response => {
-        setSignatories(response.data.signatories);  // Assuming the signatories are in `response.data.signatories`
-      })
-      .catch(error => {
-        console.error('There was an error fetching the signatories:', error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   // Replace with your backend URL
+  //   axios.get('https://your-backend-url.com/signatories')
+  //     .then(response => {
+  //       setSignatories(response.data.signatories);  // Assuming the signatories are in `response.data.signatories`
+  //     })
+  //     .catch(error => {
+  //       console.error('There was an error fetching the signatories:', error);
+  //     });
+  // }, []);
 
   const splitText = (text, length = 19) => {
     if (!text) return "N/A";

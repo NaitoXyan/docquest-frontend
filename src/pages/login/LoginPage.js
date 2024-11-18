@@ -54,6 +54,8 @@ const LoginPage = () => {
         navigate('/user');
       } else if (rolesList.includes('ecrd')) {
         navigate('/director');
+      } else if (rolesList.includes('vpala')) {
+        navigate('/vpala'); // Add a specific route for 'vpala' if needed
       } else if (
         rolesList.includes('prch') ||
         rolesList.includes('cldn') ||

@@ -864,8 +864,8 @@ const handleAgencyFormChange = async (e) => {
 
   return (
     <div className="flex flex-col mt-14 px-10">
-      <h1 className="text-2xl font-semibold mb-5 mt-3">
-        Extension Project Proposal
+      <h1 className="text-2xl font-bold mb-5 mt-3">
+      EXTENSION PROJECT PROPOSAL
       </h1>
 
       <form onSubmit={handleSubmit}>
@@ -1579,7 +1579,7 @@ const handleAgencyFormChange = async (e) => {
           <div>
             {/* Sixth Row */}
             <div className="grid grid-cols-1 gap-4">
-              <label className="block mb-2 font-bold text-base">BUDGET REQUIREMENT'S TOTAL</label>
+            <label className="block mb-2 font-bold text-base text-green-700">BUDGET REQUIREMENT'S TOTAL</label>
             </div>
 
             {/* Sixth Row */}
@@ -1593,7 +1593,7 @@ const handleAgencyFormChange = async (e) => {
                   onChange={handleBudgetFormChange}
                   type="number"
                   placeholder="Enter Amount"
-                  className="w-full p-2 border border-gray-300 rounded"
+                  className="w-full p-2 border border-green-800 rounded"
                 />
               </div>
 
@@ -1606,7 +1606,7 @@ const handleAgencyFormChange = async (e) => {
                   onChange={handleBudgetFormChange}
                   type="number"
                   placeholder="Enter Amount"
-                  className="w-full p-2 border border-gray-300 rounded"
+                  className="w-full p-2 border border-green-800 rounded"
                 />
               </div>
 
@@ -1617,7 +1617,7 @@ const handleAgencyFormChange = async (e) => {
                   value={formData.totalBudget}
                   readOnly
                   type="number"
-                  className="w-full p-2 border border-gray-300 rounded"
+                  className="w-full p-2 border border-green-800 rounded"
                 />
               </div>
             </div>

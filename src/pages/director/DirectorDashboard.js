@@ -142,7 +142,7 @@ const DirectorDashboard = () => {
             <div className="flex-1 ml-[20%]">
                 <Topbar />
                 <div className="flex flex-col mt-16 px-10">
-                    <h1 className="text-2xl font-semibold mb-2">Documents Overview</h1>
+                    <h1 className="text-2xl font-bold mb-2">DOCUMENTS OVERVIEW</h1>
                     <div className="grid grid-cols-3 gap-4 mb-5">
                         <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Approved</h2>
@@ -167,7 +167,7 @@ const DirectorDashboard = () => {
                         </div>
                     </div>
 
-                    <h1 className="text-2xl font-semibold mb-2">Documents</h1>
+                    <h1 className="text-5 font-semibold mb-2 mt-5">DOCUMENTS</h1>
                     <div className="bg-white shadow-lg rounded-lg py-4 px-4">
                         <div className="overflow-x-auto">
                             <table className="min-w-full table-auto">
@@ -177,7 +177,7 @@ const DirectorDashboard = () => {
                                         <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Type</th>
                                         <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Title</th>
                                         <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Created</th>
-                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
+                                        <th className="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
@@ -187,9 +187,9 @@ const DirectorDashboard = () => {
                                             <td className="px-6 py-4 whitespace-nowrap">{project.documentType}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">{project.projectTitle}</td>
                                             <td className="px-6 py-4 whitespace-nowrap">{new Date(project.dateCreated).toLocaleDateString()}</td>
-                                            <td className="px-6 py-4">
+                                            <td className="px-6 py-4 text-center">
                                                 <span
-                                                    className={`px-2 py-1 rounded-md text-white ${
+                                                    className={`px-4 py-2 rounded-md text-white ${
                                                         project.status.toLowerCase() === "approved"
                                                             ? "bg-green-500"
                                                             : project.status.toLowerCase() === "pending"

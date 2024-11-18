@@ -751,8 +751,8 @@ const handleAgencyFormChange = async (e) => {
 
   return (
     <div className="flex flex-col mt-14 px-10">
-      <h1 className="text-2xl font-semibold mb-5 mt-5">
-        Extension Project Proposal
+      <h1 className="text-2xl font-bold mb-5 mt-5">
+        EXTENSION PROJECT PROPOSAL
       </h1>
 
       <form onSubmit={handleSubmit}>

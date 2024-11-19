@@ -52,10 +52,11 @@ const LoginPage = () => {
       // Navigate based on roles
       if (rolesList.includes('rglr')) {
         navigate('/user');
+      } else if (rolesList.includes('prch')) {
+        navigate ('/program-chair');
       } else if (rolesList.includes('ecrd')) {
         navigate('/director');
       } else if (
-        rolesList.includes('prch') ||
         rolesList.includes('cldn') ||
         rolesList.includes('vcaa') ||
         rolesList.includes('vcri') ||

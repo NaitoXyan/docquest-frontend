@@ -43,6 +43,8 @@ import VPALASideBar from './components/VPALASideBar';
 import VPALAMemoList from "./pages/vpala/VPALAMemoList";
 import EstaffScancopy from "./pages/estaff/EstaffScancopy";
 import DirectorReviewList from "./pages/director/DirectorProjectReviewList";
+import ProgramChairDashboard from "./pages/programChair/ProgramChairDashboard";
+import MOAGenerator from "./pages/vpala/VPALAGenerateMOA";
 
 function App() {
   return (
@@ -62,8 +64,10 @@ function App() {
         <Route path="/projectlead" element={<ProjLeadStatusBar />} />
         <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
         <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
-
         <Route path="/deliverables" element={<ProposalFormFirstPage_Deliverables/>}/>
+
+        {/* programchair routes */}
+        <Route path="/program-chair" element={<ProgramChairDashboard/>}/>
 
         {/*director routes  */}
         <Route path="/director" element={<DirectorDashboard/>} />
@@ -72,6 +76,7 @@ function App() {
 
         {/*VPAPLA Routes  */}
         <Route path="/vpala" element={<VPALADashboard/>}/>
+        <Route path="/vpala-generate-moa" element={<MOAGenerator/>}/>
         
         {/* EStaff routes */}
         <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import Topbar from '../../components/Topbar';
-import DirectorSidebar from '../../components/DirectorSidebar';
 import { SearchIcon } from '@heroicons/react/solid';
+import ProgramChairSidebar from '../../components/ProgramChairSideBar';
 
 const ProgramChairReviewList = () => {
   const [projects, setProjects] = useState([]);
@@ -19,6 +19,7 @@ const ProgramChairReviewList = () => {
   const { status: statusFilterParam, document: documentFilterParam } = useParams(); // Fixed: Destructure with proper parameter names
   const token = localStorage.getItem('token');
 
+  // Fetch initial data
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -31,95 +32,83 @@ const ProgramChairReviewList = () => {
           },
         });
 
-        const sortedReview = response.data.sort(
-          (a, b) => new Date(b.dateCreated) - new Date(a.dateCreated)
+        const reviews = response.data.reviews;
+        const sortedReviews = reviews.sort(
+          (a, b) => new Date(b.reviewDate) - new Date(a.reviewDate)
         );
 
-        setProjects(sortedReview);
+        setProjects(sortedReviews);
         
-        // Apply both status and document filters from URL parameters
-        let filtered = sortedReview;
+        // Initialize filters from URL parameters
+        const initialStatusFilter = statusFilterParam?.toLowerCase() || 'all';
+        const initialDocumentFilter = documentFilterParam?.toLowerCase() || 'all';
         
-        if (statusFilterParam && statusFilterParam.toLowerCase() !== 'all') {
-          filtered = filtered.filter(
-            project => project.reviewStatus.toLowerCase() === statusFilterParam.toLowerCase()
-          );
-          setStatusFilter(statusFilterParam.toLowerCase());
-        }
-        
-        if (documentFilterParam && documentFilterParam.toLowerCase() !== 'all') {
-          filtered = filtered.filter(
-            project => project.content_type_name.toLowerCase() === documentFilterParam.toLowerCase()
-          );
-          setDocumentFilter(documentFilterParam.toLowerCase());
-        }
-        
-        setFilteredProjects(filtered);
+        setStatusFilter(initialStatusFilter);
+        setDocumentFilter(initialDocumentFilter);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchReviews();
-  }, [userID, statusFilterParam, documentFilterParam, token]);
+  }, [token, statusFilterParam, documentFilterParam]);
 
+  // Apply filters whenever projects, status filter, document filter, or search term changes
   useEffect(() => {
-    if (statusFilterParam) {
-      setStatusFilter(statusFilterParam.toLowerCase());
-      filterProjects(statusFilterParam.toLowerCase());
+    let filtered = [...projects];
+
+    // Apply status filter
+    if (statusFilter && statusFilter !== 'all') {
+      filtered = filtered.filter(project => {
+        if (statusFilter === 'approved') {
+          return project.approvalCounter > 0;
+        } else if (statusFilter === 'rejected') {
+          return project.reviewStatus === 'rejected' && project.approvalCounter === 0;
+        } else if (statusFilter === 'pending') {
+          return project.approvalCounter === 0 && project.reviewStatus !== 'rejected';
+        }
+        return true;
+      });
     }
-  }, [statusFilterParam]);
 
-  const filterProjects = (status = statusFilter, documentType = documentFilter) => {
-    let filtered = projects;
-
-    if (status && status !== 'all') {
+    // Apply document filter
+    if (documentFilter && documentFilter !== 'all') {
       filtered = filtered.filter(
-        project => project.reviewStatus.toLowerCase() === status
+        project => project.content_type_name.toLowerCase() === documentFilter
       );
     }
 
-    if (documentType && documentType !== 'all') {
+    // Apply search filter
+    if (searchTerm) {
       filtered = filtered.filter(
-        project => project.content_type_name.toLowerCase() === documentType
+        project =>
+          `${project.firstname} ${project.lastname}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          project.projectTitle.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     setFilteredProjects(filtered);
     setCurrentPage(1);
-  };
+  }, [projects, statusFilter, documentFilter, searchTerm]);
 
   const handleStatusFilterChange = (event) => {
     const status = event.target.value;
     setStatusFilter(status);
-    filterProjects(status, documentFilter);
-    // Update URL to reflect new filters
-    navigate(`/review-list/${status}/${documentFilter || 'all'}`);
+    navigate(`/program-chair-review-list/${status}/${documentFilter || 'all'}`);
   };
 
   const handleDocumentFilterChange = (event) => {
     const documentType = event.target.value.toLowerCase();
     setDocumentFilter(documentType);
-    filterProjects(statusFilter, documentType);
-    // Update URL to reflect new filters
-    navigate(`/review-list/${statusFilter || 'all'}/${documentType}`);
+    navigate(`/program-chair-review-list/${statusFilter || 'all'}/${documentType}`);
   };
 
   const handleSearchChange = (event) => {
-    const term = event.target.value.toLowerCase();
-    setSearchTerm(term);
-    setFilteredProjects(
-      projects.filter(
-        (project) =>
-          `${project.firstname} ${project.lastname}`.toLowerCase().includes(term) ||
-          project.projectTitle.toLowerCase().includes(term)
-      )
-    );
-    setCurrentPage(1);
+    setSearchTerm(event.target.value);
   };
 
   const reviewDocument = (reviewID) => {
-    navigate(`/review-project/${reviewID}`);
+    navigate(`/program-chair-review-project/${reviewID}`);
   };
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -163,10 +152,18 @@ const ProgramChairReviewList = () => {
     return () => window.removeEventListener('resize', updateCharacterLimit);
   }, []);
 
+  const handleViewPDF = (projectID) => {
+    // Assuming you have a URL to the PDF that includes the project ID
+    const pdfUrl = `/pdf-viewer/${projectID}`;
+  
+    // Open the PDF URL in a new tab
+    window.open(pdfUrl, '_blank');
+  };
+
   return (
     <div className="bg-gray-200 min-h-screen flex">
       <div className="w-1/5 fixed h-full">
-        <DirectorSidebar />
+        <ProgramChairSidebar />
       </div>
 
       <div className="flex-1 ml-[20%]">
@@ -197,19 +194,6 @@ const ProgramChairReviewList = () => {
                   <option value="pending">Pending</option>
                   <option value="approved">Approved</option>
                   <option value="rejected">Rejected</option>
-                </select>
-              </div>
-              <div className="w-full sm:w-auto">
-                <label htmlFor="documentFilter" className="mr-2">Filter by Document:</label>
-                <select
-                  id="documentFilter"
-                  value={documentFilter}
-                  onChange={handleDocumentFilterChange}
-                  className="w-full sm:w-auto px-3 py-2 border rounded-md"
-                >
-                  <option value="all">All</option>
-                  <option value="project">Project</option>
-                  <option value="moa">MOA</option>
                 </select>
               </div>
             </div>
@@ -247,31 +231,44 @@ const ProgramChairReviewList = () => {
                           })}
                         </td>
                         <td className="px-3 sm:px-3 py-4 whitespace-nowrap">
-                          <span
-                            className={`px-4 py-2 text-m rounded-full ${
-                              project.reviewStatus === 'pending'
-                                ? 'bg-yellow-100 text-yellow-700'
-                                : project.reviewStatus === 'approved'
-                                ? 'bg-green-100 text-green-700'
-                                : 'bg-red-100 text-red-700'
-                            }`}
-                          >
-                            {project.reviewStatus}
-                          </span>
+                            <span
+                                className={`px-4 py-2 text-m rounded-full ${
+                                project.approvalCounter > 0
+                                    ? 'bg-green-100 text-green-700'
+                                    : project.reviewStatus === 'rejected' && project.approvalCounter === 0
+                                    ? 'bg-red-100 text-red-700'
+                                    : 'bg-yellow-100 text-yellow-700'
+                                }`}
+                            >
+                                {project.approvalCounter > 0
+                                ? 'Approved'
+                                : project.reviewStatus === 'rejected' && project.approvalCounter === 0
+                                ? 'Rejected'
+                                : 'Pending'}
+                            </span>
                         </td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
-                          <button
-                            onClick={() => reviewDocument(project.reviewID)}
-                            disabled={project.reviewStatus === 'approved' || project.reviewStatus === 'rejected'}
-                            className={`px-4 py-2 rounded-md ${
-                                project.reviewStatus === 'approved' || project.reviewStatus === 'rejected'
-                                  ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                  : 'bg-blue-500 text-white hover:bg-blue-600'
-                              }`}
-                          >
-                            Review
-                          </button>
+                            <button
+                                onClick={() =>
+                                (project.approvalCounter > 0) ||
+                                project.reviewStatus === 'rejected'
+                                    ? handleViewPDF(project.reviewID)
+                                    : reviewDocument(project.reviewID)
+                                }
+                                className={`w-36 px-4 py-2 rounded-md text-center ${
+                                (project.approvalCounter > 0) ||
+                                project.reviewStatus === 'rejected'
+                                    ? 'bg-blue-500 text-white hover:bg-blue-600'
+                                    : 'bg-green-500 text-white hover:bg-green-600'
+                                }`}
+                            >
+                                {(project.approvalCounter > 0) ||
+                                project.reviewStatus === 'rejected'
+                                ? 'View Document'
+                                : 'Review'}
+                            </button>
                         </td>
+
                       </tr>
                     ))
                   ) : (

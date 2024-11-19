@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Sidebar from '../../components/Sidebar';
+import EstaffSideBar from '../../components/EstaffSideBar';
 import Topbar from '../../components/Topbar';
 
 const EstaffScancopy = () => {
@@ -32,7 +32,7 @@ const EstaffScancopy = () => {
     <div className="bg-gray-100 min-h-screen flex">
       {/* Sidebar */}
       <div className="w-1/5 fixed h-full bg-white shadow-md">
-        <Sidebar />
+        <EstaffSideBar />
       </div>
 
       {/* Main Content */}

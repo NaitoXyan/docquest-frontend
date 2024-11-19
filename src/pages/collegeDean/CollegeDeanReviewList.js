@@ -3,9 +3,9 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import Topbar from '../../components/Topbar';
 import { SearchIcon } from '@heroicons/react/solid';
-import ProgramChairSidebar from '../../components/ProgramChairSideBar';
+import CollegeDeanSidebar from '../../components/CollegeDeanSideBar';
 
-const ProgramChairReviewList = () => {
+const CollegeDeanReviewList = () => {
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,7 +30,7 @@ const ProgramChairReviewList = () => {
     const roles = JSON.parse(localStorage.getItem('roles') || '[]');
     
     // Redirect if "ecrd" role is not found
-    if (!roles.includes("prch")) {
+    if (!roles.includes("cldn")) {
       navigate('/login', { replace: true });
     }
   }, [token, navigate]);
@@ -77,11 +77,11 @@ const ProgramChairReviewList = () => {
     if (statusFilter && statusFilter !== 'all') {
       filtered = filtered.filter(project => {
         if (statusFilter === 'approved') {
-          return project.approvalCounter > 0;
+          return project.approvalCounter > 1;
         } else if (statusFilter === 'rejected') {
-          return project.reviewStatus === 'rejected' && project.approvalCounter === 0;
+          return project.reviewStatus === 'rejected' && project.reviewedByID === userID;
         } else if (statusFilter === 'pending') {
-          return project.approvalCounter === 0 && project.reviewStatus !== 'rejected';
+          return project.approvalCounter === 1 && project.reviewStatus !== 'rejected';
         }
         return true;
       });
@@ -110,13 +110,13 @@ const ProgramChairReviewList = () => {
   const handleStatusFilterChange = (event) => {
     const status = event.target.value;
     setStatusFilter(status);
-    navigate(`/program-chair-review-list/${status}/${documentFilter || 'all'}`);
+    navigate(`/college-dean-review-list/${status}/${documentFilter || 'all'}`);
   };
 
   const handleDocumentFilterChange = (event) => {
     const documentType = event.target.value.toLowerCase();
     setDocumentFilter(documentType);
-    navigate(`/program-chair-review-list/${statusFilter || 'all'}/${documentType}`);
+    navigate(`/college-dean-review-list/${statusFilter || 'all'}/${documentType}`);
   };
 
   const handleSearchChange = (event) => {
@@ -124,7 +124,7 @@ const ProgramChairReviewList = () => {
   };
 
   const reviewDocument = (reviewID) => {
-    navigate(`/program-chair-review-project/${reviewID}`);
+    navigate(`/college-dean-review-project/${reviewID}`);
   };
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -179,7 +179,7 @@ const ProgramChairReviewList = () => {
   return (
     <div className="bg-gray-200 min-h-screen flex">
       <div className="w-1/5 fixed h-full">
-        <ProgramChairSidebar />
+        <CollegeDeanSidebar />
       </div>
 
       <div className="flex-1 ml-[20%]">
@@ -249,14 +249,14 @@ const ProgramChairReviewList = () => {
                         <td className="px-3 sm:px-3 py-4 whitespace-nowrap">
                             <span
                                 className={`px-4 py-2 text-m rounded-full ${
-                                project.approvalCounter > 0
+                                project.approvalCounter > 1
                                     ? 'bg-green-100 text-green-700'
                                     : project.reviewStatus === 'rejected' && project.approvalCounter === 0
                                     ? 'bg-red-100 text-red-700'
                                     : 'bg-yellow-100 text-yellow-700'
                                 }`}
                             >
-                                {project.approvalCounter > 0
+                                {project.approvalCounter > 1
                                 ? 'Approved'
                                 : project.reviewStatus === 'rejected' && project.approvalCounter === 0
                                 ? 'Rejected'
@@ -266,19 +266,19 @@ const ProgramChairReviewList = () => {
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
                             <button
                                 onClick={() =>
-                                (project.approvalCounter > 0) ||
+                                (project.approvalCounter > 1) ||
                                 project.reviewStatus === 'rejected'
                                     ? handleViewPDF(project.reviewID)
                                     : reviewDocument(project.reviewID)
                                 }
                                 className={`w-36 px-4 py-2 rounded-md text-center ${
-                                (project.approvalCounter > 0) ||
+                                (project.approvalCounter > 1) ||
                                 project.reviewStatus === 'rejected'
                                     ? 'bg-blue-500 text-white hover:bg-blue-600'
                                     : 'bg-green-500 text-white hover:bg-green-600'
                                 }`}
                             >
-                                {(project.approvalCounter > 0) ||
+                                {(project.approvalCounter > 1) ||
                                 project.reviewStatus === 'rejected'
                                 ? 'View Document'
                                 : 'Review'}
@@ -306,4 +306,4 @@ const ProgramChairReviewList = () => {
   );
 };
 
-export default ProgramChairReviewList;
+export default CollegeDeanReviewList;

@@ -47,6 +47,9 @@ import ProgramChairDashboard from "./pages/programChair/ProgramChairDashboard";
 import MOAGenerator from "./pages/vpala/VPALAGenerateMOA";
 import ProgramChairReviewList from "./pages/programChair/ProgramChairProjectReviewList";
 import ProgramChairReviewProject from "./pages/programChair/ProgramChairReviewProject";
+import CollegeDeanDashboard from "./pages/collegeDean/CollegeDeanDashboard";
+import CollegeDeanReviewList from "./pages/collegeDean/CollegeDeanReviewList";
+import CollegeDeanReviewProject from "./pages/collegeDean/CollegeDeanReviewProject";
 
 function App() {
   return (
@@ -72,6 +75,11 @@ function App() {
         <Route path="/program-chair" element={<ProgramChairDashboard/>}/>
         <Route path="/program-chair-review-list/:status/:document" element={<ProgramChairReviewList/>}/>
         <Route path="/program-chair-review-project/:projectID" element={<ProgramChairReviewProject/>}/>
+
+        {/* College Dean routes */}
+        <Route path="/college-dean" element={<CollegeDeanDashboard/>}/>
+        <Route path="/college-dean-review-list/:status/:document" element={<CollegeDeanReviewList/>}/>
+        <Route path="/college-dean-review-project/:projectID" element={<CollegeDeanReviewProject/>}/>
 
         {/*director routes  */}
         <Route path="/director" element={<DirectorDashboard/>} />

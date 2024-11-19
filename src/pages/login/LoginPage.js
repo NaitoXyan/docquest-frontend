@@ -54,6 +54,8 @@ const LoginPage = () => {
         navigate('/user');
       } else if (rolesList.includes('prch')) {
         navigate ('/program-chair');
+      } else if (rolesList.includes('cldn')) {
+        navigate('/college-dean');
       } else if (rolesList.includes('ecrd')) {
         navigate('/director');
       } else if (

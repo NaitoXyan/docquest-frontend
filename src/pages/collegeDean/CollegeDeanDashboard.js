@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import Topbar from "../../components/Topbar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import ProgramChairSidebar from "../../components/ProgramChairSideBar";
+import CollegeDeanSidebar from "../../components/CollegeDeanSideBar";
 
-const ProgramChairDashboard = () => {
+const CollegeDeanDashboard = () => {
     const [projects, setProjects] = useState([]);
     const [statusCounts, setStatusCounts] = useState({ approved: 0, pending: 0, rejected: 0 });
     const [currentPage, setCurrentPage] = useState(1);
@@ -24,7 +24,7 @@ const ProgramChairDashboard = () => {
         const roles = JSON.parse(localStorage.getItem('roles') || '[]');
         
         // Redirect if "ecrd" role is not found
-        if (!roles.includes("prch")) {
+        if (!roles.includes("cldn")) {
           navigate('/login', { replace: true });
         }
       }, [token, navigate]);
@@ -63,9 +63,9 @@ const ProgramChairDashboard = () => {
                             ? new Date(project.dateCreated).toISOString()
                             : new Date().toISOString(),
                         status:
-                            project.approvalCounter > 0
+                            project.approvalCounter > 1
                                 ? "Approved"
-                                : project.reviewStatus === "pending" && project.approvalCounter === 0
+                                : project.reviewStatus === "pending" && project.approvalCounter === 1
                                 ? "Pending"
                                 : project.reviewStatus === "rejected"
                                 ? "Rejected"
@@ -110,7 +110,7 @@ const ProgramChairDashboard = () => {
     }, [token]);    
 
     const handleNavigate = (statusFilter) => {
-        navigate(`/program-chair-review-list/${statusFilter.toLowerCase()}/all`);
+        navigate(`/college-dean-review-list/${statusFilter.toLowerCase()}/all`);
     };
 
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -185,7 +185,7 @@ const ProgramChairDashboard = () => {
     return (
         <div className="bg-gray-200 min-h-screen flex">
             <div className="w-1/5 fixed h-full">
-                <ProgramChairSidebar />
+                <CollegeDeanSidebar />
             </div>
             <div className="flex-1 ml-[20%]">
                 <Topbar />
@@ -277,4 +277,4 @@ const ProgramChairDashboard = () => {
     );
 };
 
-export default ProgramChairDashboard;
+export default CollegeDeanDashboard;

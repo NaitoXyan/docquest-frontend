@@ -790,12 +790,47 @@ const handleAgencyFormChange = async (e) => {
     setShowTrainers(!showTrainers);
   };
 
+<<<<<<< HEAD
+=======
+  // Initialize state for program options based on selected college
+  const [programOptions, setProgramOptions] = useState([]);
+
+  // Function to handle college changes and update the program options
+  const handleCollegeChange = (selectedCollege) => {
+    setFormData((prev) => ({
+      ...prev,
+      college: selectedCollege,
+      program: "", // Reset program when college changes
+    }));
+
+    // Update program options based on selected college
+    const programsByCollege = {
+      CITC: ["BSIT", "BSCS", "BSIS"],
+      CEA: ["BSEE", "BSCpE", "BSME"],
+      CSM: ["BSBio", "BSChem", "BSMath"],
+      CoT: ["BSAutotronics", "BSRobotics", "BSMultimediaRobot"],
+      CSTE: ["BSMathEd", "BSSciEd", "BSTVLEd"],
+    };
+
+    setProgramOptions(programsByCollege[selectedCollege] || []);
+  };
+
+  // Generic form change handler
+  const handleProgramChange = (name, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+>>>>>>> 398d33e3a80ce12662cff246cc126d20d29151d2
   const removeBudgetItem = (index) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       budgetRequirements: prevFormData.budgetRequirements.filter((_, i) => i !== index),
     }));
   };
+<<<<<<< HEAD
 
   // Fetch colleges on component mount
   useEffect(() => {
@@ -861,6 +896,9 @@ const handleAgencyFormChange = async (e) => {
       };
     });
   };
+=======
+  
+>>>>>>> 398d33e3a80ce12662cff246cc126d20d29151d2
 
   return (
     <div className="flex flex-col mt-14 px-10">
@@ -1036,6 +1074,7 @@ const handleAgencyFormChange = async (e) => {
           </div>
 
           {/* Fourth Row */}
+<<<<<<< HEAD
           <div className="grid grid-cols-5 gap-4">
             <div className="col-span-2">
               <label className="block mb-2 font-semibold">COLLEGE</label>
@@ -1061,6 +1100,44 @@ const handleAgencyFormChange = async (e) => {
                 Click items to select/deselect
               </p>
             </div>
+=======
+          <div className="grid grid-cols-3 gap-4">
+          <div>
+            <label className="block mb-2 font-semibold">COLLEGE</label>
+            <select
+              name="college"
+              value={formData.college}
+              onChange={(e) => handleCollegeChange(e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded"
+            >
+              <option value="" disabled>Select College</option>
+              {/* Replace with actual colleges */}
+              <option value="CITC">CITC</option>
+              <option value="CEA">CEA</option>
+              <option value="CSM">CSM</option>
+              <option value="CoT">CoT</option>
+              <option value="CSTE">CSTE</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block mb-2 font-semibold">PROGRAM</label>
+            <select
+              name="program"
+              value={formData.program}
+              onChange={(e) => handleProgramChange(e.target.name, e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded"
+            >
+              <option value="" disabled>Select Program</option>
+              {programOptions.map((program) => (
+                <option key={program} value={program}>
+                  {program}
+                </option>
+              ))}
+            </select>
+          </div>
+
+>>>>>>> 398d33e3a80ce12662cff246cc126d20d29151d2
 
             <div className="col-span-2">
               <label className="block mb-2 font-semibold">PROGRAM</label>
@@ -1576,6 +1653,7 @@ const handleAgencyFormChange = async (e) => {
             </div>
           ))}
 
+<<<<<<< HEAD
           <div>
             {/* Sixth Row */}
             <div className="grid grid-cols-1 gap-4">
@@ -1620,6 +1698,15 @@ const handleAgencyFormChange = async (e) => {
                   className="w-full p-2 border border-gray-300 rounded"
                 />
               </div>
+=======
+          {/* Total Amount Calculation */}
+          <div className="grid grid-cols-4 gap-4 mt-4">
+            <div></div>
+            <div></div>
+            <div className="font-semibold text-right">Total Amount:</div>
+            <div className="font-semibold">
+              {formData.budgetRequirements.reduce((acc, budgetItem) => acc + parseFloat(budgetItem.totalAmount || 0), 0)}
+>>>>>>> 398d33e3a80ce12662cff246cc126d20d29151d2
             </div>
           </div>
 
@@ -1634,6 +1721,7 @@ const handleAgencyFormChange = async (e) => {
             </button>
           </div>
         </div>
+
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           {/* Table Headers */}

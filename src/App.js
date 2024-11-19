@@ -34,17 +34,23 @@ import PickProjCreateMoa from "./pages/projectlead/ProjLeadPickProjCreateMoa";
 import ProjLeadMoaStatus from "./pages/projectlead/ProjLeadMoaStatus";
 import ProjLeadEditProject from "./pages/projectlead/ProjLeadEditProject";
 import ProjLeadEditMoaForm from "./pages/projectlead/ProjLeadEditMoaForm";
-import DirectorReviewProject from "./pages/director/DirectorReviewProject"
+import DirectorReviewProject from "./pages/director/DirectorReviewProject";
 import ProposalFormFirstPage_Deliverables from "./components/ProposalFormFirstPage_Deliverables";
 import DirectorDashboard from "./pages/director/DirectorDashboard";
 import ProjLeadStatusBar from './pages/projectlead/ProjLeadStatusBar'; // Correct path
-
-
+import VPALADashboard from "./pages/vpala/VPALADashboard";
+import VPALASideBar from './components/VPALASideBar';
+import VPALAMemoList from "./pages/vpala/VPALAMemoList";
+import EstaffScancopy from "./pages/estaff/EstaffScancopy";
+import DirectorReviewList from "./pages/director/DirectorProjectReviewList";
+import ProgramChairDashboard from "./pages/programChair/ProgramChairDashboard";
+import MOAGenerator from "./pages/vpala/VPALAGenerateMOA";
+import ProgramChairReviewList from "./pages/programChair/ProgramChairProjectReviewList";
 
 function App() {
   return (
     <Routes>
-        Login
+        {/* Login */}
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<LoginPage />} />
         
@@ -56,20 +62,30 @@ function App() {
         <Route path="/project-status/:statusFilterParam" element={<ProjLeadProjectStatus />} /> "need UI/UX"
         <Route path="/pick-project-create-moa" element={<PickProjCreateMoa/>}/> "need UI/UX"
         <Route path="/create_moa/:projectID" element={<ProjLeadMOAForm />}/>
-          
+        <Route path="/projectlead" element={<ProjLeadStatusBar />} />
         <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
         <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
+        <Route path="/deliverables" element={<ProposalFormFirstPage_Deliverables/>}/>
+
+        {/* programchair routes */}
+        <Route path="/program-chair" element={<ProgramChairDashboard/>}/>
+        <Route path="/program-chair-review-list/:status/:document" element={<ProgramChairReviewList/>}/>
 
         {/*director routes  */}
         <Route path="/director" element={<DirectorDashboard/>} />
         <Route path="/review-project/:projectID" element={<DirectorReviewProject/>} />
+        <Route path="/review-list/:status/:document" element={<DirectorReviewList/>}/>
+
+        {/*VPAPLA Routes  */}
+        <Route path="/vpala" element={<VPALADashboard/>}/>
+        <Route path="/vpala-generate-moa" element={<MOAGenerator/>}/>
         
-        
-        <Route path="/projectlead" element={<ProjLeadStatusBar />} />
+        {/* EStaff routes */}
+        <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>
 
         {/* Create proposal routes */}
-        {/* <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} /> */}
-
+        {<Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} />}
+          
         {/* Other Unorganized */}
         <Route path="/pdf-viewer/:projectID" element={<ProjectPDFViewer />} />
         <Route path="/edit-project/:projectID" element={<ProjLeadEditProject />} /> {/* Walay remove button for Budgetary Requirements */}
@@ -77,13 +93,8 @@ function App() {
         <Route path="/deptoff" element={<DeptOffDashboard />} />
         <Route path="/coordinator" element={<CoordinatorDashboard />} />
         <Route path="/signatory" element={<SignatoryDashboard />} />
+        {<Route path="/estaff/scancopy" element={<EstaffScancopy />} />}
       </Routes>
-
-      // <div style={{ height: '100vh' }}>
-      //   <PDFViewer style={{ width: '100%', height: '100%' }}>
-      //     <MyDocument projectID={11} />
-      //   </PDFViewer>
-      // </div>
   );
 }
 

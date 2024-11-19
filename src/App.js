@@ -43,47 +43,47 @@ import ProjLeadStatusBar from './pages/projectlead/ProjLeadStatusBar'; // Correc
 
 function App() {
   return (
-    // <Routes>
-    //     {/* Login */}
-    //     <Route path="/" element={<Navigate to="/login" />} />
-    //     <Route path="/login" element={<LoginPage />} />
+    <Routes>
+        Login
+        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/login" element={<LoginPage />} />
         
-    //     {/* Project Lead routes */}
-    //     <Route path="/user" element={<ProjLeadDashboard />} />
-    //     <Route path="/create_proposal" element={<ProjLeadProposalForm />} />
-    //     <Route path="/profile" element={<ProjLeadProfilePage />} />
-    //     <Route path="/load_trainer" element={<ProjLeadLoadTrainer />} />
-    //     <Route path="/project-status/:statusFilterParam" element={<ProjLeadProjectStatus />} /> "need UI/UX"
-    //     <Route path="/pick-project-create-moa" element={<PickProjCreateMoa/>}/> "need UI/UX"
-    //     <Route path="/create_moa/:projectID" element={<ProjLeadMOAForm />}/>
+        {/* Project Lead routes */}
+        <Route path="/user" element={<ProjLeadDashboard />} />
+        <Route path="/create_proposal" element={<ProjLeadProposalForm />} />
+        <Route path="/profile" element={<ProjLeadProfilePage />} />
+        <Route path="/load_trainer" element={<ProjLeadLoadTrainer />} />
+        <Route path="/project-status/:statusFilterParam" element={<ProjLeadProjectStatus />} /> "need UI/UX"
+        <Route path="/pick-project-create-moa" element={<PickProjCreateMoa/>}/> "need UI/UX"
+        <Route path="/create_moa/:projectID" element={<ProjLeadMOAForm />}/>
           
-    //     <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
-    //     <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
+        <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
+        <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
 
-    //     {/*director routes  */}
-    //     <Route path="/director" element={<DirectorDashboard/>} />
-    //     <Route path="/review-project/:projectID" element={<DirectorReviewProject/>} />
+        {/*director routes  */}
+        <Route path="/director" element={<DirectorDashboard/>} />
+        <Route path="/review-project/:projectID" element={<DirectorReviewProject/>} />
         
         
-    //     <Route path="/projectlead" element={<ProjLeadStatusBar />} />
+        <Route path="/projectlead" element={<ProjLeadStatusBar />} />
 
-    //     {/* Create proposal routes */}
-    //     {/* <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} /> */}
+        {/* Create proposal routes */}
+        {/* <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} /> */}
 
-    //     {/* Other Unorganized */}
-    //     <Route path="/pdf-viewer/:projectID" element={<ProjectPDFViewer />} />
-    //     <Route path="/edit-project/:projectID" element={<ProjLeadEditProject />} /> {/* Walay remove button for Budgetary Requirements */}
-    //     <Route path="/estaff" element={<EstaffDashboard />} />
-    //     <Route path="/deptoff" element={<DeptOffDashboard />} />
-    //     <Route path="/coordinator" element={<CoordinatorDashboard />} />
-    //     <Route path="/signatory" element={<SignatoryDashboard />} />
-    //   </Routes>
+        {/* Other Unorganized */}
+        <Route path="/pdf-viewer/:projectID" element={<ProjectPDFViewer />} />
+        <Route path="/edit-project/:projectID" element={<ProjLeadEditProject />} /> {/* Walay remove button for Budgetary Requirements */}
+        <Route path="/estaff" element={<EstaffDashboard />} />
+        <Route path="/deptoff" element={<DeptOffDashboard />} />
+        <Route path="/coordinator" element={<CoordinatorDashboard />} />
+        <Route path="/signatory" element={<SignatoryDashboard />} />
+      </Routes>
 
-      <div style={{ height: '100vh' }}>
-        <PDFViewer style={{ width: '100%', height: '100%' }}>
-          <MOAPDF />
-        </PDFViewer>
-      </div>
+      // <div style={{ height: '100vh' }}>
+      //   <PDFViewer style={{ width: '100%', height: '100%' }}>
+      //     <MyDocument projectID={11} />
+      //   </PDFViewer>
+      // </div>
   );
 }
 

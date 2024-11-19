@@ -347,22 +347,22 @@ const ProposalFormFirstPage = () => {
     });
   };
   
-  const handleTrainerChange = (index, e) => {
-    const { name, value } = e.target;
-    const updatedTrainers = formData.loadingOfTrainers.map((trainer, i) => {
-      if (i === index) {
-        let updatedTrainer = { ...trainer, [name]: value };
+  const handleTrainerChange = (index, event) => {
+    const { name, value } = event.target;
+    const updatedTrainers = [...formData.loadingOfTrainers];
+    updatedTrainers[index][name] = value;
   
-        // Automatically calculate totalBudgetRequirement when budget values change
-        if (name === 'ustpBudget' || name === 'agencyBudget') {
-          updatedTrainer.totalBudgetRequirement = parseFloat(updatedTrainer.ustpBudget) + parseFloat(updatedTrainer.agencyBudget);
-        }
-        return updatedTrainer;
-      }
-      return trainer;
+    // Calculate the Total Budgetary Requirement when "No. of Hours" or "Partner Agency Budget" changes
+    if (name === "hours" || name === "agencyBudget") {
+      const hours = parseFloat(updatedTrainers[index].hours) || 0;
+      const agencyBudget = parseFloat(updatedTrainers[index].agencyBudget) || 0;
+      updatedTrainers[index].totalBudgetRequirement = (hours * 150) + agencyBudget; // Calculation includes USTP Budget and Agency Budget
+    }
+  
+    setFormData({
+      ...formData,
+      loadingOfTrainers: updatedTrainers,
     });
-  
-    setFormData({ ...formData, loadingOfTrainers: updatedTrainers });
   };
   
   const addTrainerRow = () => {
@@ -862,6 +862,64 @@ const handleAgencyFormChange = async (e) => {
     });
   };
 
+    const [showOverlay, setShowOverlay] = useState(false);
+    const [showProponentsOverlay, setShowProponentsOverlay] = useState(false);
+
+    const handleProponentsChange = (userID) => {
+      setFormData((prev) => {
+        if (!prev.proponents.includes(userID)) {
+          return { ...prev, proponents: [...prev.proponents, userID] };
+        }
+        return prev; // Avoid unnecessary state updates
+      });
+    };
+
+    const handleProgramSelectionChange = (programID) => {
+      setFormData((prevState) => {
+        const newPrograms = prevState.program.includes(programID)
+          ? prevState.program.filter((id) => id !== programID) // Deselect if already selected
+          : [...prevState.program, programID]; // Select if not selected
+    
+        return { ...prevState, program: newPrograms };
+      });
+    };
+
+    const [isModalUSTPCategoryOpen, setIsModalUSTPCategoryOpen] = useState(false);
+    const [selectedOptions, setSelectedOptions] = useState([]);
+
+    const handleOptionToggle = (option) => {
+      setSelectedOptions((prev) =>
+        prev.includes(option)
+          ? prev.filter((item) => item !== option)
+          : [...prev, option]
+      );
+    };
+
+    const [isProjectTypeModalOpen, setIsProjectTypeModalOpen] = useState(false);
+    const [selectedProjectTypes, setSelectedProjectTypes] = useState([]);
+    
+    
+    const handleProjectTypeToggle = (type) => {
+      setSelectedProjectTypes((prev) =>
+        prev.includes(type)
+          ? prev.filter((item) => item !== type) // Remove if already selected
+          : [...prev, type] // Add if not selected
+      );
+    };
+
+    const [isModalProjectCategoryOpen, setIsModalProjectCategoryOpen] = useState(false);
+    const [selectedProjectCategories, setSelectedProjectCategories] = useState([]);
+  
+    const handleProjectCategoryToggle = (option) => {
+      setSelectedProjectCategories((prev) =>
+        prev.includes(option)
+          ? prev.filter((item) => item !== option)
+          : [...prev, option]
+      );
+    };
+    
+    
+
   return (
     <div className="flex flex-col mt-14 px-10">
       <h1 className="text-2xl font-bold mb-5 mt-3">
@@ -885,57 +943,154 @@ const handleAgencyFormChange = async (e) => {
           </div>
           {/* First Row */}
           <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block mb-2 font-semibold">
-                PROGRAM CATEGORY under USTP CARES
-              </label>
-              <select
-                name="programCategory"
-                value={formData.programCategory}
-                onChange={handleProgramCategoryFormChange}
-                multiple
-                className="w-full p-2 border border-gray-300 rounded"
-              >
-                <option value="" disabled hidden>Select</option>
-                  {programCategory.map((programCategory) => (
-                    <option key={programCategory.programCategoryID} value={programCategory.programCategoryID}>
-                      {programCategory.title}
-                    </option>
-                ))}
-              </select>
-            </div>
+          <div>
+            <label className="block mb-2 font-semibold">
+              PROGRAM CATEGORY under USTP CARES
+            </label>
+            <input
+              type="text"
+              readOnly
+              value={selectedOptions.join(", ")}
+              placeholder="Select Program Categories"
+              onClick={() => setIsModalUSTPCategoryOpen(true)}
+              className="w-full p-2 border border-gray-300 rounded cursor-pointer"
+            />
+
+            {isModalUSTPCategoryOpen && (
+              <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                <div className="bg-white p-6 rounded w-3/4 max-w-lg">
+                  <h3 className="text-lg font-semibold mb-4">Select Categories</h3>
+                  <ul className="space-y-2">
+                    {programCategory.map((item) => (
+                      <li key={item.programCategoryID}>
+                        <label className="flex items-center">
+                          <input
+                            type="checkbox"
+                            checked={selectedOptions.includes(item.title)}
+                            onChange={() => handleOptionToggle(item.title)}
+                            className="mr-2"
+                          />
+                          {item.title}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-4 flex justify-end space-x-2">
+                    <button
+                      onClick={() => setIsModalUSTPCategoryOpen(false)}
+                      className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => setIsModalUSTPCategoryOpen(false)}
+                      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      Done
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
 
             <div>
               <label className="block mb-2 font-semibold">TYPE OF PROJECT</label>
-              <select
-                name="projectType"
-                value={formData.projectType}
-                onChange={handleFormChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              >
-                <option value="" disabled hidden>Select a project type</option>
-                <option value="New Project">New Project</option>
-                <option value="Continuing Project">Continuing Project</option>
-              </select>
+              <input
+                type="text"
+                readOnly
+                value={selectedProjectTypes.join(", ")}
+                placeholder="Select Project Types"
+                onClick={() => setIsProjectTypeModalOpen(true)}
+                className="w-full p-2 border border-gray-300 rounded cursor-pointer"
+              />
+
+              {isProjectTypeModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+                  <div className="bg-white p-6 rounded w-3/4 max-w-lg">
+                    <h3 className="text-lg font-semibold mb-4">Select Project Types</h3>
+                    <ul className="space-y-2">
+                      {["New Project", "Continuing Project"].map((type) => (
+                        <li key={type}>
+                          <label className="flex items-center">
+                            <input
+                              type="checkbox"
+                              checked={selectedProjectTypes.includes(type)}
+                              onChange={() => handleProjectTypeToggle(type)}
+                              className="mr-2"
+                            />
+                            {type}
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-4 flex justify-end space-x-2">
+                      <button
+                        onClick={() => setIsProjectTypeModalOpen(false)}
+                        className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => setIsProjectTypeModalOpen(false)}
+                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                      >
+                        Done
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold">PROJECT CATEGORY</label>
-              <select
-                name="projectCategory"
-                value={formData.projectCategory}
-                onChange={handleProjectCategoryFormChange}
-                multiple
-                className="w-full p-2 border border-gray-300 rounded"
+      <label className="block mb-2 font-semibold">PROJECT CATEGORY</label>
+      <input
+        type="text"
+        readOnly
+        value={selectedProjectCategories.join(", ")}
+        placeholder="Select Project Categories"
+        onClick={() => setIsModalProjectCategoryOpen(true)}
+        className="w-full p-2 border border-gray-300 rounded cursor-pointer"
+      />
+
+      {isModalProjectCategoryOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded w-3/4 max-w-lg">
+            <h3 className="text-lg font-semibold mb-4">Select Categories</h3>
+            <ul className="space-y-2">
+              {projectCategory.map((item) => (
+                <li key={item.projectCategoryID}>
+                  <label className="flex items-center">
+                    <input
+                      type="checkbox"
+                      checked={selectedProjectCategories.includes(item.title)}
+                      onChange={() => handleProjectCategoryToggle(item.title)}
+                      className="mr-2"
+                    />
+                    {item.title}
+                  </label>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-4 flex justify-end space-x-2">
+              <button
+                onClick={() => setIsModalProjectCategoryOpen(false)}
+                className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
               >
-                <option value="" disabled hidden>Select</option>
-                  {projectCategory.map((projectCategory) => (
-                    <option key={projectCategory.projectCategoryID} value={projectCategory.projectCategoryID}>
-                      {projectCategory.title}
-                    </option>
-                ))}
-              </select>
+                Cancel
+              </button>
+              <button
+                onClick={() => setIsModalProjectCategoryOpen(false)}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Done
+              </button>
             </div>
+          </div>
+        </div>
+      )}
+    </div>
           </div>
 
           {/* Row */}
@@ -976,20 +1131,50 @@ const handleAgencyFormChange = async (e) => {
                 </label>
               </div>
               <div>
-                <select
-                  name="proponents"
-                  value={formData.proponents}
-                  onChange={handleProponentsFormChange}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  multiple
+                {/* Select button to trigger the overlay */}
+                <div
+                  onClick={() => setShowProponentsOverlay(true)} // Open the Proponents overlay
+                  className="relative h-[50px] border border-gray-300 rounded shadow-inner flex items-center px-3 cursor-pointer"
                 >
-                  <option value="" disabled hidden>Select</option>
-                  {proponents.map((proponent) => (
-                    <option key={proponent.userID} value={proponent.userID}>
-                      {proponent.firstname} {proponent.lastname}
-                    </option>
-                  ))}
-                </select>
+                  {formData.proponents.length > 0
+                    ? `${proponents
+                        .filter((proponent) => formData.proponents.includes(proponent.userID))
+                        .map((proponent) => `${proponent.firstname} ${proponent.lastname}`)
+                        .join(', ')}`
+                    : 'Select Proponents'}
+                </div>
+
+                {/* Overlay */}
+                {showProponentsOverlay && (
+                  <div className="fixed inset-0 bg-gray-800 bg-opacity-50 z-10 flex items-center justify-center">
+                    <div className="bg-white rounded shadow-lg w-3/4 max-w-lg p-6">
+                      <h3 className="text-lg font-bold mb-4">Select Proponents</h3>
+                      <div className="space-y-2 overflow-y-auto max-h-64">
+                        {proponents.map((proponent) => (
+                          <div
+                            key={proponent.userID}
+                            className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
+                              formData.proponents.includes(proponent.userID)
+                                ? 'bg-blue-100 hover:bg-blue-200'
+                                : ''
+                            }`}
+                            onClick={() => handleProponentsChange(proponent.userID)}
+                          >
+                            <div className="font-medium">
+                              {proponent.firstname} {proponent.lastname}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <button
+                        onClick={() => setShowProponentsOverlay(false)} // Close the overlay
+                        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -1040,32 +1225,62 @@ const handleAgencyFormChange = async (e) => {
             <div className="col-span-2">
               <label className="block mb-2 font-semibold">COLLEGE</label>
               {/* Fixed height container with shadow to indicate scrollability */}
-              <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
-                {/* Scrollable content */}
-                <div className="absolute inset-0 overflow-y-auto">
-                  {college.map((col) => (
-                    <div
-                      key={col.collegeID}
-                      className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
-                        formData.college.includes(col.collegeID) ? 'bg-blue-100 hover:bg-blue-200' : ''
-                      }`}
-                      onClick={() => handleCollegeChange(col.collegeID)}
-                    >
-                      <div className="font-medium">{col.title}</div>
-                      <div className="text-sm text-gray-600">{col.abbreviation}</div>
-                    </div>
-                  ))}
+              <div>
+                {/* Select button to trigger the overlay */}
+                <div
+                  onClick={() => setShowOverlay(true)} // Open the overlay
+                  className="relative h-[50px] border border-gray-300 rounded shadow-inner flex items-center px-3 cursor-pointer text-gray-500"
+                >
+                  {formData.college.length > 0
+                    ? `${college
+                        .filter((col) => formData.college.includes(col.collegeID))
+                        .sort((a, b) => a.collegeID - b.collegeID) // Sort numerically by collegeID
+                        .map((col) => col.title)
+                        .join(', ')}`
+                    : 'Select Colleges'}
                 </div>
+
+                {/* Overlay */}
+                {showOverlay && (
+                  <div className="fixed inset-0 bg-gray-800 bg-opacity-50 z-10 flex items-center justify-center">
+                    <div className="bg-white rounded shadow-lg w-3/4 max-w-lg p-6">
+                      <h3 className="text-lg font-bold mb-4">Select Colleges</h3>
+                      <div className="space-y-2 overflow-y-auto max-h-64">
+                        {college.map((col) => (
+                          <div
+                            key={col.collegeID}
+                            className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
+                              formData.college.includes(col.collegeID) ? 'bg-blue-100 hover:bg-blue-200' : ''
+                            }`}
+                            onClick={() => handleCollegeChange(col.collegeID)}
+                          >
+                            <div className="font-medium">{col.title}</div>
+                            <div className="text-sm text-gray-600">{col.abbreviation}</div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="pt-3 text-red-500">
+                      Click items to select/deselect
+                      </div>
+                      <button
+                        onClick={() => setShowOverlay(false)} // Close the overlay
+                        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-              <p className="text-sm text-gray-500 mt-1">
+              {/* <p className="text-sm text-gray-500 mt-1">
                 Click items to select/deselect
-              </p>
+              </p> */}
             </div>
 
             <div className="col-span-2">
               <label className="block mb-2 font-semibold">PROGRAM</label>
               {/* Fixed height container with shadow to indicate scrollability */}
-              <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
+              <div className="relative h-[50px] border border--300 rounded shadow-inner">
                 {/* Scrollable content */}
                 <div className="absolute inset-0 overflow-y-auto">
                   {program.map((prog) => (
@@ -1075,6 +1290,7 @@ const handleAgencyFormChange = async (e) => {
                         formData.program.includes(prog.programID) ? 'bg-blue-100 hover:bg-blue-200' : ''
                       } ${formData.college.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
                       onClick={() => {
+                        // Prevent selection if no colleges are selected
                         if (formData.college.length > 0) {
                           handleProgramChange(prog.programID);
                         }
@@ -1085,8 +1301,8 @@ const handleAgencyFormChange = async (e) => {
                     </div>
                   ))}
                   {program.length === 0 && (
-                    <div className="p-4 text-gray-500 text-center">
-                      {formData.college.length === 0 
+                    <div className="p-3 text-gray-500 text-left align-middle">
+                      {formData.college.length === 0
                         ? "Please select college(s) first"
                         : "No programs available for selected college(s)"}
                     </div>
@@ -1106,7 +1322,7 @@ const handleAgencyFormChange = async (e) => {
                 name="accreditationLevel"
                 value={formData.accreditationLevel}
                 onChange={handleFormChange}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full p-2 border border-gray-300 rounded h-[50px] text-gray-500"
               >
                 <option value="" disabled hidden>Select</option>
                 <option value="I">I</option>
@@ -1575,6 +1791,16 @@ const handleAgencyFormChange = async (e) => {
               </div>
             </div>
           ))}
+          {/* Add Button */}
+          <div className="flex space-x-2 mt-2">
+            <button
+              type="button"
+              onClick={addBudgetItem}
+              className="mt-4 p-2 bg-blue-500 text-white rounded"
+            >
+              Add Budget Item
+            </button>
+          </div>
 
           <div>
             {/* Sixth Row */}
@@ -1621,17 +1847,6 @@ const handleAgencyFormChange = async (e) => {
                 />
               </div>
             </div>
-          </div>
-
-          {/* Add Button */}
-          <div className="flex space-x-2 mt-2">
-            <button
-              type="button"
-              onClick={addBudgetItem}
-              className="mt-4 p-2 bg-blue-500 text-white rounded"
-            >
-              Add Budget Item
-            </button>
           </div>
         </div>
 
@@ -1779,120 +1994,119 @@ const handleAgencyFormChange = async (e) => {
         </div>
 
         {showTrainers && (
-          <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-            <label className="block mb-2 font-bold">LOADING OF TRAINERS</label>
-            <div className="relative">
-              <label className="block mb-2 font-semibold">Trainers:</label>
-              <div className="overflow-x-auto">
-                <table className="min-w-full border">
-                  <thead>
-                    <tr>
-                      <th className="px-4 py-2 border bg-gray-300">Name of Faculty</th>
-                      <th className="px-4 py-2 border bg-gray-300">Training Load</th>
-                      <th className="px-4 py-2 border bg-gray-300">No. of Hours</th>
-                      <th className="px-4 py-2 border bg-gray-300">USTP Budget</th>
-                      <th className="px-4 py-2 border bg-gray-300">Partner Agency Budget</th>
-                      <th className="px-4 py-2 border bg-gray-300">Total Budgetary Requirement</th>
+        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
+          <label className="block mb-2 font-bold">LOADING OF TRAINERS</label>
+          <div className="relative">
+            <label className="block mb-2 font-semibold">Trainers:</label>
+            <div className="overflow-x-auto">
+              <table className="min-w-full border">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2 border bg-gray-300">Name of Faculty</th>
+                    <th className="px-4 py-2 border bg-gray-300">Training Load</th>
+                    <th className="px-4 py-2 border bg-gray-300">No. of Hours</th>
+                    <th className="px-4 py-2 border bg-gray-300">USTP Budget</th>
+                    <th className="px-4 py-2 border bg-gray-300">Partner Agency Budget</th>
+                    <th className="px-4 py-2 border bg-gray-300">Total Budgetary Requirement</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {formData.loadingOfTrainers.map((trainer, index) => (
+                    <tr key={index}>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="faculty"
+                          value={trainer.faculty}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="text"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Faculty Name"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="trainingLoad"
+                          value={trainer.trainingLoad}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="text"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Training Load"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="hours"
+                          value={trainer.hours}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="number"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Hours"
+                          min="0"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="ustpBudget"
+                          value={150}  // USTP Budget is fixed to 150
+                          readOnly
+                          type="number"
+                          className="w-full p-1 border border-gray-300 rounded bg-gray-100"
+                          placeholder="USTP Budget"
+                          min="0"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="agencyBudget"
+                          value={trainer.agencyBudget}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="number"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Partner Agency Budget"
+                          min="0"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="totalBudgetRequirement"
+                          value={trainer.totalBudgetRequirement}
+                          readOnly
+                          type="number"
+                          className="w-full p-1 border border-gray-300 rounded bg-gray-100"
+                          placeholder="Total"
+                        />
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {formData.loadingOfTrainers.map((trainer, index) => (
-                      <tr key={index}>
-                        <td className="px-4 py-2 border">
-                          <input
-                            name="faculty"
-                            value={trainer.faculty}
-                            onChange={(e) => handleTrainerChange(index, e)}
-                            type="text"
-                            required
-                            className="w-full p-1 border border-gray-300 rounded"
-                            placeholder="Faculty Name"
-                          />
-                        </td>
-                        <td className="px-4 py-2 border">
-                          <input
-                            name="trainingLoad"
-                            value={trainer.trainingLoad}
-                            onChange={(e) => handleTrainerChange(index, e)}
-                            type="text"
-                            required
-                            className="w-full p-1 border border-gray-300 rounded"
-                            placeholder="Training Load"
-                          />
-                        </td>
-                        <td className="px-4 py-2 border">
-                          <input
-                            name="hours"
-                            value={trainer.hours}
-                            onChange={(e) => handleTrainerChange(index, e)}
-                            type="number"
-                            required
-                            className="w-full p-1 border border-gray-300 rounded"
-                            placeholder="Hours"
-                            min="0"
-                          />
-                        </td>
-                        <td className="px-4 py-2 border">
-                          <input
-                            name="ustpBudget"
-                            value={trainer.ustpBudget}
-                            onChange={(e) => handleTrainerChange(index, e)}
-                            type="number"
-                            required
-                            className="w-full p-1 border border-gray-300 rounded"
-                            placeholder="USTP Budget"
-                            min="0"
-                          />
-                        </td>
-                        <td className="px-4 py-2 border">
-                          <input
-                            name="agencyBudget"
-                            value={trainer.agencyBudget}
-                            onChange={(e) => handleTrainerChange(index, e)}
-                            type="number"
-                            required
-                            className="w-full p-1 border border-gray-300 rounded"
-                            placeholder="Partner Agency Budget"
-                            min="0"
-                          />
-                        </td>
-                        <td className="px-4 py-2 border">
-                          <input
-                            name="totalBudgetRequirement"
-                            value={trainer.totalBudgetRequirement}
-                            readOnly
-                            type="number"
-                            className="w-full p-1 border border-gray-300 rounded bg-gray-100"
-                            placeholder="Total"
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              {/* Add and Remove Buttons */}
-              <div className="flex justify-between mt-2">
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {/* Add and Remove Buttons */}
+            <div className="flex justify-between mt-2">
+              <button
+                type="button"
+                onClick={addTrainerRow}
+                className="text-green-500 hover:underline"
+              >
+                + Add Row
+              </button>
+              {formData.loadingOfTrainers.length > 1 && (
                 <button
                   type="button"
-                  onClick={addTrainerRow}
-                  className="text-green-500 hover:underline"
+                  onClick={() => removeTrainerRow(formData.loadingOfTrainers.length - 1)}
+                  className="text-red-500 hover:underline"
+                  title="Remove Last Row"
                 >
-                  + Add Row
+                  - Remove Row
                 </button>
-                {formData.loadingOfTrainers.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeTrainerRow(formData.loadingOfTrainers.length - 1)}
-                    className="text-red-500 hover:underline"
-                    title="Remove Last Row"
-                  >
-                    - Remove Row
-                  </button>
-                )}
-              </div>
+              )}
             </div>
           </div>
+        </div>
         )}
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">

@@ -12,6 +12,9 @@ module.exports = {
         'vlu': '#1A1851',
         'vluu': '#333087',
       },
+      fontSize: {
+        'xxs': 9, // 40px
+      },
     },
   },
   plugins: [],

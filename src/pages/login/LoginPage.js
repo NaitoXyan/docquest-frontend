@@ -88,11 +88,11 @@ const LoginPage = () => {
     <div
       className="flex items-center justify-center min-h-screen bg-cover bg-center"
       style={{
-        backgroundImage: "url('/images/bg-login3.png')"
+        backgroundImage: "url('/images/bg-login.png')"
       }}
     >
-      <div className="w-full max-w-md p-9 ">
-        <div className="flex justify-center my-1">
+      <div className="w-full max-w-md p-9">
+        <div className="flex justify-center mb-1 mt-14">
           <img src="/images/logo1.png" alt="DocQuestLogo" className="w-48" />
         </div>
 
@@ -118,13 +118,13 @@ const LoginPage = () => {
             />
           </div>
           <div>
-          <label
-            htmlFor="password"
-            className="block mt-0.5 text-sm font-medium"
-            style={{ color: "#060E57" }}
-          >
-            Password
-          </label>
+            <label
+              htmlFor="password"
+              className="block mt-0.5 text-sm font-medium"
+              style={{ color: "#060E57" }}
+            >
+              Password
+            </label>
             <input
               type="password"
               id="password"
@@ -138,6 +138,18 @@ const LoginPage = () => {
             <h1 className='font-semibold'>Login</h1>
           </button>
         </form>
+
+        <div>
+          <div className="flex justify-center">
+            <img src="/images/ECRDlogo.png" alt="DocQuestLogo" className="w-32" />
+          </div>
+          <h1 className='-mt-3 text-xxs text-center'>
+            Office of the Extension and Community Relations Division -USTP
+          </h1>
+          <h1 className='-mt-7 text-xxs text-center'>
+            JOINED FORCED WITH THE
+          </h1>
+        </div>
       </div>
     </div>
   );

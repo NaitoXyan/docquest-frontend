@@ -45,6 +45,7 @@ import EstaffScancopy from "./pages/estaff/EstaffScancopy";
 import DirectorReviewList from "./pages/director/DirectorProjectReviewList";
 import ProgramChairDashboard from "./pages/programChair/ProgramChairDashboard";
 import MOAGenerator from "./pages/vpala/VPALAGenerateMOA";
+import ProgramChairReviewList from "./pages/programChair/ProgramChairProjectReviewList";
 
 function App() {
   return (
@@ -68,6 +69,7 @@ function App() {
 
         {/* programchair routes */}
         <Route path="/program-chair" element={<ProgramChairDashboard/>}/>
+        <Route path="/program-chair-review-list/:status/:document" element={<ProgramChairReviewList/>}/>
 
         {/*director routes  */}
         <Route path="/director" element={<DirectorDashboard/>} />

@@ -58,7 +58,7 @@ const ProjLeadDashboard = () => {
             <div className="flex-1 ml-[20%]">
                 <Topbar />
                 <div className="flex flex-col mt-14 px-10">
-                    <h1 className="text-2xl font-semibold mb-5">Documents Overview</h1>
+                    <h1 className="text-2xl font-bold mb-5">DOCUMENTS OVERVIEW</h1>
 
                     <div className="grid grid-cols-4 gap-4 mb-10">
                         <div className="bg-gray-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">

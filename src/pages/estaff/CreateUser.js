@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Sidebar from "../../components/Sidebar";
+import EstaffSideBar from "../../components/EstaffSideBar";
 import Topbar from "../../components/Topbar";
 
 const CreateUser = () => {
@@ -115,7 +115,7 @@ const CreateUser = () => {
   return (
     <div className="bg-gray-200 min-h-screen flex">
       <div className="w-1/5 fixed h-full">
-        <Sidebar />
+        <EstaffSideBar />
       </div>
 
       <div className="flex-1 ml-[20%]">

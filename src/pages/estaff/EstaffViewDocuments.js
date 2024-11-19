@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Sidebar from "../../components/Sidebar";
+import EstaffSideBar from "../../components/EstaffSideBar";
 import Topbar from "../../components/Topbar";
 // import { Document, Page } from 'react-pdf'; // Commenting out the imports
 // import 'react-pdf/dist/esm/Page/AnnotationLayer.css'; // Commenting out CSS import
@@ -23,7 +23,7 @@ const EstaffViewDocument = ({ projectLeader, documentType, documentDate, pdfFile
   return (
     <div className="bg-gray-200 min-h-screen flex">
       <div className="w-1/5 fixed h-full">
-        <Sidebar />
+        <EstaffSideBar />
       </div>
 
       <div className="flex-1 ml-[20%]">

@@ -10,6 +10,7 @@ const ProgramChairDashboard = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
     const navigate = useNavigate();
+    const [error, setError] = useState(null);
     const token = localStorage.getItem('token');
 
     useEffect(() => {
@@ -24,17 +25,35 @@ const ProgramChairDashboard = () => {
                     },
                 });
             
-                // Access data directly since axios parses JSON responses
-                const data = response.data;
+                // Check if response.data has the expected structure
+                if (!response.data || !Array.isArray(response.data.reviews)) {
+                    console.error("Invalid data structure received:", response.data);
+                    setError("Invalid data format received from server");
+                    setProjects([]);
+                    return;
+                }
             
-                // Ensure data validity
-                const formattedProjects = data.map((project) => ({
-                    fullname: `${project.firstname} ${project.lastname}` || "N/A", // Combining names for demonstration
-                    documentType: project.content_type_name || "N/A",
-                    projectTitle: project.projectTitle || "Untitled Project",
-                    dateCreated: project.dateCreated || new Date().toISOString(),
-                    status: project.reviewStatus || "Unknown", // Use `reviewStatus` for status
-                }));
+                // Process the reviews array
+                const formattedProjects = response.data.reviews.map((project) => {
+                    if (!project) return null;
+                    
+                    return {
+                        fullname: project.firstname && project.lastname 
+                            ? `${project.firstname} ${project.lastname}`
+                            : "N/A",
+                        documentType: project.content_type_name || "N/A",
+                        projectTitle: project.projectTitle || "Untitled Project",
+                        dateCreated: project.dateCreated 
+                            ? new Date(project.dateCreated).toISOString()
+                            : new Date().toISOString(),
+                        status: project.reviewStatus || "Pending",
+                        reviewDate: project.reviewDate 
+                            ? new Date(project.reviewDate).toISOString()
+                            : null,
+                        comment: project.comment || "",
+                        reviewID: project.reviewID,
+                    };
+                }).filter(Boolean); // Remove any null entries
             
                 // Sort by dateCreated in descending order
                 const sortedProjects = formattedProjects.sort((a, b) =>
@@ -42,11 +61,15 @@ const ProgramChairDashboard = () => {
                 );
             
                 setProjects(sortedProjects);
+                setError(null);
             
                 // Calculate status counts
                 const counts = sortedProjects.reduce(
                     (acc, project) => {
-                        acc[project.status.toLowerCase()] = (acc[project.status.toLowerCase()] || 0) + 1;
+                        const status = project.status.toLowerCase();
+                        if (['approved', 'pending', 'rejected'].includes(status)) {
+                            acc[status] = (acc[status] || 0) + 1;
+                        }
                         return acc;
                     },
                     { approved: 0, pending: 0, rejected: 0 }
@@ -55,14 +78,16 @@ const ProgramChairDashboard = () => {
                 setStatusCounts(counts);
             } catch (error) {
                 console.error("Error fetching projects:", error);
+                setError(error.message || "Failed to fetch projects");
+                setProjects([]);
             }
         };
 
         fetchProjects();
-    }, []);
+    }, [token]);
 
     const handleNavigate = (statusFilter) => {
-        navigate(`/review-list/${statusFilter.toLowerCase()}/all`);
+        navigate(`/program-chair-review-list/${statusFilter.toLowerCase()}/all`);
     };
 
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -169,45 +194,65 @@ const ProgramChairDashboard = () => {
 
                     <h1 className="text-2xl font-semibold mb-2">Documents</h1>
                     <div className="bg-white shadow-lg rounded-lg py-4 px-4">
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full table-auto">
-                                <thead className="bg-gray-100">
-                                    <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Leader</th>
-                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Type</th>
-                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Title</th>
-                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Created</th>
-                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {currentProjects.map((project, index) => (
-                                        <tr key={index}>
-                                            <td className="px-6 py-4 whitespace-nowrap">{project.fullname}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{project.documentType}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{project.projectTitle}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{new Date(project.dateCreated).toLocaleDateString()}</td>
-                                            <td className="px-6 py-4">
-                                                <span
-                                                    className={`px-2 py-1 rounded-md text-white ${
-                                                        project.status.toLowerCase() === "approved"
-                                                            ? "bg-green-500"
-                                                            : project.status.toLowerCase() === "pending"
-                                                            ? "bg-yellow-500"
-                                                            : "bg-red-500"
-                                                    }`}
-                                                >
-                                                    {project.status}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className="mt-1 flex justify-center items-center space-x-2">
-                            {renderPageNumbers()}
-                        </div>
+                        {error ? (
+                            <div className="text-red-500 p-4 text-center">
+                                {error}
+                            </div>
+                        ) : projects.length === 0 ? (
+                            <div className="text-gray-500 p-4 text-center">
+                                No documents found
+                            </div>
+                        ) : (
+                            <>
+                                <div className="overflow-x-auto">
+                                    <table className="min-w-full table-auto">
+                                        <thead className="bg-gray-100">
+                                            <tr>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Leader</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Type</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Title</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Created</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Review Date</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="bg-white divide-y divide-gray-200">
+                                            {currentProjects.map((project, index) => (
+                                                <tr key={project.reviewID || index} className="hover:bg-gray-50">
+                                                    <td className="px-6 py-4 whitespace-nowrap">{project.fullname}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{project.documentType}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{project.projectTitle}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {new Date(project.dateCreated).toLocaleDateString()}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {project.reviewDate 
+                                                            ? new Date(project.reviewDate).toLocaleDateString()
+                                                            : "Not reviewed"}
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <span
+                                                            className={`px-2 py-1 rounded-md text-white ${
+                                                                project.status.toLowerCase() === "approved"
+                                                                    ? "bg-green-500"
+                                                                    : project.status.toLowerCase() === "pending"
+                                                                    ? "bg-yellow-500"
+                                                                    : "bg-red-500"
+                                                            }`}
+                                                        >
+                                                            {project.status}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="mt-1 flex justify-center items-center space-x-2">
+                                    {renderPageNumbers()}
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

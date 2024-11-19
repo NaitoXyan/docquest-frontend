@@ -55,8 +55,8 @@ const ProposalFormSecondPage = () => {
     return (
         <div className="flex flex-col mt-14 px-10">
             <div className="justify-items-center w-full">
-                <h1 className="text-2xl font-semibold mt-5 justify-items-center">
-                    Extension Project Proposal
+                <h1 className="text-2xl font-bold mt-5 justify-items-center">
+                EXTENSION PROJECT PROPOSAL
                 </h1>
             </div>
 

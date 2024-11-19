@@ -35,9 +35,23 @@ import ProjLeadMoaStatus from "./pages/projectlead/ProjLeadMoaStatus";
 import ProjLeadEditProject from "./pages/projectlead/ProjLeadEditProject";
 import ProjLeadEditMoaForm from "./pages/projectlead/ProjLeadEditMoaForm";
 import DirectorReviewProject from "./pages/director/DirectorReviewProject";
+<<<<<<< HEAD
 import DirectorDashboard from "./pages/director/DirectorDashboard";
 import EstaffScancopy from "./pages/estaff/EstaffScancopy";
 import EStaffProfilePage from "./pages/estaff/EStaffProfilePage";
+=======
+import ProposalFormFirstPage_Deliverables from "./components/ProposalFormFirstPage_Deliverables";
+import DirectorDashboard from "./pages/director/DirectorDashboard";
+import ProjLeadStatusBar from './pages/projectlead/ProjLeadStatusBar'; // Correct path
+import VPALADashboard from "./pages/vpala/VPALADashboard";
+import VPALASideBar from './components/VPALASideBar';
+import VPALAMemoList from "./pages/vpala/VPALAMemoList";
+import EstaffScancopy from "./pages/estaff/EstaffScancopy";
+import DirectorReviewList from "./pages/director/DirectorProjectReviewList";
+import ProgramChairDashboard from "./pages/programChair/ProgramChairDashboard";
+import MOAGenerator from "./pages/vpala/VPALAGenerateMOA";
+import ProgramChairReviewList from "./pages/programChair/ProgramChairProjectReviewList";
+>>>>>>> upstream/develop
 
 function App() {
   return (
@@ -54,13 +68,29 @@ function App() {
         <Route path="/project-status/:statusFilterParam" element={<ProjLeadProjectStatus />} /> "need UI/UX"
         <Route path="/pick-project-create-moa" element={<PickProjCreateMoa/>}/> "need UI/UX"
         <Route path="/create_moa/:projectID" element={<ProjLeadMOAForm />}/>
-          
+        <Route path="/projectlead" element={<ProjLeadStatusBar />} />
         <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
         <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
+        <Route path="/deliverables" element={<ProposalFormFirstPage_Deliverables/>}/>
+
+        {/* programchair routes */}
+        <Route path="/program-chair" element={<ProgramChairDashboard/>}/>
+        <Route path="/program-chair-review-list/:status/:document" element={<ProgramChairReviewList/>}/>
 
         {/*director routes  */}
         <Route path="/director" element={<DirectorDashboard/>} />
         <Route path="/review-project/:projectID" element={<DirectorReviewProject/>} />
+<<<<<<< HEAD
+=======
+        <Route path="/review-list/:status/:document" element={<DirectorReviewList/>}/>
+
+        {/*VPAPLA Routes  */}
+        <Route path="/vpala" element={<VPALADashboard/>}/>
+        <Route path="/vpala-generate-moa" element={<MOAGenerator/>}/>
+        
+        {/* EStaff routes */}
+        <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>
+>>>>>>> upstream/develop
 
          {/* ESTAFF ROUTING */}
         <Route path="/estaff/documents-list" element={<EStaffDocumentsList />} />  {/* Add this line */}
@@ -79,7 +109,7 @@ function App() {
         <Route path="/deptoff" element={<DeptOffDashboard />} />
         <Route path="/coordinator" element={<CoordinatorDashboard />} />
         <Route path="/signatory" element={<SignatoryDashboard />} />
-        <Route path="/estaff/scancopy" element={<EstaffScancopy />} />
+        {/* <Route path="/estaff/scancopy" element={<EstaffScancopy />} /> */}
       </Routes>
 
       // <div style={{ height: '100vh' }}>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
 
-function ProjLeadSidebar({ onFilterChange }) {
+function VPALASideBar({ onFilterChange }) {
     const [activeDropdown, setActiveDropdown] = useState(null); // To track which dropdown is open
     const navigate = useNavigate();
     const location = useLocation();
@@ -23,7 +23,7 @@ function ProjLeadSidebar({ onFilterChange }) {
     const handleLogout = async () => {
         const token = localStorage.getItem('token');
         try {
-            await axios.post('http://127.0.0.1:8000/auth/token/logout/', {}, {
+            await axios.post('https://docquest-production.up.railway.app/auth/token/logout/', {}, {
                 headers: {
                     'Authorization': `Token ${token}`,
                 },
@@ -31,7 +31,7 @@ function ProjLeadSidebar({ onFilterChange }) {
         } catch (error) {
             console.error("Logout failed:", error);
         }
-        localStorage.clear();
+        localStorage.removeItem('token');
         navigate('/login');
     };
 
@@ -49,7 +49,7 @@ function ProjLeadSidebar({ onFilterChange }) {
                 <ul>
                     <li>
                         <NavLink
-                            to="/user"
+                            to="/vpala"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
                                 }`
@@ -58,13 +58,25 @@ function ProjLeadSidebar({ onFilterChange }) {
                             Dashboard
                         </NavLink>
                     </li>
+
                     <li>
+                        <NavLink
+                            to="/vpalamemolist"
+                            className={({ isActive }) =>
+                                `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                }`
+                            }
+                        >
+                            Memorandum List
+                        </NavLink>
+                    </li>
+                    {/* <li>
                         <button
                             onClick={() => toggleDropdown('projectMonitoring')}
                             className={`text-lg w-full text-left block px-6 py-3 ${isPathActive("/project-status") ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
                                 } focus:outline-none`}
                         >
-                            Project Status
+                            MOA/MOU Status
                         </button>
                         <ul className={`${activeDropdown === 'projectMonitoring' ? '' : 'hidden'} bg-indigo-900`}>
                             <li>
@@ -76,7 +88,7 @@ function ProjLeadSidebar({ onFilterChange }) {
                                         }`
                                     }
                                 >
-                                    Project Status
+                                    Pending
                                 </NavLink>
                             </li>
                             <li>
@@ -88,55 +100,11 @@ function ProjLeadSidebar({ onFilterChange }) {
                                         }`
                                     }
                                 >
-                                    MOA Status
+                                    Approved
                                 </NavLink>
                             </li>
                         </ul>
-                    </li>
-                    <li>
-                        <button
-                            onClick={() => toggleDropdown('projectCreation')}
-                            className={`text-lg w-full text-left block px-6 py-3 ${isPathActive("/create_proposal") || isPathActive("/create_moa") || isPathActive("/load_trainer") ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
-                                } focus:outline-none`}
-                        >
-                            Document Creation
-                        </button>
-                        <ul className={`${activeDropdown === 'projectCreation' ? '' : 'hidden'} bg-indigo-900`}>
-                            <li>
-                                <NavLink
-                                    to="/create_proposal"
-                                    className={({ isActive }) =>
-                                        `text-lg pl-10 block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
-                                        }`
-                                    }
-                                >
-                                    Create Proposal
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink
-                                    to="/pick-project-create-moa"
-                                    className={({ isActive }) =>
-                                        `text-lg pl-10 block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
-                                        }`
-                                    }
-                                >
-                                    Create MOA/MOU
-                                </NavLink>
-                            </li>
-                            {/* <li>
-                                <NavLink
-                                    to="/load_trainer"
-                                    className={({ isActive }) =>
-                                        `text-lg pl-10 block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
-                                        }`
-                                    }
-                                >
-                                    Load Trainer
-                                </NavLink>
-                            </li> */}
-                        </ul>
-                    </li>
+                    </li> */}
                     <li>
                         <button
                             onClick={handleLogout}
@@ -151,4 +119,4 @@ function ProjLeadSidebar({ onFilterChange }) {
     );
 }
 
-export default ProjLeadSidebar;
+export default VPALASideBar;

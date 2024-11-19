@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Topbar from "../../components/Topbar";
-import DirectorSidebar from "../../components/DirectorSidebar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import ProgramChairSidebar from "../../components/ProgramChairSideBar";
 
 const ProgramChairDashboard = () => {
     const [projects, setProjects] = useState([]);
@@ -24,7 +24,7 @@ const ProgramChairDashboard = () => {
                         'Content-Type': 'application/json',
                     },
                 });
-            
+    
                 // Check if response.data has the expected structure
                 if (!response.data || !Array.isArray(response.data.reviews)) {
                     console.error("Invalid data structure received:", response.data);
@@ -32,11 +32,11 @@ const ProgramChairDashboard = () => {
                     setProjects([]);
                     return;
                 }
-            
+    
                 // Process the reviews array
                 const formattedProjects = response.data.reviews.map((project) => {
                     if (!project) return null;
-                    
+    
                     return {
                         fullname: project.firstname && project.lastname 
                             ? `${project.firstname} ${project.lastname}`
@@ -46,7 +46,14 @@ const ProgramChairDashboard = () => {
                         dateCreated: project.dateCreated 
                             ? new Date(project.dateCreated).toISOString()
                             : new Date().toISOString(),
-                        status: project.reviewStatus || "Pending",
+                        status:
+                            project.approvalCounter > 0
+                                ? "Approved"
+                                : project.reviewStatus === "pending" && project.approvalCounter === 0
+                                ? "Pending"
+                                : project.reviewStatus === "rejected"
+                                ? "Rejected"
+                                : "Unknown",
                         reviewDate: project.reviewDate 
                             ? new Date(project.reviewDate).toISOString()
                             : null,
@@ -54,16 +61,16 @@ const ProgramChairDashboard = () => {
                         reviewID: project.reviewID,
                     };
                 }).filter(Boolean); // Remove any null entries
-            
+    
                 // Sort by dateCreated in descending order
                 const sortedProjects = formattedProjects.sort((a, b) =>
                     new Date(b.dateCreated) - new Date(a.dateCreated)
                 );
-            
+    
                 setProjects(sortedProjects);
                 setError(null);
-            
-                // Calculate status counts
+    
+                // Calculate status counts with updated logic
                 const counts = sortedProjects.reduce(
                     (acc, project) => {
                         const status = project.status.toLowerCase();
@@ -74,7 +81,7 @@ const ProgramChairDashboard = () => {
                     },
                     { approved: 0, pending: 0, rejected: 0 }
                 );
-            
+    
                 setStatusCounts(counts);
             } catch (error) {
                 console.error("Error fetching projects:", error);
@@ -82,9 +89,9 @@ const ProgramChairDashboard = () => {
                 setProjects([]);
             }
         };
-
+    
         fetchProjects();
-    }, [token]);
+    }, [token]);    
 
     const handleNavigate = (statusFilter) => {
         navigate(`/program-chair-review-list/${statusFilter.toLowerCase()}/all`);
@@ -162,7 +169,7 @@ const ProgramChairDashboard = () => {
     return (
         <div className="bg-gray-200 min-h-screen flex">
             <div className="w-1/5 fixed h-full">
-                <DirectorSidebar />
+                <ProgramChairSidebar />
             </div>
             <div className="flex-1 ml-[20%]">
                 <Topbar />
@@ -212,7 +219,6 @@ const ProgramChairDashboard = () => {
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Type</th>
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Title</th>
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Created</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Review Date</th>
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
                                             </tr>
                                         </thead>
@@ -224,11 +230,6 @@ const ProgramChairDashboard = () => {
                                                     <td className="px-6 py-4 whitespace-nowrap">{project.projectTitle}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         {new Date(project.dateCreated).toLocaleDateString()}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        {project.reviewDate 
-                                                            ? new Date(project.reviewDate).toLocaleDateString()
-                                                            : "Not reviewed"}
                                                     </td>
                                                     <td className="px-6 py-4">
                                                         <span

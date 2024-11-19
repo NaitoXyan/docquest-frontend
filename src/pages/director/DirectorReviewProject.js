@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import ProjLeadSidebar from "../../components/ProjLeadSideBar";
+import DirectorSidebar from "../../components/DirectorSidebar";
 import Topbar from "../../components/Topbar";
 import { useParams, useNavigate } from "react-router-dom";
 import { PDFViewer } from "@react-pdf/renderer";
@@ -79,14 +79,14 @@ const DirectorReviewProject = () => {
 
   const closeSuccessModal = () => {
     setShowSuccessModal(false);
-    navigate("/director");
+    navigate("/review-list/pending/all");
   };
 
   return (
     <div className="bg-gray-200 min-h-screen flex">
       {/* Sidebar */}
       <div className="w-1/5 fixed h-full">
-        <ProjLeadSidebar />
+        <DirectorSidebar />
       </div>
 
       {/* Main Content */}
@@ -148,7 +148,7 @@ const DirectorReviewProject = () => {
               onClick={closeSuccessModal}
               className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              Go to Dashboard
+              Go to Review List
             </button>
           </div>
         </div>

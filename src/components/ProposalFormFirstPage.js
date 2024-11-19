@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
+import ProponentsDeliverables from "./ProposalFormFirstPage_Deliverables";
 
 const ProposalFormFirstPage = () => {
   const userID = localStorage.getItem('userid');
@@ -16,6 +17,10 @@ const ProposalFormFirstPage = () => {
   const [barangay, setBarangay] = useState([]);
   const [error, setError] = useState([]);
   const [proponents, setProponents] = useState([]);
+  const [programCategory, setProgramCategory] = useState([]);
+  const [projectCategory, setProjectCategory] = useState([]);
+  const [college, setCollege] = useState([]);
+  const [program, setProgram] = useState([]);
   const [nonUserProponents, setNonUserProponents] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
   const [showTrainers, setShowTrainers] = useState(false);
@@ -29,17 +34,17 @@ const ProposalFormFirstPage = () => {
   const [agencies, setAgencies] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const [deliverables, setDeliverables] = useState([]);
 
   const [formData, setFormData] = useState({
     userID: userID,
-    programCategory: "",
+    programCategory: [],
     projectTitle: "",
     projectType: "",
-    projectCategory: "",
+    projectCategory: [],
     researchTitle: "",
-    program: "",
+    program: [],
     accreditationLevel: "",
-    college: "",
     beneficiaries: "",
     targetImplementation: "",
     totalHours: 0,
@@ -170,7 +175,9 @@ const ProposalFormFirstPage = () => {
       name: chancellor,
       title: "Chancellor, USTP CDO"
     },
+    deliverables: [],
 
+    college: [],
     region: '',
     province: '',
     city: '',
@@ -208,6 +215,7 @@ const ProposalFormFirstPage = () => {
     delete modifiedData.province;
     delete modifiedData.city;
     delete modifiedData.barangay;
+    delete modifiedData.college;
 
     if (showTrainers === false) {
       delete modifiedData.loadingOfTrainers;
@@ -499,6 +507,74 @@ const ProposalFormFirstPage = () => {
     }
   };
 
+  useEffect(() => {
+    const fetchProgramCategory = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/get_programCategory");
+        setProgramCategory(response.data);
+      } catch (error) {
+        console.error('Error fetching proponents:', error);
+      }
+    };
+
+    fetchProgramCategory();
+  }, []);
+
+  const handleProgramCategoryFormChange = (event) => {
+    const { value } = event.target;
+    const programCategoryID = parseInt(value);
+  
+    if (isNaN(programCategoryID)) {
+      console.error("Invalid program category ID");
+      return;  // Exit if value is not a valid number
+    }
+  
+    setFormData((prevFormData) => {
+      const programCategory = prevFormData.programCategory.includes(programCategoryID)
+        ? prevFormData.programCategory.filter(id => id !== programCategoryID) // Remove if already selected
+        : [...prevFormData.programCategory, programCategoryID]; // Add if not selected
+  
+      return {
+        ...prevFormData,
+        programCategory,
+      };
+    });
+  };
+
+  useEffect(() => {
+    const fetchProjectCategory = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/get_projectCategory");
+        setProjectCategory(response.data);
+      } catch (error) {
+        console.error('Error fetching proponents:', error);
+      }
+    };
+
+    fetchProjectCategory();
+  }, []);
+
+  const handleProjectCategoryFormChange = (event) => {
+    const { value } = event.target;
+    const projectCategoryID = parseInt(value);
+  
+    if (isNaN(projectCategoryID)) {
+      console.error("Invalid project category ID");
+      return;  // Exit if value is not a valid number
+    }
+  
+    setFormData((prevFormData) => {
+      const projectCategory = prevFormData.projectCategory.includes(projectCategoryID)
+        ? prevFormData.projectCategory.filter(id => id !== projectCategoryID) // Remove if already selected
+        : [...prevFormData.projectCategory, projectCategoryID]; // Add if not selected
+  
+      return {
+        ...prevFormData,
+        projectCategory,
+      };
+    });
+  };
+
   const handleProponentsFormChange = (event) => {
     const { value } = event.target;
     const userID = parseInt(value);
@@ -520,16 +596,45 @@ const ProposalFormFirstPage = () => {
     });
   };
 
-  // Function to handle form change for budgetary requirements
+  // Handle changes in budget items
   const handleBudgetChange = (index, field, value) => {
-    const updatedBudget = formData.budgetRequirements.map((item, i) => {
-      if (i === index) {
-        return { ...item, [field]: value };
-      }
-      return item;
-    });
-    setFormData({ ...formData, budgetRequirements: updatedBudget });
+    const updatedBudgetRequirements = [...formData.budgetRequirements];
+    updatedBudgetRequirements[index][field] = value;
+
+    // Auto-calculate total amount for the current item
+    if (field === 'ustpAmount' || field === 'partnerAmount') {
+      const ustp = Number(field === 'ustpAmount' ? value : updatedBudgetRequirements[index].ustpAmount) || 0;
+      const partner = Number(field === 'partnerAmount' ? value : updatedBudgetRequirements[index].partnerAmount) || 0;
+      updatedBudgetRequirements[index].totalAmount = (ustp + partner).toString();
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      budgetRequirements: updatedBudgetRequirements
+    }));
   };
+
+   // Calculate totals and update budget requirements
+   useEffect(() => {
+    const ustpTotal = formData.budgetRequirements.reduce(
+      (sum, item) => sum + (Number(item.ustpAmount) || 0), 
+      0
+    );
+    
+    const partnerTotal = formData.budgetRequirements.reduce(
+      (sum, item) => sum + (Number(item.partnerAmount) || 0), 
+      0
+    );
+    
+    const total = ustpTotal + partnerTotal;
+
+    setFormData(prev => ({
+      ...prev,
+      ustpBudget: ustpTotal,
+      partnerAgencyBudget: partnerTotal,
+      totalBudget: total
+    }));
+  }, [formData.budgetRequirements]);
 
   // Function to add a new budget item
   const addBudgetItem = () => {
@@ -672,12 +777,6 @@ const handleAgencyFormChange = async (e) => {
     fetchBarangay();
   }, [formData.city]);
 
-  // Calculate and update the total budget whenever USTP or Partner Agency budget changes
-  useEffect(() => {
-    const total = parseFloat(formData.ustpBudget || 0) + parseFloat(formData.partnerAgencyBudget || 0);
-    setFormData((prevData) => ({ ...prevData, totalBudget: total }));
-  }, [formData.ustpBudget, formData.partnerAgencyBudget]); // Only run when these values change
-
   const handleBudgetFormChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -689,6 +788,78 @@ const handleAgencyFormChange = async (e) => {
   const handleCheckboxChange = (event) => {
     setIsChecked(event.target.checked);
     setShowTrainers(!showTrainers);
+  };
+
+  const removeBudgetItem = (index) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      budgetRequirements: prevFormData.budgetRequirements.filter((_, i) => i !== index),
+    }));
+  };
+
+  // Fetch colleges on component mount
+  useEffect(() => {
+    const fetchColleges = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/get_colleges');
+        setCollege(response.data);
+      } catch (error) {
+        console.error('Error fetching colleges:', error);
+      }
+    };
+
+    fetchColleges();
+  }, []);
+
+  // Handle college selection - toggle selection on click
+  const handleCollegeChange = (collegeId) => {
+    setFormData(prev => {
+      const newColleges = prev.college.includes(collegeId)
+        ? prev.college.filter(id => id !== collegeId)  // Remove if already selected
+        : [...prev.college, collegeId];                // Add if not selected
+      
+      return {
+        ...prev,
+        college: newColleges,
+        program: [] // Clear program selection when colleges change
+      };
+    });
+  };
+
+  // Fetch programs whenever selected colleges change
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      if (formData.college.length === 0) {
+        setProgram([]); // Clear programs if no college is selected
+        setFormData(prev => ({ ...prev, program: [] })); // Also clear selected programs
+        return;
+      }
+
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/get_programs/', {
+          collegeIDs: formData.college,
+        });
+        setProgram(response.data);
+      } catch (error) {
+        console.error('Error fetching programs:', error);
+      }
+    };
+
+    fetchPrograms();
+  }, [formData.college]);
+
+  // Handle program selection - toggle selection on click
+  const handleProgramChange = (programId) => {
+    setFormData(prev => {
+      const newPrograms = prev.program.includes(programId)
+        ? prev.program.filter(id => id !== programId)  // Remove if already selected
+        : [...prev.program, programId];                // Add if not selected
+      
+      return {
+        ...prev,
+        program: newPrograms
+      };
+    });
   };
 
   return (
@@ -716,18 +887,21 @@ const handleAgencyFormChange = async (e) => {
           <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block mb-2 font-semibold">
-                PROJECT CATEGORY under USTP CARES
+                PROGRAM CATEGORY under USTP CARES
               </label>
               <select
                 name="programCategory"
                 value={formData.programCategory}
-                onChange={handleFormChange}
+                onChange={handleProgramCategoryFormChange}
+                multiple
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option value="" disabled hidden>Select project category</option>
-                <option value="I-Share">I-Share</option>
-                <option value="I-Help">I-Help</option>
-                <option value="I-Support">I-Support</option>
+                <option value="" disabled hidden>Select</option>
+                  {programCategory.map((programCategory) => (
+                    <option key={programCategory.programCategoryID} value={programCategory.programCategoryID}>
+                      {programCategory.title}
+                    </option>
+                ))}
               </select>
             </div>
 
@@ -750,24 +924,16 @@ const handleAgencyFormChange = async (e) => {
               <select
                 name="projectCategory"
                 value={formData.projectCategory}
-                onChange={handleFormChange}
+                onChange={handleProjectCategoryFormChange}
+                multiple
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option value="" disabled hidden>
-                    Select a project category
-                </option>
-                <option value="Skills Training/Capacity Building">
-                    Skills Training/Capacity Building
-                </option>
-                <option value="Training Needs Survey">
-                    Training Needs Survey
-                </option>
-                <option value="Technical Advice/Consultancy">
-                    Technical Advice/Consultancy
-                </option>
-                <option value="Monitoring and Evaluation">
-                    Monitoring and Evaluation
-                </option>
+                <option value="" disabled hidden>Select</option>
+                  {projectCategory.map((projectCategory) => (
+                    <option key={projectCategory.projectCategoryID} value={projectCategory.projectCategoryID}>
+                      {projectCategory.title}
+                    </option>
+                ))}
               </select>
             </div>
           </div>
@@ -870,20 +1036,69 @@ const handleAgencyFormChange = async (e) => {
           </div>
 
           {/* Fourth Row */}
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block mb-2 font-semibold">PROGRAM</label>
-              <input
-                name="program"
-                value={formData.program}
-                onChange={(e) => handleFormChange(e.target.name, e.target.value.toUpperCase())}
-                type="text"
-                placeholder="Ex: BSIT"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
+          <div className="grid grid-cols-5 gap-4">
+            <div className="col-span-2">
+              <label className="block mb-2 font-semibold">COLLEGE</label>
+              {/* Fixed height container with shadow to indicate scrollability */}
+              <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
+                {/* Scrollable content */}
+                <div className="absolute inset-0 overflow-y-auto">
+                  {college.map((col) => (
+                    <div
+                      key={col.collegeID}
+                      className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
+                        formData.college.includes(col.collegeID) ? 'bg-blue-100 hover:bg-blue-200' : ''
+                      }`}
+                      onClick={() => handleCollegeChange(col.collegeID)}
+                    >
+                      <div className="font-medium">{col.title}</div>
+                      <div className="text-sm text-gray-600">{col.abbreviation}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <p className="text-sm text-gray-500 mt-1">
+                Click items to select/deselect
+              </p>
             </div>
 
-            <div>
+            <div className="col-span-2">
+              <label className="block mb-2 font-semibold">PROGRAM</label>
+              {/* Fixed height container with shadow to indicate scrollability */}
+              <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
+                {/* Scrollable content */}
+                <div className="absolute inset-0 overflow-y-auto">
+                  {program.map((prog) => (
+                    <div
+                      key={prog.programID}
+                      className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
+                        formData.program.includes(prog.programID) ? 'bg-blue-100 hover:bg-blue-200' : ''
+                      } ${formData.college.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      onClick={() => {
+                        if (formData.college.length > 0) {
+                          handleProgramChange(prog.programID);
+                        }
+                      }}
+                    >
+                      <div className="font-medium">{prog.title}</div>
+                      <div className="text-sm text-gray-600">{prog.college.abbreviation}</div>
+                    </div>
+                  ))}
+                  {program.length === 0 && (
+                    <div className="p-4 text-gray-500 text-center">
+                      {formData.college.length === 0 
+                        ? "Please select college(s) first"
+                        : "No programs available for selected college(s)"}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <p className="text-sm text-gray-500 mt-1">
+                Click items to select/deselect
+              </p>
+            </div>
+
+            <div className="col-span-1">
               <label className="block mb-2 font-semibold">
                 ACCREDITATION LEVEL
               </label>
@@ -900,18 +1115,6 @@ const handleAgencyFormChange = async (e) => {
                 <option value="IV">IV</option>
                 <option value="V">V</option>
               </select>
-            </div>
-
-            <div>
-              <label className="block mb-2 font-semibold">COLLEGE</label>
-              <input
-                name="college"
-                value={formData.college}
-                onChange={(e) => handleFormChange(e.target.name, e.target.value.toUpperCase())}
-                type="text"
-                placeholder="Ex: CITC"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
             </div>
           </div>
 
@@ -970,51 +1173,6 @@ const handleAgencyFormChange = async (e) => {
                 name="totalHours"
                 value={formData.totalHours}
                 onChange={handleFormChange}
-                type="number"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1 mt-1">
-          {/* Sixth Row */}
-          <div className="grid grid-cols-1 gap-4">
-            <label className="block mb-2 font-bold text-base">BUDGET REQUIREMENT</label>
-          </div>
-
-          {/* Sixth Row */}
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block mb-2 font-semibold">USTP</label>
-              <input
-                name="ustpBudget"
-                value={formData.ustpBudget}
-                onChange={handleBudgetFormChange}
-                type="number"
-                placeholder="Enter Amount"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-2 font-semibold">PARTNER AGENCY</label>
-              <input
-                name="partnerAgencyBudget"
-                value={formData.partnerAgencyBudget}
-                onChange={handleBudgetFormChange}
-                type="number"
-                placeholder="Enter Amount"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-
-            <div>
-            <label className="block mb-2 font-semibold">TOTAL</label>
-              <input
-                name="totalBudget"
-                value={formData.totalBudget}
-                readOnly
                 type="number"
                 className="w-full p-2 border border-gray-300 rounded"
               />
@@ -1208,6 +1366,7 @@ const handleAgencyFormChange = async (e) => {
             </div>
         </div>
 
+        {/* PROJECT IMPLEMENTATION PLAN AND MANAGEMENT */}
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
             <div>
@@ -1291,7 +1450,7 @@ const handleAgencyFormChange = async (e) => {
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4"> 
             <div>
-                <label className="block mb-2 font-semibold">
+                <label className="block mb-2 font-bold text-base">
                     PROJECT LOCATION AND BENEFICIARIES
                 </label>
                 <textarea
@@ -1307,7 +1466,7 @@ const handleAgencyFormChange = async (e) => {
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-semibold text-base">PROJECT MANAGEMENT TEAM/TRAINERS</label>
+              <label className="block mb-2 font-bold text-base">PROJECT MANAGEMENT TEAM/TRAINERS</label>
 
               {/* Render input fields for each TRAINER */}
               {formData.projectManagementTeam.map((personObj, index) => (
@@ -1345,7 +1504,8 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
         </div>
-
+        
+        {/* BUDGETARY REQUIREMENTS */}
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
             <div>
@@ -1354,7 +1514,7 @@ const handleAgencyFormChange = async (e) => {
           </div>
 
           {formData.budgetRequirements.map((budgetItem, index) => (
-            <div key={index} className="grid grid-cols-4 gap-4">
+            <div key={index} className="grid grid-cols-4 gap-4 mb-4">
               <div>
                 <label className="block mb-2 font-semibold">ITEM NAME</label>
                 <input
@@ -1368,6 +1528,7 @@ const handleAgencyFormChange = async (e) => {
               <div>
                 <label className="block mb-2 font-semibold">USTP AMOUNT</label>
                 <input
+                  type="number"
                   name="ustpAmount"
                   value={budgetItem.ustpAmount}
                   onChange={(e) => handleBudgetChange(index, "ustpAmount", e.target.value)}
@@ -1378,6 +1539,7 @@ const handleAgencyFormChange = async (e) => {
               <div>
                 <label className="block mb-2 font-semibold">PARTNER AMOUNT</label>
                 <input
+                  type="number"
                   name="partnerAmount"
                   value={budgetItem.partnerAmount}
                   onChange={(e) => handleBudgetChange(index, "partnerAmount", e.target.value)}
@@ -1388,18 +1550,89 @@ const handleAgencyFormChange = async (e) => {
               <div>
                 <label className="block mb-2 font-semibold">TOTAL AMOUNT</label>
                 <input
+                  type="number"
                   name="totalAmount"
                   value={budgetItem.totalAmount}
                   onChange={(e) => handleBudgetChange(index, "totalAmount", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                 />
               </div>
+
+              {/* Remove Button for Each Item */}
+              <div className="col-span-4 text-right m-0">
+              <button
+                type="button"
+                onClick={() => removeBudgetItem(index)} // Remove the item at this index
+                disabled={index === 0} // Disable the remove button for the first item
+                className={`p-1 border-1 border-0 bg-transparent rounded ${index === 0 ? "cursor-not-allowed" : "hover:border-red-5 hover:text-white active:border-red-5 active:text-white"}`}
+              >
+                {index === 0 ? (
+                  ""
+                ) : (
+                  <span className="text-red-500">Remove Item</span> // Only this part will be red
+                )}
+              </button>
+              </div>
             </div>
           ))}
 
-          <button type="button" onClick={addBudgetItem} className="mt-4 p-2 bg-blue-500 text-white rounded">
-            Add Budget Item
-          </button>
+          <div>
+            {/* Sixth Row */}
+            <div className="grid grid-cols-1 gap-4">
+              <label className="block mb-2 font-bold text-base">BUDGET REQUIREMENT'S TOTAL</label>
+            </div>
+
+            {/* Sixth Row */}
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className="block mb-2 font-semibold">USTP</label>
+                <input
+                  readOnly
+                  name="ustpBudget"
+                  value={formData.ustpBudget}
+                  onChange={handleBudgetFormChange}
+                  type="number"
+                  placeholder="Enter Amount"
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-2 font-semibold">PARTNER AGENCY</label>
+                <input
+                  readOnly
+                  name="partnerAgencyBudget"
+                  value={formData.partnerAgencyBudget}
+                  onChange={handleBudgetFormChange}
+                  type="number"
+                  placeholder="Enter Amount"
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+
+              <div>
+              <label className="block mb-2 font-semibold">TOTAL</label>
+                <input
+                  name="totalBudget"
+                  value={formData.totalBudget}
+                  readOnly
+                  type="number"
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Add Button */}
+          <div className="flex space-x-2 mt-2">
+            <button
+              type="button"
+              onClick={addBudgetItem}
+              className="mt-4 p-2 bg-blue-500 text-white rounded"
+            >
+              Add Budget Item
+            </button>
+          </div>
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -1426,6 +1659,7 @@ const handleAgencyFormChange = async (e) => {
               {/* Project Summary */}
               <div>
                 <textarea
+                  rows="4"
                   name="projectSummary"
                   value={evaluation.projectSummary}
                   onChange={(e) => handleEvaluationChange(index, "projectSummary", e.target.value)}
@@ -1437,6 +1671,7 @@ const handleAgencyFormChange = async (e) => {
               {/* Indicators */}
               <div>
                 <textarea
+                  rows="4"
                   name="indicators"
                   value={evaluation.indicators}
                   onChange={(e) => handleEvaluationChange(index, "indicators", e.target.value)}
@@ -1448,6 +1683,7 @@ const handleAgencyFormChange = async (e) => {
               {/* Means of Verification */}
               <div>
                 <textarea
+                  rows="4"
                   name="meansOfVerification"
                   value={evaluation.meansOfVerification}
                   onChange={(e) => handleEvaluationChange(index, "meansOfVerification", e.target.value)}
@@ -1459,6 +1695,7 @@ const handleAgencyFormChange = async (e) => {
               {/* Risks/Assumptions */}
               <div>
                 <textarea
+                  rows="4"
                   name="risksAssumptions"
                   value={evaluation.risksAssumptions}
                   onChange={(e) => handleEvaluationChange(index, "risksAssumptions", e.target.value)}
@@ -1492,8 +1729,14 @@ const handleAgencyFormChange = async (e) => {
                         value={row.approach}
                         onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "approach", e.target.value)}
                         className="w-full p-1 border rounded"
-                        rows="2"
-                        placeholder="Enter M&E Instrument/Approach"
+                        rows="4"
+                        placeholder={
+                          [
+                            "Training Need Assessment/Pre-training Survey",
+                            "Pretest and Posttest Skills Demo or Competency Assessment",
+                            "Effect of Project to Participants and Community Questionnaire Trainings Need Assessment",
+                          ][index] || "Default placeholder for Approach"
+                        }
                       />
                     </td>
                     <td className="border border-gray-300 p-2">
@@ -1502,8 +1745,14 @@ const handleAgencyFormChange = async (e) => {
                         value={row.dataGatheringStrategy}
                         onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "dataGatheringStrategy", e.target.value)}
                         className="w-full p-1 border rounded"
-                        rows="2"
-                        placeholder="Enter Strategy for Data Gathering"
+                        rows="4"
+                        placeholder={
+                          [
+                            "Survey Questionnaire Interview with Key Informant of FGD",
+                            "Multiple Choice Questionnaire, Survey Questionnaire, Competency Checklist",
+                            "Survey Questionnaire, Interview with Key Informant or FGD",
+                          ][index] || "Default placeholder for Approach"
+                        }
                       />
                     </td>
                     <td className="border border-gray-300 p-2">
@@ -1512,8 +1761,14 @@ const handleAgencyFormChange = async (e) => {
                         value={row.schedule}
                         onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "schedule", e.target.value)}
                         className="w-full p-1 border rounded"
-                        rows="2"
-                        placeholder="Enter Schedule"
+                        rows="4"
+                        placeholder={
+                          [
+                            "A Week after receiving training/extension request",
+                            "During Training Proper",
+                            "May be periodically scheduled based on the objectives of the extension project (e.g. after 3 months, after 6 months, etc.)",
+                          ][index] || "Default placeholder for Approach"
+                        }
                       />
                     </td>
                   </tr>
@@ -1671,7 +1926,7 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
 
-          <label className="block mb-2 font-semibold">Recommending Approval:</label>
+          <label className="block mb-2 mt-10 font-semibold">Recommending Approval:</label>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block mb-2 font-semibold">
@@ -1715,7 +1970,7 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
 
-          <label className="block mb-2 font-semibold">Funds Available:</label>
+          {/* <label className="block mb-2 font-semibold">Funds Available:</label> */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block mb-2 font-semibold">
@@ -1752,8 +2007,16 @@ const handleAgencyFormChange = async (e) => {
           </div>
         </div>
 
+        <ProponentsDeliverables
+          formData={formData} 
+          setFormData={setFormData} 
+        />
+
         {/* submit naa */}
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-4">
+        <button
+          type="submit"
+          className="bg-[#FCC72C] text-[#060E57] px-4 py-2 rounded-lg mb-10 mt-5 m-auto block w-1/4"
+        >
           Submit
         </button>
       </form>

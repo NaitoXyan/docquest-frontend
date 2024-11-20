@@ -98,7 +98,7 @@ function App() {
         <Route path="/estaff/view-document" element={<EstaffViewDocument />} />  {/* Add this line */}
         <Route path="/estaff/user-list" element={<UserList />} />  {/* Add this line */}
         <Route path="/estaff/create-user" element={<CreateUser />} />  {/* Add this line */}
-        <Route path="/estaff/profile-estaff" element={<EStaffProfilePage />} />  {/* Add this line */}
+        {/* <Route path="/estaff/profile-estaff" element={<EStaffProfilePage />} />  Add this line */}
         
         {/* Create proposal routes */}
         {<Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} />}

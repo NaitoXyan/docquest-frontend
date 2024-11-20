@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Sidebar from "../../components/Sidebar";
 import Topbar from "../../components/Topbar";
+import EstaffSideBar from "../../components/EstaffSideBar";
 import axios from 'axios';
 
 const EstaffDocumentsList = () => {
@@ -45,7 +45,7 @@ const EstaffDocumentsList = () => {
     return (
         <div className="bg-gray-200 min-h-screen flex">
             <div className="w-1/5 fixed h-full">
-                <Sidebar />
+                <EstaffSideBar />
             </div>
             <div className="flex-1 ml-[20%]">
                 <Topbar />

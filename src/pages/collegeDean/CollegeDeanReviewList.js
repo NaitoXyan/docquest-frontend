@@ -268,7 +268,7 @@ const CollegeDeanReviewList = () => {
                                 onClick={() =>
                                 (project.approvalCounter > 1) ||
                                 project.reviewStatus === 'rejected'
-                                    ? handleViewPDF(project.reviewID)
+                                    ? handleViewPDF(project.source_id)
                                     : reviewDocument(project.reviewID)
                                 }
                                 className={`w-36 px-4 py-2 rounded-md text-center ${

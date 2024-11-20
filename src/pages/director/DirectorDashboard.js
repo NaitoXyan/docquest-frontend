@@ -1,19 +1,53 @@
 import React, { useEffect, useState } from "react";
 import Topbar from "../../components/Topbar";
-import DirectorSidebar from "../../components/DirectorSidebar";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import DirectorSidebar from "../../components/DirectorSidebar";
 
 const DirectorDashboard = () => {
-    const [projects, setProjects] = useState([]);
-    const [statusCounts, setStatusCounts] = useState({ approved: 0, pending: 0, rejected: 0 });
+    const [documents, setDocuments] = useState([]);
+    const [statusCounts, setStatusCounts] = useState({ 
+        project: { approved: 0, pending: 0, rejected: 0 },
+        moa: { approved: 0, pending: 0, rejected: 0 }
+    });
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
     const navigate = useNavigate();
+    const [error, setError] = useState(null);
     const token = localStorage.getItem('token');
 
     useEffect(() => {
-        const fetchProjects = async () => {
+        if (!token) {
+            localStorage.clear();
+            navigate('/login', { replace: true });
+            return;
+        }
+    
+        const roles = JSON.parse(localStorage.getItem('roles') || '[]');
+        
+        if (!roles.includes("ecrd")) {
+            localStorage.clear();
+            navigate('/login', { replace: true });
+        }
+    }, [token, navigate]);
+
+    const determineStatus = (document) => {
+        const { approvalCounter, reviewStatus, content_type_name } = document;
+        
+        if (content_type_name === 'project') {
+            if (approvalCounter >= 3) return "Approved";
+            if (reviewStatus === "pending" && approvalCounter === 2) return "Pending";
+            if (reviewStatus === "rejected") return "Rejected";
+        } else if (content_type_name === 'moa') {
+            if (approvalCounter >= 2) return "Approved";
+            if (reviewStatus === "pending" && approvalCounter === 1) return "Pending";
+            if (reviewStatus === "rejected") return "Rejected";
+        }
+        return "Unknown";
+    };
+
+    useEffect(() => {
+        const fetchDocuments = async () => {
             try {
                 const response = await axios({
                     method: 'get',
@@ -23,52 +57,74 @@ const DirectorDashboard = () => {
                         'Content-Type': 'application/json',
                     },
                 });
-            
-                // Access data directly since axios parses JSON responses
-                const data = response.data;
-            
-                // Ensure data validity
-                const formattedProjects = data.map((project) => ({
-                    fullname: `${project.firstname} ${project.lastname}` || "N/A", // Combining names for demonstration
-                    documentType: project.content_type_name || "N/A",
-                    projectTitle: project.projectTitle || "Untitled Project",
-                    dateCreated: project.dateCreated || new Date().toISOString(),
-                    status: project.reviewStatus || "Unknown", // Use `reviewStatus` for status
-                }));
-            
-                // Sort by dateCreated in descending order
-                const sortedProjects = formattedProjects.sort((a, b) =>
+    
+                if (!response.data || !Array.isArray(response.data.reviews)) {
+                    console.error("Invalid data structure received:", response.data);
+                    setError("Invalid data format received from server");
+                    setDocuments([]);
+                    return;
+                }
+    
+                const formattedDocuments = response.data.reviews
+                    .filter(doc => doc !== null)
+                    .map((doc) => ({
+                        fullname: doc.firstname && doc.lastname 
+                            ? `${doc.firstname} ${doc.lastname}`
+                            : "N/A",
+                        documentType: doc.content_type_name || "N/A",
+                        projectTitle: doc.projectTitle || "Untitled Document",
+                        dateCreated: doc.dateCreated 
+                            ? new Date(doc.dateCreated).toISOString()
+                            : new Date().toISOString(),
+                        status: determineStatus(doc),
+                        reviewDate: doc.reviewDate 
+                            ? new Date(doc.reviewDate).toISOString()
+                            : null,
+                        comment: doc.comment || "",
+                        reviewID: doc.reviewID,
+                        content_type_name: doc.content_type_name
+                    }));
+
+                const sortedDocuments = formattedDocuments.sort((a, b) =>
                     new Date(b.dateCreated) - new Date(a.dateCreated)
                 );
-            
-                setProjects(sortedProjects);
-            
-                // Calculate status counts
-                const counts = sortedProjects.reduce(
-                    (acc, project) => {
-                        acc[project.status.toLowerCase()] = (acc[project.status.toLowerCase()] || 0) + 1;
-                        return acc;
-                    },
-                    { approved: 0, pending: 0, rejected: 0 }
-                );
-            
+
+                setDocuments(sortedDocuments);
+                setError(null);
+
+                // Calculate separate counts for projects and MOAs
+                const counts = {
+                    project: { approved: 0, pending: 0, rejected: 0 },
+                    moa: { approved: 0, pending: 0, rejected: 0 }
+                };
+
+                sortedDocuments.forEach(doc => {
+                    const type = doc.content_type_name;
+                    const status = doc.status.toLowerCase();
+                    if (type && ['approved', 'pending', 'rejected'].includes(status)) {
+                        counts[type][status]++;
+                    }
+                });
+
                 setStatusCounts(counts);
             } catch (error) {
-                console.error("Error fetching projects:", error);
+                console.error("Error fetching documents:", error);
+                setError(error.message || "Failed to fetch documents");
+                setDocuments([]);
             }
         };
+    
+        fetchDocuments();
+    }, [token]);    
 
-        fetchProjects();
-    }, []);
-
-    const handleNavigate = (statusFilter) => {
-        navigate(`/review-list/${statusFilter.toLowerCase()}/all`);
+    const handleNavigate = (statusFilter, documentType) => {
+        navigate(`/review-list/${statusFilter.toLowerCase()}/${documentType}`);
     };
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentProjects = projects.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(projects.length / itemsPerPage);
+    const currentDocuments = documents.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(documents.length / itemsPerPage);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -90,6 +146,7 @@ const DirectorDashboard = () => {
                 );
             }
         } else {
+            // ... [Pagination logic remains the same]
             pageNumbers.push(
                 <button
                     key={1}
@@ -142,72 +199,113 @@ const DirectorDashboard = () => {
             <div className="flex-1 ml-[20%]">
                 <Topbar />
                 <div className="flex flex-col mt-16 px-10">
-                    <h1 className="text-2xl font-semibold mb-2">Documents Overview</h1>
-                    <div className="grid grid-cols-3 gap-4 mb-5">
-                        <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
-                            <h2 className="text-lg font-semibold">Approved</h2>
-                            <h2 className="text-4xl font-bold">{statusCounts.approved}</h2>
-                            <button className="mt-2 underline" onClick={() => handleNavigate("approved")}>
-                                View
-                            </button>
+                    <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4">
+                        <div className="mb-2">
+                            <h1 className="text-2xl font-semibold mb-4">Projects Overview</h1>
+                            <div className="grid grid-cols-3 gap-4 mb-1">
+                                <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                                    <h2 className="text-lg font-semibold">Approved</h2>
+                                    <h2 className="text-4xl font-bold">{statusCounts.project.approved}</h2>
+                                    <button className="mt-2 underline" onClick={() => handleNavigate("approved", "project")}>
+                                        View
+                                    </button>
+                                </div>
+                                <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                                    <h2 className="text-lg font-semibold">Pending</h2>
+                                    <h2 className="text-4xl font-bold">{statusCounts.project.pending}</h2>
+                                    <button className="mt-2 underline" onClick={() => handleNavigate("pending", "project")}>
+                                        View
+                                    </button>
+                                </div>
+                                <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                                    <h2 className="text-lg font-semibold">Rejected</h2>
+                                    <h2 className="text-4xl font-bold">{statusCounts.project.rejected}</h2>
+                                    <button className="mt-2 underline" onClick={() => handleNavigate("rejected", "project")}>
+                                        View
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                        <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
-                            <h2 className="text-lg font-semibold">Pending</h2>
-                            <h2 className="text-4xl font-bold">{statusCounts.pending}</h2>
-                            <button className="mt-2 underline" onClick={() => handleNavigate("pending")}>
-                                View
-                            </button>
-                        </div>
-                        <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
-                            <h2 className="text-lg font-semibold">Rejected</h2>
-                            <h2 className="text-4xl font-bold">{statusCounts.rejected}</h2>
-                            <button className="mt-2 underline" onClick={() => handleNavigate("rejected")}>
-                                View
-                            </button>
+
+                        <div className="mb-1">
+                            <h1 className="text-2xl font-semibold mb-4">MOA Overview</h1>
+                            <div className="grid grid-cols-3 gap-4 mb-1">
+                                <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                                    <h2 className="text-lg font-semibold">Approved</h2>
+                                    <h2 className="text-4xl font-bold">{statusCounts.moa.approved}</h2>
+                                    <button className="mt-2 underline" onClick={() => handleNavigate("approved", "moa")}>
+                                        View
+                                    </button>
+                                </div>
+                                <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                                    <h2 className="text-lg font-semibold">Pending</h2>
+                                    <h2 className="text-4xl font-bold">{statusCounts.moa.pending}</h2>
+                                    <button className="mt-2 underline" onClick={() => handleNavigate("pending", "moa")}>
+                                        View
+                                    </button>
+                                </div>
+                                <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                                    <h2 className="text-lg font-semibold">Rejected</h2>
+                                    <h2 className="text-4xl font-bold">{statusCounts.moa.rejected}</h2>
+                                    <button className="mt-2 underline" onClick={() => handleNavigate("rejected", "moa")}>
+                                        View
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <h1 className="text-2xl font-semibold mb-2">Documents</h1>
-                    <div className="bg-white shadow-lg rounded-lg py-4 px-4">
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full table-auto">
-                                <thead className="bg-gray-100">
-                                    <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Leader</th>
-                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Type</th>
-                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Title</th>
-                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Created</th>
-                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white divide-y divide-gray-200">
-                                    {currentProjects.map((project, index) => (
-                                        <tr key={index}>
-                                            <td className="px-6 py-4 whitespace-nowrap">{project.fullname}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{project.documentType}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{project.projectTitle}</td>
-                                            <td className="px-6 py-4 whitespace-nowrap">{new Date(project.dateCreated).toLocaleDateString()}</td>
-                                            <td className="px-6 py-4">
-                                                <span
-                                                    className={`px-2 py-1 rounded-md text-white ${
-                                                        project.status.toLowerCase() === "approved"
-                                                            ? "bg-green-500"
-                                                            : project.status.toLowerCase() === "pending"
-                                                            ? "bg-yellow-500"
-                                                            : "bg-red-500"
-                                                    }`}
-                                                >
-                                                    {project.status}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className="mt-1 flex justify-center items-center space-x-2">
-                            {renderPageNumbers()}
-                        </div>
+                    <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-8 mb-8">
+                    <h1 className="text-2xl font-semibold mb-4">Recent Documents</h1>
+                        {error ? (
+                            <div className="text-red-500 p-4 text-center">{error}</div>
+                        ) : documents.length === 0 ? (
+                            <div className="text-gray-500 p-4 text-center">No documents found</div>
+                        ) : (
+                            <>
+                                <div className="overflow-x-auto">
+                                    <table className="min-w-full table-auto">
+                                        <thead className="bg-gray-100">
+                                            <tr>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Owner</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Type</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Title</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Created</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="bg-white divide-y divide-gray-200">
+                                            {currentDocuments.map((doc, index) => (
+                                                <tr key={doc.reviewID || index} className="hover:bg-gray-50">
+                                                    <td className="px-6 py-4 whitespace-nowrap">{doc.fullname}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap capitalize">{doc.documentType}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{doc.projectTitle}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {new Date(doc.dateCreated).toLocaleDateString()}
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <span
+                                                            className={`px-2 py-1 rounded-md text-white w-24 text-center block ${
+                                                                doc.status.toLowerCase() === "approved"
+                                                                    ? "bg-green-500"
+                                                                    : doc.status.toLowerCase() === "pending"
+                                                                    ? "bg-yellow-500"
+                                                                    : "bg-red-500"
+                                                            }`}
+                                                        >
+                                                            {doc.status}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="mt-1 flex justify-center items-center space-x-2">
+                                    {renderPageNumbers()}
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

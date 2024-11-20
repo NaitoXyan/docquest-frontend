@@ -199,62 +199,64 @@ const DirectorDashboard = () => {
             <div className="flex-1 ml-[20%]">
                 <Topbar />
                 <div className="flex flex-col mt-16 px-10">
-                    <div className="mb-1">
-                        <h1 className="text-2xl font-semibold mb-4">Projects Overview</h1>
-                        <div className="grid grid-cols-3 gap-4 mb-5">
-                            <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
-                                <h2 className="text-lg font-semibold">Approved</h2>
-                                <h2 className="text-4xl font-bold">{statusCounts.project.approved}</h2>
-                                <button className="mt-2 underline" onClick={() => handleNavigate("approved", "project")}>
-                                    View
-                                </button>
+                    <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4">
+                        <div className="mb-2">
+                            <h1 className="text-2xl font-semibold mb-4">Projects Overview</h1>
+                            <div className="grid grid-cols-3 gap-4 mb-1">
+                                <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                                    <h2 className="text-lg font-semibold">Approved</h2>
+                                    <h2 className="text-4xl font-bold">{statusCounts.project.approved}</h2>
+                                    <button className="mt-2 underline" onClick={() => handleNavigate("approved", "project")}>
+                                        View
+                                    </button>
+                                </div>
+                                <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                                    <h2 className="text-lg font-semibold">Pending</h2>
+                                    <h2 className="text-4xl font-bold">{statusCounts.project.pending}</h2>
+                                    <button className="mt-2 underline" onClick={() => handleNavigate("pending", "project")}>
+                                        View
+                                    </button>
+                                </div>
+                                <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                                    <h2 className="text-lg font-semibold">Rejected</h2>
+                                    <h2 className="text-4xl font-bold">{statusCounts.project.rejected}</h2>
+                                    <button className="mt-2 underline" onClick={() => handleNavigate("rejected", "project")}>
+                                        View
+                                    </button>
+                                </div>
                             </div>
-                            <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
-                                <h2 className="text-lg font-semibold">Pending</h2>
-                                <h2 className="text-4xl font-bold">{statusCounts.project.pending}</h2>
-                                <button className="mt-2 underline" onClick={() => handleNavigate("pending", "project")}>
-                                    View
-                                </button>
-                            </div>
-                            <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
-                                <h2 className="text-lg font-semibold">Rejected</h2>
-                                <h2 className="text-4xl font-bold">{statusCounts.project.rejected}</h2>
-                                <button className="mt-2 underline" onClick={() => handleNavigate("rejected", "project")}>
-                                    View
-                                </button>
+                        </div>
+
+                        <div className="mb-1">
+                            <h1 className="text-2xl font-semibold mb-4">MOA Overview</h1>
+                            <div className="grid grid-cols-3 gap-4 mb-1">
+                                <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                                    <h2 className="text-lg font-semibold">Approved</h2>
+                                    <h2 className="text-4xl font-bold">{statusCounts.moa.approved}</h2>
+                                    <button className="mt-2 underline" onClick={() => handleNavigate("approved", "moa")}>
+                                        View
+                                    </button>
+                                </div>
+                                <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                                    <h2 className="text-lg font-semibold">Pending</h2>
+                                    <h2 className="text-4xl font-bold">{statusCounts.moa.pending}</h2>
+                                    <button className="mt-2 underline" onClick={() => handleNavigate("pending", "moa")}>
+                                        View
+                                    </button>
+                                </div>
+                                <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                                    <h2 className="text-lg font-semibold">Rejected</h2>
+                                    <h2 className="text-4xl font-bold">{statusCounts.moa.rejected}</h2>
+                                    <button className="mt-2 underline" onClick={() => handleNavigate("rejected", "moa")}>
+                                        View
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="mb-8">
-                        <h1 className="text-2xl font-semibold mb-4">MOA Overview</h1>
-                        <div className="grid grid-cols-3 gap-4 mb-5">
-                            <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
-                                <h2 className="text-lg font-semibold">Approved</h2>
-                                <h2 className="text-4xl font-bold">{statusCounts.moa.approved}</h2>
-                                <button className="mt-2 underline" onClick={() => handleNavigate("approved", "moa")}>
-                                    View
-                                </button>
-                            </div>
-                            <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
-                                <h2 className="text-lg font-semibold">Pending</h2>
-                                <h2 className="text-4xl font-bold">{statusCounts.moa.pending}</h2>
-                                <button className="mt-2 underline" onClick={() => handleNavigate("pending", "moa")}>
-                                    View
-                                </button>
-                            </div>
-                            <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
-                                <h2 className="text-lg font-semibold">Rejected</h2>
-                                <h2 className="text-4xl font-bold">{statusCounts.moa.rejected}</h2>
-                                <button className="mt-2 underline" onClick={() => handleNavigate("rejected", "moa")}>
-                                    View
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <h1 className="text-2xl font-semibold mb-2">Recent Documents</h1>
-                    <div className="bg-white shadow-lg rounded-lg py-4 px-4">
+                    <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-8 mb-8">
+                    <h1 className="text-2xl font-semibold mb-4">Recent Documents</h1>
                         {error ? (
                             <div className="text-red-500 p-4 text-center">{error}</div>
                         ) : documents.length === 0 ? (

@@ -201,6 +201,20 @@ const DirectorReviewList = () => {
                 />
               </div>
               <div className="w-full sm:w-auto">
+                <label htmlFor="documentFilter" className="mr-2">Filter by Document Type:</label>
+                <select
+                  id="documentFilter"
+                  value={documentFilter}
+                  onChange={handleDocumentFilterChange}
+                  className="w-full sm:w-auto px-3 py-2 border rounded-md"
+                >
+                  <option value="all">All</option>
+                  <option value="project">Project</option>
+                  <option value="moa">MOA</option>
+                </select>
+              </div>
+
+              <div className="w-full sm:w-auto">
                 <label htmlFor="statusFilter" className="mr-2">Filter by Status:</label>
                 <select
                   id="statusFilter"
@@ -270,7 +284,7 @@ const DirectorReviewList = () => {
                                 onClick={() =>
                                 (project.approvalCounter > 2) ||
                                 project.reviewStatus === 'rejected'
-                                    ? handleViewPDF(project.reviewID)
+                                    ? handleViewPDF(project.source_id)
                                     : reviewDocument(project.reviewID)
                                 }
                                 className={`w-36 px-4 py-2 rounded-md text-center ${

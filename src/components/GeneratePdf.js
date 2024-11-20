@@ -15,8 +15,193 @@ Font.register({
   src: '/fonts/zapf.ttf',
 });
 
+const InlineHeader = ({ dateCreated, documentCode = 'FM-USTP-ECRD-01a', revisionNo = '02' }) => {
+  return (
+    <>
+    {/* Main Header */}
+      <View style={styles.headerContainer}>
+        <View style={[styles.logoContainer, {width: 60}]}>
+          <Image style={styles.logo} src="/images/ustp_logo.png" />
+        </View>
+        <View style={styles.textContainer}>
+          <Text style={styles.universityName}>
+            University of Science and Technology of Southern Philippines
+          </Text>
+          <Text style={styles.campuses}>
+            Alubijid | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon
+          </Text>
+        </View>
+      </View>
+      {/* Document Code Section */}
+      <View style={styles.right}>
+        <View
+          style={[
+            {
+              width: '40%',
+              flexDirection: 'row',
+              border: 1,
+              borderBottom: 0,
+              justifyContent: 'center',
+              backgroundColor: '#1A1851',
+            },
+          ]}
+        >
+          <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
+            Document Code No.
+          </Text>
+        </View>
+      </View>
+      <View style={styles.right}>
+        <View
+          style={[
+            {
+              width: '40%',
+              flexDirection: 'row',
+              border: 1,
+              borderBottom: 0,
+              justifyContent: 'center',
+              fontFamily: 'ArialB',
+            },
+          ]}
+        >
+          <Text>{documentCode}</Text>
+        </View>
+      </View>
+
+      {/* Revision and Effective Date Section */}
+      <View style={styles.right}>
+        <View
+          style={[
+            {
+              width: '40%',
+              flexDirection: 'row',
+              border: 1,
+              borderBottom: 0,
+            },
+          ]}
+        >
+          <View
+            style={[
+              styles.tableColthree,
+              {
+                borderRight: 1,
+                borderColor: '#000',
+                justifyContent: 'center',
+                backgroundColor: '#1A1851',
+              },
+            ]}
+          >
+            <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
+              Rev. No.
+            </Text>
+          </View>
+          <View
+            style={[
+              styles.tableColthree,
+              {
+                borderRight: 1,
+                borderColor: '#000',
+                justifyContent: 'center',
+                backgroundColor: '#1A1851',
+              },
+            ]}
+          >
+            <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
+              Effective Date
+            </Text>
+          </View>
+          <View
+            style={[
+              styles.tableColthree,
+              {
+                justifyContent: 'center',
+                backgroundColor: '#1A1851',
+              },
+            ]}
+          >
+            <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
+              Page No.
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Revision Number, Effective Date, and Pagination */}
+      <View style={styles.right}>
+        <View
+          style={[
+            {
+              width: '40%',
+              flexDirection: 'row',
+              border: 1,
+            },
+          ]}
+        >
+          <View
+            style={[
+              styles.tableColthree,
+              {
+                borderRight: 1,
+                borderColor: '#000',
+                justifyContent: 'center',
+                fontSize: 8,
+                fontFamily: 'ArialB',
+                paddingTop: 1,
+                paddingBottom: 1,
+              },
+            ]}
+          >
+            <Text>{revisionNo}</Text>
+          </View>
+          <View
+            style={[
+              styles.tableColthree,
+              {
+                borderRight: 1,
+                borderColor: '#000',
+                justifyContent: 'center',
+                fontSize: 8,
+                fontFamily: 'ArialB',
+                paddingTop: 1,
+                paddingBottom: 1,
+              },
+            ]}
+          >
+            <Text>{dateCreated.substring(0, 10)}</Text>
+          </View>
+          <View
+            style={[
+              styles.tableColthree,
+              {
+                justifyContent: 'center',
+                fontSize: 8,
+                fontFamily: 'ArialB',
+                paddingTop: 1,
+                paddingBottom: 1,
+              },
+            ]}
+          >
+            <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
+          </View>
+        </View>
+      </View>
+    </>
+  );
+};
+
+
 // fonts: Arial, Zapf Calligraphic // color #a4b494 #1A1851
 const styles = StyleSheet.create({
+  headerContainer: { flexDirection: 'row', alignItems: 'center', padding: 5 },
+  logoContainer: { paddingRight: 5 },
+  logo: { width: 60, height: 'auto' },
+  textContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  universityName: { textAlign: 'center', fontSize: 12, fontFamily: 'Zapf', marginBottom: 2 },
+  campuses: { textAlign: 'center', fontSize: 7, fontFamily: 'Zapf' },
+  infoRow: { flexDirection: 'row', borderWidth: 1, justifyContent: 'space-between', padding: 2 },
+  infoBox: { width: '40%', justifyContent: 'center', alignItems: 'center', borderWidth: 1 },
+  darkBox: { backgroundColor: '#1A1851' },
+  whiteText: { color: '#fff', fontSize: 8 },
   page: {
     fontFamily: 'Arial',
     fontSize: 10,
@@ -93,7 +278,7 @@ const MyDocument = ({ projectID }) => {
   const [signatories, setSignatories] = useState([]);
   const [roles, setRoles] = useState([]);
   const token = localStorage.getItem('token');
-  
+
   const [formData, setFormData] = useState({
     userID: {
       userID: null,
@@ -163,14 +348,14 @@ const MyDocument = ({ projectID }) => {
           'Content-Type': 'application/json'
         }
       });
-  
+
       console.log("Fetched data:", response.data);
       setFormData(response.data); // Set the fetched data
       console.log("form data:", formData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-  };  
+  };
 
   useEffect(() => {
     fetchData();
@@ -230,77 +415,34 @@ const MyDocument = ({ projectID }) => {
     <Document>
       {/* first page */}
       <Page style={styles.page}>
-        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-          <View style={[{ paddingRight: 5 }]}>
-            <Image style={[styles.headerImage, { width: 60, height: 'auto' }]} src="/images/ustp_logo.png" />
-          </View>
-          <View style={{ paddingLeft: 5, justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={{ textAlign: 'center', marginBottom: 2, fontFamily: 'Zapf', fontSize: 12 }}>
-              University of Science and Technology of Southern Philippines
-            </Text>
-            <Text style={{ textAlign: 'center', marginBottom: 2, fontFamily: 'Zapf', fontSize: 7 }}>
-              Alubijid | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon
-            </Text>
-          </View>
-        </View>
-        <View style={styles.right}>
-          <View style={[{ width: '40%', flexDirection: 'row', border: 1, borderBottom: 0, justifyContent: 'center', backgroundColor: '#1A1851', }]}>
-            <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
-              Document Code No.
-            </Text>
-          </View>
-        </View>
-        <View style={styles.right}>
-          <View style={[{ width: '40%', flexDirection: 'row', border: 1, borderBottom: 0, justifyContent: 'center', fontFamily: 'ArialB' }]}>
-            <Text>
-              FM-USTP-ECRD-01a {/* GET: Document Code No. Ex: FM-USTP-ECRD-01a*/}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.right}>
-          <View style={[{ width: '40%', flexDirection: 'row', border: 1, borderBottom: 0, }]}>
-            <View style={[styles.tableColthree, { borderRight: 1, borderColor: '#000', justifyContent: 'center', backgroundColor: '#1A1851', }]}>
-              <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
-                Rev. No.
-              </Text>
-            </View>
-            <View style={[styles.tableColthree, { borderRight: 1, borderColor: '#000', justifyContent: 'center', backgroundColor: '#1A1851', }]}>
-              <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
-                Effective Date
-              </Text>
-            </View>
-            <View style={[styles.tableColthree, { justifyContent: 'center', backgroundColor: '#1A1851', }]}>
-              <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
-                Page No.
-              </Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.right}>
-          <View style={[{ width: '40%', flexDirection: 'row', border: 1 }]}>;
-            <View style={[styles.tableColthree, { borderRight: 1, borderColor: '#000', justifyContent: 'center', fontSize: 8, fontFamily: 'ArialB', paddingTop: 1, paddingBottom: 1 }]}>
-              <Text>
-                02  {/* GET: Revision Number */}
-              </Text>
-            </View>
-            <View style={[styles.tableColthree, { borderRight: 1, borderColor: '#000', justifyContent: 'center', fontSize: 8, fontFamily: 'ArialB', paddingTop: 1, paddingBottom: 1 }]}>
-              <Text>
-                08.01.23  {/* GET: Effective Date of proposal */}
-              </Text>
-            </View>
-            <View style={[styles.tableColthree, { justifyContent: 'center', fontSize: 8, fontFamily: 'ArialB', paddingTop: 1, paddingBottom: 1 }]}>
-              <Text>
-                1 {/* GET: Page number  */}
-              </Text>
-            </View>
-          </View>
-        </View>
+      <InlineHeader dateCreated={formData.dateCreated} />
         <Text style={[{ border: 1, width: '30%', padding: '1%', textAlign: 'center', marginBottom: 2, justifyContent: 'center', fontFamily: 'ArialB', }]}>
           Extension Project Proposal
         </Text>
         <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
           <Text>
-            Program Category under USTP CARES: I-Share I-Help I-Support {/* GET: Project category under */}
+            Program Category under USTP CARES:
+          </Text>
+          <Image
+            src={formData.programCategory === 'I-Share' ? selected : unselected}
+            style={{ marginHorizontal: 3, marginTop: 2, width: 7, height: 7 }}
+          />
+          <Text style={[{ paddingRight: 5 }]}>
+            I-Share
+          </Text>
+          <Image
+            src={formData.programCategory === 'I-Help' ? selected : unselected}
+            style={{ marginHorizontal: 3, marginTop: 2, width: 7, height: 7 }}
+          />
+          <Text style={[{ paddingRight: 5 }]}>
+            I-Help
+          </Text>
+          <Image
+            src={formData.programCategory === 'I-Support' ? selected : unselected}
+            style={{ marginHorizontal: 3, marginTop: 2, width: 7, height: 7 }}
+          />
+          <Text>
+            I-Support
           </Text>
         </View>
         <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
@@ -309,8 +451,22 @@ const MyDocument = ({ projectID }) => {
           </Text>
         </View>
         <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
+          <Text style={[{ paddingRight: 20 }]}>
+            TYPE OF PROJECT:
+          </Text>
+          <Image
+            src={formData.projectType === 'New Project' ? selected : unselected}
+            style={{ marginHorizontal: 3, marginTop: 2, width: 7, height: 7 }}
+          />
+          <Text style={[{ paddingRight: 70 }]}>
+            New Project
+          </Text>
+          <Image
+            src={formData.projectType === 'Continuing Project' ? selected : unselected}
+            style={{ marginHorizontal: 3, marginTop: 2, width: 7, height: 7 }}
+          />
           <Text>
-            TYPE OF PROJECT:          New Project          Continuing Project {/* GET: Type of Project */}
+            Continuing Project
           </Text>
         </View>
         <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
@@ -320,7 +476,7 @@ const MyDocument = ({ projectID }) => {
         </View>
         <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
           <Text>
-            TITLE OF RESEARCH: {/* GET: Title of research */}
+            TITLE OF RESEARCH: {formData.researchTitle}
           </Text>
         </View>
         <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, backgroundColor: '#a4b494', }]}>
@@ -331,45 +487,59 @@ const MyDocument = ({ projectID }) => {
           </View>
           <View style={[styles.tableColtwo, { flexDirection: 'row', paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
             <Text>
-              PROGRAM: {/* GET: Program */}
+              PROGRAM:
             </Text>
           </View>
         </View>
         <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0 }]}>
           <View style={[styles.tableColtwo, { flexDirection: 'row', borderRight: 1, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
-            <Text>
+            <Text style={[{ fontSize: 9 }]}>
+              {formData.proponents && formData.proponents.length > 0
+                ? formData.proponents
+                  .map((item) => `${item.firstname} ${item.lastname}`)
+                  .reduce((acc, name, index, array) => {
+                    // Add a newline after every second name
+                    if (index % 2 === 0 && index !== 0) acc.push('\n');
+                    acc.push(name);
+                    return acc;
+                  }, [])
+                  .join('          ') // Join with a space between names
+                : 'None'}
             </Text>
+
           </View>
-          <View style={[styles.tableColtwo, { flexDirection: 'row', paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
-            <Text>
-              ACCREDITATION LEVEL: {/* GET: Accreditation Level */}
-            </Text>
-          </View>
-        </View>
-        <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, borderTop: 0 }]}>
-          <View style={[styles.tableColtwo, { flexDirection: 'row', borderRight: 1, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
-            <Text>
-            </Text>
-          </View>
-          <View style={[styles.tableColtwo, { borderTop: 1, flexDirection: 'row', paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
-            <Text>
-              COLLEGE: {/* GET: College */}
-            </Text>
+          <View style={[styles.tableColtwo, { flexDirection: 'col', fontFamily: 'ArialB', backgroundColor: '#a4b494' }]}>
+            <View style={[{ paddingLeft: '1%', paddingRight: '1%', borderBottom: 1 }]}>
+              <Text>
+                ACCREDITATION LEVEL: {formData.accreditationLevel}
+              </Text>
+            </View>
+            <View style={[{ paddingLeft: '1%', paddingRight: '1%', }]}>
+              <Text>
+                COLLEGE: {formData.college}
+              </Text>
+            </View>
           </View>
         </View>
         <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
           <Text>
-            TARGET GROUPS/BENEFICIARIES: {/* GET: Target benificiaries */}
+            TARGET GROUPS/BENEFICIARIES: {formData.beneficiaries}
           </Text>
         </View>
         <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
           <Text>
-            PROJECT LOCATION: {/* GET: Project Location */}
+            PROJECT LOCATION: {formData.projectLocationID?.street || 'No street available'}
           </Text>
         </View>
         <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
           <Text>
-            PARTNER AGENCY: {/* GET: Partner Agency */}
+            PARTNER AGENCY: {formData.agency?.length
+              ? formData.agency.map((agencyItem, index) => (
+                <Text key={index}>
+                  {agencyItem.agencyName}
+                </Text>
+              ))
+              : 'No agencies available'}
           </Text>
         </View>
         <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
@@ -397,17 +567,17 @@ const MyDocument = ({ projectID }) => {
         <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, }]}>
           <View style={[styles.tableColthree, { borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
             <Text>
-              *{/* GET: USTP Budget */}
+              {formData.ustpBudget}
             </Text>
           </View>
           <View style={[styles.tableColthree, { borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
             <Text>
-              *{/* GET: Partner Budget */}
+              {formData.partnerAgencyBudget}
             </Text>
           </View>
           <View style={[styles.tableColthree, { paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
             <Text>
-              *{/* GET: Total Budget */}
+              {formData.totalBudget}
             </Text>
           </View>
         </View>
@@ -423,15 +593,17 @@ const MyDocument = ({ projectID }) => {
             </Text>
           </View>
         </View>
-        <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, }]}>
+        <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, textAlign: 'center' }]}>
           <View style={[{ width: '60%', borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
             <Text>
-              *{/* GET: Target date of implementation */}
+              {formData.targetImplementation
+                ? new Date(formData.targetImplementation).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
+                : 'None'}
             </Text>
           </View>
           <View style={[{ width: '40%', paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
             <Text>
-              *{/* GET: Total number of hours */}
+              {formData.totalHours}
             </Text>
           </View>
         </View>
@@ -439,8 +611,11 @@ const MyDocument = ({ projectID }) => {
           <Text>
             Submitted by:
           </Text>
-          <Text style={[{ textAlign: 'center', paddingTop: 5, textDecoration: 'underline', paddingBottom: 5, }]}>
-            Guylord Sebastian {/* GET: name who submit */}
+          <Text style={[{ textAlign: 'center', paddingTop: 5, textDecoration: 'underline', }]}>
+            {`${formData.userID?.firstname} ${formData.userID?.lastname}`}
+          </Text>
+          <Text style={[{ textAlign: 'center', fontFamily: 'Arial', paddingBottom: 5 }]}>
+            {roles.length > 0 ? formatRoles(roles) : 'No roles available'}
           </Text>
         </View>
         <View style={[{ border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
@@ -940,7 +1115,7 @@ const MyDocument = ({ projectID }) => {
             </Text>
           </View>
         </View>
-        <View style={[{ flexDirection: 'row' , marginBottom: 10}]}>
+        <View style={[{ flexDirection: 'row', marginBottom: 10 }]}>
           <View style={[styles.tableColfive, { borderRight: 0, }]}>
             <Text>
               Activities
@@ -961,7 +1136,7 @@ const MyDocument = ({ projectID }) => {
 
             </Text>
           </View>
-          <View style={[styles.tableColfive, { }]}>
+          <View style={[styles.tableColfive, {}]}>
             <Text>
 
             </Text>
@@ -1043,7 +1218,7 @@ const MyDocument = ({ projectID }) => {
           </View>
         </View>
         <View style={[{ flexDirection: 'row' }]}>
-          <View style={[styles.tableColfour, { borderRight: 0,}]}>
+          <View style={[styles.tableColfour, { borderRight: 0, }]}>
             <Text>
               After Project
             </Text>
@@ -1051,12 +1226,12 @@ const MyDocument = ({ projectID }) => {
               Implementation
             </Text>
           </View>
-          <View style={[styles.tableColfour, { borderRight: 0,}]}>
+          <View style={[styles.tableColfour, { borderRight: 0, }]}>
             <Text>
 
             </Text>
           </View>
-          <View style={[styles.tableColfour, { borderRight: 0,}]}>
+          <View style={[styles.tableColfour, { borderRight: 0, }]}>
             <Text>
 
             </Text>
@@ -1067,7 +1242,7 @@ const MyDocument = ({ projectID }) => {
             </Text>
           </View>
         </View>
-        <Text style={[{marginTop: 10, color: '#FF0000'}]}>
+        <Text style={[{ marginTop: 10, color: '#FF0000' }]}>
           Please attach monitoring tools
         </Text>
       </Page>
@@ -1150,7 +1325,7 @@ const MyDocument = ({ projectID }) => {
         <Text style={[{ paddingBottom: '2%' }]}>
           Partner Agency
         </Text>
-        <View style={[{ flexDirection: 'row', textAlign: 'center', backgroundColor: '#DCDCDC'}]}>
+        <View style={[{ flexDirection: 'row', textAlign: 'center', backgroundColor: '#DCDCDC' }]}>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
             <Text>
               Name of Faculty

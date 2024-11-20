@@ -470,9 +470,15 @@ const MyDocument = ({ projectID }) => {
           </Text>
         </View>
         <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
-          <Text>
-            PROJECT CATEGORY: Skills Training/Capacity Building     Training Needs Survey     Techical Advice/Consultancy     Monitoring and Evaluation {/* GET: Project Category */}
-          </Text>
+          <Text>PROJECT CATEGORY: </Text>
+          {formData.projectCategory?.length
+            ? formData.projectCategory.map((projectCategory, index) => (
+              <Text style={[{ paddingHorizontal: 3 }]} key={index} >
+                <Image src={selected} style={{ marginTop: 2, width: 7, height: 7, paddingRight: 3 }} />
+                {projectCategory.title}
+              </Text>
+            ))
+            : 'No agencies available'}
         </View>
         <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
           <Text>
@@ -495,7 +501,7 @@ const MyDocument = ({ projectID }) => {
                     <React.Fragment key={prog.programID}>
                       {prog.abbreviation}
                       {/* Add a comma after each abbreviation except the last one */}
-                      {index < formData.program.length - 1 && ', '}
+                      {index < formData.program.length - 1 && ' and '}
                     </React.Fragment>
                   );
                 })
@@ -528,7 +534,17 @@ const MyDocument = ({ projectID }) => {
             </View>
             <View style={[{ paddingLeft: '1%', paddingRight: '1%', }]}>
               <Text>
-                COLLEGE: {formData.college}
+                COLLEGE: {formData.program.length === 1 ?
+                  formData.program[0].college.abbreviation :
+                  formData.program.map((prog, index) => {
+                    return (
+                      <React.Fragment key={prog.college.collegeID}>
+                        {prog.college.abbreviation}
+                        {index < formData.program.length - 1 && ', '}
+                      </React.Fragment>
+                    );
+                  })
+                }
               </Text>
             </View>
           </View>
@@ -661,7 +677,7 @@ const MyDocument = ({ projectID }) => {
             {formData.signatories && formData.signatories.length > 0 &&
               formData.signatories.find(signatory => signatory.title === 'Director, Extension & Community Relations')?.name}
           </Text>
-          <Text style={[{ textAlign: 'center',}]}>
+          <Text style={[{ textAlign: 'center', }]}>
             {formData.signatories && formData.signatories.length > 0 &&
               formData.signatories.find(signatory => signatory.title === 'Director, Extension & Community Relations')?.title}
           </Text>
@@ -676,14 +692,14 @@ const MyDocument = ({ projectID }) => {
             </Text>
           </View>
           <View style={[{ flexDirection: 'row', paddingBottom: '5%' }]}>
-          <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
-            {formData.signatories && formData.signatories.length > 0 &&
-              formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Academic Affairs')?.title}
-          </Text>
-          <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
-            {formData.signatories && formData.signatories.length > 0 &&
-              formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Research and Innovation')?.title}
-          </Text>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
+              {formData.signatories && formData.signatories.length > 0 &&
+                formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Academic Affairs')?.title}
+            </Text>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
+              {formData.signatories && formData.signatories.length > 0 &&
+                formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Research and Innovation')?.title}
+            </Text>
           </View>
         </View>
         <View style={[{ border: 1, paddingLeft: '1%', paddingRight: '1%' }]}>
@@ -701,7 +717,7 @@ const MyDocument = ({ projectID }) => {
             </Text>
           </View>
           <View style={[{ flexDirection: 'row', paddingBottom: '5%' }]}>
-          <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
               {formData.signatories && formData.signatories.length > 0 &&
                 formData.signatories.find(signatory => signatory.title === 'Accountant III')?.title}
             </Text>

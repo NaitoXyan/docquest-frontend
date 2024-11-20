@@ -74,28 +74,26 @@ const DirectorReviewList = () => {
   // Apply filters whenever projects, status filter, document filter, or search term changes
   useEffect(() => {
     let filtered = [...projects];
-
+  
     // Apply status filter
     if (statusFilter && statusFilter !== 'all') {
       filtered = filtered.filter(project => {
         if (statusFilter === 'approved') {
-          return project.approvalCounter > 2;
+          return project.approvalCounter > 2; // Approved
         } else if (statusFilter === 'rejected') {
-          return project.reviewStatus === 'rejected' && project.reviewedByID === userID;
+          return project.reviewStatus === 'rejected' && project.reviewedByID === userID; // Rejected by user
         } else if (statusFilter === 'pending') {
-          return project.approvalCounter === 2 && project.reviewStatus !== 'rejected';
+          return project.approvalCounter === 2 && project.reviewStatus !== 'rejected'; // Pending
         }
         return true;
       });
     }
-
-    // Apply document filter
+  
+    // Apply document filter for 'project' or 'moa'
     if (documentFilter && documentFilter !== 'all') {
-      filtered = filtered.filter(
-        project => project.content_type_name.toLowerCase() === documentFilter
-      );
+      filtered = filtered.filter(project => project.content_type_name.toLowerCase() === documentFilter);
     }
-
+  
     // Apply search filter
     if (searchTerm) {
       filtered = filtered.filter(
@@ -104,10 +102,10 @@ const DirectorReviewList = () => {
           project.projectTitle.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
-
+  
     setFilteredProjects(filtered);
-    setCurrentPage(1);
-  }, [projects, statusFilter, documentFilter, searchTerm]);
+    setCurrentPage(1); // Reset to first page after filtering
+  }, [projects, statusFilter, documentFilter, searchTerm]);  
 
   const handleStatusFilterChange = (event) => {
     const status = event.target.value;
@@ -125,8 +123,8 @@ const DirectorReviewList = () => {
     setSearchTerm(event.target.value);
   };
 
-  const reviewDocument = (reviewID) => {
-    navigate(`/review-project/${reviewID}`);
+  const reviewDocument = (reviewID, projectID) => {
+    navigate(`/review-project/${reviewID}/${projectID}`);
   };
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -263,44 +261,63 @@ const DirectorReviewList = () => {
                           })}
                         </td>
                         <td className="px-3 sm:px-3 py-4 whitespace-nowrap">
-                            <span
-                                className={`px-4 py-2 text-m rounded-full ${
-                                project.approvalCounter > 2
-                                    ? 'bg-green-100 text-green-700'
-                                    : project.reviewStatus === 'rejected' && project.approvalCounter === 0
-                                    ? 'bg-red-100 text-red-700'
-                                    : 'bg-yellow-100 text-yellow-700'
-                                }`}
-                            >
-                                {project.approvalCounter > 2
-                                ? 'Approved'
-                                : project.reviewStatus === 'rejected' && project.approvalCounter === 0
-                                ? 'Rejected'
-                                : 'Pending'}
-                            </span>
+                          {(() => {
+                            // Determine the content type and approval conditions
+                            const isProject = project.content_type === 'project'; // Assuming 'content_type' is available in project data
+                            const isMoa = project.content_type === 'moa'; // Assuming 'content_type' is available in project data
+
+                            const isApproved = project.approvalCounter === (isProject ? 3 : 2);
+                            const isPending = project.approvalCounter === (isProject ? 2 : 1) && project.reviewStatus === 'pending';
+                            const isRejected = project.approvalCounter === 0 && project.reviewStatus === 'rejected';
+                            
+                            const statusClass = isApproved
+                              ? 'bg-green-100 text-green-700'
+                              : isRejected
+                              ? 'bg-red-100 text-red-700'
+                              : isPending
+                              ? 'bg-yellow-100 text-yellow-700'
+                              : 'bg-gray-100 text-gray-700'; // Default for unknown conditions
+                            const statusText = isApproved
+                              ? 'Approved'
+                              : isRejected
+                              ? 'Rejected'
+                              : isPending
+                              ? 'Pending'
+                              : 'Unknown'; // Default status for unknown conditions
+                            return (
+                              <span className={`px-4 py-2 text-m rounded-full ${statusClass}`}>
+                                {statusText}
+                              </span>
+                            );
+                          })()}
                         </td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
-                            <button
-                                onClick={() =>
-                                (project.approvalCounter > 2) ||
-                                project.reviewStatus === 'rejected'
-                                    ? handleViewPDF(project.source_id)
-                                    : reviewDocument(project.reviewID)
-                                }
-                                className={`w-36 px-4 py-2 rounded-md text-center ${
-                                (project.approvalCounter > 2) ||
-                                project.reviewStatus === 'rejected'
-                                    ? 'bg-blue-500 text-white hover:bg-blue-600'
-                                    : 'bg-green-500 text-white hover:bg-green-600'
-                                }`}
-                            >
-                                {(project.approvalCounter > 2) ||
-                                project.reviewStatus === 'rejected'
-                                ? 'View Document'
-                                : 'Review'}
-                            </button>
-                        </td>
+                          {(() => {
+                            // Determine the action based on approval and review status
+                            const canViewDocument = (project.approvalCounter === 3 && project.content_type === 'project') ||
+                              (project.approvalCounter === 2 && project.content_type === 'moa') ||
+                              project.reviewStatus === 'rejected';
+                          
+                            const buttonClass = canViewDocument
+                              ? 'bg-blue-500 text-white hover:bg-blue-600'
+                              : 'bg-green-500 text-white hover:bg-green-600';
+                            const buttonText = canViewDocument ? 'View Document' : 'Review';
+                            
+                            const handleClick = () => {
+                              if (canViewDocument) {
+                                handleViewPDF(project.source_id);
+                              } else {
+                                reviewDocument(project.reviewID, project.source_id);
+                              }
+                            };
 
+                            return (
+                              <button onClick={handleClick} className={`w-36 px-4 py-2 rounded-md text-center ${buttonClass}`}>
+                                {buttonText}
+                              </button>
+                            );
+                          })()}
+                        </td>
                       </tr>
                     ))
                   ) : (

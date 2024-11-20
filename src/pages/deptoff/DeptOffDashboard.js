@@ -87,7 +87,7 @@ const DeptOffDashboard = () => {
           </div>
 
           {/* Documents Overview */}
-          <h1 className="text-2xl font-semibold mb-5 mt-10">Documents Overview</h1>
+          <h1 className="text-2xl font-bold mb-5 mt-10">DOCUMENTS OVERVIEW</h1>
           <div className="flex space-x-4 mb-10">
             {/* Approved */}
             <div className="bg-gray-400 rounded-lg text-white p-6 flex flex-col items-center justify-center flex-grow">

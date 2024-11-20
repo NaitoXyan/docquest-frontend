@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import DirectorSidebar from "../../components/DirectorSidebar";
 import Topbar from "../../components/Topbar";
 import { useParams, useNavigate } from "react-router-dom";
 import { PDFViewer } from "@react-pdf/renderer";
 import MyDocument from "../../components/GeneratePdf";
 import axios from "axios";
+import CollegeDeanSidebar from "../../components/CollegeDeanSideBar";
 
-const DirectorReviewProject = () => {
+const CollegeDeanReviewProject = () => {
   const { projectID } = useParams();
   const navigate = useNavigate();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -29,7 +29,7 @@ const DirectorReviewProject = () => {
     const roles = JSON.parse(localStorage.getItem('roles') || '[]');
     
     // Redirect if "ecrd" role is not found
-    if (!roles.includes("ecrd")) {
+    if (!roles.includes("cldn")) {
       navigate('/login', { replace: true });
     }
   }, [token, navigate]);
@@ -79,14 +79,14 @@ const DirectorReviewProject = () => {
 
   const closeSuccessModal = () => {
     setShowSuccessModal(false);
-    navigate("/review-list/pending/all");
+    navigate("/college-dean-review-list/pending/all");
   };
 
   return (
     <div className="bg-gray-200 min-h-screen flex">
       {/* Sidebar */}
       <div className="w-1/5 fixed h-full">
-        <DirectorSidebar />
+        <CollegeDeanSidebar />
       </div>
 
       {/* Main Content */}
@@ -157,4 +157,4 @@ const DirectorReviewProject = () => {
   );
 };
 
-export default DirectorReviewProject;
+export default CollegeDeanReviewProject;

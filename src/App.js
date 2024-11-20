@@ -74,12 +74,12 @@ function App() {
         {/* programchair routes */}
         <Route path="/program-chair" element={<ProgramChairDashboard/>}/>
         <Route path="/program-chair-review-list/:status/:document" element={<ProgramChairReviewList/>}/>
-        <Route path="/program-chair-review-project/:projectID" element={<ProgramChairReviewProject/>}/>
+        <Route path="/program-chair-review-project/:reviewID/:projectID" element={<ProgramChairReviewProject/>}/>
 
         {/* College Dean routes */}
         <Route path="/college-dean" element={<CollegeDeanDashboard/>}/>
         <Route path="/college-dean-review-list/:status/:document" element={<CollegeDeanReviewList/>}/>
-        <Route path="/college-dean-review-project/:projectID" element={<CollegeDeanReviewProject/>}/>
+        <Route path="/college-dean-review-project/:reviewID/:projectID" element={<CollegeDeanReviewProject/>}/>
 
         {/*director routes  */}
         <Route path="/director" element={<DirectorDashboard/>} />
@@ -98,7 +98,7 @@ function App() {
         <Route path="/estaff/view-document" element={<EstaffViewDocument />} />  {/* Add this line */}
         <Route path="/estaff/user-list" element={<UserList />} />  {/* Add this line */}
         <Route path="/estaff/create-user" element={<CreateUser />} />  {/* Add this line */}
-        <Route path="/estaff/profile-estaff" element={<EStaffProfilePage />} />  {/* Add this line */}
+        {/* <Route path="/estaff/profile-estaff" element={<EStaffProfilePage />} />  Add this line */}
         
         {/* Create proposal routes */}
         {/* <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} /> */}

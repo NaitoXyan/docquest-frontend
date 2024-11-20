@@ -1,29 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
 
-function DirectorSidebar({ onFilterChange }) {
+function ProgramChairSidebar({ onFilterChange }) {
     const [activeDropdown, setActiveDropdown] = useState(null); // To track which dropdown is open
     const navigate = useNavigate();
     const location = useLocation();
-    const token = localStorage.getItem('token');
-
-    useEffect(() => {
-        // Check if token is present
-        if (!token) {
-          navigate('/login', { replace: true });
-          return;
-        }
-    
-        // Retrieve roles from localStorage
-        const roles = JSON.parse(localStorage.getItem('roles') || '[]');
-        
-        // Redirect if "ecrd" role is not found
-        if (!roles.includes("ecrd")) {
-          navigate('/login', { replace: true });
-        }
-      }, [token, navigate]);
-
 
     // Helper function to check if the pathname is related to a specific section
     const isPathActive = (path) => location.pathname.startsWith(path);
@@ -67,7 +49,7 @@ function DirectorSidebar({ onFilterChange }) {
                 <ul>
                     <li>
                         <NavLink
-                            to="/director"
+                            to="/program-chair"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
                                 }`
@@ -79,25 +61,13 @@ function DirectorSidebar({ onFilterChange }) {
 
                     <li>
                         <NavLink
-                            to="/review-list/pending/project"
+                            to="/program-chair-review-list/pending/project"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
                                 }`
                             }
                         >
                             Project Proposal Review
-                        </NavLink>
-                    </li>
-
-                    <li>
-                        <NavLink
-                            to="/review-list/pending/moa"
-                            className={({ isActive }) =>
-                                `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
-                                }`
-                            }
-                        >
-                            MOA/MOU Review
                         </NavLink>
                     </li>
 
@@ -115,4 +85,4 @@ function DirectorSidebar({ onFilterChange }) {
     );
 }
 
-export default DirectorSidebar;
+export default ProgramChairSidebar;

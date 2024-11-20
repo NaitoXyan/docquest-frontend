@@ -83,7 +83,7 @@ function App() {
 
         {/*director routes  */}
         <Route path="/director" element={<DirectorDashboard/>} />
-        <Route path="/review-project/:projectID" element={<DirectorReviewProject/>} />
+        <Route path="/review-project/:reviewID/:projectID" element={<DirectorReviewProject/>} />
         <Route path="/review-list/:status/:document" element={<DirectorReviewList/>}/>
 
         {/*VPAPLA Routes  */}

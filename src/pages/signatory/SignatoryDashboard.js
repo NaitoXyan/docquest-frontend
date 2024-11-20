@@ -13,7 +13,7 @@ const SignatoryDashboard = () => {
             <div className="flex-1 ml-[20%]"> {/* 20% left margin to match Sidebar width */}
                 <Topbar />
                 <div className="flex flex-col mt-14 px-10">
-                    <h1 className="text-2xl font-semibold mb-5">Projects Overview</h1>
+                    <h1 className="text-2xl font-bold mb-5">PROJECTS OVERVIEW</h1>
 
                     {/* Approved, Pending, Rejected UI */}
                     <div className="grid grid-cols-3 gap-4 mb-10">

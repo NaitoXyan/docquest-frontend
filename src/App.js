@@ -101,8 +101,8 @@ function App() {
         <Route path="/estaff/profile-estaff" element={<EStaffProfilePage />} />  {/* Add this line */}
         
         {/* Create proposal routes */}
-        {/* <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} /> */}
-
+        {<Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} />}
+          
         {/* Other Unorganized */}
         <Route path="/pdf-viewer/:projectID" element={<ProjectPDFViewer />} />
         <Route path="/edit-project/:projectID" element={<ProjLeadEditProject />} /> {/* Walay remove button for Budgetary Requirements */}
@@ -110,14 +110,8 @@ function App() {
         <Route path="/deptoff" element={<DeptOffDashboard />} />
         <Route path="/coordinator" element={<CoordinatorDashboard />} />
         <Route path="/signatory" element={<SignatoryDashboard />} />
-        {/* <Route path="/estaff/scancopy" element={<EstaffScancopy />} /> */}
+        {<Route path="/estaff/scancopy" element={<EstaffScancopy />} />}
       </Routes>
-
-      // <div style={{ height: '100vh' }}>
-      //   <PDFViewer style={{ width: '100%', height: '100%' }}>
-      //     <MyDocument projectID={11} />
-      //   </PDFViewer>
-      // </div>
   );
 }
 

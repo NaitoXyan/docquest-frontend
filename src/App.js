@@ -35,11 +35,6 @@ import ProjLeadMoaStatus from "./pages/projectlead/ProjLeadMoaStatus";
 import ProjLeadEditProject from "./pages/projectlead/ProjLeadEditProject";
 import ProjLeadEditMoaForm from "./pages/projectlead/ProjLeadEditMoaForm";
 import DirectorReviewProject from "./pages/director/DirectorReviewProject";
-<<<<<<< HEAD
-import DirectorDashboard from "./pages/director/DirectorDashboard";
-import EstaffScancopy from "./pages/estaff/EstaffScancopy";
-import EStaffProfilePage from "./pages/estaff/EStaffProfilePage";
-=======
 import ProposalFormFirstPage_Deliverables from "./components/ProposalFormFirstPage_Deliverables";
 import DirectorDashboard from "./pages/director/DirectorDashboard";
 import ProjLeadStatusBar from './pages/projectlead/ProjLeadStatusBar'; // Correct path
@@ -51,7 +46,10 @@ import DirectorReviewList from "./pages/director/DirectorProjectReviewList";
 import ProgramChairDashboard from "./pages/programChair/ProgramChairDashboard";
 import MOAGenerator from "./pages/vpala/VPALAGenerateMOA";
 import ProgramChairReviewList from "./pages/programChair/ProgramChairProjectReviewList";
->>>>>>> upstream/develop
+import ProgramChairReviewProject from "./pages/programChair/ProgramChairReviewProject";
+import CollegeDeanDashboard from "./pages/collegeDean/CollegeDeanDashboard";
+import CollegeDeanReviewList from "./pages/collegeDean/CollegeDeanReviewList";
+import CollegeDeanReviewProject from "./pages/collegeDean/CollegeDeanReviewProject";
 
 function App() {
   return (
@@ -76,12 +74,16 @@ function App() {
         {/* programchair routes */}
         <Route path="/program-chair" element={<ProgramChairDashboard/>}/>
         <Route path="/program-chair-review-list/:status/:document" element={<ProgramChairReviewList/>}/>
+        <Route path="/program-chair-review-project/:projectID" element={<ProgramChairReviewProject/>}/>
+
+        {/* College Dean routes */}
+        <Route path="/college-dean" element={<CollegeDeanDashboard/>}/>
+        <Route path="/college-dean-review-list/:status/:document" element={<CollegeDeanReviewList/>}/>
+        <Route path="/college-dean-review-project/:projectID" element={<CollegeDeanReviewProject/>}/>
 
         {/*director routes  */}
         <Route path="/director" element={<DirectorDashboard/>} />
         <Route path="/review-project/:projectID" element={<DirectorReviewProject/>} />
-<<<<<<< HEAD
-=======
         <Route path="/review-list/:status/:document" element={<DirectorReviewList/>}/>
 
         {/*VPAPLA Routes  */}
@@ -90,7 +92,6 @@ function App() {
         
         {/* EStaff routes */}
         <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>
->>>>>>> upstream/develop
 
          {/* ESTAFF ROUTING */}
         <Route path="/estaff/documents-list" element={<EStaffDocumentsList />} />  {/* Add this line */}

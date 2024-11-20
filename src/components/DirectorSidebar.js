@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useLocation, NavLink } from "react-router-dom";
 
@@ -6,6 +6,24 @@ function DirectorSidebar({ onFilterChange }) {
     const [activeDropdown, setActiveDropdown] = useState(null); // To track which dropdown is open
     const navigate = useNavigate();
     const location = useLocation();
+    const token = localStorage.getItem('token');
+
+    useEffect(() => {
+        // Check if token is present
+        if (!token) {
+          navigate('/login', { replace: true });
+          return;
+        }
+    
+        // Retrieve roles from localStorage
+        const roles = JSON.parse(localStorage.getItem('roles') || '[]');
+        
+        // Redirect if "ecrd" role is not found
+        if (!roles.includes("ecrd")) {
+          navigate('/login', { replace: true });
+        }
+      }, [token, navigate]);
+
 
     // Helper function to check if the pathname is related to a specific section
     const isPathActive = (path) => location.pathname.startsWith(path);

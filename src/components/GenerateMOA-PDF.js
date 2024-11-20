@@ -17,6 +17,15 @@ const styles = StyleSheet.create({
     padding: 52,
     flexDirection: 'column',
   },
+  footer: {
+    position: 'absolute',
+    bottom: 3,
+    right: 3,
+    fontFamily: 'TimesNR',
+    fontSize: 12,
+    padding: 52,
+    flexDirection: 'column',
+  },
   boldText: {
     fontFamily: 'TimesNR-B',
   },
@@ -100,6 +109,16 @@ const parseText = (input) => {
     );
   });
 };
+
+const CustomPage = ({ children }) => (
+  <Page style={styles.page}>
+    {children} {/* Render the page content */}
+    <View style={styles.footer}>
+      <Text render={({ pageNumber }) => `${pageNumber}`} />
+    </View>
+  </Page>
+);
+
 {/* P1 Temporary datas */ }
 const userInput1 = "**UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS (USTP CDO)**, a state educational institution duly established under Philippine law, whose office address located at Claro M. Recto Avenue, Lapasan, Cagayan de Oro City, represented herein by its Chancellor **ATTY. DIONEL O. ALBINA**, hereafter referred to as the **FIRST PARTY**;";
 const userInput2 = "DEPARTMENT OF EDUCATION DIVISION OF CAGAYAN DE ORO CITY, a state educational institution duly established under Philippine law, whose office address located at Fr. William F. Masterson Avenue, Upper Balulang, Cagayan de Oro City Misamis Oriental, represented herein by the School Divisions Superintendent ROY ANGELO E. GAZO, Ph.D., hereafter referred to as the SECOND PARTY;";
@@ -107,12 +126,15 @@ const userInput3 = "WHEREAS, the FIRST PARTY has its mission to primarily bring 
 
 {/* P2 Temporary datas */ }
 const userInput4 = "Provide the faculty experts who will shall conduct the training on journalism.";
-const userInput5 = "Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party.";
+const userInput5 = "Provide the faculty experts who will shall conduct the training on journalism.";
+const userInput6 = "This Agreement shall cover CY 2024-2025 and take effect upon the date it is signed by the parties until the completion of the training and research collaboration program.";
+const userInput7 = "The parties mutually agree to process personal information and sensitive personal information in conformity with the provisions of Republic Act No. 10173 (Data Privacy Act of 2012) and all other applicable laws and regulations of all the parties regarding data privacy protection laws.Both parties shall ensure that appropriate organizational, physical, and technical measures are in place to maintain the confidentiality, integrity and security of personal information and sensitive personal information that may come to their knowledge or possession by reason of any provision of this MOA and that their employees, agents, representatives, or any person under their authority shall hold said information under strict confidentiality at all times";
+const userInput8 = "Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party.";
 
 const MyDocument = () => (
   <Document>
     {/* first page */}
-    <Page style={styles.page}>
+    <CustomPage style={styles.page}>
       <View style={[{ alignItems: 'center' }]}>
         <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR-B', }]}>
           MEMORANDUM OF AGREEMENT
@@ -129,8 +151,8 @@ const MyDocument = () => (
         </Text>
       </View>
       <View style={[{ alignItems: 'center' }]}>
-        <Text style={[{ textAlign: 'justify', marginBottom: 0, fontFamily: 'TimesNR', }]}>
-          {"\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}{parseText(userInput1)}
+        <Text style={[{ textAlign: 'justify', marginBottom: 15, fontFamily: 'TimesNR', textIndent: 39 }]}>
+          ☐{parseText(userInput1)}
         </Text>
       </View>
       <View style={[{ alignItems: 'center' }]}>
@@ -139,8 +161,13 @@ const MyDocument = () => (
         </Text>
       </View>
       <View style={[{ alignItems: 'start' }]}>
-        <Text style={[{ textAlign: 'justify', marginBottom: 15, fontFamily: 'TimesNR', }]}>
-          {"\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}{parseText(userInput2)}
+        <Text style={[{ textAlign: 'justify', marginBottom: 15, fontFamily: 'TimesNR', textIndent: 39 }]}>
+          ☐{parseText(userInput2)}
+        </Text>
+      </View>
+      <View style={[{ alignItems: 'center' }]}>
+        <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR', }]}>
+          Collectively herein referred to as the “PARTIES”
         </Text>
       </View>
       <View style={[{ alignItems: 'center' }]}>
@@ -149,47 +176,58 @@ const MyDocument = () => (
         </Text>
       </View>
       <View style={[{ alignItems: 'start' }]}>
-        <Text style={[{ textAlign: 'justify', marginBottom: 15, fontFamily: 'TimesNR', }]}>
-          {"\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}{parseText(userInput3)}
+        <Text style={[{ textAlign: 'justify', marginBottom: 15, fontFamily: 'TimesNR', textIndent: 39 }]}>
+          ☐{parseText(userInput3)}
         </Text>
       </View>
-    </Page>
+    </CustomPage>
 
     {/* second page */}
-    <Page style={styles.page}>
+    <CustomPage style={styles.page}>
       <View style={[{ alignItems: 'start' }]}>
-        <Text style={[{ marginBottom: 1, fontFamily: 'TimesNR-B', }]}>
+        <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR-B', }]}>
+          {parseText('**NOW THEREFORE**, for and in consideration of the above premises, the **PARTIES** hereby agree to the following:')}
+
+        </Text>
+      </View>
+      <View style={[{ alignItems: 'start' }]}>
+        <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR-B', }]}>
           OBLIGATIONS AND RESPONSIBILITIES of the FIRST PARTY:
         </Text>
       </View>
       <View style={[{ marginLeft: 20, alignItems: 'start' }]}>
-        <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR', }]}>
+        <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR', textAlign: 'justify'}]}>
           1.  {parseText(userInput4)}
         </Text>
       </View>
       <View style={[{ alignItems: 'start' }]}>
-        <Text style={[{ marginBottom: 1, fontFamily: 'TimesNR-B', }]}>
+        <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR-B', }]}>
           OBLIGATIONS AND RESPONSIBILITIES of the SECOND PARTY:
         </Text>
       </View>
       <View style={[{ marginLeft: 20, alignItems: 'start' }]}>
-        <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR', }]}>
-          1.  {parseText(userInput4)}
-        </Text>
-      </View>
-      <View style={[{ marginLeft: 20, alignItems: 'start' }]}>
-        <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR', }]}>
-          Coordination between the Parties shall be maintained for the success of the program.
+        <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR', textAlign: 'justify'}]}>
+          1.  {parseText(userInput5)}
         </Text>
       </View>
       <View style={[{ alignItems: 'start' }]}>
-        <Text style={[{ marginBottom: 1, fontFamily: 'TimesNR-B', }]}>
-          EFFECTIVITY
+        <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR-B', }]}>
+          COVERAGE and EFFECTIVITY
         </Text>
       </View>
       <View style={[{ alignItems: 'start' }]}>
-        <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR', }]}>
-          1. {parseText(userInput4)}
+        <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR', textIndent: 39, textAlign: 'justify'}]}>
+          ☐{parseText(userInput6)}
+        </Text>
+      </View>
+      <View style={[{ alignItems: 'start' }]}>
+        <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR-B', }]}>
+          CONFIDENTIALITY CLAUSE
+        </Text>
+      </View>
+      <View style={[{ alignItems: 'start' }]}>
+        <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR', textIndent: 35, textAlign: 'justify'}]}>
+          ☐{parseText(userInput7)}
         </Text>
       </View>
       <View style={[{ alignItems: 'start' }]}>
@@ -197,18 +235,18 @@ const MyDocument = () => (
           TERMINATION
         </Text>
       </View>
-      <View style={[{ alignItems: 'center' }]}>
-        <Text style={[{ marginBottom: 0, fontFamily: 'TimesNR', }]}>
-          {"\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}{parseText(userInput5)}
+      <View style={[{}]}>
+        <Text style={[{ marginBottom: 0, fontFamily: 'TimesNR', textIndent: 39, textAlign: 'justify'}]}>
+          ☐{parseText(userInput8)}
         </Text>
       </View>
-    </Page>
+    </CustomPage>
 
     {/* third page */}
-    <Page style={styles.page}>
+    <CustomPage style={styles.page}>
       <View style={[{ alignItems: 'start' }]}>
-        <Text style={[{ marginBottom: 20, fontFamily: 'TimesNR-B', }]}>
-          IN WITNESS WHEREOF, the PARTIES have hereunto signed this Contract this __ day of ______ 2024.
+        <Text style={[{ marginBottom: 20, fontFamily: 'TimesNR-B', textIndent: 39 }]}>
+          ☐{parseText('**IN WITNESS WHEREOF**, the parties have hereunto signed this Contract this __ day of ________ 2024 at ________________________, Philippines.')}
         </Text>
       </View>
       <View style={[{ marginBottom: 20, flexDirection: 'row', fontFamily: 'TimesNR-B' }]}>
@@ -264,10 +302,10 @@ const MyDocument = () => (
           </Text>
         </View>
       </View>
-    </Page>
+    </CustomPage>
 
     {/* forth page */}
-    <Page style={styles.page}>
+    <CustomPage style={styles.page}>
       <View style={[{ alignItems: 'center' }]}>
         <Text style={[{ marginBottom: 20, fontFamily: 'TimesNR-B', }]}>
           ACKNOWLEDGEMENT
@@ -283,9 +321,9 @@ const MyDocument = () => (
           City of Cagayan de Oro            )     S. S.
         </Text>
       </View>
-      <View style={[{ alignItems: 'center' }]}>
-        <Text style={[{ marginBottom: 20, fontFamily: 'TimesNR', }]}>
-          {"\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"}BEFORE ME, a NOTARY PUBLIC for and in ___________________________________ Philippines this _______ day of _________ 2024, personally appeared:
+      <View style={[{}]}>
+        <Text style={[{ marginBottom: 20, fontFamily: 'TimesNR', textIndent: 39 }]}>
+          BEFORE ME, a NOTARY PUBLIC for and in ___________________________________ Philippines this _______ day of _________ 2024, personally appeared:
         </Text>
       </View>
       <View style={styles.rowNormal}>
@@ -316,7 +354,7 @@ const MyDocument = () => (
         </Text>
       </View>
       <View style={[{ alignItems: 'flex-end' }]}>
-        <Text style={[{ marginBottom: 20, fontFamily: 'TimesNR', }]}>
+        <Text style={[{ marginBottom: 60, fontFamily: 'TimesNR', }]}>
           WITNESS MY HAND AND NOTARIAL SEAL on the date and place first above written.
         </Text>
       </View>
@@ -340,7 +378,7 @@ const MyDocument = () => (
         </Text>
       </View>
 
-    </Page>
+    </CustomPage>
   </Document>
 );
 

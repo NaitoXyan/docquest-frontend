@@ -16,7 +16,8 @@ const CollegeDeanDashboard = () => {
     useEffect(() => {
         // Check if token is present
         if (!token) {
-          navigate('/login', { replace: true });
+            localStorage.clear();
+            navigate('/login', { replace: true });;
           return;
         }
     
@@ -25,7 +26,8 @@ const CollegeDeanDashboard = () => {
         
         // Redirect if "ecrd" role is not found
         if (!roles.includes("cldn")) {
-          navigate('/login', { replace: true });
+            localStorage.clear();
+            navigate('/login', { replace: true });
         }
       }, [token, navigate]);
 

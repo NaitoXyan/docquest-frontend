@@ -110,7 +110,9 @@ const ProjLeadProjectStatus = () => {
     return pageNumbers;
   };
 
-  
+  const handleViewProjectProgress = (projectID) => {
+    navigate(`/view-project-progress/${projectID}`);
+  }
 
   // Adjust character limit based on window width
   useEffect(() => {
@@ -180,7 +182,7 @@ const ProjLeadProjectStatus = () => {
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
                     <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">View Document</th>
-                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Edit Project</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">View Progress</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -215,7 +217,7 @@ const ProjLeadProjectStatus = () => {
                           </button>
                         </td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
-                          <button className="text-blue-900 underline" onClick={() => handleEditProject(project.projectID)}>Edit Project</button>
+                          <button className="text-blue-900 underline" onClick={() => handleViewProjectProgress(project.projectID)}>View</button>
                         </td>
                       </tr>
                     ))

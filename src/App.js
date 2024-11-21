@@ -50,6 +50,7 @@ import ProgramChairReviewProject from "./pages/programChair/ProgramChairReviewPr
 import CollegeDeanDashboard from "./pages/collegeDean/CollegeDeanDashboard";
 import CollegeDeanReviewList from "./pages/collegeDean/CollegeDeanReviewList";
 import CollegeDeanReviewProject from "./pages/collegeDean/CollegeDeanReviewProject";
+import ProjLeadViewProjectProgress from "./pages/projectlead/ProjLeadViewProjectProgress";
 
 function App() {
   return (
@@ -70,20 +71,21 @@ function App() {
         <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
         <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
         <Route path="/deliverables" element={<ProposalFormFirstPage_Deliverables/>}/>
+        <Route path="/view-project-progress/:projectID" element={<ProjLeadViewProjectProgress/>}/>
 
         {/* programchair routes */}
         <Route path="/program-chair" element={<ProgramChairDashboard/>}/>
         <Route path="/program-chair-review-list/:status/:document" element={<ProgramChairReviewList/>}/>
-        <Route path="/program-chair-review-project/:projectID" element={<ProgramChairReviewProject/>}/>
+        <Route path="/program-chair-review-project/:reviewID/:projectID" element={<ProgramChairReviewProject/>}/>
 
         {/* College Dean routes */}
         <Route path="/college-dean" element={<CollegeDeanDashboard/>}/>
         <Route path="/college-dean-review-list/:status/:document" element={<CollegeDeanReviewList/>}/>
-        <Route path="/college-dean-review-project/:projectID" element={<CollegeDeanReviewProject/>}/>
+        <Route path="/college-dean-review-project/:reviewID/:projectID" element={<CollegeDeanReviewProject/>}/>
 
         {/*director routes  */}
         <Route path="/director" element={<DirectorDashboard/>} />
-        <Route path="/review-project/:projectID" element={<DirectorReviewProject/>} />
+        <Route path="/review-project/:reviewID/:projectID" element={<DirectorReviewProject/>} />
         <Route path="/review-list/:status/:document" element={<DirectorReviewList/>}/>
 
         {/*VPAPLA Routes  */}

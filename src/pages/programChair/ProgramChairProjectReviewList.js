@@ -123,8 +123,8 @@ const ProgramChairReviewList = () => {
     setSearchTerm(event.target.value);
   };
 
-  const reviewDocument = (reviewID) => {
-    navigate(`/program-chair-review-project/${reviewID}`);
+  const reviewDocument = (reviewID, projectID) => {
+    navigate(`/program-chair-review-project/${reviewID}/${projectID}`);
   };
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -269,7 +269,7 @@ const ProgramChairReviewList = () => {
                                 (project.approvalCounter > 0) ||
                                 project.reviewStatus === 'rejected'
                                     ? handleViewPDF(project.source_id)
-                                    : reviewDocument(project.reviewID)
+                                    : reviewDocument(project.reviewID, project.source_id)
                                 }
                                 className={`w-36 px-4 py-2 rounded-md text-center ${
                                 (project.approvalCounter > 0) ||

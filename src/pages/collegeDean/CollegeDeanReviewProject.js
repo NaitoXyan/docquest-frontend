@@ -7,7 +7,7 @@ import axios from "axios";
 import CollegeDeanSidebar from "../../components/CollegeDeanSideBar";
 
 const CollegeDeanReviewProject = () => {
-  const { projectID } = useParams();
+  const { reviewID, projectID } = useParams();
   const navigate = useNavigate();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [error, setError] = useState("");
@@ -43,7 +43,7 @@ const CollegeDeanReviewProject = () => {
     try {
       const response = await axios({
         method: "post",
-        url: `http://127.0.0.1:8000/approve_or_deny_project/${projectID}/`,
+        url: `http://127.0.0.1:8000/approve_or_deny_project/${reviewID}/`,
         headers: {
            Authorization: `Token ${token}`,
           "Content-Type": "application/json"

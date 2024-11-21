@@ -42,8 +42,8 @@ const ProponentsDeliverables = ({ formData, setFormData }) => {
               <input
                 type="checkbox"
                 className="mr-2"
-                checked={formData.deliverables.includes(item.deliverableID)}
-                onChange={() => handleCheckboxChange(item.deliverableID)}
+                checked={true}  // Ensure all checkboxes are checked by default
+                disabled  // Disables the checkbox so it cannot be unchecked
               />
               {item.deliverableName}
             </label>

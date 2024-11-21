@@ -147,15 +147,15 @@ const LoginPage = () => {
         </form>
 
         <div>
-          <div className="flex justify-center">
+          <div className="flex justify-center mt-6">
             <img src="/images/ECRDlogo.png" alt="DocQuestLogo" className="w-32" />
           </div>
-          <h1 className='-mt-3 text-xxs text-center'>
+          {/* <h1 className='-mt-3 text-xxs text-center'>
             Office of the Extension and Community Relations Division -USTP
-          </h1>
-          <h1 className='-mt-7 text-xxs text-center'>
+          </h1> */}
+          {/* <h1 className='-mt-7 text-xxs text-center'>
             JOINED FORCED WITH THE
-          </h1>
+          </h1> */}
         </div>
       </div>
     </div>

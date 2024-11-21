@@ -918,6 +918,7 @@ const handleAgencyFormChange = async (e) => {
       );
     };
     
+    const [isProgramOverlayOpen, setIsProgramOverlayOpen] = useState(false);
     
 
   return (
@@ -1277,44 +1278,76 @@ const handleAgencyFormChange = async (e) => {
               </p> */}
             </div>
 
-            <div className="col-span-2">
-              <label className="block mb-2 font-semibold">PROGRAM</label>
-              {/* Fixed height container with shadow to indicate scrollability */}
-              <div className="relative h-[50px] border border--300 rounded shadow-inner">
-                {/* Scrollable content */}
-                <div className="absolute inset-0 overflow-y-auto">
-                  {program.map((prog) => (
-                    <div
-                      key={prog.programID}
-                      className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
-                        formData.program.includes(prog.programID) ? 'bg-blue-100 hover:bg-blue-200' : ''
-                      } ${formData.college.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      onClick={() => {
-                        // Prevent selection if no colleges are selected
-                        if (formData.college.length > 0) {
-                          handleProgramChange(prog.programID);
-                        }
-                      }}
-                    >
-                      <div className="font-medium">{prog.title}</div>
-                      <div className="text-sm text-gray-600">{prog.college.abbreviation}</div>
-                    </div>
-                  ))}
-                  {program.length === 0 && (
-                    <div className="p-3 text-gray-500 text-left align-middle">
-                      {formData.college.length === 0
-                        ? "Please select college(s) first"
-                        : "No programs available for selected college(s)"}
-                    </div>
-                  )}
+            <div>
+              {/* Program component or overlay */}
+              <div className="col-span-2">
+                <label className="block mb-2 font-semibold text-red">PROGRAM</label>
+                <div
+                  onClick={() => setIsProgramOverlayOpen(true)} // Open the overlay
+                  className="relative h-[50px] border border-gray-300 rounded shadow-inner flex items-center px-3 cursor-pointer text-gray-500"
+                >
+                  {formData.program.length > 0
+                    ? `${program
+                        .filter((prog) => formData.program.includes(prog.programID))
+                        .sort((a, b) => a.programID - b.programID)
+                        .map((prog) => prog.title)
+                        .join(', ')}` // Display selected program titles
+                    : 'Select Programs'}
                 </div>
+
+                {isProgramOverlayOpen && (
+                  <div className="fixed inset-0 bg-gray-800 bg-opacity-50 z-10 flex items-center justify-center">
+                    <div className="bg-white rounded shadow-lg w-3/4 max-w-lg p-6">
+                      <h3 className="text-lg font-bold mb-4">Select Programs</h3>
+                      <div className="space-y-2 overflow-y-auto max-h-64">
+                        {program.map((prog) => (
+                          <div
+                            key={prog.programID}
+                            className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
+                              formData.program.includes(prog.programID)
+                                ? 'bg-blue-100 hover:bg-blue-200'
+                                : ''
+                            } ${
+                              formData.college.length === 0
+                                ? 'opacity-50 cursor-not-allowed'
+                                : ''
+                            }`}
+                            onClick={() => {
+                              if (formData.college.length > 0) {
+                                handleProgramChange(prog.programID);
+                              }
+                            }}
+                          >
+                            <div className="font-medium">{prog.title}</div>
+                            <div className="text-sm text-gray-600">
+                              {prog.college.abbreviation}
+                            </div>
+                          </div>
+                        ))}
+                        {program.length === 0 && (
+                          <div className="p-3 text-gray-500 text-left align-middle">
+                            {formData.college.length === 0
+                              ? 'Please select college(s) first'
+                              : 'No programs available for selected college(s)'}
+                          </div>
+                        )}
+                      </div>
+                      <div className="pt-3 text-red-500">
+                        Click items to select/deselect
+                      </div>
+                      <button
+                        onClick={() => setIsProgramOverlayOpen(false)} // Close the overlay
+                        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-              <p className="text-sm text-gray-500 mt-1">
-                Click items to select/deselect
-              </p>
             </div>
 
-            <div className="col-span-1">
+            <div className="col-span-2">
               <label className="block mb-2 font-semibold">
                 ACCREDITATION LEVEL
               </label>

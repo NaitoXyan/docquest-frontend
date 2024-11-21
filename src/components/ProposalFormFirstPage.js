@@ -1116,7 +1116,25 @@ const handleAgencyFormChange = async (e) => {
 
           {/* Fourth Row */}
           <div className="grid grid-cols-5 gap-4">
-            {/* CAMPUS Section */}
+            {/* <div className="col-span-1">
+              <label className="block mb-2 font-semibold">CAMPUS</label>
+                <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
+                      <div className="absolute inset-0 overflow-y-auto">
+                            {campus.map((camp) => (
+                              <div
+                                key={camp.campusID}
+                                className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
+                                  formData.campus.includes(camp.campusID) ? 'bg-blue-100 hover:bg-blue-200' : ''
+                                }`}
+                                onClick={() => handleCampusChange(camp.campusID)}
+                              >
+                                <div className="font-medium">{camp.title}</div>
+                                <div className="text-sm text-gray-600">{camp.abbreviation}</div>
+                              </div>
+                            ))}
+                      </div>
+                </div>
+            </div> */}
             <div className="col-span-2">
               <label className="block mb-2 font-semibold">
                 COLLEGE
@@ -1792,15 +1810,15 @@ const handleAgencyFormChange = async (e) => {
               </div>
 
               <div>
-                <label className="block mb-2 font-semibold">TOTAL AMOUNT</label>
-                <input
-                  type="number"
-                  name="totalAmount"
-                  value={budgetItem.totalAmount}
-                  readOnly  // This ensures the field is not editable
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
+              <label className="block mb-2 font-semibold">TOTAL AMOUNT</label>
+              <input
+                type="number"
+                name="totalAmount"
+                value={budgetItem.totalAmount}
+                readOnly  // This ensures the field is not editable
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
 
 
               {/* Remove Button for Each Item */}

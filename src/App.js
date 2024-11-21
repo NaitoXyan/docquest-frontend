@@ -50,6 +50,7 @@ import ProgramChairReviewProject from "./pages/programChair/ProgramChairReviewPr
 import CollegeDeanDashboard from "./pages/collegeDean/CollegeDeanDashboard";
 import CollegeDeanReviewList from "./pages/collegeDean/CollegeDeanReviewList";
 import CollegeDeanReviewProject from "./pages/collegeDean/CollegeDeanReviewProject";
+import ProjLeadViewProjectProgress from "./pages/projectlead/ProjLeadViewProjectProgress";
 
 function App() {
   return (
@@ -70,6 +71,7 @@ function App() {
         <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
         <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
         <Route path="/deliverables" element={<ProposalFormFirstPage_Deliverables/>}/>
+        <Route path="/view-project-progress/:projectID" element={<ProjLeadViewProjectProgress/>}/>
 
         {/* programchair routes */}
         <Route path="/program-chair" element={<ProgramChairDashboard/>}/>

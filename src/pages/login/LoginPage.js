@@ -99,6 +99,7 @@ const LoginPage = () => {
   className="h-screen w-3/4"
   style={{
     width: '70%',
+    height: '101vh',
     backgroundImage: "url('/images/bg-login2.png')",
     backgroundSize: 'cover', // Ensures the image covers the entire div
     backgroundRepeat: 'no-repeat', // Prevents the image from repeating
@@ -132,7 +133,7 @@ const LoginPage = () => {
             <input
               type="email"
               id="email"
-              placeholder='Email@gmail.com'
+              placeholder='Email@email.com'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required

@@ -53,7 +53,7 @@ const LoginPage = () => {
       if (rolesList.includes('rglr')) {
         navigate('/user');
       } else if (rolesList.includes('prch')) {
-        navigate ('/program-chair');
+        navigate('/program-chair');
       } else if (rolesList.includes('cldn')) {
         navigate('/college-dean');
       } else if (rolesList.includes('ecrd')) {
@@ -93,13 +93,27 @@ const LoginPage = () => {
 
   return (
     <div
-      className="flex items-center justify-center min-h-screen bg-cover bg-center"
-      style={{
-        backgroundImage: "url('/images/bg-login.png')"
-      }}
+      className="flex  min-h-screen bg-cover bg-center"
     >
-      <div className="w-full max-w-md p-9">
-        <div className="flex justify-center mb-1 mt-14">
+      <div
+  className="h-screen w-3/4"
+  style={{
+    width: '70%',
+    backgroundImage: "url('/images/bg-login2.png')",
+    backgroundSize: 'cover', // Ensures the image covers the entire div
+    backgroundRepeat: 'no-repeat', // Prevents the image from repeating
+    backgroundPosition: 'center' // Centers the image within the div
+  }}
+>
+
+      </div>
+      <div className=" flex absolute bottom-5 left-5 items-center rounded-lg bg-white bg-opacity-10" style={{ height: '13%' }}>
+        <img src="/images/ECRDlogo.png" alt="DocQuestLogo" style={{ paddingBottom: 10, height: '90%' }} />
+        <img src="/images/CITClogo.png" alt="DocQuestLogo" style={{ height: '70%', marginRight: 20 }} />
+        <img src="/images/DITlogo.png" alt="DocQuestLogo" style={{ height: '70%', paddingRight: 15 }} />
+      </div>
+      <div className="h-screen p-12 bg-white absolute right-0" style={{ width: '30%' }}>
+        <div className="flex justify-center mb-1 mt-16">
           <img src="/images/logo1.png" alt="DocQuestLogo" className="w-48" />
         </div>
 
@@ -110,7 +124,7 @@ const LoginPage = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="">
+        <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-black-700" style={{ color: "#060E57" }} >
               Email
@@ -118,6 +132,7 @@ const LoginPage = () => {
             <input
               type="email"
               id="email"
+              placeholder='Email@gmail.com'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -135,6 +150,7 @@ const LoginPage = () => {
             <input
               type="password"
               id="password"
+              placeholder='Password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -144,18 +160,14 @@ const LoginPage = () => {
           <button type="submit" className="w-full mt-6 bg-indigo-950 text-white py-2 px-4 rounded-md shadow-sm hover:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             <h1 className='font-semibold'>Login</h1>
           </button>
+          {/* <div className=" flex mt-12 justify-center  items-center h-24 /12 rounded-lg bg-white bg-opacity-70">
+            <img src="/images/ECRDlogo.png" alt="DocQuestLogo" className=" h-24" />
+            <img src="/images/CITClogo.png" alt="DocQuestLogo" className=" h-20" />
+            <img src="/images/DITlogo.png" alt="DocQuestLogo" className=" h-16" />
+          </div> */}
         </form>
 
         <div>
-          <div className="flex justify-center">
-            <img src="/images/ECRDlogo.png" alt="DocQuestLogo" className="w-32" />
-          </div>
-          <h1 className='-mt-3 text-xxs text-center'>
-            Office of the Extension and Community Relations Division -USTP
-          </h1>
-          <h1 className='-mt-7 text-xxs text-center'>
-            JOINED FORCED WITH THE
-          </h1>
         </div>
       </div>
     </div>

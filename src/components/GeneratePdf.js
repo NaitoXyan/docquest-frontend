@@ -28,7 +28,7 @@ const InlineHeader = ({ dateCreated, documentCode = 'FM-USTP-ECRD-01a', revision
             University of Science and Technology of Southern Philippines
           </Text>
           <Text style={styles.campuses}>
-            Alubijid | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon
+            Alubijid | Balubal | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon | Villanueva
           </Text>
         </View>
       </View>

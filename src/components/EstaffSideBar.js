@@ -61,7 +61,7 @@ function EstaffSideBar({ onFilterChange }) {
                     </li>
                     <li>
                         <NavLink
-                            to="/estaff/documents-list"
+                            to="/documents-list"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
                         >
@@ -70,7 +70,7 @@ function EstaffSideBar({ onFilterChange }) {
                     </li>
                     <li>
                         <NavLink
-                            to="/estaff/view-document"
+                            to="/view-document"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
                         >
@@ -79,7 +79,7 @@ function EstaffSideBar({ onFilterChange }) {
                     </li>
                     <li>
                         <NavLink
-                            to="/estaff/scancopy"
+                            to="/scancopy"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
                         >
@@ -88,7 +88,7 @@ function EstaffSideBar({ onFilterChange }) {
                     </li>
                     <li>
                         <NavLink
-                            to="/estaff/user-list"
+                            to="/user-list"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
                         >
@@ -97,7 +97,7 @@ function EstaffSideBar({ onFilterChange }) {
                     </li>
                     <li>
                         <NavLink
-                            to="/estaff/create-user"
+                            to="/create-user"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
                         >
@@ -106,7 +106,7 @@ function EstaffSideBar({ onFilterChange }) {
                     </li>
                     <li>
                         <NavLink
-                            to="/estaff/profile-estaff"
+                            to="/profile-estaff"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
                         >

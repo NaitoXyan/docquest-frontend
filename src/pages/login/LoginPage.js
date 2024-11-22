@@ -69,7 +69,7 @@ const LoginPage = () => {
         rolesList.includes('estf') ||
         rolesList.includes('vpala')
       ) {
-        navigate('/signatory');
+        navigate('/estaff');
       }
     } catch (error) {
       // Handle errors and set error message

@@ -888,16 +888,17 @@ const handleAgencyFormChange = async (e) => {
           {/* First Row */}
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block mb-2 font-semibold">
-                PROGRAM CATEGORY under USTP CARES
-                <span
-                  data-tip="Select the program category related to USTP CARES."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
+            <label className="block mb-2 font-semibold">
+              PROGRAM CATEGORY under USTP CARES
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the program category related to USTP CARES."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
                 ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <select
                 name="programCategory"
                 value={formData.programCategory}
@@ -920,16 +921,17 @@ const handleAgencyFormChange = async (e) => {
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold">
-                TYPE OF PROJECT
-                <span
-                  data-tip="Choose whether this is a new project or a continuing project."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
+            <label className="block mb-2 font-semibold">
+              TYPE OF PROJECT
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Choose whether this is a new project or a continuing project."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <select
                 name="projectType"
                 value={formData.projectType}
@@ -945,16 +947,18 @@ const handleAgencyFormChange = async (e) => {
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold">
-                PROJECT CATEGORY
-                <span
-                  data-tip="Select one or more categories that best describe the project."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
+            <label className="block mb-2 font-semibold">
+              PROJECT CATEGORY
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select one or more categories that best describe the project."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
+
               <select
                 name="projectCategory"
                 value={formData.projectCategory}
@@ -980,16 +984,17 @@ const handleAgencyFormChange = async (e) => {
           {/* Row */}
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-3">
-              <label className="block mb-2 font-semibold">
-                PROJECT TITLE
-                <span
-                  data-tip="Enter the official title of the project."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
+            <label className="block mb-2 font-semibold">
+              PROJECT TITLE
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Enter the official title of the project."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <input
                 name="projectTitle"
                 value={formData.projectTitle}
@@ -1004,16 +1009,17 @@ const handleAgencyFormChange = async (e) => {
           {/* Second Row */}
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-3">
-              <label className="block mb-2 font-semibold">
-                TITLE OF RESEARCH
-                <span
-                  data-tip="Enter the official title of the research project."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
+            <label className="block mb-2 font-semibold">
+              TITLE OF RESEARCH
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Enter the official title of the research project."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <input
                 name="researchTitle"
                 value={formData.researchTitle}
@@ -1028,16 +1034,17 @@ const handleAgencyFormChange = async (e) => {
           {/* Third Row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-bold text-base">
-                PROPONENTS
-                <span
-                  data-tip="Select the individuals who will be involved in the project."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
+            <label className="block mb-2 font-bold text-base">
+              PROPONENTS
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the individuals who will be involved in the project."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <div className="grid grid-cols-1 gap-2">
                 <label className="block mb-2">
                   Project Leader: {username}
@@ -1066,17 +1073,17 @@ const handleAgencyFormChange = async (e) => {
           {/* Third Row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-bold text-base">
-                NON-USER PROPONENTS
-                <span
-                  data-tip="Add non-user proponents by entering their names manually."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
-
+            <label className="block mb-2 font-bold text-base">
+              NON-USER PROPONENTS
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Add non-user proponents by entering their names manually."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               {/* Render input fields for each proponent */}
               {formData.nonUserProponents.map((proponentObj, index) => (
                 <input
@@ -1136,16 +1143,17 @@ const handleAgencyFormChange = async (e) => {
                 </div>
             </div> */}
             <div className="col-span-2">
-              <label className="block mb-2 font-semibold">
-                COLLEGE
-                <span
-                  data-tip="Select the college(s), including those in collaboration."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
+            <label className="block mb-2 font-semibold">
+              COLLEGE
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the college(s), including those in collaboration."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               {/* Fixed height container with shadow to indicate scrollability */}
               <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
                 {/* Scrollable content */}
@@ -1171,16 +1179,17 @@ const handleAgencyFormChange = async (e) => {
 
             {/* PROGRAM Section */}
             <div className="col-span-2">
-              <label className="block mb-2 font-semibold">
-                PROGRAM
-                <span
-                  data-tip="Select a program from the list based on the college selection."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
+            <label className="block mb-2 font-semibold">
+              PROGRAM
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select a program from the list based on the college selection."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               {/* Fixed height container with shadow to indicate scrollability */}
               <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
                 {/* Scrollable content */}
@@ -1217,16 +1226,17 @@ const handleAgencyFormChange = async (e) => {
 
             {/* ACCREDITATION LEVEL Section */}
             <div className="col-span-1">
-              <label className="block mb-2 font-semibold">
-                ACCREDITATION LEVEL
-                <span
-                  data-tip="Select the accreditation base on the main college/program."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
+            <label className="block mb-2 font-semibold">
+              ACCREDITATION LEVEL
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the accreditation base on the main college/program."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <select
                 name="accreditationLevel"
                 value={formData.accreditationLevel}
@@ -1247,16 +1257,17 @@ const handleAgencyFormChange = async (e) => {
           {/* Fifth Row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-semibold">
-                TARGET GROUPS/BENEFICIARIES
-                <span
-                  data-tip="Enter the target groups or beneficiaries for the project."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
+            <label className="block mb-2 font-semibold">
+              TARGET GROUPS/BENEFICIARIES
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Enter the target groups or beneficiaries for the project."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <textarea
                 name="beneficiaries"
                 value={formData.beneficiaries}
@@ -1270,16 +1281,17 @@ const handleAgencyFormChange = async (e) => {
           {/* Sixth Row */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-2 font-semibold">
-                PARTNER AGENCY
-                <span
-                  data-tip="Select a partner agency from the list or add a new one."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
+            <label className="block mb-2 font-semibold">
+              PARTNER AGENCY
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select a partner agency from the list or add a new one."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <select
                 name="agency"
                 value={formData.agency}
@@ -1302,15 +1314,16 @@ const handleAgencyFormChange = async (e) => {
           <div className="grid grid-cols-3 gap-4">
             <div>
             <label className="block mb-2 font-semibold">
-                TARGET START DATE OF IMPLEMENTATION
-                <span
-                  data-tip="Select the target START date when the implementation is expected to start."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
+              TARGET START DATE OF IMPLEMENTATION
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the target START date when the implementation is expected to start."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <input
                 name="targetImplementation"
                 value={formData.targetImplementation}
@@ -1321,16 +1334,17 @@ const handleAgencyFormChange = async (e) => {
               />
             </div>
             <div>
-              <label className="block mb-2 font-semibold">
-                TARGET END DATE OF IMPLEMENTATION
-                <span
-                  data-tip="Select the target END date when the implementation is expected to end."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
+            <label className="block mb-2 font-semibold">
+              TARGET END DATE OF IMPLEMENTATION
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the target END date when the implementation is expected to end."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <input
                 name="targetImplementation"
                 value={formData.targetImplementation}
@@ -1342,16 +1356,17 @@ const handleAgencyFormChange = async (e) => {
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold">
-                TOTAL HOURS
-                <span
-                  data-tip="Enter the total hours required for the implementation of the project."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
+            <label className="block mb-2 font-semibold">
+              TOTAL HOURS
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Enter the total hours required for the implementation of the project."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <input
                 name="totalHours"
                 value={formData.totalHours}
@@ -1374,6 +1389,7 @@ const handleAgencyFormChange = async (e) => {
             <div>
               <label className="block mb-2 font-bold text-base">
                 PROJECT LOCATION
+                <span className="text-red-500 ml-1">*</span>
                 <span
                   data-tip="Specify the location where the project will take place."
                   className="ml-2 text-gray-500 cursor-pointer text-sm"
@@ -1385,11 +1401,13 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
 
-
           {/* row */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-2 font-semibold">Region</label>
+              <label className="block mb-2 font-semibold">
+                Region
+                <span className="text-red-500 ml-1">*</span>
+              </label>
               <select
                 name="region"
                 value={formData.region}
@@ -1406,12 +1424,15 @@ const handleAgencyFormChange = async (e) => {
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold">Province</label>
+              <label className="block mb-2 font-semibold">
+                Province
+                <span className="text-red-500 ml-1">*</span>
+              </label>
               <select
                 name="province"
                 value={formData.province}
                 onChange={handleFormChange}
-                disabled={!formData.region}//disabled till region selected
+                disabled={!formData.region} //disabled till region selected
                 className="w-full p-2 border border-gray-300 rounded"
               >
                 {!formData.region ? (
@@ -1428,7 +1449,10 @@ const handleAgencyFormChange = async (e) => {
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold">City</label>
+              <label className="block mb-2 font-semibold">
+                City
+                <span className="text-red-500 ml-1">*</span>
+              </label>
               <select
                 name="city"
                 value={formData.city}
@@ -1450,7 +1474,10 @@ const handleAgencyFormChange = async (e) => {
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold">Barangay</label>
+              <label className="block mb-2 font-semibold">
+                Barangay
+                <span className="text-red-500 ml-1">*</span>
+              </label>
               <select
                 name="barangay"
                 value={formData.barangay}
@@ -1475,7 +1502,10 @@ const handleAgencyFormChange = async (e) => {
           {/* row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-semibold">Address</label>
+              <label className="block mb-2 font-semibold">
+                Address
+                <span className="text-red-500 ml-1">*</span>
+              </label>
               <input
                 name="address"
                 value={formData.projectLocationID.street}
@@ -1493,6 +1523,7 @@ const handleAgencyFormChange = async (e) => {
             <div>
               <label className="block mb-2 font-semibold">
                 BACKGROUND OF THE PROJECT
+                <span className="text-red-500 ml-1">*</span>
                 <span
                   data-tip="Provide a detailed explanation of the project's background and why it is being undertaken."
                   className="ml-2 text-gray-500 cursor-pointer text-sm"
@@ -1515,6 +1546,7 @@ const handleAgencyFormChange = async (e) => {
             <div>
               <label className="block mb-2 font-semibold text-base">
                 GOALS AND OBJECTIVES
+                <span className="text-red-500 ml-1">*</span>
                 <span
                   data-tip="State the goals and objectives clearly and concisely."
                   className="ml-2 text-gray-500 cursor-pointer text-sm"
@@ -1569,6 +1601,7 @@ const handleAgencyFormChange = async (e) => {
             <div>
               <label className="block mb-2 font-semibold">
                 PROJECT COMPONENT
+                <span className="text-red-500 ml-1">*</span>
                 <span
                   data-tip="Provide a detailed description of the project components and their functions."
                   className="ml-2 text-gray-500 cursor-pointer text-sm"
@@ -1587,29 +1620,31 @@ const handleAgencyFormChange = async (e) => {
           </div>
         </div>
 
-
         {/* PROJECT IMPLEMENTATION PLAN AND MANAGEMENT */}
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-        <div className="grid grid-cols-1 gap-4">
-          <div>
-            <label className="block mb-2 font-bold">
-              PROJECT IMPLEMENTATION PLAN AND MANAGEMENT
-              <span
-                data-tip="Outline the steps and management strategies involved in project implementation."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <label className="block mb-2 font-bold">
+                PROJECT IMPLEMENTATION PLAN AND MANAGEMENT
+                <span
+                  data-tip="Outline the steps and management strategies involved in project implementation."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
+            </div>
           </div>
-        </div>
 
           {/* Project Activities Rows */}
           {formData.projectActivities.map((activity, index) => (
             <div key={index} className="grid grid-cols-4 gap-4 mb-4">
               <div>
-                <label className="block mb-2 font-semibold">PROJECT OBJECTIVE</label>
+                <label className="block mb-2 font-semibold">
+                  PROJECT OBJECTIVE
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
                 <textarea
                   name="objective"
                   value={activity.objective}
@@ -1619,7 +1654,10 @@ const handleAgencyFormChange = async (e) => {
               </div>
 
               <div>
-                <label className="block mb-2 font-semibold">ACTIVITIES INVOLVED</label>
+                <label className="block mb-2 font-semibold">
+                  ACTIVITIES INVOLVED
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
                 <textarea
                   name="involved"
                   value={activity.involved}
@@ -1629,22 +1667,25 @@ const handleAgencyFormChange = async (e) => {
               </div>
 
               <div>
-                <label className="block mb-2 font-semibold">TARGET DATE</label>
+                <label className="block mb-2 font-semibold">
+                  TARGET DATE
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
                 <input
-  name="targetDate"
-  value={formData.targetDate}
-  onChange={handleFormChange}
-  type="month"
-  className="w-full p-2 border border-gray-300 rounded"
-  min={new Date().toISOString().slice(0, 7)} // Current month and year
-/>
-
-
-
+                  name="targetDate"
+                  value={formData.targetDate}
+                  onChange={handleFormChange}
+                  type="month"
+                  className="w-full p-2 border border-gray-300 rounded"
+                  min={new Date().toISOString().slice(0, 7)} // Current month and year
+                />
               </div>
 
               <div>
-                <label className="block mb-2 font-semibold">PERSON RESPONSIBLE</label>
+                <label className="block mb-2 font-semibold">
+                  PERSON RESPONSIBLE
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
                 <input
                   name="personResponsible"
                   value={activity.personResponsible}
@@ -1655,7 +1696,7 @@ const handleAgencyFormChange = async (e) => {
             </div>
           ))}
 
-          {/* Add Button and remove bttn*/}
+          {/* Add Button and remove button */}
           <div className="flex space-x-2 mt-2">
             <button
               type="button"
@@ -1671,8 +1712,8 @@ const handleAgencyFormChange = async (e) => {
               onClick={removeLastActivityRow} // Function to remove the last row
               className={
                 formData.projectActivities.length === 1
-                 ? "mt-4 p-2 bg-gray-400 text-gray-200 rounded"
-                 : "mt-4 p-2 bg-red-500 text-white rounded"
+                  ? "mt-4 p-2 bg-gray-400 text-gray-200 rounded"
+                  : "mt-4 p-2 bg-red-500 text-white rounded"
               }
             >
               Remove Last Row
@@ -1685,6 +1726,7 @@ const handleAgencyFormChange = async (e) => {
             <div>
               <label className="block mb-2 font-bold text-base">
                 PROJECT LOCATION AND BENEFICIARIES
+                <span className="text-red-500 ml-1">*</span>
                 <span
                   data-tip="Provide the location of the project and specify the beneficiaries it will serve."
                   className="ml-2 text-gray-500 cursor-pointer text-sm"
@@ -1703,12 +1745,12 @@ const handleAgencyFormChange = async (e) => {
           </div>
         </div>
 
-
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
             <div>
               <label className="block mb-2 font-bold text-base">
                 PROJECT MANAGEMENT TEAM/TRAINERS
+                <span className="text-red-500 ml-1">*</span>
                 <span
                   data-tip="List the individuals responsible for overseeing the project and training efforts."
                   className="ml-2 text-gray-500 cursor-pointer text-sm"
@@ -1754,13 +1796,14 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
         </div>
-        
+
         {/* BUDGETARY REQUIREMENTS */}
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
             <div>
               <label className="block mb-2 font-bold">
                 BUDGETARY REQUIREMENTS
+                <span className="text-red-500 ml-1"></span>
                 <span
                   data-tip="Enter the financial requirements necessary for the successful implementation of the project."
                   className="ml-2 text-gray-500 cursor-pointer text-sm"
@@ -1775,7 +1818,10 @@ const handleAgencyFormChange = async (e) => {
           {formData.budgetRequirements.map((budgetItem, index) => (
             <div key={index} className="grid grid-cols-4 gap-4 mb-4">
               <div>
-                <label className="block mb-2 font-semibold">ITEM NAME</label>
+              <label className="block mb-2 font-semibold">
+                ITEM NAME
+                <span className="text-red-500 ml-1">*</span>
+              </label>
                 <input
                   name="itemName"
                   value={budgetItem.itemName}
@@ -1784,7 +1830,10 @@ const handleAgencyFormChange = async (e) => {
                 />
               </div>
               <div>
-                <label className="block mb-2 font-semibold">USTP AMOUNT</label>
+              <label className="block mb-2 font-semibold">
+                USTP AMOUNT
+                <span className="text-red-500 ml-1">*</span>
+              </label>
                 <input
                   type="number"
                   name="ustpAmount"
@@ -1797,7 +1846,10 @@ const handleAgencyFormChange = async (e) => {
               </div>
 
               <div>
-                <label className="block mb-2 font-semibold">PARTNER AMOUNT</label>
+              <label className="block mb-2 font-semibold">
+                PARTNER AMOUNT
+                <span className="text-red-500 ml-1">*</span>
+              </label>
                 <input
                   type="number"
                   name="partnerAmount"
@@ -1810,31 +1862,30 @@ const handleAgencyFormChange = async (e) => {
               </div>
 
               <div>
-              <label className="block mb-2 font-semibold">TOTAL AMOUNT</label>
-              <input
-                type="number"
-                name="totalAmount"
-                value={budgetItem.totalAmount}
-                readOnly  // This ensures the field is not editable
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-
+                <label className="block mb-2 font-semibold">TOTAL AMOUNT</label>
+                <input
+                  type="number"
+                  name="totalAmount"
+                  value={budgetItem.totalAmount}
+                  readOnly  // This ensures the field is not editable
+                  className="w-full p-2 border border-gray-300 rounded"
+                />
+              </div>
 
               {/* Remove Button for Each Item */}
               <div className="col-span-4 text-right m-0">
-              <button
-                type="button"
-                onClick={() => removeBudgetItem(index)} // Remove the item at this index
-                disabled={index === 0} // Disable the remove button for the first item
-                className={`p-1 border-1 border-0 bg-transparent rounded ${index === 0 ? "cursor-not-allowed" : "hover:border-red-5 hover:text-white active:border-red-5 active:text-white"}`}
-              >
-                {index === 0 ? (
-                  ""
-                ) : (
-                  <span className="text-red-500">Remove Item</span> // Only this part will be red
-                )}
-              </button>
+                <button
+                  type="button"
+                  onClick={() => removeBudgetItem(index)} // Remove the item at this index
+                  disabled={index === 0} // Disable the remove button for the first item
+                  className={`p-1 border-1 border-0 bg-transparent rounded ${index === 0 ? "cursor-not-allowed" : "hover:border-red-5 hover:text-white active:border-red-5 active:text-white"}`}
+                >
+                  {index === 0 ? (
+                    ""
+                  ) : (
+                    <span className="text-red-500">Remove Item</span> // Only this part will be red
+                  )}
+                </button>
               </div>
             </div>
           ))}
@@ -1874,7 +1925,7 @@ const handleAgencyFormChange = async (e) => {
               </div>
 
               <div>
-              <label className="block mb-2 font-semibold">TOTAL</label>
+                <label className="block mb-2 font-semibold">TOTAL</label>
                 <input
                   name="totalBudget"
                   value={formData.totalBudget}
@@ -1901,110 +1952,133 @@ const handleAgencyFormChange = async (e) => {
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           {/* Table Headers */}
           <div>
-            <label className="block mb-2 font-bold">
-              PROJECT EVALUATION AND MONITORING
-              <span
-                data-tip="Describe the strategies for monitoring the project's progress and evaluating its success."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
+          <label className="block mb-2 font-bold">
+            PROJECT EVALUATION AND MONITORING
+            <span className="text-red-500 ml-1">*</span>
+            <span
+              data-tip="Describe the strategies for monitoring the project's progress and evaluating its success."
+              className="ml-2 text-gray-500 cursor-pointer text-sm"
+            >
+              ⓘ
+            </span>
+            <ReactTooltip place="top" type="dark" effect="solid" />
+          </label>
+          </div>
+
+        <div className="grid grid-cols-4 gap-4">
+          <div>
+            <label className="block mb-2 font-semibold">
+              PROJECT SUMMARY
+              <span className="text-red-500 ml-1">*</span>
             </label>
           </div>
+          <div>
+            <label className="block mb-2 font-semibold">
+              INDICATORS
+              <span className="text-red-500 ml-1">*</span>
+            </label>
+          </div>
+          <div>
+            <label className="block mb-2 font-semibold">
+              MEANS OF VERIFICATION
+              <span className="text-red-500 ml-1">*</span>
+            </label>
+          </div>
+          <div>
+            <label className="block mb-2 font-semibold">
+              RISKS/ASSUMPTIONS
+              <span className="text-red-500 ml-1">*</span>
+            </label>
+          </div>
+        </div>
 
-          <div className="grid grid-cols-4 gap-4">
+        {/* Table Rows */}
+        {formData.evaluationAndMonitorings.map((evaluation, index) => (
+          <div key={index} className="grid grid-cols-4 gap-4">
+            {/* Project Summary */}
             <div>
-              <label className="block mb-2 font-semibold">PROJECT SUMMARY</label>
+              <textarea
+                rows="4"
+                name="projectSummary"
+                value={evaluation.projectSummary}
+                onChange={(e) => handleEvaluationChange(index, "projectSummary", e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder={`Project Summary (${evaluation.type.toUpperCase()})`}
+              ></textarea>
             </div>
+
+            {/* Indicators */}
             <div>
-              <label className="block mb-2 font-semibold">INDICATORS</label>
+              <textarea
+                rows="4"
+                name="indicators"
+                value={evaluation.indicators}
+                onChange={(e) => handleEvaluationChange(index, "indicators", e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder={`Indicators (${evaluation.type.toUpperCase()})`}
+              ></textarea>
             </div>
+
+            {/* Means of Verification */}
             <div>
-              <label className="block mb-2 font-semibold">MEANS OF VERIFICATION</label>
+              <textarea
+                rows="4"
+                name="meansOfVerification"
+                value={evaluation.meansOfVerification}
+                onChange={(e) => handleEvaluationChange(index, "meansOfVerification", e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder={`Means of Verification (${evaluation.type.toUpperCase()})`}
+              ></textarea>
             </div>
+
+            {/* Risks/Assumptions */}
             <div>
-              <label className="block mb-2 font-semibold">RISKS/ASSUMPTIONS</label>
+              <textarea
+                rows="4"
+                name="risksAssumptions"
+                value={evaluation.risksAssumptions}
+                onChange={(e) => handleEvaluationChange(index, "risksAssumptions", e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder={`Risks/Assumptions (${evaluation.type.toUpperCase()})`}
+              ></textarea>
             </div>
           </div>
+        ))}
 
-          {/* Table Rows */}
-          {formData.evaluationAndMonitorings.map((evaluation, index) => (
-            <div key={index} className="grid grid-cols-4 gap-4">
-              {/* Project Summary */}
-              <div>
-                <textarea
-                  rows="4"
-                  name="projectSummary"
-                  value={evaluation.projectSummary}
-                  onChange={(e) => handleEvaluationChange(index, "projectSummary", e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  placeholder={`Project Summary (${evaluation.type.toUpperCase()})`}
-                ></textarea>
-              </div>
-
-              {/* Indicators */}
-              <div>
-                <textarea
-                  rows="4"
-                  name="indicators"
-                  value={evaluation.indicators}
-                  onChange={(e) => handleEvaluationChange(index, "indicators", e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  placeholder={`Indicators (${evaluation.type.toUpperCase()})`}
-                ></textarea>
-              </div>
-
-              {/* Means of Verification */}
-              <div>
-                <textarea
-                  rows="4"
-                  name="meansOfVerification"
-                  value={evaluation.meansOfVerification}
-                  onChange={(e) => handleEvaluationChange(index, "meansOfVerification", e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  placeholder={`Means of Verification (${evaluation.type.toUpperCase()})`}
-                ></textarea>
-              </div>
-
-              {/* Risks/Assumptions */}
-              <div>
-                <textarea
-                  rows="4"
-                  name="risksAssumptions"
-                  value={evaluation.risksAssumptions}
-                  onChange={(e) => handleEvaluationChange(index, "risksAssumptions", e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  placeholder={`Risks/Assumptions (${evaluation.type.toUpperCase()})`}
-                ></textarea>
-              </div>
-            </div>
-          ))}
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div>
-            <label className="block mb-2 font-bold">
-              MONITORING PLAN AND SCHEDULE
-              <span
-                data-tip="Outline the timeline and process for monitoring the project's progress."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
+          <label className="block mb-2 font-bold">
+            MONITORING PLAN AND SCHEDULE
+            <span className="text-red-500 ml-1">*</span>
+            <span
+              data-tip="Outline the timeline and process for monitoring the project's progress."
+              className="ml-2 text-gray-500 cursor-pointer text-sm"
+            >
+              ⓘ
+            </span>
+            <ReactTooltip place="top" type="dark" effect="solid" />
+          </label>
           </div>
           <div className="p-4">
             <table className="min-w-full table-auto border-collapse border border-gray-300">
-              <thead>
-                <tr>
-                  <th className="border border-gray-300 p-2">Monitoring Phase</th>
-                  <th className="border border-gray-300 p-2">M&E Instrument/Approach</th>
-                  <th className="border border-gray-300 p-2">Format or Strategy for Data Gathering</th>
-                  <th className="border border-gray-300 p-2">Schedule</th>
-                </tr>
-              </thead>
+            <thead>
+              <tr>
+                <th className="border border-gray-300 p-2">
+                  Monitoring Phase <span className="text-red-500">*</span>
+                </th>
+                <th className="border border-gray-300 p-2">
+                  M&E Instrument/Approach <span className="text-red-500">*</span>
+                </th>
+                <th className="border border-gray-300 p-2">
+                  Format or Strategy for Data Gathering <span className="text-red-500">*</span>
+                </th>
+                <th className="border border-gray-300 p-2">
+                  Schedule <span className="text-red-500">*</span>
+                </th>
+              </tr>
+            </thead>
               <tbody>
                 {formData.monitoringPlanSchedules.map((row, index) => (
                   <tr key={index}>

@@ -1,12 +1,12 @@
 import React from "react";
-import { BrowserRouter, Routers, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/login/LoginPage";
 import CoordinatorTab from "./pages/coordinator/CoordinatorTab";
 import UserList from "./pages/estaff/UserList";
 import CreateUser from "./pages/estaff/CreateUser";
 import EStaffDocumentsList from "./pages/estaff/EStaffDocumentsList";
 import EstaffDashboard from "./pages/estaff/EstaffDashboard";
-import EstaffViewDocument from "./pages/estaff/EstaffViewDocuments";
+import EstaffViewDocuments from "./pages/estaff/EstaffViewDocuments";
 import ProjLeadDashboard from "./pages/projectlead/ProjLeadDashboard";
 import Topbar from "./components/Topbar";
 import DeptOffSideBar from './components/DeptOffSideBar';
@@ -52,6 +52,13 @@ import CollegeDeanReviewList from "./pages/collegeDean/CollegeDeanReviewList";
 import CollegeDeanReviewProject from "./pages/collegeDean/CollegeDeanReviewProject";
 import ProjLeadViewProjectProgress from "./pages/projectlead/ProjLeadViewProjectProgress";
 import EStaffProfilePage from "./pages/estaff/EStaffProfilePage";
+import UserListCoord from "./pages/coordinator/UserListCoord";
+import CreateUserCoord from "./pages/coordinator/CreateUserCoord";
+import DocListCoord from "./pages/coordinator/DocListCoord";
+import CampusProposal from "./pages/estaff/CampusProposal";
+import SharedProposal from "./pages/estaff/SharedProposal";
+import LoadTrainers from "./pages/estaff/LoadTrainers";
+import MoaMou from "./pages/estaff/MoaMou";
 function App() {
   return (
     <Routes>
@@ -98,22 +105,34 @@ function App() {
          {/* ESTAFF ROUTING */}
          
         <Route path="/documents-list" element={<EStaffDocumentsList />} />  {/* Add this line */}
-        <Route path="/view-document" element={<EstaffViewDocument />} />  {/* Add this line */}
+        <Route path="/view-download/:id" element={<EstaffViewDocuments />} />  {/* Add this line */}
         <Route path="/user-list" element={<UserList />} />  {/* Add this line */}
         <Route path="/create-user" element={<CreateUser />} />  {/* Add this line */}
         <Route path="/profile-estaff" element={<EStaffProfilePage />} />
-        {<Route path="/scancopy" element={<EstaffScancopy />} />}
+        <Route path="/campus-proposal" element={<CampusProposal />} />
+        <Route path="/shared-proposal" element={<SharedProposal />} />
+        <Route path="/load-trainers" element={<LoadTrainers />} />
+        <Route path="/moa-mou" element={<MoaMou />} />
+        {<Route path="/scan-copy" element={<EstaffScancopy />} />}
         {/* <Route path="/estaff/profile-estaff" element={<EStaffProfilePage />} />  Add this line */}
+
+        {/* COORDINATOR ROUTES */}
+        {<Route path="/coordusers" element={<UserListCoord />} />}
+        <Route path="/coordinatordashboard" element={<CoordinatorDashboard />} />
+        <Route path="/createuser:id" element={<CreateUserCoord />} />
+        <Route path="/documents-coord" element={<DocListCoord />} />
         
         {/* Create proposal routes */}
         {<Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} />}
+
+        {/* EStaff routes */}
           
         {/* Other Unorganized */}
         <Route path="/pdf-viewer/:projectID" element={<ProjectPDFViewer />} />
         <Route path="/edit-project/:projectID" element={<ProjLeadEditProject />} /> {/* Walay remove button for Budgetary Requirements */}
         <Route path="/estaff" element={<EstaffDashboard />} />
         <Route path="/deptoff" element={<DeptOffDashboard />} />
-        <Route path="/coordinator" element={<CoordinatorDashboard />} />
+       
         <Route path="/signatory" element={<EstaffDashboard />} />
         
       </Routes>

@@ -51,7 +51,7 @@ import CollegeDeanDashboard from "./pages/collegeDean/CollegeDeanDashboard";
 import CollegeDeanReviewList from "./pages/collegeDean/CollegeDeanReviewList";
 import CollegeDeanReviewProject from "./pages/collegeDean/CollegeDeanReviewProject";
 import ProjLeadViewProjectProgress from "./pages/projectlead/ProjLeadViewProjectProgress";
-
+import EStaffProfilePage from "./pages/estaff/EStaffProfilePage";
 function App() {
   return (
     <Routes>
@@ -96,10 +96,13 @@ function App() {
         <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>
 
          {/* ESTAFF ROUTING */}
-        <Route path="/estaff/documents-list" element={<EStaffDocumentsList />} />  {/* Add this line */}
-        <Route path="/estaff/view-document" element={<EstaffViewDocument />} />  {/* Add this line */}
-        <Route path="/estaff/user-list" element={<UserList />} />  {/* Add this line */}
-        <Route path="/estaff/create-user" element={<CreateUser />} />  {/* Add this line */}
+         
+        <Route path="/documents-list" element={<EStaffDocumentsList />} />  {/* Add this line */}
+        <Route path="/view-document" element={<EstaffViewDocument />} />  {/* Add this line */}
+        <Route path="/user-list" element={<UserList />} />  {/* Add this line */}
+        <Route path="/create-user" element={<CreateUser />} />  {/* Add this line */}
+        <Route path="/profile-estaff" element={<EStaffProfilePage />} />
+        {<Route path="/scancopy" element={<EstaffScancopy />} />}
         {/* <Route path="/estaff/profile-estaff" element={<EStaffProfilePage />} />  Add this line */}
         
         {/* Create proposal routes */}
@@ -111,8 +114,8 @@ function App() {
         <Route path="/estaff" element={<EstaffDashboard />} />
         <Route path="/deptoff" element={<DeptOffDashboard />} />
         <Route path="/coordinator" element={<CoordinatorDashboard />} />
-        <Route path="/signatory" element={<SignatoryDashboard />} />
-        {<Route path="/estaff/scancopy" element={<EstaffScancopy />} />}
+        <Route path="/signatory" element={<EstaffDashboard />} />
+        
       </Routes>
   );
 }

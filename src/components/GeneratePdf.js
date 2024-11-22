@@ -400,7 +400,9 @@ const MyDocument = ({ projectID }) => {
   );
 
   return (
-    <Document>
+    <Document 
+    title={`${formData.projectTitle} - ${formData.dateCreated} - ${new Date().toLocaleString()}`} 
+    style={styles.document}>
       {/* first page */}
       <Page style={styles.page}>
         <InlineHeader dateCreated={formData.dateCreated} />
@@ -533,19 +535,19 @@ const MyDocument = ({ projectID }) => {
               </Text>
             </View>
             <View style={[{ paddingLeft: '1%', paddingRight: '1%', }]}>
-              <Text>
-                COLLEGE: {formData.program.length === 1 ?
-                  formData.program[0].college.abbreviation :
-                  formData.program.map((prog, index) => {
-                    return (
-                      <React.Fragment key={prog.college.collegeID}>
-                        {prog.college.abbreviation}
-                        {index < formData.program.length - 1 && ', '}
-                      </React.Fragment>
-                    );
-                  })
-                }
-              </Text>
+            <Text>
+              COLLEGE: {
+                formData.program.length === 1 ? 
+                  formData.program[0].college.abbreviation : 
+                  formData.program.reduce((acc, prog, index) => {
+                    if (!acc.includes(prog.college.abbreviation)) {
+                      acc.push(prog.college.abbreviation);
+                    }
+                    return acc;
+                  }, []).join(', ')
+              }
+            </Text>
+
             </View>
           </View>
         </View>
@@ -639,7 +641,7 @@ const MyDocument = ({ projectID }) => {
           <Text>
             Submitted by:
           </Text>
-          <Text style={[{ textAlign: 'center', paddingTop: 5, textDecoration: 'underline', }]}>
+          <Text style={[{ textAlign: 'center', paddingTop: 5, textDecoration: 'underline', marginTop:20}]}>
             {`${formData.userID?.firstname} ${formData.userID?.lastname}`}
           </Text>
           <Text style={[{ textAlign: 'center', fontFamily: 'Arial', paddingBottom: 5 }]}>
@@ -651,20 +653,20 @@ const MyDocument = ({ projectID }) => {
             Endorsed by:
           </Text>
           <View style={[{ flexDirection: 'row', paddingTop: '1%' }]}>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', }]}>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline',marginTop:20 }]}>
               {formData.signatories && formData.signatories.length > 0 &&
                 formData.signatories.find(signatory => signatory.title === 'Program Chair')?.name}
             </Text>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', }]}>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', marginTop:20 }]}>
               {formData.signatories && formData.signatories.length > 0 &&
                 formData.signatories.find(signatory => signatory.title === 'College Dean')?.name}
             </Text>
           </View>
           <View style={[{ flexDirection: 'row', paddingBottom: '1%' }]}>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', fontFamily: 'Arial', }]}>
               Program Chair
             </Text>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', fontFamily: 'Arial', }]}>
               College Dean
             </Text>
           </View>
@@ -673,7 +675,7 @@ const MyDocument = ({ projectID }) => {
           <Text style={{ fontFamily: 'ArialB', }}>
             Recommending Approval:
           </Text>
-          <Text style={[{ textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', }]}>
+          <Text style={[{ textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB',marginTop:20 }]}>
             {formData.signatories && formData.signatories.length > 0 &&
               formData.signatories.find(signatory => signatory.title === 'Director, Extension & Community Relations')?.name}
           </Text>
@@ -682,11 +684,11 @@ const MyDocument = ({ projectID }) => {
               formData.signatories.find(signatory => signatory.title === 'Director, Extension & Community Relations')?.title}
           </Text>
           <View style={[{ flexDirection: 'row', }]}>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', }]}>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', marginTop:30 }]}>
               {formData.signatories && formData.signatories.length > 0 &&
                 formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Academic Affairs')?.name}
             </Text>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', }]}>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', marginTop:30 }]}>
               {formData.signatories && formData.signatories.length > 0 &&
                 formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Research and Innovation')?.name}
             </Text>
@@ -707,11 +709,11 @@ const MyDocument = ({ projectID }) => {
             Funds Available:
           </Text>
           <View style={[{ flexDirection: 'row', paddingTop: '1%' }]}>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB', }]}>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB', marginTop:20 }]}>
               {formData.signatories && formData.signatories.length > 0 &&
                 formData.signatories.find(signatory => signatory.title === 'Accountant III')?.name}
             </Text>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB', }]}>
+            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB',marginTop:20 }]}>
               {formData.signatories && formData.signatories.length > 0 &&
                 formData.signatories.find(signatory => signatory.title === 'Chancellor, USTP CDO')?.name}
             </Text>
@@ -732,13 +734,13 @@ const MyDocument = ({ projectID }) => {
       {/* second page */}
       <Page style={styles.page}>
         <InlineHeader dateCreated={formData.dateCreated} />
-        <View style={[{ justifyContent: 'center', alignItems: 'center', marginTop: '1%' }]}>
+        <View style={[{ justifyContent: 'center', alignItems: 'center', marginTop: '2%' }]}>
           <Text style={[{ fontSize: 13 }]}>
             Extension Project Proposal
           </Text>
         </View>
         <View style={[{ justifyContent: 'center', alignItems: 'center', marginTop: '1%', marginBottom: '1%' }]}>
-          <Text>
+          <Text style={[{ fontSize: 12, fontFamily: 'ArialB' }]}>
             {formData.projectTitle}
           </Text>
         </View>
@@ -881,14 +883,14 @@ const MyDocument = ({ projectID }) => {
           </Text>
         </View>
         <View wrap={false}>
-          <Text style={[{ fontFamily: 'ArialB', marginBottom: '1%' }]}>
+          <Text style={[{ fontFamily: 'ArialB', marginBottom: '1%', justifyContent: 'center' }]}>
             V. Budgetary Requirements
           </Text>
           <View>
             {/* Header Row */}
             <View style={[{ flexDirection: 'row' }]}>
-              <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0 }]}>
-                <Text>Item</Text>
+              <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0 , justifyContent: 'center'}]}>
+                <Text style={[{justifyContent: 'center' }]}>Item</Text>
               </View>
               <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0 }]}>
                 <Text style={[{ borderBottom: 1 }]}>Amount</Text>
@@ -901,8 +903,8 @@ const MyDocument = ({ projectID }) => {
                   </View>
                 </View>
               </View>
-              <View style={[styles.tableColthree, { border: 1, borderBottom: 0 }]}>
-                <Text>Total Amount</Text>
+              <View style={[styles.tableColthree, { border: 1, borderBottom: 0 , justifyContent: 'center'}]}>
+                <Text style={[{ fontFamily: 'ArialB', justifyContent: 'center' }]}>Total Amount</Text>
               </View>
             </View>
 
@@ -939,12 +941,12 @@ const MyDocument = ({ projectID }) => {
                     <Text></Text>
                   </View>
                   <View style={[styles.tableColtwo]}>
-                    <Text>Total Budget</Text>
+                    <Text style={[{ fontFamily: 'ArialB' }]} >Total Budget</Text>
                   </View>
                 </View>
               </View>
               <View style={[styles.tableColthree, { border: 1 }]}>
-                <Text>
+                <Text style={[{ fontFamily: 'ArialB' }]}>
                   {formData.budgetRequirements?.reduce((total, item) =>
                     total + (Number(item.totalAmount) || 0), 0) || '*'}
                 </Text>
@@ -955,7 +957,7 @@ const MyDocument = ({ projectID }) => {
         <Text style={[{ fontFamily: 'ArialB' }]}>
           VI. Project Evaluation and Monitoring
         </Text>
-        <Text>
+        <Text style={[{ marginLeft: 5 }]}>
           Log Frame for the Project
         </Text>
         <View style={[{ flexDirection: 'row', textAlign: 'center' }]}>
@@ -987,7 +989,7 @@ const MyDocument = ({ projectID }) => {
         </View>
         <View style={[{ flexDirection: 'row' }]}>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0 }]}>
-            <Text>Goal</Text>
+            <Text style={[{ marginLeft: 5 }]}>Goal</Text>
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "goal")
@@ -1020,7 +1022,7 @@ const MyDocument = ({ projectID }) => {
         </View>
         <View style={[{ flexDirection: 'row' }]}>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0 }]}>
-            <Text>Outcome</Text>
+            <Text style={[{ marginLeft: 5 }]}>Outcome</Text>
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outcome")
@@ -1053,7 +1055,7 @@ const MyDocument = ({ projectID }) => {
         </View>
         <View style={[{ flexDirection: 'row' }]}>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0 }]}>
-            <Text>Outputs</Text>
+            <Text style={[{ marginLeft: 5 }]}>Outputs</Text>
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outputs")
@@ -1086,7 +1088,7 @@ const MyDocument = ({ projectID }) => {
         </View>
         <View style={[{ flexDirection: 'row', paddingBottom: '1%' }]}>
           <View style={[styles.tableColfive, { borderRight: 0, }]}>
-            <Text>Activities</Text>
+            <Text style={[{ marginLeft: 5 }]}>Activities</Text>
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "activities")
@@ -1122,24 +1124,24 @@ const MyDocument = ({ projectID }) => {
             Monitoring and Plan Schedule
           </Text>
           <View style={[{ flexDirection: 'row', textAlign: 'center' }]}>
-            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
+            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center' }]}>
               <Text>
                 Monitoring Phase
               </Text>
             </View>
-            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
+            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center' }]}>
               <Text>
-                M & E Instrument/Approach
+                M & E Instrument/{'\n'}Approach
               </Text>
             </View>
-            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
+            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center'}]}>
               <Text>
                 Format or Strategy for Data Gathering
               </Text>
             </View>
             <View style={[styles.tableColfour, { borderBottom: 0, }]}>
               <Text>
-                Schedule *As agreed with community/organization partner
+                Schedule *As agreed with community/{'\n'}organization partner
               </Text>
             </View>
           </View>
@@ -1287,54 +1289,57 @@ const MyDocument = ({ projectID }) => {
           </Text>
         </View>
         <Text>
-          Project Title: {formData.projectTitle}
+          Project Title: <Text style={{ fontFamily: 'ArialB' }}>
+            {formData.projectTitle}
+          </Text>
         </Text>
-        <Text style={[{ paddingBottom: '2%' }]}>
+        <Text style={[{ paddingBottom: '2%', }]}>
           Partner Agency: {formData.agency?.length
             ? formData.agency.map((agencyItem, index) => (
-              <Text key={index}>
+              <Text style={[{ fontFamily: 'ArialB' }]} key={index}>
                 {agencyItem.agencyName}
               </Text>
             ))
             : 'No agencies available'}
         </Text>
         <View style={[{ flexDirection: 'row', textAlign: 'center', backgroundColor: '#DCDCDC' }]}>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
+          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center' }]}>
             <Text>
               Name of Faculty
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
+          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center' }]}>
             <Text>
               Training Load
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
+          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center'}]}>
             <Text>
               No. of Hours
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
+          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center'}]}>
             <Text style={[{ borderBottom: 1 }]}>
               Budget
             </Text>
             <View style={[{ flexDirection: 'row' }]}>
-              <View style={[styles.tableColtwo, { borderRight: 1 }]}>
+              <View style={[styles.tableColtwo, { borderRight: 1, justifyContent: 'center'}]}>
                 <Text>
                   USTP
                 </Text>
               </View>
-              <View style={[styles.tableColtwo, {}]}>
+              <View style={[styles.tableColtwo, {justifyContent: 'center'}]}>
                 <Text>
                   Partner Agency
                 </Text>
               </View>
             </View>
           </View>
-          <View style={[styles.tableColfive, { borderBottom: 0, }]}>
-            <Text>
-              Total Budgetary Requirement
-            </Text>
+          <View style={[styles.tableColfive, { borderBottom: 0, justifyContent: 'center' }]}>
+          <Text>
+            Total Budgetary{'\n'}Requirement
+          </Text>
+
           </View>
         </View>
         {loadingOfTrainers && loadingOfTrainers.length > 0 ? (
@@ -1391,21 +1396,21 @@ const MyDocument = ({ projectID }) => {
                 </Text>
               </View>
               <View style={[styles.tableColtwo, {}]}>
-                <Text>
-                  Total
+                <Text style={[{ fontFamily: 'ArialB' }]}>
+                  TOTAL
                 </Text>
               </View>
             </View>
           </View>
           <View style={[styles.tableColfive, { border: 1, borderTop: 0 }]}>
-            <Text style={[{ textAlign: 'center' }]}>{totalBudgetaryRequirement}</Text>
+            <Text style={[{ textAlign: 'center', fontFamily: 'ArialB' }]}>{totalBudgetaryRequirement}</Text>
 
           </View>
         </View>
         <Text style={[{ fontFamily: 'ArialB', paddingTop: 25 }]}>
           Prepared by:
         </Text>
-        <Text style={[{ paddingTop: 20, textDecoration: 'underline', fontFamily: 'ArialB' }]}>
+        <Text style={[{ paddingTop: 20, textDecoration: 'underline', fontFamily: 'ArialB', marginTop: 20 }]}>
           {`${formData.userID?.firstname} ${formData.userID?.lastname}`}
         </Text>
         <Text style={[{ paddingBottom: 50 }]}>

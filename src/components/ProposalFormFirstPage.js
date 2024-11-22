@@ -1803,7 +1803,7 @@ const handleAgencyFormChange = async (e) => {
             <div>
               <label className="block mb-2 font-bold">
                 BUDGETARY REQUIREMENTS
-                <span className="text-red-500 ml-1"></span>
+                <span className="text-red-500 ml-1">*</span>
                 <span
                   data-tip="Enter the financial requirements necessary for the successful implementation of the project."
                   className="ml-2 text-gray-500 cursor-pointer text-sm"

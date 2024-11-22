@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import ProponentsDeliverables from "./ProposalFormFirstPage_Deliverables";
 import ReactTooltip from 'react-tooltip';
 import Select from 'react-select';
+import CreatableSelect from "react-select/creatable";
 
 const ProposalFormFirstPage = () => {
   const userID = localStorage.getItem('userid');
@@ -185,6 +186,10 @@ const ProposalFormFirstPage = () => {
     city: '',
     barangay: '',
   });
+
+  const [touched, setTouched] = useState(false);
+  const handleBlur = () => setTouched(true);
+  const isFieldValid = formData.projectCategory.length > 0;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -792,6 +797,18 @@ const ProposalFormFirstPage = () => {
     setShowTrainers(!showTrainers);
   };
 
+  const handleProjTypeChange = (selectedOption) => {
+    setFormData({
+      ...formData,
+      projectType: selectedOption ? selectedOption.value : '', // Ensure it sets to an empty string if nothing is selected
+    });
+  };
+
+  const projectTypeOptions = [
+    { value: 'New Project', label: 'New Project' },
+    { value: 'Continuing Project', label: 'Continuing Project' },
+  ];
+
   const removeBudgetItem = (index) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -928,7 +945,8 @@ const ProposalFormFirstPage = () => {
                 </span>
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
-              <Select
+              <CreatableSelect
+                required
                 options={
                   programCategory.length
                     ? programCategory.map((category) => ({
@@ -972,18 +990,15 @@ const ProposalFormFirstPage = () => {
                 </span>
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
-              <select
+              <Select
+                id="projectType"
                 name="projectType"
-                value={formData.projectType}
-                onChange={handleFormChange}
+                value={projectTypeOptions.find((option) => option.value === formData.projectType)} // Find the selected option
+                onChange={handleProjTypeChange}
+                options={projectTypeOptions}
                 className="w-full p-2 border border-gray-300 rounded"
-              >
-                <option value="" disabled hidden>
-                  Select a project type
-                </option>
-                <option value="New Project">New Project</option>
-                <option value="Continuing Project">Continuing Project</option>
-              </select>
+                placeholder="Select a project type"
+              />
             </div>
 
             <div>
@@ -1000,6 +1015,7 @@ const ProposalFormFirstPage = () => {
               </label>
 
               <Select
+                required
                 options={
                   projectCategory.length
                     ? projectCategory.map((category) => ({
@@ -1046,6 +1062,7 @@ const ProposalFormFirstPage = () => {
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
               <input
+                required
                 name="projectTitle"
                 value={formData.projectTitle}
                 onChange={handleFormChange}
@@ -1071,6 +1088,7 @@ const ProposalFormFirstPage = () => {
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
               <input
+                required
                 name="researchTitle"
                 value={formData.researchTitle}
                 onChange={handleFormChange}
@@ -1102,6 +1120,7 @@ const ProposalFormFirstPage = () => {
               </div>
               <div>
                 <Select
+                  required
                   options={proponents.map((proponent) => ({
                     value: proponent.userID, // Unique identifier
                     label: `${proponent.firstname} ${proponent.lastname}`, // Full name
@@ -1146,6 +1165,7 @@ const ProposalFormFirstPage = () => {
               {/* Render input fields for each proponent */}
               {formData.nonUserProponents.map((proponentObj, index) => (
                 <input
+                  required
                   key={index}
                   name={`proponent-${index}`}
                   value={proponentObj.name} // Access 'name' field in the object
@@ -1214,6 +1234,7 @@ const ProposalFormFirstPage = () => {
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
               <Select
+                required
                 options={college.map((col) => ({
                   value: col.collegeID,
                   title: col.title,
@@ -1290,6 +1311,7 @@ const ProposalFormFirstPage = () => {
               </label>
               {/* Fixed height container with shadow to indicate scrollability */}
               <Select
+                required
                 options={program.map((prog) => ({
                   value: prog.programID,
                   label: (
@@ -1384,6 +1406,7 @@ const ProposalFormFirstPage = () => {
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
               <select
+                required
                 name="accreditationLevel"
                 value={formData.accreditationLevel}
                 onChange={handleFormChange}
@@ -1415,6 +1438,7 @@ const ProposalFormFirstPage = () => {
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
               <textarea
+                required
                 name="beneficiaries"
                 value={formData.beneficiaries}
                 onChange={handleFormChange}
@@ -1439,6 +1463,7 @@ const ProposalFormFirstPage = () => {
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
               <select
+                required
                 name="agency"
                 value={formData.agency}
                 onChange={handleAgencyFormChange}
@@ -1459,18 +1484,19 @@ const ProposalFormFirstPage = () => {
           {/* Seventh Row */}
           <div className="grid grid-cols-3 gap-4">
             <div>
-            <label className="block mb-2 font-semibold">
-              TARGET START DATE OF IMPLEMENTATION
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Select the target START date when the implementation is expected to start."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
+              <label className="block mb-2 font-semibold">
+                TARGET START DATE OF IMPLEMENTATION
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Select the target START date when the implementation is expected to start."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
               <input
+              required
                 name="targetImplementation"
                 value={formData.targetImplementation}
                 onChange={handleFormChange}
@@ -1480,18 +1506,19 @@ const ProposalFormFirstPage = () => {
               />
             </div>
             <div>
-            <label className="block mb-2 font-semibold">
-              TARGET END DATE OF IMPLEMENTATION
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Select the target END date when the implementation is expected to end."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
+              <label className="block mb-2 font-semibold">
+                TARGET END DATE OF IMPLEMENTATION
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Select the target END date when the implementation is expected to end."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
               <input
+              required
                 name="targetImplementation"
                 value={formData.targetImplementation}
                 onChange={handleFormChange}
@@ -1502,18 +1529,19 @@ const ProposalFormFirstPage = () => {
             </div>
 
             <div>
-            <label className="block mb-2 font-semibold">
-              TOTAL HOURS
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Enter the total hours required for the implementation of the project."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
+              <label className="block mb-2 font-semibold">
+                TOTAL HOURS
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Enter the total hours required for the implementation of the project."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
               <input
+              required
                 name="totalHours"
                 value={formData.totalHours}
                 onChange={(e) => {
@@ -1555,6 +1583,7 @@ const ProposalFormFirstPage = () => {
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <select
+              required
                 name="region"
                 value={formData.region}
                 onChange={handleFormChange}
@@ -1575,6 +1604,7 @@ const ProposalFormFirstPage = () => {
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <select
+              required
                 name="province"
                 value={formData.province}
                 onChange={handleFormChange}
@@ -1600,6 +1630,7 @@ const ProposalFormFirstPage = () => {
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <select
+              required
                 name="city"
                 value={formData.city}
                 onChange={handleFormChange}
@@ -1625,6 +1656,7 @@ const ProposalFormFirstPage = () => {
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <select
+              required
                 name="barangay"
                 value={formData.barangay}
                 onChange={handleProjectLocationFormChange}
@@ -1653,6 +1685,7 @@ const ProposalFormFirstPage = () => {
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <input
+              required
                 name="address"
                 value={formData.projectLocationID.street}
                 onChange={handleAddressFormChange}
@@ -1679,6 +1712,7 @@ const ProposalFormFirstPage = () => {
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
               <textarea
+              required
                 name="background"
                 value={formData.background}
                 onChange={handleFormChange}
@@ -1710,6 +1744,7 @@ const ProposalFormFirstPage = () => {
               {/* Render input fields for each objective */}
               {formData.goalsAndObjectives.map((goal, index) => (
                 <textarea
+                required
                   key={index}
                   name={`objective-${index}`}
                   value={goal.goalsAndObjectives}
@@ -1757,6 +1792,7 @@ const ProposalFormFirstPage = () => {
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
               <textarea
+              required
                 name="projectComponent"
                 value={formData.projectComponent}
                 onChange={handleFormChange}
@@ -1792,6 +1828,7 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <textarea
+                required
                   name="objective"
                   value={activity.objective}
                   onChange={(e) => handleActivityChange(index, e)}
@@ -1805,6 +1842,7 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <textarea
+                required
                   name="involved"
                   value={activity.involved}
                   onChange={(e) => handleActivityChange(index, e)}
@@ -1818,6 +1856,7 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
+                required
                   name="targetDate"
                   value={formData.targetDate}
                   onChange={handleFormChange}
@@ -1833,6 +1872,7 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
+                required
                   name="personResponsible"
                   value={activity.personResponsible}
                   onChange={(e) => handleActivityChange(index, e)}
@@ -1882,6 +1922,7 @@ const ProposalFormFirstPage = () => {
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
               <textarea
+              required
                 name="targetScope"
                 value={formData.targetScope}
                 onChange={handleFormChange}
@@ -1909,6 +1950,7 @@ const ProposalFormFirstPage = () => {
               {/* Render input fields for each TRAINER */}
               {formData.projectManagementTeam.map((personObj, index) => (
                 <input
+                required
                   key={index}
                   name={`person-${index}`}
                   value={personObj.name} // Access 'name' field in the object
@@ -1969,6 +2011,7 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
+                required
                   name="itemName"
                   value={budgetItem.itemName}
                   onChange={(e) => handleBudgetChange(index, "itemName", e.target.value)}
@@ -1981,6 +2024,7 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
+                required
                   type="number" // Allows only numeric input
                   name="ustpAmount"
                   value={budgetItem.ustpAmount}
@@ -2002,6 +2046,7 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
+                required
                   type="number" // Allows only numeric input
                   name="partnerAmount"
                   value={budgetItem.partnerAmount}
@@ -2119,6 +2164,7 @@ const ProposalFormFirstPage = () => {
               {/* Project Summary */}
               <div>
                 <textarea
+                required
                   rows="4"
                   name="projectSummary"
                   value={evaluation.projectSummary}
@@ -2131,6 +2177,7 @@ const ProposalFormFirstPage = () => {
               {/* Indicators */}
               <div>
                 <textarea
+                required
                   rows="4"
                   name="indicators"
                   value={evaluation.indicators}
@@ -2143,6 +2190,7 @@ const ProposalFormFirstPage = () => {
               {/* Means of Verification */}
               <div>
                 <textarea
+                required
                   rows="4"
                   name="meansOfVerification"
                   value={evaluation.meansOfVerification}
@@ -2155,6 +2203,7 @@ const ProposalFormFirstPage = () => {
               {/* Risks/Assumptions */}
               <div>
                 <textarea
+                required
                   rows="4"
                   name="risksAssumptions"
                   value={evaluation.risksAssumptions}
@@ -2206,6 +2255,7 @@ const ProposalFormFirstPage = () => {
                     <td className="border border-gray-300 p-2">{row.implementationPhase}</td>
                     <td className="border border-gray-300 p-2">
                       <textarea
+                      required
                         name="approach"
                         value={row.approach}
                         onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "approach", e.target.value)}
@@ -2222,6 +2272,7 @@ const ProposalFormFirstPage = () => {
                     </td>
                     <td className="border border-gray-300 p-2">
                       <textarea
+                      required
                         name="dataGatheringStrategy"
                         value={row.dataGatheringStrategy}
                         onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "dataGatheringStrategy", e.target.value)}
@@ -2238,6 +2289,7 @@ const ProposalFormFirstPage = () => {
                     </td>
                     <td className="border border-gray-300 p-2">
                       <textarea
+                      required
                         name="schedule"
                         value={row.schedule}
                         onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "schedule", e.target.value)}
@@ -2342,8 +2394,7 @@ const ProposalFormFirstPage = () => {
                             name="totalBudgetRequirement"
                             value={trainer.totalBudgetRequirement}
                             readOnly
-                            type="number"
-                            className="w-full p-1 border border-gray-300 rounded bg-gray-100"
+                            className="w-full p-1"
                             placeholder="Total"
                           />
                         </td>
@@ -2385,6 +2436,7 @@ const ProposalFormFirstPage = () => {
                 Program Chair
               </label>
               <input
+              required
                 name="programChair"
                 value={formData.programChair.name}
                 onChange={handleSignatoryFormChange}
@@ -2398,6 +2450,7 @@ const ProposalFormFirstPage = () => {
                 College Dean
               </label>
               <input
+              required
                 name="collegeDean"
                 value={formData.collegeDean.name}
                 onChange={handleSignatoryFormChange}
@@ -2414,6 +2467,7 @@ const ProposalFormFirstPage = () => {
                 Director, Extension & Community Relations
               </label>
               <input
+              required
                 name="director"
                 value={formData.director.name}
                 onChange={handleSignatoryFormChange}
@@ -2429,6 +2483,7 @@ const ProposalFormFirstPage = () => {
                 Vice - Chancellor for Academic Affairs
               </label>
               <input
+              required
                 name="vcaa"
                 value={formData.vcaa.name}
                 onChange={handleSignatoryFormChange}
@@ -2442,6 +2497,7 @@ const ProposalFormFirstPage = () => {
                 Vice - Chancellor for Research and Innovation
               </label>
               <input
+              required
                 name="vcri"
                 value={formData.vcri.name}
                 onChange={handleSignatoryFormChange}
@@ -2458,6 +2514,7 @@ const ProposalFormFirstPage = () => {
                 Accountant III
               </label>
               <input
+              required
                 name="accountant"
                 value={formData.accountant.name}
                 onChange={handleSignatoryFormChange}
@@ -2471,6 +2528,7 @@ const ProposalFormFirstPage = () => {
                 Chancellor, USTP CDO
               </label>
               <input
+              required
                 name="chancellor"
                 value={formData.chancellor.name}
                 onChange={handleSignatoryFormChange}

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import ProponentsDeliverables from "./ProposalFormFirstPage_Deliverables";
 import ReactTooltip from 'react-tooltip';
+import Select from 'react-select';
 
 const ProposalFormFirstPage = () => {
   const userID = localStorage.getItem('userid');
@@ -88,52 +89,52 @@ const ProposalFormFirstPage = () => {
     ],
     evaluationAndMonitorings: [
       {
-          projectSummary: "",
-          indicators: "",
-          meansOfVerification: "",
-          risksAssumptions: "",
-          type: "goal"
+        projectSummary: "",
+        indicators: "",
+        meansOfVerification: "",
+        risksAssumptions: "",
+        type: "goal"
       },
       {
-          projectSummary: "",
-          indicators: "",
-          meansOfVerification: "",
-          risksAssumptions: "",
-          type: "outcome"
+        projectSummary: "",
+        indicators: "",
+        meansOfVerification: "",
+        risksAssumptions: "",
+        type: "outcome"
       },
       {
-          projectSummary: "",
-          indicators: "",
-          meansOfVerification: "",
-          risksAssumptions: "",
-          type: "outputs"
+        projectSummary: "",
+        indicators: "",
+        meansOfVerification: "",
+        risksAssumptions: "",
+        type: "outputs"
       },
       {
-          projectSummary: "",
-          indicators: "",
-          meansOfVerification: "",
-          risksAssumptions: "",
-          type: "activities"
+        projectSummary: "",
+        indicators: "",
+        meansOfVerification: "",
+        risksAssumptions: "",
+        type: "activities"
       }
     ],
     monitoringPlanSchedules: [
       {
-          approach: "",
-          dataGatheringStrategy: "",
-          schedule: "",
-          implementationPhase: "Before Implementation Phase"
+        approach: "",
+        dataGatheringStrategy: "",
+        schedule: "",
+        implementationPhase: "Before Implementation Phase"
       },
       {
-          approach: "",
-          dataGatheringStrategy: "",
-          schedule: "",
-          implementationPhase: "During Project Implementation"
+        approach: "",
+        dataGatheringStrategy: "",
+        schedule: "",
+        implementationPhase: "During Project Implementation"
       },
       {
-          approach: "",
-          dataGatheringStrategy: "",
-          schedule: "",
-          implementationPhase: "After Project Implementation"
+        approach: "",
+        dataGatheringStrategy: "",
+        schedule: "",
+        implementationPhase: "After Project Implementation"
       }
     ],
     loadingOfTrainers: [
@@ -151,11 +152,11 @@ const ProposalFormFirstPage = () => {
     programChair: {
       name: programChair,
       title: "Program Chair"
-    }, 
+    },
     collegeDean: {
       name: collegeDean,
       title: "College Dean"
-    }, 
+    },
     director: {
       name: director,
       title: "Director, Extension & Community Relations"
@@ -187,7 +188,7 @@ const ProposalFormFirstPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Create a copy of formData
     const modifiedData = { ...formData };
 
@@ -203,7 +204,7 @@ const ProposalFormFirstPage = () => {
     ];
 
     modifiedData.signatories = signatories;
-  
+
     // Remove the specific fields
     delete modifiedData.programChair;
     delete modifiedData.collegeDean;
@@ -221,9 +222,9 @@ const ProposalFormFirstPage = () => {
     if (showTrainers === false) {
       delete modifiedData.loadingOfTrainers;
     }
-  
+
     console.log("Modified Data to be sent:", modifiedData); // Check the structure
-  
+
     try {
       // Send POST request
       const response = await axios({
@@ -235,7 +236,7 @@ const ProposalFormFirstPage = () => {
         },
         data: modifiedData, // Axios automatically stringifies the object to JSON
       });
-  
+
       // Handle successful response
       console.log('Successfully submitted:', response.data);
       setIsModalOpen(true);
@@ -334,7 +335,7 @@ const ProposalFormFirstPage = () => {
       const projectActivities = formData.projectActivities.slice(0, -1);
       setFormData({ ...formData, projectActivities: projectActivities });
     }
-  };  
+  };
 
   const handleMonitoringPlanScheduleRowChange = (index, field, value) => {
     setFormData((prevData) => {
@@ -347,13 +348,13 @@ const ProposalFormFirstPage = () => {
       return { ...prevData, monitoringPlanSchedules: updatedSchedules };
     });
   };
-  
+
   const handleTrainerChange = (index, e) => {
     const { name, value } = e.target;
     const updatedTrainers = formData.loadingOfTrainers.map((trainer, i) => {
       if (i === index) {
         let updatedTrainer = { ...trainer, [name]: value };
-  
+
         // Automatically calculate totalBudgetRequirement when budget values change
         if (name === 'ustpBudget' || name === 'agencyBudget') {
           updatedTrainer.totalBudgetRequirement = parseFloat(updatedTrainer.ustpBudget) + parseFloat(updatedTrainer.agencyBudget);
@@ -362,10 +363,10 @@ const ProposalFormFirstPage = () => {
       }
       return trainer;
     });
-  
+
     setFormData({ ...formData, loadingOfTrainers: updatedTrainers });
   };
-  
+
   const addTrainerRow = () => {
     setFormData({
       ...formData,
@@ -380,7 +381,7 @@ const ProposalFormFirstPage = () => {
     const updatedTrainers = formData.loadingOfTrainers.filter((_, i) => i !== index);
     setFormData({ ...formData, loadingOfTrainers: updatedTrainers });
   };
-    
+
   // Function to handle changes in proponents inputs
   const handleNonUserProponentChange = (index, value) => {
     const updatedNonUserProponents = [...formData.nonUserProponents];
@@ -388,13 +389,13 @@ const ProposalFormFirstPage = () => {
     setFormData({ ...formData, nonUserProponents: updatedNonUserProponents });
   };
 
-  
+
   const handleObjectiveChange = (index, value) => {
     const updatedObjectives = [...formData.goalsAndObjectives];
     updatedObjectives[index].goalsAndObjectives = value;
     setFormData({ ...formData, goalsAndObjectives: updatedObjectives });
   };
-  
+
   // Function to handle form change for each row
   const handleEvaluationChange = (index, field, value) => {
     const updatedEvaluation = formData.evaluationAndMonitorings.map((item, i) => {
@@ -423,14 +424,14 @@ const ProposalFormFirstPage = () => {
       ]
     });
   };
-  
+
   const handleObjectiveRemoveClick = () => {
     if (formData.goalsAndObjectives.length > 1) {
       const updatedObjectives = formData.goalsAndObjectives.slice(0, -1);
       setFormData({ ...formData, goalsAndObjectives: updatedObjectives });
     }
   };
-  
+
   // Function to remove the last proponent field
   const handleNonUserProponentRemoveClick = () => {
     if (formData.nonUserProponents.length > 1) {
@@ -459,37 +460,37 @@ const ProposalFormFirstPage = () => {
     const { name, value } = e.target;
 
     setFormData((prevData) => {
-        if (name === "address") {
-            // Update nested street field inside projectLocationID
-            return {
-                ...prevData,
-                projectLocationID: {
-                    ...prevData.projectLocationID,
-                    street: value,
-                },
-            };
-        } else {
-            // For other fields, update as usual
-            return {
-                ...prevData,
-                [name]: value,
-            };
-        }
+      if (name === "address") {
+        // Update nested street field inside projectLocationID
+        return {
+          ...prevData,
+          projectLocationID: {
+            ...prevData.projectLocationID,
+            street: value,
+          },
+        };
+      } else {
+        // For other fields, update as usual
+        return {
+          ...prevData,
+          [name]: value,
+        };
+      }
     });
-};
-  
+  };
+
   const handleFormChange = (eOrName, value) => {
     // Check if the first argument is an event
     if (typeof eOrName === "object" && eOrName.target) {
       const { name, value } = eOrName.target;
       setFormData((prevData) => {
         const updatedData = { ...prevData, [name]: value };
-  
+
         // // Update targetGroups if beneficiaries are updated
         // if (name === 'beneficiaries') {
         //   updatedData.targetGroups[0].targetGroup = value;
         // }
-  
+
         return updatedData;
       });
     } else {
@@ -497,12 +498,12 @@ const ProposalFormFirstPage = () => {
       const name = eOrName;
       setFormData((prevData) => {
         const updatedData = { ...prevData, [name]: value };
-  
+
         // Update targetGroups if beneficiaries are updated
         // if (name === 'beneficiaries') {
         //   updatedData.targetGroups[0].targetGroup = value;
         // }
-  
+
         return updatedData;
       });
     }
@@ -524,17 +525,17 @@ const ProposalFormFirstPage = () => {
   const handleProgramCategoryFormChange = (event) => {
     const { value } = event.target;
     const programCategoryID = parseInt(value);
-  
+
     if (isNaN(programCategoryID)) {
       console.error("Invalid program category ID");
       return;  // Exit if value is not a valid number
     }
-  
+
     setFormData((prevFormData) => {
       const programCategory = prevFormData.programCategory.includes(programCategoryID)
         ? prevFormData.programCategory.filter(id => id !== programCategoryID) // Remove if already selected
         : [...prevFormData.programCategory, programCategoryID]; // Add if not selected
-  
+
       return {
         ...prevFormData,
         programCategory,
@@ -558,17 +559,17 @@ const ProposalFormFirstPage = () => {
   const handleProjectCategoryFormChange = (event) => {
     const { value } = event.target;
     const projectCategoryID = parseInt(value);
-  
+
     if (isNaN(projectCategoryID)) {
       console.error("Invalid project category ID");
       return;  // Exit if value is not a valid number
     }
-  
+
     setFormData((prevFormData) => {
       const projectCategory = prevFormData.projectCategory.includes(projectCategoryID)
         ? prevFormData.projectCategory.filter(id => id !== projectCategoryID) // Remove if already selected
         : [...prevFormData.projectCategory, projectCategoryID]; // Add if not selected
-  
+
       return {
         ...prevFormData,
         projectCategory,
@@ -579,17 +580,17 @@ const ProposalFormFirstPage = () => {
   const handleProponentsFormChange = (event) => {
     const { value } = event.target;
     const userID = parseInt(value);
-  
+
     if (isNaN(userID)) {
       console.error("Invalid user ID");
       return;  // Exit if value is not a valid number
     }
-  
+
     setFormData((prevFormData) => {
       const proponents = prevFormData.proponents.includes(userID)
         ? prevFormData.proponents.filter(id => id !== userID) // Remove if already selected
         : [...prevFormData.proponents, userID]; // Add if not selected
-  
+
       return {
         ...prevFormData,
         proponents,
@@ -615,18 +616,18 @@ const ProposalFormFirstPage = () => {
     }));
   };
 
-   // Calculate totals and update budget requirements
-   useEffect(() => {
+  // Calculate totals and update budget requirements
+  useEffect(() => {
     const ustpTotal = formData.budgetRequirements.reduce(
-      (sum, item) => sum + (Number(item.ustpAmount) || 0), 
+      (sum, item) => sum + (Number(item.ustpAmount) || 0),
       0
     );
-    
+
     const partnerTotal = formData.budgetRequirements.reduce(
-      (sum, item) => sum + (Number(item.partnerAmount) || 0), 
+      (sum, item) => sum + (Number(item.partnerAmount) || 0),
       0
     );
-    
+
     const total = ustpTotal + partnerTotal;
 
     setFormData(prev => ({
@@ -662,47 +663,47 @@ const ProposalFormFirstPage = () => {
   }, []);
 
   // Fetch agencies on component mount
-useEffect(() => {
-  const fetchAgencies = async () => {
-    try {
-      const response = await axios.get('http://127.0.0.1:8000/get_agencies');
-      setAgencies(response.data);
-    } catch (error) {
-      console.error('Error fetching agencies:', error);
+  useEffect(() => {
+    const fetchAgencies = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/get_agencies');
+        setAgencies(response.data);
+      } catch (error) {
+        console.error('Error fetching agencies:', error);
+      }
+    };
+
+    fetchAgencies();
+  }, []);
+
+  // Handle agency selection and adding new agency
+  const handleAgencyFormChange = async (e) => {
+    const { value } = e.target;
+
+    if (value === 'add_new_agency') {
+      const newAgencyName = prompt('Enter the name of the new agency:');
+
+      if (newAgencyName) {
+        try {
+          // Send POST request to create the new agency
+          const response = await axios.post('http://127.0.0.1:8000/create_agency', {
+            agencyName: newAgencyName,
+          });
+
+          const newAgency = { agencyID: response.data.agencyID, agencyName: newAgencyName };
+
+          // Add the new agency to the list of agencies and set the selected agency
+          setAgencies((prevAgencies) => [...prevAgencies, newAgency]);
+          setFormData((prevFormData) => ({ ...prevFormData, agency: [newAgency.agencyID] }));  // Wrap in array
+        } catch (error) {
+          console.error('Error creating new agency:', error);
+        }
+      }
+    } else {
+      setFormData((prevFormData) => ({ ...prevFormData, agency: [value] }));  // Wrap in array
     }
   };
 
-  fetchAgencies();
-}, []);
-
-// Handle agency selection and adding new agency
-const handleAgencyFormChange = async (e) => {
-  const { value } = e.target;
-
-  if (value === 'add_new_agency') {
-    const newAgencyName = prompt('Enter the name of the new agency:');
-
-    if (newAgencyName) {
-      try {
-        // Send POST request to create the new agency
-        const response = await axios.post('http://127.0.0.1:8000/create_agency', {
-          agencyName: newAgencyName,
-        });
-
-        const newAgency = { agencyID: response.data.agencyID, agencyName: newAgencyName };
-
-        // Add the new agency to the list of agencies and set the selected agency
-        setAgencies((prevAgencies) => [...prevAgencies, newAgency]);
-        setFormData((prevFormData) => ({ ...prevFormData, agency: [newAgency.agencyID] }));  // Wrap in array
-      } catch (error) {
-        console.error('Error creating new agency:', error);
-      }
-    }
-  } else {
-    setFormData((prevFormData) => ({ ...prevFormData, agency: [value] }));  // Wrap in array
-  }
-};
-  
   // kuha region
   useEffect(() => {
     const fetchRegions = async () => {
@@ -818,7 +819,7 @@ const handleAgencyFormChange = async (e) => {
       const newColleges = prev.college.includes(collegeId)
         ? prev.college.filter(id => id !== collegeId)  // Remove if already selected
         : [...prev.college, collegeId];                // Add if not selected
-      
+
       return {
         ...prev,
         college: newColleges,
@@ -855,7 +856,7 @@ const handleAgencyFormChange = async (e) => {
       const newPrograms = prev.program.includes(programId)
         ? prev.program.filter(id => id !== programId)  // Remove if already selected
         : [...prev.program, programId];                // Add if not selected
-      
+
       return {
         ...prev,
         program: newPrograms
@@ -863,6 +864,34 @@ const handleAgencyFormChange = async (e) => {
     });
   };
 
+  const selectedOptions = formData.programCategory.map((id) => {
+    const category = programCategory.find(
+      (category) => category.programCategoryID === id
+    );
+    return category
+      ? { value: category.programCategoryID, label: category.title }
+      : null;
+  }).filter(Boolean); // Remove nulls
+
+  const CustomOption = (props) => {
+    const { data, innerRef, innerProps } = props;
+    return (
+      <div ref={innerRef} {...innerProps} className="p-2 hover:bg-gray-100">
+        <div className="font-medium">{data.title}</div>
+        <div className="text-sm text-gray-600">{data.abbreviation}</div>
+      </div>
+    );
+  };
+
+  const CustomSingleValue = (props) => {
+    const { data } = props;
+    return (
+      <div>
+        <div className="font-medium">{data.title}</div>
+        <div className="text-sm text-gray-600">{data.abbreviation}</div>
+      </div>
+    );
+  };
   return (
     <div className="flex flex-col mt-14 px-10">
       <h1 className="text-2xl font-semibold mb-5 mt-3">
@@ -872,7 +901,7 @@ const handleAgencyFormChange = async (e) => {
 
       <form onSubmit={handleSubmit}>
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-          <div  className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block mb-2 font-bold text-base">
                 Training
@@ -888,50 +917,61 @@ const handleAgencyFormChange = async (e) => {
           {/* First Row */}
           <div className="grid grid-cols-3 gap-4">
             <div>
-            <label className="block mb-2 font-semibold">
-              PROGRAM CATEGORY under USTP CARES
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Select the program category related to USTP CARES."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
-              <select
-                name="programCategory"
-                value={formData.programCategory}
-                onChange={handleProgramCategoryFormChange}
-                multiple
-                className="w-full p-2 border border-gray-300 rounded"
-              >
-                <option value="" disabled hidden>
-                  Select
-                </option>
-                {programCategory.map((programCategory) => (
-                  <option
-                    key={programCategory.programCategoryID}
-                    value={programCategory.programCategoryID}
-                  >
-                    {programCategory.title}
-                  </option>
-                ))}
-              </select>
+              <label className="block mb-2 font-semibold">
+                PROGRAM CATEGORY under USTP CARES
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Select the program category related to USTP CARES."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
+              <Select
+                options={
+                  programCategory.length
+                    ? programCategory.map((category) => ({
+                      value: category.programCategoryID,
+                      label: category.title,
+                    }))
+                    : []
+                }
+                isMulti
+                value={formData.programCategory.map((id) => {
+                  const category = programCategory.find(
+                    (category) => category.programCategoryID === id
+                  );
+                  return category
+                    ? { value: category.programCategoryID, label: category.title }
+                    : null;
+                }).filter(Boolean)}
+                onChange={(selectedOptions) => {
+                  setFormData({
+                    ...formData,
+                    programCategory: selectedOptions.map((option) => option.value),
+                  });
+                }}
+                classNamePrefix="react-select"
+                className="w-full"
+                placeholder={programCategory.length ? "Select" : "No options available"}
+                isDisabled={!programCategory.length} // Disable when no options
+              />
+
             </div>
 
             <div>
-            <label className="block mb-2 font-semibold">
-              TYPE OF PROJECT
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Choose whether this is a new project or a continuing project."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
+              <label className="block mb-2 font-semibold">
+                TYPE OF PROJECT
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Choose whether this is a new project or a continuing project."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
               <select
                 name="projectType"
                 value={formData.projectType}
@@ -947,54 +987,64 @@ const handleAgencyFormChange = async (e) => {
             </div>
 
             <div>
-            <label className="block mb-2 font-semibold">
-              PROJECT CATEGORY
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Select one or more categories that best describe the project."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
+              <label className="block mb-2 font-semibold">
+                PROJECT CATEGORY
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Select one or more categories that best describe the project."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
 
-              <select
-                name="projectCategory"
-                value={formData.projectCategory}
-                onChange={handleProjectCategoryFormChange}
-                multiple
-                className="w-full p-2 border border-gray-300 rounded"
-              >
-                <option value="" disabled hidden>
-                  Select
-                </option>
-                {projectCategory.map((projectCategory) => (
-                  <option
-                    key={projectCategory.projectCategoryID}
-                    value={projectCategory.projectCategoryID}
-                  >
-                    {projectCategory.title}
-                  </option>
-                ))}
-              </select>
+              <Select
+                options={
+                  projectCategory.length
+                    ? projectCategory.map((category) => ({
+                      value: category.projectCategoryID,
+                      label: category.title,
+                    }))
+                    : []
+                }
+                isMulti
+                value={formData.projectCategory.map((id) => {
+                  const category = projectCategory.find(
+                    (category) => category.projectCategoryID === id
+                  );
+                  return category
+                    ? { value: category.projectCategoryID, label: category.title }
+                    : null;
+                }).filter(Boolean)}
+                onChange={(selectedOptions) => {
+                  setFormData({
+                    ...formData,
+                    projectCategory: selectedOptions.map((option) => option.value),
+                  });
+                }}
+                classNamePrefix="react-select"
+                className="w-full"
+                placeholder={programCategory.length ? "Select" : "No options available"}
+                isDisabled={!programCategory.length} // Disable when no options
+              />
             </div>
           </div>
 
           {/* Row */}
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-3">
-            <label className="block mb-2 font-semibold">
-              PROJECT TITLE
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Enter the official title of the project."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
+              <label className="block mb-2 font-semibold">
+                PROJECT TITLE
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Enter the official title of the project."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
               <input
                 name="projectTitle"
                 value={formData.projectTitle}
@@ -1009,17 +1059,17 @@ const handleAgencyFormChange = async (e) => {
           {/* Second Row */}
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-3">
-            <label className="block mb-2 font-semibold">
-              TITLE OF RESEARCH
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Enter the official title of the research project."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
+              <label className="block mb-2 font-semibold">
+                TITLE OF RESEARCH
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Enter the official title of the research project."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
               <input
                 name="researchTitle"
                 value={formData.researchTitle}
@@ -1034,37 +1084,46 @@ const handleAgencyFormChange = async (e) => {
           {/* Third Row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
-            <label className="block mb-2 font-bold text-base">
-              PROPONENTS
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Select the individuals who will be involved in the project."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
+              <label className="block mb-2 font-bold text-base">
+                PROPONENTS
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Select the individuals who will be involved in the project."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
               <div className="grid grid-cols-1 gap-2">
                 <label className="block mb-2">
                   Project Leader: {username}
                 </label>
               </div>
               <div>
-                <select
-                  name="proponents"
-                  value={formData.proponents}
-                  onChange={handleProponentsFormChange}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  multiple
-                >
-                  <option value="" disabled hidden>Select</option>
-                  {proponents.map((proponent) => (
-                    <option key={proponent.userID} value={proponent.userID}>
-                      {proponent.firstname} {proponent.lastname}
-                    </option>
-                  ))}
-                </select>
+                <Select
+                  options={proponents.map((proponent) => ({
+                    value: proponent.userID, // Unique identifier
+                    label: `${proponent.firstname} ${proponent.lastname}`, // Full name
+                  }))}
+                  isMulti
+                  value={formData.proponents.map((id) => {
+                    const proponent = proponents.find((p) => p.userID === id);
+                    return proponent
+                      ? { value: proponent.userID, label: `${proponent.firstname} ${proponent.lastname}` }
+                      : null;
+                  }).filter(Boolean)} // Ensure no null values
+                  onChange={(selectedOptions) => {
+                    setFormData({
+                      ...formData,
+                      proponents: selectedOptions.map((option) => option.value), // Map back to userIDs
+                    });
+                  }}
+                  classNamePrefix="react-select"
+                  className="w-full"
+                  placeholder="Select proponents"
+                />
+
               </div>
             </div>
           </div>
@@ -1073,17 +1132,17 @@ const handleAgencyFormChange = async (e) => {
           {/* Third Row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
-            <label className="block mb-2 font-bold text-base">
-              NON-USER PROPONENTS
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Add non-user proponents by entering their names manually."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
+              <label className="block mb-2 font-bold text-base">
+                NON-USER PROPONENTS
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Add non-user proponents by entering their names manually."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
               {/* Render input fields for each proponent */}
               {formData.nonUserProponents.map((proponentObj, index) => (
                 <input
@@ -1143,100 +1202,187 @@ const handleAgencyFormChange = async (e) => {
                 </div>
             </div> */}
             <div className="col-span-2">
-            <label className="block mb-2 font-semibold">
-              COLLEGE
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Select the college(s), including those in collaboration."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
-              {/* Fixed height container with shadow to indicate scrollability */}
-              <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
-                {/* Scrollable content */}
-                <div className="absolute inset-0 overflow-y-auto">
-                  {college.map((col) => (
-                    <div
-                      key={col.collegeID}
-                      className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
-                        formData.college.includes(col.collegeID)
-                          ? 'bg-blue-100 hover:bg-blue-200'
-                          : ''
-                      }`}
-                      onClick={() => handleCollegeChange(col.collegeID)}
-                    >
-                      <div className="font-medium">{col.title}</div>
-                      <div className="text-sm text-gray-600">{col.abbreviation}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <label className="block mb-2 font-semibold">
+                COLLEGE
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Select the college(s), including those in collaboration."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
+              <Select
+                options={college.map((col) => ({
+                  value: col.collegeID,
+                  title: col.title,
+                  abbreviation: col.abbreviation,
+                }))}
+                components={{
+                  Option: CustomOption,
+                  SingleValue: CustomSingleValue,
+                }}
+                getOptionLabel={(e) => `${e.title} ${e.abbreviation}`}
+                isMulti
+                value={formData.college.map((id) => {
+                  const col = college.find((c) => c.collegeID === id);
+                  return col
+                    ? {
+                      value: col.collegeID,
+                      title: col.title,
+                      abbreviation: col.abbreviation,
+                    }
+                    : null;
+                }).filter(Boolean)}
+                onChange={(selectedOptions) => {
+                  setFormData({
+                    ...formData,
+                    college: selectedOptions.map((option) => option.value),
+                  });
+                }}
+                classNamePrefix="react-select"
+                className="w-full"
+                placeholder="Select colleges"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    display: 'flex',
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
+                    scrollbarWidth: 'thin',
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? 'rgba(59, 130, 246, 0.1)'
+                      : state.isFocused
+                        ? 'rgba(229, 231, 235, 1)'
+                        : 'transparent',
+                    color: state.isSelected ? '#2563EB' : base.color,
+                  }),
+                  multiValue: (base) => ({
+                    ...base,
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  }),
+                  multiValueLabel: (base) => ({
+                    ...base,
+                    color: '#2563EB',
+                  }),
+                }}
+              />
+
               <p className="text-sm text-gray-500 mt-1">Click items to select/deselect</p>
             </div>
 
             {/* PROGRAM Section */}
             <div className="col-span-2">
-            <label className="block mb-2 font-semibold">
-              PROGRAM
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Select a program from the list based on the college selection."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
+              <label className="block mb-2 font-semibold">
+                PROGRAM
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Select a program from the list based on the college selection."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
               {/* Fixed height container with shadow to indicate scrollability */}
-              <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
-                {/* Scrollable content */}
-                <div className="absolute inset-0 overflow-y-auto">
-                  {program.map((prog) => (
-                    <div
-                      key={prog.programID}
-                      className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
-                        formData.program.includes(prog.programID)
-                          ? 'bg-blue-100 hover:bg-blue-200'
-                          : ''
-                      } ${formData.college.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      onClick={() => {
-                        if (formData.college.length > 0) {
-                          handleProgramChange(prog.programID);
-                        }
-                      }}
-                    >
+              <Select
+                options={program.map((prog) => ({
+                  value: prog.programID,
+                  label: (
+                    <div>
                       <div className="font-medium">{prog.title}</div>
                       <div className="text-sm text-gray-600">{prog.college.abbreviation}</div>
                     </div>
-                  ))}
-                  {program.length === 0 && (
-                    <div className="p-4 text-gray-500 text-center">
-                      {formData.college.length === 0
-                        ? 'Please select college(s) first'
-                        : 'No programs available for selected college(s)'}
-                    </div>
-                  )}
-                </div>
-              </div>
+                  ),
+                }))}
+                isMulti
+                value={formData.program.map((id) => {
+                  const prog = program.find((p) => p.programID === id);
+                  return prog
+                    ? {
+                      value: prog.programID,
+                      label: (
+                        <div>
+                          <div className="font-medium">{prog.title}</div>
+                          <div className="text-sm text-gray-600">{prog.college.abbreviation}</div>
+                        </div>
+                      ),
+                    }
+                    : null;
+                }).filter(Boolean)} // Filter out null values
+                onChange={(selectedOptions) => {
+                  const selectedIDs = selectedOptions.map((option) => option.value);
+                  setFormData({
+                    ...formData,
+                    program: selectedIDs,
+                  });
+                }}
+                isDisabled={formData.college.length === 0} // Disable if no college is selected
+                placeholder={
+                  formData.college.length === 0
+                    ? "Please select college(s) first"
+                    : "Select programs"
+                }
+                classNamePrefix="react-select"
+                className="w-full"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    borderColor: '#d1d5db', // Tailwind gray-300
+                    boxShadow: 'none',
+                    '&:hover': {
+                      borderColor: '#9ca3af', // Tailwind gray-400
+                    },
+                  }),
+                  multiValue: (base) => ({
+                    ...base,
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)', // Light blue background
+                    borderRadius: '0.375rem', // Rounded tags
+                  }),
+                  multiValueLabel: (base) => ({
+                    ...base,
+                    color: '#2563eb', // Tailwind blue-600
+                    fontWeight: '500', // Tailwind font-medium
+                  }),
+                  multiValueRemove: (base) => ({
+                    ...base,
+                    color: '#000', // Black "X" icon
+                    cursor: 'pointer',
+                    '&:hover': {
+                      color: '#ef4444', // Tailwind red-500
+                    },
+                  }),
+                  placeholder: (base) => ({
+                    ...base,
+                    color: '#6b7280', // Tailwind gray-500
+                  }),
+                  menu: (base) => ({
+                    ...base,
+                    maxHeight: '100px', // Match your original scrollable height
+                    overflowY: 'auto',
+                  }),
+                }}
+              />
               <p className="text-sm text-gray-500 mt-1">Click items to select/deselect</p>
             </div>
 
             {/* ACCREDITATION LEVEL Section */}
             <div className="col-span-1">
-            <label className="block mb-2 font-semibold">
-              ACCREDITATION LEVEL
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Select the accreditation base on the main college/program."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
+              <label className="block mb-2 font-semibold">
+                ACCREDITATION LEVEL
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Select the accreditation base on the main college/program."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
               <select
                 name="accreditationLevel"
                 value={formData.accreditationLevel}
@@ -1257,17 +1403,17 @@ const handleAgencyFormChange = async (e) => {
           {/* Fifth Row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
-            <label className="block mb-2 font-semibold">
-              TARGET GROUPS/BENEFICIARIES
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Enter the target groups or beneficiaries for the project."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
+              <label className="block mb-2 font-semibold">
+                TARGET GROUPS/BENEFICIARIES
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Enter the target groups or beneficiaries for the project."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
               <textarea
                 name="beneficiaries"
                 value={formData.beneficiaries}
@@ -1281,17 +1427,17 @@ const handleAgencyFormChange = async (e) => {
           {/* Sixth Row */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-            <label className="block mb-2 font-semibold">
-              PARTNER AGENCY
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Select a partner agency from the list or add a new one."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
+              <label className="block mb-2 font-semibold">
+                PARTNER AGENCY
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Select a partner agency from the list or add a new one."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
               <select
                 name="agency"
                 value={formData.agency}
@@ -1801,7 +1947,7 @@ const handleAgencyFormChange = async (e) => {
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-bold">
+              <label className="block font-bold">
                 BUDGETARY REQUIREMENTS
                 <span className="text-red-500 ml-1"></span>
                 <span
@@ -1816,12 +1962,12 @@ const handleAgencyFormChange = async (e) => {
           </div>
 
           {formData.budgetRequirements.map((budgetItem, index) => (
-            <div key={index} className="grid grid-cols-4 gap-4 mb-4">
+            <div key={index} className="grid grid-cols-4 gap-10 mt-0 items-center">
               <div>
-              <label className="block mb-2 font-semibold">
-                ITEM NAME
-                <span className="text-red-500 ml-1">*</span>
-              </label>
+                <label className="block font-semibold">
+                  ITEM NAME
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
                 <input
                   name="itemName"
                   value={budgetItem.itemName}
@@ -1830,255 +1976,230 @@ const handleAgencyFormChange = async (e) => {
                 />
               </div>
               <div>
-              <label className="block mb-2 font-semibold">
-                USTP AMOUNT
-                <span className="text-red-500 ml-1">*</span>
-              </label>
+                <label className="block font-semibold">
+                  USTP AMOUNT
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
                 <input
-                  type="number"
+                  type="number" // Allows only numeric input
                   name="ustpAmount"
                   value={budgetItem.ustpAmount}
-                  onChange={(e) => handleBudgetChange(index, "ustpAmount", e.target.value >= 0 ? e.target.value : 0)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Allow only non-negative numbers
+                    if (/^\d*$/.test(value)) {
+                      handleBudgetChange(index, "ustpAmount", value);
+                    }
+                  }}
                   className="w-full p-2 border border-gray-300 rounded"
-                  min="0"
                   placeholder="Enter Amount"
                 />
               </div>
 
               <div>
-              <label className="block mb-2 font-semibold">
-                PARTNER AMOUNT
-                <span className="text-red-500 ml-1">*</span>
-              </label>
+                <label className="block font-semibold">
+                  PARTNER AMOUNT
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
                 <input
-                  type="number"
+                  type="number" // Allows only numeric input
                   name="partnerAmount"
                   value={budgetItem.partnerAmount}
-                  onChange={(e) => handleBudgetChange(index, "partnerAmount", e.target.value >= 0 ? e.target.value : 0)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Allow only non-negative numbers
+                    if (/^\d*$/.test(value)) {
+                      handleBudgetChange(index, "partnerAmount", value);
+                    }
+                  }}
                   className="w-full p-2 border border-gray-300 rounded"
-                  min="0"
                   placeholder="Enter Amount"
                 />
               </div>
 
-              <div>
-                <label className="block mb-2 font-semibold">TOTAL AMOUNT</label>
-                <input
-                  type="number"
-                  name="totalAmount"
-                  value={budgetItem.totalAmount}
-                  readOnly  // This ensures the field is not editable
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
 
-              {/* Remove Button for Each Item */}
-              <div className="col-span-4 text-right m-0">
+              <div className=" justify-between items-center gap-2">
+                <label className="block font-semibold">
+                  ITEM TOTAL
+                </label>
+                <input
+                  value={(Number(budgetItem.ustpAmount) + Number(budgetItem.partnerAmount)).toLocaleString()} // Properly sum and format with commas
+                  className="flex-1 p-2 border border-gray-300 rounded bg-gray-200"
+                  disabled
+                  placeholder="Item Total"
+                />
+                {index > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => removeBudgetItem(index)}
+                    className="p-1 text-xl text-red-500 font-bold"
+                    title="Remove Item"
+                  >
+                    −
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+          <div>
+            <div className="grid grid-cols-4">
+              <div className="flex space-x-2">
                 <button
                   type="button"
-                  onClick={() => removeBudgetItem(index)} // Remove the item at this index
-                  disabled={index === 0} // Disable the remove button for the first item
-                  className={`p-1 border-1 border-0 bg-transparent rounded ${index === 0 ? "cursor-not-allowed" : "hover:border-red-5 hover:text-white active:border-red-5 active:text-white"}`}
+                  onClick={addBudgetItem}
+                  className="p-3 bg-blue-500 text-white rounded"
                 >
-                  {index === 0 ? (
-                    ""
-                  ) : (
-                    <span className="text-red-500">Remove Item</span> // Only this part will be red
-                  )}
+                  Add Item
                 </button>
+              </div>
+              <div>
+                <label className="block border p-1 border-black bg-blue-400 font-semibold">USTP Total</label>
+                <label className="block border p-1 border-black">{(formData.ustpBudget).toLocaleString()}</label>
+              </div>
+
+              <div>
+                <label className="block border p-1 border-black bg-amber-400 font-semibold">Partner Agency Total</label>
+                <label className="block border p-1 border-black">{(formData.partnerAgencyBudget).toLocaleString()}</label>
+              </div>
+
+              <div>
+                <label className="block border p-1 border-black bg-green-400 font-semibold">TOTAL</label>
+                <label className="block border p-1 border-black">{(formData.totalBudget).toLocaleString()}</label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
+          <div>
+            <label className="block mb-2 font-bold">
+              PROJECT EVALUATION AND MONITORING
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Describe the strategies for monitoring the project's progress and evaluating its success."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
+          </div>
+
+          <div className="grid grid-cols-4 gap-4">
+            <div>
+              <label className="block mb-2 font-semibold">
+                PROJECT SUMMARY
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+            </div>
+            <div>
+              <label className="block mb-2 font-semibold">
+                INDICATORS
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+            </div>
+            <div>
+              <label className="block mb-2 font-semibold">
+                MEANS OF VERIFICATION
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+            </div>
+            <div>
+              <label className="block mb-2 font-semibold">
+                RISKS/ASSUMPTIONS
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Table Rows */}
+          {formData.evaluationAndMonitorings.map((evaluation, index) => (
+            <div key={index} className="grid grid-cols-4 gap-4">
+              {/* Project Summary */}
+              <div>
+                <textarea
+                  rows="4"
+                  name="projectSummary"
+                  value={evaluation.projectSummary}
+                  onChange={(e) => handleEvaluationChange(index, "projectSummary", e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  placeholder={`Project Summary (${evaluation.type.toUpperCase()})`}
+                ></textarea>
+              </div>
+
+              {/* Indicators */}
+              <div>
+                <textarea
+                  rows="4"
+                  name="indicators"
+                  value={evaluation.indicators}
+                  onChange={(e) => handleEvaluationChange(index, "indicators", e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  placeholder={`Indicators (${evaluation.type.toUpperCase()})`}
+                ></textarea>
+              </div>
+
+              {/* Means of Verification */}
+              <div>
+                <textarea
+                  rows="4"
+                  name="meansOfVerification"
+                  value={evaluation.meansOfVerification}
+                  onChange={(e) => handleEvaluationChange(index, "meansOfVerification", e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  placeholder={`Means of Verification (${evaluation.type.toUpperCase()})`}
+                ></textarea>
+              </div>
+
+              {/* Risks/Assumptions */}
+              <div>
+                <textarea
+                  rows="4"
+                  name="risksAssumptions"
+                  value={evaluation.risksAssumptions}
+                  onChange={(e) => handleEvaluationChange(index, "risksAssumptions", e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  placeholder={`Risks/Assumptions (${evaluation.type.toUpperCase()})`}
+                ></textarea>
               </div>
             </div>
           ))}
 
-          <div>
-            {/* Sixth Row */}
-            <div className="grid grid-cols-1 gap-4">
-              <label className="block mb-2 font-bold text-base">BUDGET REQUIREMENT'S TOTAL</label>
-            </div>
-
-            {/* Sixth Row */}
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <label className="block mb-2 font-semibold">USTP</label>
-                <input
-                  readOnly
-                  name="ustpBudget"
-                  value={formData.ustpBudget}
-                  onChange={handleBudgetFormChange}
-                  type="number"
-                  placeholder="Enter Amount"
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-
-              <div>
-                <label className="block mb-2 font-semibold">PARTNER AGENCY</label>
-                <input
-                  readOnly
-                  name="partnerAgencyBudget"
-                  value={formData.partnerAgencyBudget}
-                  onChange={handleBudgetFormChange}
-                  type="number"
-                  placeholder="Enter Amount"
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-
-              <div>
-                <label className="block mb-2 font-semibold">TOTAL</label>
-                <input
-                  name="totalBudget"
-                  value={formData.totalBudget}
-                  readOnly
-                  type="number"
-                  className="w-full p-2 border border-gray-300 rounded"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Add Button */}
-          <div className="flex space-x-2 mt-2">
-            <button
-              type="button"
-              onClick={addBudgetItem}
-              className="mt-4 p-2 bg-blue-500 text-white rounded"
-            >
-              Add Budget Item
-            </button>
-          </div>
-        </div>
-
-        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-          {/* Table Headers */}
-          <div>
-          <label className="block mb-2 font-bold">
-            PROJECT EVALUATION AND MONITORING
-            <span className="text-red-500 ml-1">*</span>
-            <span
-              data-tip="Describe the strategies for monitoring the project's progress and evaluating its success."
-              className="ml-2 text-gray-500 cursor-pointer text-sm"
-            >
-              ⓘ
-            </span>
-            <ReactTooltip place="top" type="dark" effect="solid" />
-          </label>
-          </div>
-
-        <div className="grid grid-cols-4 gap-4">
-          <div>
-            <label className="block mb-2 font-semibold">
-              PROJECT SUMMARY
-              <span className="text-red-500 ml-1">*</span>
-            </label>
-          </div>
-          <div>
-            <label className="block mb-2 font-semibold">
-              INDICATORS
-              <span className="text-red-500 ml-1">*</span>
-            </label>
-          </div>
-          <div>
-            <label className="block mb-2 font-semibold">
-              MEANS OF VERIFICATION
-              <span className="text-red-500 ml-1">*</span>
-            </label>
-          </div>
-          <div>
-            <label className="block mb-2 font-semibold">
-              RISKS/ASSUMPTIONS
-              <span className="text-red-500 ml-1">*</span>
-            </label>
-          </div>
-        </div>
-
-        {/* Table Rows */}
-        {formData.evaluationAndMonitorings.map((evaluation, index) => (
-          <div key={index} className="grid grid-cols-4 gap-4">
-            {/* Project Summary */}
-            <div>
-              <textarea
-                rows="4"
-                name="projectSummary"
-                value={evaluation.projectSummary}
-                onChange={(e) => handleEvaluationChange(index, "projectSummary", e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
-                placeholder={`Project Summary (${evaluation.type.toUpperCase()})`}
-              ></textarea>
-            </div>
-
-            {/* Indicators */}
-            <div>
-              <textarea
-                rows="4"
-                name="indicators"
-                value={evaluation.indicators}
-                onChange={(e) => handleEvaluationChange(index, "indicators", e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
-                placeholder={`Indicators (${evaluation.type.toUpperCase()})`}
-              ></textarea>
-            </div>
-
-            {/* Means of Verification */}
-            <div>
-              <textarea
-                rows="4"
-                name="meansOfVerification"
-                value={evaluation.meansOfVerification}
-                onChange={(e) => handleEvaluationChange(index, "meansOfVerification", e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
-                placeholder={`Means of Verification (${evaluation.type.toUpperCase()})`}
-              ></textarea>
-            </div>
-
-            {/* Risks/Assumptions */}
-            <div>
-              <textarea
-                rows="4"
-                name="risksAssumptions"
-                value={evaluation.risksAssumptions}
-                onChange={(e) => handleEvaluationChange(index, "risksAssumptions", e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
-                placeholder={`Risks/Assumptions (${evaluation.type.toUpperCase()})`}
-              ></textarea>
-            </div>
-          </div>
-        ))}
-
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div>
-          <label className="block mb-2 font-bold">
-            MONITORING PLAN AND SCHEDULE
-            <span className="text-red-500 ml-1">*</span>
-            <span
-              data-tip="Outline the timeline and process for monitoring the project's progress."
-              className="ml-2 text-gray-500 cursor-pointer text-sm"
-            >
-              ⓘ
-            </span>
-            <ReactTooltip place="top" type="dark" effect="solid" />
-          </label>
+            <label className="block mb-2 font-bold">
+              MONITORING PLAN AND SCHEDULE
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Outline the timeline and process for monitoring the project's progress."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
           </div>
           <div className="p-4">
             <table className="min-w-full table-auto border-collapse border border-gray-300">
-            <thead>
-              <tr>
-                <th className="border border-gray-300 p-2">
-                  Monitoring Phase <span className="text-red-500">*</span>
-                </th>
-                <th className="border border-gray-300 p-2">
-                  M&E Instrument/Approach <span className="text-red-500">*</span>
-                </th>
-                <th className="border border-gray-300 p-2">
-                  Format or Strategy for Data Gathering <span className="text-red-500">*</span>
-                </th>
-                <th className="border border-gray-300 p-2">
-                  Schedule <span className="text-red-500">*</span>
-                </th>
-              </tr>
-            </thead>
+              <thead>
+                <tr>
+                  <th className="border border-gray-300 p-2">
+                    Monitoring Phase <span className="text-red-500">*</span>
+                  </th>
+                  <th className="border border-gray-300 p-2">
+                    M&E Instrument/Approach <span className="text-red-500">*</span>
+                  </th>
+                  <th className="border border-gray-300 p-2">
+                    Format or Strategy for Data Gathering <span className="text-red-500">*</span>
+                  </th>
+                  <th className="border border-gray-300 p-2">
+                    Schedule <span className="text-red-500">*</span>
+                  </th>
+                </tr>
+              </thead>
               <tbody>
                 {formData.monitoringPlanSchedules.map((row, index) => (
                   <tr key={index}>
@@ -2256,8 +2377,8 @@ const handleAgencyFormChange = async (e) => {
         )}
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-        <label className="block mb-2 font-bold">SIGNATORIES</label>
-        <label className="block mb-2 font-semibold">Endorsed by:</label>
+          <label className="block mb-2 font-bold">SIGNATORIES</label>
+          <label className="block mb-2 font-semibold">Endorsed by:</label>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block mb-2 font-semibold">
@@ -2303,7 +2424,7 @@ const handleAgencyFormChange = async (e) => {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-          <div>
+            <div>
               <label className="block mb-2 font-semibold">
                 Vice - Chancellor for Academic Affairs
               </label>
@@ -2368,8 +2489,8 @@ const handleAgencyFormChange = async (e) => {
         </div>
 
         <ProponentsDeliverables
-          formData={formData} 
-          setFormData={setFormData} 
+          formData={formData}
+          setFormData={setFormData}
         />
 
         {/* submit naa */}

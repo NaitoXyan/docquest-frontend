@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import Topbar from "../../components/Topbar";
-import EstaffSideBar from "../../components/EstaffSideBar";
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import EstaffSideBar from '../../components/EstaffSideBar';
+import Topbar from '../../components/Topbar';
+import { NavLink } from 'react-router-dom'; // Import NavLink for routing
 
 const EstaffDocumentsList = () => {
     const [documents, setDocuments] = useState([]);
@@ -14,16 +14,25 @@ const EstaffDocumentsList = () => {
         fetchDocuments();
     }, [currentPage, search, documentType]);
 
-    const fetchDocuments = async () => {
-        try {
-            const response = await axios.get('http://localhost:5000/api/documents', {
-                params: { page: currentPage, search, type: documentType }
-            });
-            setDocuments(response.data.documents);
-            setTotalPages(response.data.totalPages);
-        } catch (error) {
-            console.error('Error fetching documents:', error);
-        }
+    const mockDocuments = [
+        { projectLeader: "Alice Johnson", documentType: "Project Proposal", date: "2024-11-01" },
+        { projectLeader: "Bob Smith", documentType: "Load Trainers", date: "2024-11-15" },
+        { projectLeader: "Cathy Lee", documentType: "Project Proposal", date: "2024-11-20" },
+        { projectLeader: "David Brown", documentType: "Load Trainers", date: "2024-11-22" },
+    ];
+
+    const fetchDocuments = () => {
+        const filteredDocs = mockDocuments.filter(
+            (doc) =>
+                (!search || doc.projectLeader.toLowerCase().includes(search.toLowerCase())) &&
+                (!documentType || doc.documentType === documentType)
+        );
+
+        const pageSize = 2;
+        const paginatedDocs = filteredDocs.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
+        setDocuments(paginatedDocs);
+        setTotalPages(Math.ceil(filteredDocs.length / pageSize));
     };
 
     const handleNextPage = () => {
@@ -36,10 +45,12 @@ const EstaffDocumentsList = () => {
 
     const handleSearch = (e) => {
         setSearch(e.target.value);
+        setCurrentPage(1);
     };
 
     const handleDocumentTypeFilter = (e) => {
         setDocumentType(e.target.value);
+        setCurrentPage(1);
     };
 
     return (
@@ -73,7 +84,7 @@ const EstaffDocumentsList = () => {
                     </div>
                     <table className="min-w-full bg-white border">
                         <thead>
-                            <tr className="bg-vlu text-white"> {/* Blue background, white text */}
+                            <tr className="bg-vlu text-white">
                                 <th className="py-2 px-4">Project Leader</th>
                                 <th className="py-2 px-4">Document Type</th>
                                 <th className="py-2 px-4">Date</th>
@@ -82,12 +93,34 @@ const EstaffDocumentsList = () => {
                         </thead>
                         <tbody>
                             {documents.map((doc, index) => (
-                                <tr key={index} className="bg-white"> {/* White background for document rows */}
+                                <tr key={index} className="bg-white">
                                     <td className="py-2 px-4">{doc.projectLeader}</td>
                                     <td className="py-2 px-4">{doc.documentType}</td>
                                     <td className="py-2 px-4">{doc.date}</td>
                                     <td className="py-2 px-4">
-                                        <a href="#" className="text-blue-500">View</a> | <a href="#" className="text-green-500">Download</a>
+                                        <div className="flex space-x-4">
+                                            <NavLink
+                                                to={`/view-download/${doc.id}`} // Replace with appropriate link
+                                                className="bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
+                                            >
+                                                View
+                                            </NavLink>
+
+                                            <button
+                                                onClick={() => alert(`Downloading document: ${doc.projectLeader} - ${doc.documentType}`)}
+                                                className="bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-700 transition duration-300"
+                                            >
+                                                Download
+                                            </button>
+
+                                            <NavLink
+                                                to="/scan-copy" // Static route to the Scan Copy page
+                                                className="bg-yellow-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-yellow-700 transition duration-300"
+                                            >
+                                                Scan Copy
+                                            </NavLink>
+
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -97,14 +130,14 @@ const EstaffDocumentsList = () => {
                         <button
                             onClick={handlePreviousPage}
                             disabled={currentPage === 1}
-                            className="px-4 py-2 bg-gray-300 disabled:opacity-50"
+                            className="px-4 py-2 bg-gray-300 disabled:opacity-50 rounded-lg"
                         >
                             Previous
                         </button>
                         <button
                             onClick={handleNextPage}
                             disabled={currentPage === totalPages}
-                            className="px-4 py-2 bg-gray-300 disabled:opacity-50"
+                            className="px-4 py-2 bg-gray-300 disabled:opacity-50 rounded-lg"
                         >
                             Next
                         </button>

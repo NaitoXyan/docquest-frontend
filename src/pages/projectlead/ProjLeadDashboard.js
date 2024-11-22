@@ -40,7 +40,10 @@ const ProjLeadDashboard = () => {
     const handleNavigate = (statusFilter) => {
         navigate(`/project-status/${statusFilter.toLowerCase()}`); // Ensure it passes in lowercase
     };
-    
+
+    const handleViewProjectProgress = (projectID) => {
+        navigate(`/view-project-progress/${projectID}`);
+    }
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -119,7 +122,7 @@ const ProjLeadDashboard = () => {
             <div className="flex-1 ml-[20%]">
                 <Topbar />
                 <div className="flex flex-col mt-16 px-10">
-                    <h1 className="text-2xl font-bold mb-2">PROJECTS OVERVIEW</h1>
+                    <h1 className="text-2xl font-semibold mb-2">PROJECTS OVERVIEW</h1>
                     <div className="grid grid-cols-3 gap-4 mb-5">
                         <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Approved</h2>
@@ -156,8 +159,9 @@ const ProjLeadDashboard = () => {
                                     <tr>
                                         <th style={{ width: "15%" }} className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project ID</th>
                                         <th style={{ width: "40%" }} className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Name</th>
-                                        <th style={{ width: "20%" }} className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Created</th>
-                                        <th style={{ width: "25%" }} className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
+                                        <th style={{ width: "15%" }} className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Created</th>
+                                        <th style={{ width: "15%" }} className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
+                                        <th style={{ width: "15%" }} className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">View Progress</th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
@@ -176,8 +180,8 @@ const ProjLeadDashboard = () => {
                                                         : project.projectTitle}
                                                 </span>
                                             </td>
-                                            <td style={{ width: "20%" }} className="px-6 py-4 whitespace-nowrap">{new Date(project.dateCreated).toLocaleDateString()}</td>
-                                            <td className="px-3 sm:px-4 py-3">
+                                            <td style={{ width: "15%" }} className="px-6 py-4 whitespace-nowrap">{new Date(project.dateCreated).toLocaleDateString()}</td>
+                                            <td style={{ width: "15%" }} className="px-6 py-4">
                                                 <span
                                                     className={`px-2 py-1 rounded-md text-white ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
                                                             project.status.toLowerCase() === 'pending' ? 'bg-yellow-500' :
@@ -186,6 +190,9 @@ const ProjLeadDashboard = () => {
                                                 >
                                                     {project.status}
                                                 </span>
+                                            </td>
+                                            <td style={{ width: "15%" }} className="px-6 py-4 whitespace-nowrap">
+                                                <button className="text-blue-900 underline" onClick={() => handleViewProjectProgress(project.projectID)}>View</button>
                                             </td>
                                         </tr>
                                     ))}

@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import ProponentsDeliverables from "./ProposalFormFirstPage_Deliverables";
+import ReactTooltip from 'react-tooltip';
 
 const ProposalFormFirstPage = () => {
   const userID = localStorage.getItem('userid');
@@ -347,22 +348,22 @@ const ProposalFormFirstPage = () => {
     });
   };
   
-  const handleTrainerChange = (index, event) => {
-    const { name, value } = event.target;
-    const updatedTrainers = [...formData.loadingOfTrainers];
-    updatedTrainers[index][name] = value;
+  const handleTrainerChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedTrainers = formData.loadingOfTrainers.map((trainer, i) => {
+      if (i === index) {
+        let updatedTrainer = { ...trainer, [name]: value };
   
-    // Calculate the Total Budgetary Requirement when "No. of Hours" or "Partner Agency Budget" changes
-    if (name === "hours" || name === "agencyBudget") {
-      const hours = parseFloat(updatedTrainers[index].hours) || 0;
-      const agencyBudget = parseFloat(updatedTrainers[index].agencyBudget) || 0;
-      updatedTrainers[index].totalBudgetRequirement = (hours * 150) + agencyBudget; // Calculation includes USTP Budget and Agency Budget
-    }
-  
-    setFormData({
-      ...formData,
-      loadingOfTrainers: updatedTrainers,
+        // Automatically calculate totalBudgetRequirement when budget values change
+        if (name === 'ustpBudget' || name === 'agencyBudget') {
+          updatedTrainer.totalBudgetRequirement = parseFloat(updatedTrainer.ustpBudget) + parseFloat(updatedTrainer.agencyBudget);
+        }
+        return updatedTrainer;
+      }
+      return trainer;
     });
+  
+    setFormData({ ...formData, loadingOfTrainers: updatedTrainers });
   };
   
   const addTrainerRow = () => {
@@ -862,69 +863,12 @@ const handleAgencyFormChange = async (e) => {
     });
   };
 
-    const [showOverlay, setShowOverlay] = useState(false);
-    const [showProponentsOverlay, setShowProponentsOverlay] = useState(false);
-
-    const handleProponentsChange = (userID) => {
-      setFormData((prev) => {
-        if (!prev.proponents.includes(userID)) {
-          return { ...prev, proponents: [...prev.proponents, userID] };
-        }
-        return prev; // Avoid unnecessary state updates
-      });
-    };
-
-    const handleProgramSelectionChange = (programID) => {
-      setFormData((prevState) => {
-        const newPrograms = prevState.program.includes(programID)
-          ? prevState.program.filter((id) => id !== programID) // Deselect if already selected
-          : [...prevState.program, programID]; // Select if not selected
-    
-        return { ...prevState, program: newPrograms };
-      });
-    };
-
-    const [isModalUSTPCategoryOpen, setIsModalUSTPCategoryOpen] = useState(false);
-    const [selectedOptions, setSelectedOptions] = useState([]);
-
-    const handleOptionToggle = (option) => {
-      setSelectedOptions((prev) =>
-        prev.includes(option)
-          ? prev.filter((item) => item !== option)
-          : [...prev, option]
-      );
-    };
-
-    const [isProjectTypeModalOpen, setIsProjectTypeModalOpen] = useState(false);
-    const [selectedProjectTypes, setSelectedProjectTypes] = useState([]);
-    
-    
-    const handleProjectTypeToggle = (type) => {
-      setSelectedProjectTypes((prev) =>
-        prev.includes(type)
-          ? prev.filter((item) => item !== type) // Remove if already selected
-          : [...prev, type] // Add if not selected
-      );
-    };
-
-    const [isModalProjectCategoryOpen, setIsModalProjectCategoryOpen] = useState(false);
-    const [selectedProjectCategories, setSelectedProjectCategories] = useState([]);
-  
-    const handleProjectCategoryToggle = (option) => {
-      setSelectedProjectCategories((prev) =>
-        prev.includes(option)
-          ? prev.filter((item) => item !== option)
-          : [...prev, option]
-      );
-    };
-    
-    
-
   return (
     <div className="flex flex-col mt-14 px-10">
-      <h1 className="text-2xl font-bold mb-5 mt-3">
-      EXTENSION PROJECT PROPOSAL
+      <h1 className="text-2xl font-semibold mb-5 mt-3">
+        Extension Project Proposal
       </h1>
+
 
       <form onSubmit={handleSubmit}>
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -943,160 +887,114 @@ const handleAgencyFormChange = async (e) => {
           </div>
           {/* First Row */}
           <div className="grid grid-cols-3 gap-4">
-          <div>
+            <div>
             <label className="block mb-2 font-semibold">
               PROGRAM CATEGORY under USTP CARES
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the program category related to USTP CARES."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
             </label>
-            <input
-              type="text"
-              readOnly
-              value={selectedOptions.join(", ")}
-              placeholder="Select Program Categories"
-              onClick={() => setIsModalUSTPCategoryOpen(true)}
-              className="w-full p-2 border border-gray-300 rounded cursor-pointer"
-            />
-
-            {isModalUSTPCategoryOpen && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                <div className="bg-white p-6 rounded w-3/4 max-w-lg">
-                  <h3 className="text-lg font-semibold mb-4">Select Categories</h3>
-                  <ul className="space-y-2">
-                    {programCategory.map((item) => (
-                      <li key={item.programCategoryID}>
-                        <label className="flex items-center">
-                          <input
-                            type="checkbox"
-                            checked={selectedOptions.includes(item.title)}
-                            onChange={() => handleOptionToggle(item.title)}
-                            className="mr-2"
-                          />
-                          {item.title}
-                        </label>
-                      </li>
-                    ))}
-                  </ul>
-                  <div className="mt-4 flex justify-end space-x-2">
-                    <button
-                      onClick={() => setIsModalUSTPCategoryOpen(false)}
-                      className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={() => setIsModalUSTPCategoryOpen(false)}
-                      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                      Done
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-            <div>
-              <label className="block mb-2 font-semibold">TYPE OF PROJECT</label>
-              <input
-                type="text"
-                readOnly
-                value={selectedProjectTypes.join(", ")}
-                placeholder="Select Project Types"
-                onClick={() => setIsProjectTypeModalOpen(true)}
-                className="w-full p-2 border border-gray-300 rounded cursor-pointer"
-              />
-
-              {isProjectTypeModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                  <div className="bg-white p-6 rounded w-3/4 max-w-lg">
-                    <h3 className="text-lg font-semibold mb-4">Select Project Types</h3>
-                    <ul className="space-y-2">
-                      {["New Project", "Continuing Project"].map((type) => (
-                        <li key={type}>
-                          <label className="flex items-center">
-                            <input
-                              type="checkbox"
-                              checked={selectedProjectTypes.includes(type)}
-                              onChange={() => handleProjectTypeToggle(type)}
-                              className="mr-2"
-                            />
-                            {type}
-                          </label>
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="mt-4 flex justify-end space-x-2">
-                      <button
-                        onClick={() => setIsProjectTypeModalOpen(false)}
-                        className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={() => setIsProjectTypeModalOpen(false)}
-                        className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                      >
-                        Done
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
+              <select
+                name="programCategory"
+                value={formData.programCategory}
+                onChange={handleProgramCategoryFormChange}
+                multiple
+                className="w-full p-2 border border-gray-300 rounded"
+              >
+                <option value="" disabled hidden>
+                  Select
+                </option>
+                {programCategory.map((programCategory) => (
+                  <option
+                    key={programCategory.programCategoryID}
+                    value={programCategory.programCategoryID}
+                  >
+                    {programCategory.title}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div>
-      <label className="block mb-2 font-semibold">PROJECT CATEGORY</label>
-      <input
-        type="text"
-        readOnly
-        value={selectedProjectCategories.join(", ")}
-        placeholder="Select Project Categories"
-        onClick={() => setIsModalProjectCategoryOpen(true)}
-        className="w-full p-2 border border-gray-300 rounded cursor-pointer"
-      />
-
-      {isModalProjectCategoryOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded w-3/4 max-w-lg">
-            <h3 className="text-lg font-semibold mb-4">Select Categories</h3>
-            <ul className="space-y-2">
-              {projectCategory.map((item) => (
-                <li key={item.projectCategoryID}>
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={selectedProjectCategories.includes(item.title)}
-                      onChange={() => handleProjectCategoryToggle(item.title)}
-                      className="mr-2"
-                    />
-                    {item.title}
-                  </label>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-4 flex justify-end space-x-2">
-              <button
-                onClick={() => setIsModalProjectCategoryOpen(false)}
-                className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
+            <label className="block mb-2 font-semibold">
+              TYPE OF PROJECT
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Choose whether this is a new project or a continuing project."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
               >
-                Cancel
-              </button>
-              <button
-                onClick={() => setIsModalProjectCategoryOpen(false)}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
+              <select
+                name="projectType"
+                value={formData.projectType}
+                onChange={handleFormChange}
+                className="w-full p-2 border border-gray-300 rounded"
               >
-                Done
-              </button>
+                <option value="" disabled hidden>
+                  Select a project type
+                </option>
+                <option value="New Project">New Project</option>
+                <option value="Continuing Project">Continuing Project</option>
+              </select>
             </div>
-          </div>
-        </div>
-      )}
-    </div>
+
+            <div>
+            <label className="block mb-2 font-semibold">
+              PROJECT CATEGORY
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select one or more categories that best describe the project."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
+
+              <select
+                name="projectCategory"
+                value={formData.projectCategory}
+                onChange={handleProjectCategoryFormChange}
+                multiple
+                className="w-full p-2 border border-gray-300 rounded"
+              >
+                <option value="" disabled hidden>
+                  Select
+                </option>
+                {projectCategory.map((projectCategory) => (
+                  <option
+                    key={projectCategory.projectCategoryID}
+                    value={projectCategory.projectCategoryID}
+                  >
+                    {projectCategory.title}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           {/* Row */}
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-3">
-              <label className="block mb-2 font-semibold">PROJECT TITLE</label>
+            <label className="block mb-2 font-semibold">
+              PROJECT TITLE
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Enter the official title of the project."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <input
                 name="projectTitle"
                 value={formData.projectTitle}
@@ -1107,10 +1005,21 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
 
+
           {/* Second Row */}
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-3">
-              <label className="block mb-2 font-semibold">TITLE OF RESEARCH</label>
+            <label className="block mb-2 font-semibold">
+              TITLE OF RESEARCH
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Enter the official title of the research project."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <input
                 name="researchTitle"
                 value={formData.researchTitle}
@@ -1121,69 +1030,60 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
 
+
           {/* Third Row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-bold text-base">PROPONENTS</label>
+            <label className="block mb-2 font-bold text-base">
+              PROPONENTS
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the individuals who will be involved in the project."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <div className="grid grid-cols-1 gap-2">
                 <label className="block mb-2">
                   Project Leader: {username}
                 </label>
               </div>
               <div>
-                {/* Select button to trigger the overlay */}
-                <div
-                  onClick={() => setShowProponentsOverlay(true)} // Open the Proponents overlay
-                  className="relative h-[50px] border border-gray-300 rounded shadow-inner flex items-center px-3 cursor-pointer"
+                <select
+                  name="proponents"
+                  value={formData.proponents}
+                  onChange={handleProponentsFormChange}
+                  className="w-full p-2 border border-gray-300 rounded"
+                  multiple
                 >
-                  {formData.proponents.length > 0
-                    ? `${proponents
-                        .filter((proponent) => formData.proponents.includes(proponent.userID))
-                        .map((proponent) => `${proponent.firstname} ${proponent.lastname}`)
-                        .join(', ')}`
-                    : 'Select Proponents'}
-                </div>
-
-                {/* Overlay */}
-                {showProponentsOverlay && (
-                  <div className="fixed inset-0 bg-gray-800 bg-opacity-50 z-10 flex items-center justify-center">
-                    <div className="bg-white rounded shadow-lg w-3/4 max-w-lg p-6">
-                      <h3 className="text-lg font-bold mb-4">Select Proponents</h3>
-                      <div className="space-y-2 overflow-y-auto max-h-64">
-                        {proponents.map((proponent) => (
-                          <div
-                            key={proponent.userID}
-                            className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
-                              formData.proponents.includes(proponent.userID)
-                                ? 'bg-blue-100 hover:bg-blue-200'
-                                : ''
-                            }`}
-                            onClick={() => handleProponentsChange(proponent.userID)}
-                          >
-                            <div className="font-medium">
-                              {proponent.firstname} {proponent.lastname}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      <button
-                        onClick={() => setShowProponentsOverlay(false)} // Close the overlay
-                        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
-                      >
-                        Save
-                      </button>
-                    </div>
-                  </div>
-                )}
+                  <option value="" disabled hidden>Select</option>
+                  {proponents.map((proponent) => (
+                    <option key={proponent.userID} value={proponent.userID}>
+                      {proponent.firstname} {proponent.lastname}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
           </div>
 
+
           {/* Third Row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-bold text-base">NON-USER PROPONENTS</label>
-
+            <label className="block mb-2 font-bold text-base">
+              NON-USER PROPONENTS
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Add non-user proponents by entering their names manually."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               {/* Render input fields for each proponent */}
               {formData.nonUserProponents.map((proponentObj, index) => (
                 <input
@@ -1220,77 +1120,89 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
 
+
           {/* Fourth Row */}
           <div className="grid grid-cols-5 gap-4">
-            <div className="col-span-2">
-              <label className="block mb-2 font-semibold">COLLEGE</label>
-              {/* Fixed height container with shadow to indicate scrollability */}
-              <div>
-                {/* Select button to trigger the overlay */}
-                <div
-                  onClick={() => setShowOverlay(true)} // Open the overlay
-                  className="relative h-[50px] border border-gray-300 rounded shadow-inner flex items-center px-3 cursor-pointer text-gray-500"
-                >
-                  {formData.college.length > 0
-                    ? `${college
-                        .filter((col) => formData.college.includes(col.collegeID))
-                        .sort((a, b) => a.collegeID - b.collegeID) // Sort numerically by collegeID
-                        .map((col) => col.title)
-                        .join(', ')}`
-                    : 'Select Colleges'}
+            {/* <div className="col-span-1">
+              <label className="block mb-2 font-semibold">CAMPUS</label>
+                <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
+                      <div className="absolute inset-0 overflow-y-auto">
+                            {campus.map((camp) => (
+                              <div
+                                key={camp.campusID}
+                                className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
+                                  formData.campus.includes(camp.campusID) ? 'bg-blue-100 hover:bg-blue-200' : ''
+                                }`}
+                                onClick={() => handleCampusChange(camp.campusID)}
+                              >
+                                <div className="font-medium">{camp.title}</div>
+                                <div className="text-sm text-gray-600">{camp.abbreviation}</div>
+                              </div>
+                            ))}
+                      </div>
                 </div>
-
-                {/* Overlay */}
-                {showOverlay && (
-                  <div className="fixed inset-0 bg-gray-800 bg-opacity-50 z-10 flex items-center justify-center">
-                    <div className="bg-white rounded shadow-lg w-3/4 max-w-lg p-6">
-                      <h3 className="text-lg font-bold mb-4">Select Colleges</h3>
-                      <div className="space-y-2 overflow-y-auto max-h-64">
-                        {college.map((col) => (
-                          <div
-                            key={col.collegeID}
-                            className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
-                              formData.college.includes(col.collegeID) ? 'bg-blue-100 hover:bg-blue-200' : ''
-                            }`}
-                            onClick={() => handleCollegeChange(col.collegeID)}
-                          >
-                            <div className="font-medium">{col.title}</div>
-                            <div className="text-sm text-gray-600">{col.abbreviation}</div>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="pt-3 text-red-500">
-                      Click items to select/deselect
-                      </div>
-                      <button
-                        onClick={() => setShowOverlay(false)} // Close the overlay
-                        className="mt-4 bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition"
-                      >
-                        Save
-                      </button>
+            </div> */}
+            <div className="col-span-2">
+            <label className="block mb-2 font-semibold">
+              COLLEGE
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the college(s), including those in collaboration."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
+              {/* Fixed height container with shadow to indicate scrollability */}
+              <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
+                {/* Scrollable content */}
+                <div className="absolute inset-0 overflow-y-auto">
+                  {college.map((col) => (
+                    <div
+                      key={col.collegeID}
+                      className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
+                        formData.college.includes(col.collegeID)
+                          ? 'bg-blue-100 hover:bg-blue-200'
+                          : ''
+                      }`}
+                      onClick={() => handleCollegeChange(col.collegeID)}
+                    >
+                      <div className="font-medium">{col.title}</div>
+                      <div className="text-sm text-gray-600">{col.abbreviation}</div>
                     </div>
-                  </div>
-                )}
+                  ))}
+                </div>
               </div>
-              {/* <p className="text-sm text-gray-500 mt-1">
-                Click items to select/deselect
-              </p> */}
+              <p className="text-sm text-gray-500 mt-1">Click items to select/deselect</p>
             </div>
 
+            {/* PROGRAM Section */}
             <div className="col-span-2">
-              <label className="block mb-2 font-semibold">PROGRAM</label>
+            <label className="block mb-2 font-semibold">
+              PROGRAM
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select a program from the list based on the college selection."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               {/* Fixed height container with shadow to indicate scrollability */}
-              <div className="relative h-[50px] border border--300 rounded shadow-inner">
+              <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
                 {/* Scrollable content */}
                 <div className="absolute inset-0 overflow-y-auto">
                   {program.map((prog) => (
                     <div
                       key={prog.programID}
                       className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
-                        formData.program.includes(prog.programID) ? 'bg-blue-100 hover:bg-blue-200' : ''
+                        formData.program.includes(prog.programID)
+                          ? 'bg-blue-100 hover:bg-blue-200'
+                          : ''
                       } ${formData.college.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
                       onClick={() => {
-                        // Prevent selection if no colleges are selected
                         if (formData.college.length > 0) {
                           handleProgramChange(prog.programID);
                         }
@@ -1301,28 +1213,35 @@ const handleAgencyFormChange = async (e) => {
                     </div>
                   ))}
                   {program.length === 0 && (
-                    <div className="p-3 text-gray-500 text-left align-middle">
+                    <div className="p-4 text-gray-500 text-center">
                       {formData.college.length === 0
-                        ? "Please select college(s) first"
-                        : "No programs available for selected college(s)"}
+                        ? 'Please select college(s) first'
+                        : 'No programs available for selected college(s)'}
                     </div>
                   )}
                 </div>
               </div>
-              <p className="text-sm text-gray-500 mt-1">
-                Click items to select/deselect
-              </p>
+              <p className="text-sm text-gray-500 mt-1">Click items to select/deselect</p>
             </div>
 
+            {/* ACCREDITATION LEVEL Section */}
             <div className="col-span-1">
-              <label className="block mb-2 font-semibold">
-                ACCREDITATION LEVEL
-              </label>
+            <label className="block mb-2 font-semibold">
+              ACCREDITATION LEVEL
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the accreditation base on the main college/program."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <select
                 name="accreditationLevel"
                 value={formData.accreditationLevel}
                 onChange={handleFormChange}
-                className="w-full p-2 border border-gray-300 rounded h-[50px] text-gray-500"
+                className="w-full p-2 border border-gray-300 rounded"
               >
                 <option value="" disabled hidden>Select</option>
                 <option value="I">I</option>
@@ -1334,12 +1253,21 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
 
+
           {/* Fifth Row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-semibold">
-                TARGET GROUPS/BENEFICIARIES
-              </label>
+            <label className="block mb-2 font-semibold">
+              TARGET GROUPS/BENEFICIARIES
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Enter the target groups or beneficiaries for the project."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <textarea
                 name="beneficiaries"
                 value={formData.beneficiaries}
@@ -1349,10 +1277,21 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
 
+
           {/* Sixth Row */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-2 font-semibold">PARTNER AGENCY</label>
+            <label className="block mb-2 font-semibold">
+              PARTNER AGENCY
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select a partner agency from the list or add a new one."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <select
                 name="agency"
                 value={formData.agency}
@@ -1370,29 +1309,77 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
 
+
           {/* Seventh Row */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block mb-2 font-semibold">TARGET DATE OF IMPLEMENTATION</label>
+            <label className="block mb-2 font-semibold">
+              TARGET START DATE OF IMPLEMENTATION
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the target START date when the implementation is expected to start."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <input
                 name="targetImplementation"
                 value={formData.targetImplementation}
                 onChange={handleFormChange}
-                type="date"
+                type="month"
+                min={new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().slice(0, 7)}  // Sets the minimum date to the previous month
+                className="w-full p-2 border border-gray-300 rounded"
+              />
+            </div>
+            <div>
+            <label className="block mb-2 font-semibold">
+              TARGET END DATE OF IMPLEMENTATION
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the target END date when the implementation is expected to end."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
+              <input
+                name="targetImplementation"
+                value={formData.targetImplementation}
+                onChange={handleFormChange}
+                type="month"
+                min={new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().slice(0, 7)}  // Sets the minimum date to the previous month
                 className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold">TOTAL HOURS</label>
+            <label className="block mb-2 font-semibold">
+              TOTAL HOURS
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Enter the total hours required for the implementation of the project."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
               <input
                 name="totalHours"
                 value={formData.totalHours}
-                onChange={handleFormChange}
+                onChange={(e) => {
+                  const value = Math.max(0, e.target.value); // Ensure the value is greater than zero
+                  handleFormChange({ target: { name: "totalHours", value } });
+                }}
                 type="number"
+                min="0"
                 className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
+
           </div>
         </div>
 
@@ -1400,14 +1387,27 @@ const handleAgencyFormChange = async (e) => {
           {/* row */}
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block mb-2 font-bold text-base">PROJECT LOCATION</label>
+              <label className="block mb-2 font-bold text-base">
+                PROJECT LOCATION
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Specify the location where the project will take place."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
             </div>
           </div>
 
           {/* row */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-2 font-semibold">Region</label>
+              <label className="block mb-2 font-semibold">
+                Region
+                <span className="text-red-500 ml-1">*</span>
+              </label>
               <select
                 name="region"
                 value={formData.region}
@@ -1424,12 +1424,15 @@ const handleAgencyFormChange = async (e) => {
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold">Province</label>
+              <label className="block mb-2 font-semibold">
+                Province
+                <span className="text-red-500 ml-1">*</span>
+              </label>
               <select
                 name="province"
                 value={formData.province}
                 onChange={handleFormChange}
-                disabled={!formData.region}//disabled till region selected
+                disabled={!formData.region} //disabled till region selected
                 className="w-full p-2 border border-gray-300 rounded"
               >
                 {!formData.region ? (
@@ -1446,7 +1449,10 @@ const handleAgencyFormChange = async (e) => {
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold">City</label>
+              <label className="block mb-2 font-semibold">
+                City
+                <span className="text-red-500 ml-1">*</span>
+              </label>
               <select
                 name="city"
                 value={formData.city}
@@ -1468,7 +1474,10 @@ const handleAgencyFormChange = async (e) => {
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold">Barangay</label>
+              <label className="block mb-2 font-semibold">
+                Barangay
+                <span className="text-red-500 ml-1">*</span>
+              </label>
               <select
                 name="barangay"
                 value={formData.barangay}
@@ -1493,7 +1502,10 @@ const handleAgencyFormChange = async (e) => {
           {/* row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-semibold">Address</label>
+              <label className="block mb-2 font-semibold">
+                Address
+                <span className="text-red-500 ml-1">*</span>
+              </label>
               <input
                 name="address"
                 value={formData.projectLocationID.street}
@@ -1506,25 +1518,43 @@ const handleAgencyFormChange = async (e) => {
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-          {/* row */}
-          <div className="grid grid-cols-1 gap-4">
-              <div>
-                  <label className="block mb-2 font-semibold">
-                      BACKGROUND OF THE PROJECT
-                  </label>
-                  <textarea
-                      name="background"
-                      value={formData.background}
-                      onChange={handleFormChange}
-                      className="w-full p-2 border border-gray-300 rounded"
-                  ></textarea>
-              </div>
-          </div>
-
-          {/* row */}
+          {/* Background of the Project Section */}
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-semibold text-base">GOALS AND OBJECTIVES</label>
+              <label className="block mb-2 font-semibold">
+                BACKGROUND OF THE PROJECT
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Provide a detailed explanation of the project's background and why it is being undertaken."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
+              <textarea
+                name="background"
+                value={formData.background}
+                onChange={handleFormChange}
+                className="w-full p-2 border border-gray-300 rounded"
+              ></textarea>
+            </div>
+          </div>
+
+          {/* Goals and Objectives Section */}
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <label className="block mb-2 font-semibold text-base">
+                GOALS AND OBJECTIVES
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="State the goals and objectives clearly and concisely."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
               <div className="grid grid-cols-1 gap-2">
                 <label className="block mb-2">
                   Specifically, the objectives of the project are:
@@ -1534,10 +1564,10 @@ const handleAgencyFormChange = async (e) => {
               {/* Render input fields for each objective */}
               {formData.goalsAndObjectives.map((goal, index) => (
                 <textarea
-                  key={index} // Use index as key for simplicity; in production, use a unique ID
-                  name={`objective-${index}`} // Dynamic name for each input
+                  key={index}
+                  name={`objective-${index}`}
                   value={goal.goalsAndObjectives}
-                  onChange={(e) => handleObjectiveChange(index, e.target.value)} // Update value on change
+                  onChange={(e) => handleObjectiveChange(index, e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded mt-2"
                   placeholder={`Objective ${index + 1}`}
                 />
@@ -1545,14 +1575,14 @@ const handleAgencyFormChange = async (e) => {
 
               <div className="flex space-x-2 mt-2">
                 <button
-                  type="button" // Prevent default form submission
+                  type="button"
                   onClick={handleObjectiveButtonClick}
                   className="bg-blue-500 text-white px-4 py-2 rounded"
                 >
                   Add Objective
                 </button>
                 <button
-                  type="button" // Prevent default form submission
+                  type="button"
                   onClick={handleObjectiveRemoveClick}
                   className={
                     formData.goalsAndObjectives.length === 1
@@ -1566,20 +1596,28 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
 
-          {/* row */}
-          <div className="grid grid-cols-1 gap-4"> 
-              <div>
-                  <label className="block mb-2 font-semibold">
-                      PROJECT COMPONENT
-                  </label>
-                  <textarea
-                      name="projectComponent"
-                      value={formData.projectComponent}
-                      onChange={handleFormChange}
-                      className="w-full p-2 border border-gray-300 rounded"
-                  ></textarea>
-              </div>
+          {/* Project Component Section */}
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <label className="block mb-2 font-semibold">
+                PROJECT COMPONENT
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Provide a detailed description of the project components and their functions."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
+              <textarea
+                name="projectComponent"
+                value={formData.projectComponent}
+                onChange={handleFormChange}
+                className="w-full p-2 border border-gray-300 rounded"
+              ></textarea>
             </div>
+          </div>
         </div>
 
         {/* PROJECT IMPLEMENTATION PLAN AND MANAGEMENT */}
@@ -1588,6 +1626,13 @@ const handleAgencyFormChange = async (e) => {
             <div>
               <label className="block mb-2 font-bold">
                 PROJECT IMPLEMENTATION PLAN AND MANAGEMENT
+                <span
+                  data-tip="Outline the steps and management strategies involved in project implementation."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
             </div>
           </div>
@@ -1596,7 +1641,10 @@ const handleAgencyFormChange = async (e) => {
           {formData.projectActivities.map((activity, index) => (
             <div key={index} className="grid grid-cols-4 gap-4 mb-4">
               <div>
-                <label className="block mb-2 font-semibold">PROJECT OBJECTIVE</label>
+                <label className="block mb-2 font-semibold">
+                  PROJECT OBJECTIVE
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
                 <textarea
                   name="objective"
                   value={activity.objective}
@@ -1606,7 +1654,10 @@ const handleAgencyFormChange = async (e) => {
               </div>
 
               <div>
-                <label className="block mb-2 font-semibold">ACTIVITIES INVOLVED</label>
+                <label className="block mb-2 font-semibold">
+                  ACTIVITIES INVOLVED
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
                 <textarea
                   name="involved"
                   value={activity.involved}
@@ -1616,18 +1667,25 @@ const handleAgencyFormChange = async (e) => {
               </div>
 
               <div>
-                <label className="block mb-2 font-semibold">TARGET DATE</label>
+                <label className="block mb-2 font-semibold">
+                  TARGET DATE
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
                 <input
                   name="targetDate"
-                  value={activity.targetDate}
-                  onChange={(e) => handleActivityChange(index, e)}
-                  type="date"
+                  value={formData.targetDate}
+                  onChange={handleFormChange}
+                  type="month"
                   className="w-full p-2 border border-gray-300 rounded"
-                ></input>
+                  min={new Date().toISOString().slice(0, 7)} // Current month and year
+                />
               </div>
 
               <div>
-                <label className="block mb-2 font-semibold">PERSON RESPONSIBLE</label>
+                <label className="block mb-2 font-semibold">
+                  PERSON RESPONSIBLE
+                  <span className="text-red-500 ml-1">*</span>
+                </label>
                 <input
                   name="personResponsible"
                   value={activity.personResponsible}
@@ -1638,7 +1696,7 @@ const handleAgencyFormChange = async (e) => {
             </div>
           ))}
 
-          {/* Add Button and remove bttn*/}
+          {/* Add Button and remove button */}
           <div className="flex space-x-2 mt-2">
             <button
               type="button"
@@ -1654,8 +1712,8 @@ const handleAgencyFormChange = async (e) => {
               onClick={removeLastActivityRow} // Function to remove the last row
               className={
                 formData.projectActivities.length === 1
-                 ? "mt-4 p-2 bg-gray-400 text-gray-200 rounded"
-                 : "mt-4 p-2 bg-red-500 text-white rounded"
+                  ? "mt-4 p-2 bg-gray-400 text-gray-200 rounded"
+                  : "mt-4 p-2 bg-red-500 text-white rounded"
               }
             >
               Remove Last Row
@@ -1664,17 +1722,25 @@ const handleAgencyFormChange = async (e) => {
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-          <div className="grid grid-cols-1 gap-4"> 
+          <div className="grid grid-cols-1 gap-4">
             <div>
-                <label className="block mb-2 font-bold text-base">
-                    PROJECT LOCATION AND BENEFICIARIES
-                </label>
-                <textarea
-                    name="targetScope"
-                    value={formData.targetScope}
-                    onChange={handleFormChange}
-                    className="w-full p-2 border border-gray-300 rounded"
-                ></textarea>
+              <label className="block mb-2 font-bold text-base">
+                PROJECT LOCATION AND BENEFICIARIES
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Provide the location of the project and specify the beneficiaries it will serve."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
+              <textarea
+                name="targetScope"
+                value={formData.targetScope}
+                onChange={handleFormChange}
+                className="w-full p-2 border border-gray-300 rounded"
+              ></textarea>
             </div>
           </div>
         </div>
@@ -1682,7 +1748,17 @@ const handleAgencyFormChange = async (e) => {
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-bold text-base">PROJECT MANAGEMENT TEAM/TRAINERS</label>
+              <label className="block mb-2 font-bold text-base">
+                PROJECT MANAGEMENT TEAM/TRAINERS
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="List the individuals responsible for overseeing the project and training efforts."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
 
               {/* Render input fields for each TRAINER */}
               {formData.projectManagementTeam.map((personObj, index) => (
@@ -1720,19 +1796,32 @@ const handleAgencyFormChange = async (e) => {
             </div>
           </div>
         </div>
-        
+
         {/* BUDGETARY REQUIREMENTS */}
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <label className="block mb-2 font-bold">BUDGETARY REQUIREMENTS</label>
+              <label className="block mb-2 font-bold">
+                BUDGETARY REQUIREMENTS
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Enter the financial requirements necessary for the successful implementation of the project."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
             </div>
           </div>
 
           {formData.budgetRequirements.map((budgetItem, index) => (
             <div key={index} className="grid grid-cols-4 gap-4 mb-4">
               <div>
-                <label className="block mb-2 font-semibold">ITEM NAME</label>
+              <label className="block mb-2 font-semibold">
+                ITEM NAME
+                <span className="text-red-500 ml-1">*</span>
+              </label>
                 <input
                   name="itemName"
                   value={budgetItem.itemName}
@@ -1740,26 +1829,35 @@ const handleAgencyFormChange = async (e) => {
                   className="w-full p-2 border border-gray-300 rounded"
                 />
               </div>
-
               <div>
-                <label className="block mb-2 font-semibold">USTP AMOUNT</label>
+              <label className="block mb-2 font-semibold">
+                USTP AMOUNT
+                <span className="text-red-500 ml-1">*</span>
+              </label>
                 <input
                   type="number"
                   name="ustpAmount"
                   value={budgetItem.ustpAmount}
-                  onChange={(e) => handleBudgetChange(index, "ustpAmount", e.target.value)}
+                  onChange={(e) => handleBudgetChange(index, "ustpAmount", e.target.value >= 0 ? e.target.value : 0)}
                   className="w-full p-2 border border-gray-300 rounded"
+                  min="0"
+                  placeholder="Enter Amount"
                 />
               </div>
 
               <div>
-                <label className="block mb-2 font-semibold">PARTNER AMOUNT</label>
+              <label className="block mb-2 font-semibold">
+                PARTNER AMOUNT
+                <span className="text-red-500 ml-1">*</span>
+              </label>
                 <input
                   type="number"
                   name="partnerAmount"
                   value={budgetItem.partnerAmount}
-                  onChange={(e) => handleBudgetChange(index, "partnerAmount", e.target.value)}
+                  onChange={(e) => handleBudgetChange(index, "partnerAmount", e.target.value >= 0 ? e.target.value : 0)}
                   className="w-full p-2 border border-gray-300 rounded"
+                  min="0"
+                  placeholder="Enter Amount"
                 />
               </div>
 
@@ -1769,43 +1867,33 @@ const handleAgencyFormChange = async (e) => {
                   type="number"
                   name="totalAmount"
                   value={budgetItem.totalAmount}
-                  onChange={(e) => handleBudgetChange(index, "totalAmount", e.target.value)}
+                  readOnly  // This ensures the field is not editable
                   className="w-full p-2 border border-gray-300 rounded"
                 />
               </div>
 
               {/* Remove Button for Each Item */}
               <div className="col-span-4 text-right m-0">
-              <button
-                type="button"
-                onClick={() => removeBudgetItem(index)} // Remove the item at this index
-                disabled={index === 0} // Disable the remove button for the first item
-                className={`p-1 border-1 border-0 bg-transparent rounded ${index === 0 ? "cursor-not-allowed" : "hover:border-red-5 hover:text-white active:border-red-5 active:text-white"}`}
-              >
-                {index === 0 ? (
-                  ""
-                ) : (
-                  <span className="text-red-500">Remove Item</span> // Only this part will be red
-                )}
-              </button>
+                <button
+                  type="button"
+                  onClick={() => removeBudgetItem(index)} // Remove the item at this index
+                  disabled={index === 0} // Disable the remove button for the first item
+                  className={`p-1 border-1 border-0 bg-transparent rounded ${index === 0 ? "cursor-not-allowed" : "hover:border-red-5 hover:text-white active:border-red-5 active:text-white"}`}
+                >
+                  {index === 0 ? (
+                    ""
+                  ) : (
+                    <span className="text-red-500">Remove Item</span> // Only this part will be red
+                  )}
+                </button>
               </div>
             </div>
           ))}
-          {/* Add Button */}
-          <div className="flex space-x-2 mt-2">
-            <button
-              type="button"
-              onClick={addBudgetItem}
-              className="mt-4 p-2 bg-blue-500 text-white rounded"
-            >
-              Add Budget Item
-            </button>
-          </div>
 
           <div>
             {/* Sixth Row */}
             <div className="grid grid-cols-1 gap-4">
-            <label className="block mb-2 font-bold text-base text-green-700">BUDGET REQUIREMENT'S TOTAL</label>
+              <label className="block mb-2 font-bold text-base">BUDGET REQUIREMENT'S TOTAL</label>
             </div>
 
             {/* Sixth Row */}
@@ -1819,7 +1907,7 @@ const handleAgencyFormChange = async (e) => {
                   onChange={handleBudgetFormChange}
                   type="number"
                   placeholder="Enter Amount"
-                  className="w-full p-2 border border-green-800 rounded"
+                  className="w-full p-2 border border-gray-300 rounded"
                 />
               </div>
 
@@ -1832,108 +1920,165 @@ const handleAgencyFormChange = async (e) => {
                   onChange={handleBudgetFormChange}
                   type="number"
                   placeholder="Enter Amount"
-                  className="w-full p-2 border border-green-800 rounded"
+                  className="w-full p-2 border border-gray-300 rounded"
                 />
               </div>
 
               <div>
-              <label className="block mb-2 font-semibold">TOTAL</label>
+                <label className="block mb-2 font-semibold">TOTAL</label>
                 <input
                   name="totalBudget"
                   value={formData.totalBudget}
                   readOnly
                   type="number"
-                  className="w-full p-2 border border-green-800 rounded"
+                  className="w-full p-2 border border-gray-300 rounded"
                 />
               </div>
             </div>
+          </div>
+
+          {/* Add Button */}
+          <div className="flex space-x-2 mt-2">
+            <button
+              type="button"
+              onClick={addBudgetItem}
+              className="mt-4 p-2 bg-blue-500 text-white rounded"
+            >
+              Add Budget Item
+            </button>
           </div>
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           {/* Table Headers */}
-          <label className="block mb-2 font-bold">PROJECT EVALUATION AND MONITORING</label>
-          <div className="grid grid-cols-4 gap-4">
-            <div>
-              <label className="block mb-2 font-semibold">PROJECT SUMMARY</label>
-            </div>
-            <div>
-              <label className="block mb-2 font-semibold">INDICATORS</label>
-            </div>
-            <div>
-              <label className="block mb-2 font-semibold">MEANS OF VERIFICATION</label>
-            </div>
-            <div>
-              <label className="block mb-2 font-semibold">RISKS/ASSUMPTIONS</label>
-            </div>
+          <div>
+          <label className="block mb-2 font-bold">
+            PROJECT EVALUATION AND MONITORING
+            <span className="text-red-500 ml-1">*</span>
+            <span
+              data-tip="Describe the strategies for monitoring the project's progress and evaluating its success."
+              className="ml-2 text-gray-500 cursor-pointer text-sm"
+            >
+              ⓘ
+            </span>
+            <ReactTooltip place="top" type="dark" effect="solid" />
+          </label>
           </div>
 
-          {/* Table Rows */}
-          {formData.evaluationAndMonitorings.map((evaluation, index) => (
-            <div key={index} className="grid grid-cols-4 gap-4">
-              {/* Project Summary */}
-              <div>
-                <textarea
-                  rows="4"
-                  name="projectSummary"
-                  value={evaluation.projectSummary}
-                  onChange={(e) => handleEvaluationChange(index, "projectSummary", e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  placeholder={`Project Summary (${evaluation.type.toUpperCase()})`}
-                ></textarea>
-              </div>
+        <div className="grid grid-cols-4 gap-4">
+          <div>
+            <label className="block mb-2 font-semibold">
+              PROJECT SUMMARY
+              <span className="text-red-500 ml-1">*</span>
+            </label>
+          </div>
+          <div>
+            <label className="block mb-2 font-semibold">
+              INDICATORS
+              <span className="text-red-500 ml-1">*</span>
+            </label>
+          </div>
+          <div>
+            <label className="block mb-2 font-semibold">
+              MEANS OF VERIFICATION
+              <span className="text-red-500 ml-1">*</span>
+            </label>
+          </div>
+          <div>
+            <label className="block mb-2 font-semibold">
+              RISKS/ASSUMPTIONS
+              <span className="text-red-500 ml-1">*</span>
+            </label>
+          </div>
+        </div>
 
-              {/* Indicators */}
-              <div>
-                <textarea
-                  rows="4"
-                  name="indicators"
-                  value={evaluation.indicators}
-                  onChange={(e) => handleEvaluationChange(index, "indicators", e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  placeholder={`Indicators (${evaluation.type.toUpperCase()})`}
-                ></textarea>
-              </div>
-
-              {/* Means of Verification */}
-              <div>
-                <textarea
-                  rows="4"
-                  name="meansOfVerification"
-                  value={evaluation.meansOfVerification}
-                  onChange={(e) => handleEvaluationChange(index, "meansOfVerification", e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  placeholder={`Means of Verification (${evaluation.type.toUpperCase()})`}
-                ></textarea>
-              </div>
-
-              {/* Risks/Assumptions */}
-              <div>
-                <textarea
-                  rows="4"
-                  name="risksAssumptions"
-                  value={evaluation.risksAssumptions}
-                  onChange={(e) => handleEvaluationChange(index, "risksAssumptions", e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                  placeholder={`Risks/Assumptions (${evaluation.type.toUpperCase()})`}
-                ></textarea>
-              </div>
+        {/* Table Rows */}
+        {formData.evaluationAndMonitorings.map((evaluation, index) => (
+          <div key={index} className="grid grid-cols-4 gap-4">
+            {/* Project Summary */}
+            <div>
+              <textarea
+                rows="4"
+                name="projectSummary"
+                value={evaluation.projectSummary}
+                onChange={(e) => handleEvaluationChange(index, "projectSummary", e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder={`Project Summary (${evaluation.type.toUpperCase()})`}
+              ></textarea>
             </div>
-          ))}
+
+            {/* Indicators */}
+            <div>
+              <textarea
+                rows="4"
+                name="indicators"
+                value={evaluation.indicators}
+                onChange={(e) => handleEvaluationChange(index, "indicators", e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder={`Indicators (${evaluation.type.toUpperCase()})`}
+              ></textarea>
+            </div>
+
+            {/* Means of Verification */}
+            <div>
+              <textarea
+                rows="4"
+                name="meansOfVerification"
+                value={evaluation.meansOfVerification}
+                onChange={(e) => handleEvaluationChange(index, "meansOfVerification", e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder={`Means of Verification (${evaluation.type.toUpperCase()})`}
+              ></textarea>
+            </div>
+
+            {/* Risks/Assumptions */}
+            <div>
+              <textarea
+                rows="4"
+                name="risksAssumptions"
+                value={evaluation.risksAssumptions}
+                onChange={(e) => handleEvaluationChange(index, "risksAssumptions", e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder={`Risks/Assumptions (${evaluation.type.toUpperCase()})`}
+              ></textarea>
+            </div>
+          </div>
+        ))}
+
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-        <label className="block mb-2 font-bold">MONITORING PLAN AND SCHEDULE</label>
+          <div>
+          <label className="block mb-2 font-bold">
+            MONITORING PLAN AND SCHEDULE
+            <span className="text-red-500 ml-1">*</span>
+            <span
+              data-tip="Outline the timeline and process for monitoring the project's progress."
+              className="ml-2 text-gray-500 cursor-pointer text-sm"
+            >
+              ⓘ
+            </span>
+            <ReactTooltip place="top" type="dark" effect="solid" />
+          </label>
+          </div>
           <div className="p-4">
             <table className="min-w-full table-auto border-collapse border border-gray-300">
-              <thead>
-                <tr>
-                  <th className="border border-gray-300 p-2">Monitoring Phase</th>
-                  <th className="border border-gray-300 p-2">M&E Instrument/Approach</th>
-                  <th className="border border-gray-300 p-2">Format or Strategy for Data Gathering</th>
-                  <th className="border border-gray-300 p-2">Schedule</th>
-                </tr>
-              </thead>
+            <thead>
+              <tr>
+                <th className="border border-gray-300 p-2">
+                  Monitoring Phase <span className="text-red-500">*</span>
+                </th>
+                <th className="border border-gray-300 p-2">
+                  M&E Instrument/Approach <span className="text-red-500">*</span>
+                </th>
+                <th className="border border-gray-300 p-2">
+                  Format or Strategy for Data Gathering <span className="text-red-500">*</span>
+                </th>
+                <th className="border border-gray-300 p-2">
+                  Schedule <span className="text-red-500">*</span>
+                </th>
+              </tr>
+            </thead>
               <tbody>
                 {formData.monitoringPlanSchedules.map((row, index) => (
                   <tr key={index}>
@@ -1994,119 +2139,120 @@ const handleAgencyFormChange = async (e) => {
         </div>
 
         {showTrainers && (
-        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-          <label className="block mb-2 font-bold">LOADING OF TRAINERS</label>
-          <div className="relative">
-            <label className="block mb-2 font-semibold">Trainers:</label>
-            <div className="overflow-x-auto">
-              <table className="min-w-full border">
-                <thead>
-                  <tr>
-                    <th className="px-4 py-2 border bg-gray-300">Name of Faculty</th>
-                    <th className="px-4 py-2 border bg-gray-300">Training Load</th>
-                    <th className="px-4 py-2 border bg-gray-300">No. of Hours</th>
-                    <th className="px-4 py-2 border bg-gray-300">USTP Budget</th>
-                    <th className="px-4 py-2 border bg-gray-300">Partner Agency Budget</th>
-                    <th className="px-4 py-2 border bg-gray-300">Total Budgetary Requirement</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {formData.loadingOfTrainers.map((trainer, index) => (
-                    <tr key={index}>
-                      <td className="px-4 py-2 border">
-                        <input
-                          name="faculty"
-                          value={trainer.faculty}
-                          onChange={(e) => handleTrainerChange(index, e)}
-                          type="text"
-                          required
-                          className="w-full p-1 border border-gray-300 rounded"
-                          placeholder="Faculty Name"
-                        />
-                      </td>
-                      <td className="px-4 py-2 border">
-                        <input
-                          name="trainingLoad"
-                          value={trainer.trainingLoad}
-                          onChange={(e) => handleTrainerChange(index, e)}
-                          type="text"
-                          required
-                          className="w-full p-1 border border-gray-300 rounded"
-                          placeholder="Training Load"
-                        />
-                      </td>
-                      <td className="px-4 py-2 border">
-                        <input
-                          name="hours"
-                          value={trainer.hours}
-                          onChange={(e) => handleTrainerChange(index, e)}
-                          type="number"
-                          required
-                          className="w-full p-1 border border-gray-300 rounded"
-                          placeholder="Hours"
-                          min="0"
-                        />
-                      </td>
-                      <td className="px-4 py-2 border">
-                        <input
-                          name="ustpBudget"
-                          value={150}  // USTP Budget is fixed to 150
-                          readOnly
-                          type="number"
-                          className="w-full p-1 border border-gray-300 rounded bg-gray-100"
-                          placeholder="USTP Budget"
-                          min="0"
-                        />
-                      </td>
-                      <td className="px-4 py-2 border">
-                        <input
-                          name="agencyBudget"
-                          value={trainer.agencyBudget}
-                          onChange={(e) => handleTrainerChange(index, e)}
-                          type="number"
-                          required
-                          className="w-full p-1 border border-gray-300 rounded"
-                          placeholder="Partner Agency Budget"
-                          min="0"
-                        />
-                      </td>
-                      <td className="px-4 py-2 border">
-                        <input
-                          name="totalBudgetRequirement"
-                          value={trainer.totalBudgetRequirement}
-                          readOnly
-                          type="number"
-                          className="w-full p-1 border border-gray-300 rounded bg-gray-100"
-                          placeholder="Total"
-                        />
-                      </td>
+          <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
+            <label className="block mb-2 font-bold">LOADING OF TRAINERS</label>
+            <div className="relative">
+              <label className="block mb-2 font-semibold">Trainers:</label>
+              <div className="overflow-x-auto">
+                <table className="min-w-full border">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-2 border bg-gray-300">Name of Faculty</th>
+                      <th className="px-4 py-2 border bg-gray-300">Training Load</th>
+                      <th className="px-4 py-2 border bg-gray-300">No. of Hours</th>
+                      <th className="px-4 py-2 border bg-gray-300">USTP Budget</th>
+                      <th className="px-4 py-2 border bg-gray-300">Partner Agency Budget</th>
+                      <th className="px-4 py-2 border bg-gray-300">Total Budgetary Requirement</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            {/* Add and Remove Buttons */}
-            <div className="flex justify-between mt-2">
-              <button
-                type="button"
-                onClick={addTrainerRow}
-                className="text-green-500 hover:underline"
-              >
-                + Add Row
-              </button>
-              {formData.loadingOfTrainers.length > 1 && (
+                  </thead>
+                  <tbody>
+                    {formData.loadingOfTrainers.map((trainer, index) => (
+                      <tr key={index}>
+                        <td className="px-4 py-2 border">
+                          <input
+                            name="faculty"
+                            value={trainer.faculty}
+                            onChange={(e) => handleTrainerChange(index, e)}
+                            type="text"
+                            required
+                            className="w-full p-1 border border-gray-300 rounded"
+                            placeholder="Faculty Name"
+                          />
+                        </td>
+                        <td className="px-4 py-2 border">
+                          <input
+                            name="trainingLoad"
+                            value={trainer.trainingLoad}
+                            onChange={(e) => handleTrainerChange(index, e)}
+                            type="text"
+                            required
+                            className="w-full p-1 border border-gray-300 rounded"
+                            placeholder="Training Load"
+                          />
+                        </td>
+                        <td className="px-4 py-2 border">
+                          <input
+                            name="hours"
+                            value={trainer.hours}
+                            onChange={(e) => handleTrainerChange(index, e)}
+                            type="number"
+                            required
+                            className="w-full p-1 border border-gray-300 rounded"
+                            placeholder="Hours"
+                            min="0"
+                          />
+                        </td>
+                        <td className="px-4 py-2 border">
+                          <input
+                            name="ustpBudget"
+                            value={trainer.ustpBudget}
+                            onChange={(e) => handleTrainerChange(index, e)}
+                            type="number"
+                            required
+                            className="w-full p-1 border border-gray-300 rounded"
+                            placeholder="USTP Budget"
+                            min="0"
+                          />
+                        </td>
+                        <td className="px-4 py-2 border">
+                          <input
+                            name="agencyBudget"
+                            value={trainer.agencyBudget}
+                            onChange={(e) => handleTrainerChange(index, e)}
+                            type="number"
+                            required
+                            className="w-full p-1 border border-gray-300 rounded"
+                            placeholder="Partner Agency Budget"
+                            min="0"
+                          />
+                        </td>
+                        <td className="px-4 py-2 border">
+                          <input
+                            name="totalBudgetRequirement"
+                            value={trainer.totalBudgetRequirement}
+                            readOnly
+                            type="number"
+                            className="w-full p-1 border border-gray-300 rounded bg-gray-100"
+                            placeholder="Total"
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              {/* Add and Remove Buttons */}
+              <div className="flex justify-between mt-2">
                 <button
                   type="button"
-                  onClick={() => removeTrainerRow(formData.loadingOfTrainers.length - 1)}
-                  className="text-red-500 hover:underline"
-                  title="Remove Last Row"
+                  onClick={addTrainerRow}
+                  className="text-green-500 hover:underline"
                 >
-                  - Remove Row
+                  + Add Row
                 </button>
-              )}
+                {formData.loadingOfTrainers.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeTrainerRow(formData.loadingOfTrainers.length - 1)}
+                    className="text-red-500 hover:underline"
+                    title="Remove Last Row"
+                  >
+                    - Remove Row
+                  </button>
+                )}
+              </div>
             </div>
           </div>
-        </div>
         )}
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">

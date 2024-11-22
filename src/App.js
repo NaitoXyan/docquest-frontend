@@ -50,7 +50,8 @@ import ProgramChairReviewProject from "./pages/programChair/ProgramChairReviewPr
 import CollegeDeanDashboard from "./pages/collegeDean/CollegeDeanDashboard";
 import CollegeDeanReviewList from "./pages/collegeDean/CollegeDeanReviewList";
 import CollegeDeanReviewProject from "./pages/collegeDean/CollegeDeanReviewProject";
-
+import ProjLeadViewProjectProgress from "./pages/projectlead/ProjLeadViewProjectProgress";
+import EStaffProfilePage from "./pages/estaff/EStaffProfilePage";
 function App() {
   return (
     <Routes>
@@ -70,6 +71,7 @@ function App() {
         <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
         <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
         <Route path="/deliverables" element={<ProposalFormFirstPage_Deliverables/>}/>
+        <Route path="/view-project-progress/:projectID" element={<ProjLeadViewProjectProgress/>}/>
 
         {/* programchair routes */}
         <Route path="/program-chair" element={<ProgramChairDashboard/>}/>
@@ -94,30 +96,27 @@ function App() {
         <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>
 
          {/* ESTAFF ROUTING */}
-        <Route path="/estaff/documents-list" element={<EStaffDocumentsList />} />  {/* Add this line */}
-        <Route path="/estaff/view-document" element={<EstaffViewDocument />} />  {/* Add this line */}
-        <Route path="/estaff/user-list" element={<UserList />} />  {/* Add this line */}
-        <Route path="/estaff/create-user" element={<CreateUser />} />  {/* Add this line */}
+         
+        <Route path="/documents-list" element={<EStaffDocumentsList />} />  {/* Add this line */}
+        <Route path="/view-document" element={<EstaffViewDocument />} />  {/* Add this line */}
+        <Route path="/user-list" element={<UserList />} />  {/* Add this line */}
+        <Route path="/create-user" element={<CreateUser />} />  {/* Add this line */}
+        <Route path="/profile-estaff" element={<EStaffProfilePage />} />
+        {<Route path="/scancopy" element={<EstaffScancopy />} />}
         {/* <Route path="/estaff/profile-estaff" element={<EStaffProfilePage />} />  Add this line */}
         
         {/* Create proposal routes */}
-        {/* <Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} /> */}
-
+        {<Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} />}
+          
         {/* Other Unorganized */}
         <Route path="/pdf-viewer/:projectID" element={<ProjectPDFViewer />} />
         <Route path="/edit-project/:projectID" element={<ProjLeadEditProject />} /> {/* Walay remove button for Budgetary Requirements */}
         <Route path="/estaff" element={<EstaffDashboard />} />
         <Route path="/deptoff" element={<DeptOffDashboard />} />
         <Route path="/coordinator" element={<CoordinatorDashboard />} />
-        <Route path="/signatory" element={<SignatoryDashboard />} />
-        {/* <Route path="/estaff/scancopy" element={<EstaffScancopy />} /> */}
+        <Route path="/signatory" element={<EstaffDashboard />} />
+        
       </Routes>
-
-      // <div style={{ height: '100vh' }}>
-      //   <PDFViewer style={{ width: '100%', height: '100%' }}>
-      //     <MyDocument projectID={11} />
-      //   </PDFViewer>
-      // </div>
   );
 }
 

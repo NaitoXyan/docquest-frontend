@@ -123,8 +123,8 @@ const CollegeDeanReviewList = () => {
     setSearchTerm(event.target.value);
   };
 
-  const reviewDocument = (reviewID) => {
-    navigate(`/college-dean-review-project/${reviewID}`);
+  const reviewDocument = (reviewID, projectID) => {
+    navigate(`/college-dean-review-project/${reviewID}/${projectID}`);
   };
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -269,7 +269,7 @@ const CollegeDeanReviewList = () => {
                                 (project.approvalCounter > 1) ||
                                 project.reviewStatus === 'rejected'
                                     ? handleViewPDF(project.source_id)
-                                    : reviewDocument(project.reviewID)
+                                    : reviewDocument(project.reviewID, project.source_id)
                                 }
                                 className={`w-36 px-4 py-2 rounded-md text-center ${
                                 (project.approvalCounter > 1) ||

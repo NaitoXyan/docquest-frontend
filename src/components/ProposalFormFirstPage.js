@@ -863,6 +863,26 @@ const handleAgencyFormChange = async (e) => {
     });
   };
 
+  const [formDataCampus, setFormDataCampus] = useState({
+    campus: [], // Ensure campus is initialized as an array
+  });
+
+  const [campus, setCampus] = useState([
+    { campusID: 1, title: 'Campus A', abbreviation: 'CA' },
+    { campusID: 2, title: 'Campus B', abbreviation: 'CB' },
+  ]);
+
+  const handleCampusChange = (campusID) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      campus: prevFormData.campus.includes(campusID)
+        ? prevFormData.campus.filter((id) => id !== campusID)
+        : [...prevFormData.campus, campusID],
+    }));
+  };
+
+
+
   return (
     <div className="flex flex-col mt-14 px-10">
       <h1 className="text-2xl font-semibold mb-5 mt-3">
@@ -1122,26 +1142,26 @@ const handleAgencyFormChange = async (e) => {
 
 
           {/* Fourth Row */}
-          <div className="grid grid-cols-5 gap-4">
-            {/* <div className="col-span-1">
-              <label className="block mb-2 font-semibold">CAMPUS</label>
-                <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
-                      <div className="absolute inset-0 overflow-y-auto">
-                            {campus.map((camp) => (
-                              <div
-                                key={camp.campusID}
-                                className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
-                                  formData.campus.includes(camp.campusID) ? 'bg-blue-100 hover:bg-blue-200' : ''
-                                }`}
-                                onClick={() => handleCampusChange(camp.campusID)}
-                              >
-                                <div className="font-medium">{camp.title}</div>
-                                <div className="text-sm text-gray-600">{camp.abbreviation}</div>
-                              </div>
-                            ))}
-                      </div>
-                </div>
-            </div> */}
+          <div className="grid grid-cols-6 gap-4">
+          <div className="col-span-1">
+      <label className="block mb-2 font-semibold">CAMPUS</label>
+      <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
+        <div className="absolute inset-0 overflow-y-auto">
+          {campus.map((camp) => (
+            <div
+              key={camp.campusID}
+              className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
+                formData.campus?.includes(camp.campusID) ? 'bg-blue-100 hover:bg-blue-200' : ''
+              }`}
+              onClick={() => handleCampusChange(camp.campusID)}
+            >
+              <div className="font-medium">{camp.title}</div>
+              <div className="text-sm text-gray-600">{camp.abbreviation}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
             <div className="col-span-2">
             <label className="block mb-2 font-semibold">
               COLLEGE

@@ -68,42 +68,40 @@ function EstaffSideBar({ onFilterChange }) {
                             Documents List
                         </NavLink>
                     </li>
+                    {/* Removed the Scan Copy link */}
+                    
+                    {/* Accounts Dropdown */}
                     <li>
-                        <NavLink
-                            to="/view-document"
-                            className={({ isActive }) =>
-                                `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
+                        <button
+                            onClick={() => toggleDropdown('accounts')}
+                            className={`text-lg block px-6 py-3 w-full text-left ${activeDropdown === 'accounts' ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}`}
                         >
-                            View Documents
-                        </NavLink>
+                            Accounts
+                        </button>
+                        {activeDropdown === 'accounts' && (
+                            <ul className="pl-6">
+                                <li>
+                                    <NavLink
+                                        to="/user-list"
+                                        className={({ isActive }) =>
+                                            `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
+                                    >
+                                        User List
+                                    </NavLink>
+                                </li>
+                                <li>
+                                    <NavLink
+                                        to="/create-user"
+                                        className={({ isActive }) =>
+                                            `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
+                                    >
+                                        Create User
+                                    </NavLink>
+                                </li>
+                            </ul>
+                        )}
                     </li>
-                    <li>
-                        <NavLink
-                            to="/scancopy"
-                            className={({ isActive }) =>
-                                `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
-                        >
-                            Scan Copy
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            to="/user-list"
-                            className={({ isActive }) =>
-                                `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
-                        >
-                            User List
-                        </NavLink>
-                    </li>
-                    <li>
-                        <NavLink
-                            to="/create-user"
-                            className={({ isActive }) =>
-                                `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
-                        >
-                            Create User
-                        </NavLink>
-                    </li>
+                    
                     <li>
                         <NavLink
                             to="/profile-estaff"

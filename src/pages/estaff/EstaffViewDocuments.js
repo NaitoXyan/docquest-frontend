@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import EstaffSideBar from "../../components/EstaffSideBar";
 import Topbar from "../../components/Topbar";
+import ProjectPDFViewer from "../../components/ProjectPDFViewer";
 // import { Document, Page } from 'react-pdf'; // Commenting out the imports
 // import 'react-pdf/dist/esm/Page/AnnotationLayer.css'; // Commenting out CSS import
 

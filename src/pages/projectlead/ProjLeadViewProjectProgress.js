@@ -241,6 +241,23 @@ const ProjLeadViewProjectProgress = () => {
       </div>
 
       <div className="flex-none mt-20 ml-[2%]">
+        {/* Progress Legend */}
+        <div className="flex space-x-4 mb-4">
+          <div className="flex items-center">
+            <div className="w-3 h-3 bg-green-600 rounded-full mr-2"></div>
+            <span>Approved</span>
+          </div>
+          <div className="flex items-center">
+            <div className="w-3 h-3 bg-orange-400 rounded-full mr-2"></div>
+            <span>Pending</span>
+          </div>
+          <div className="flex items-center">
+            <div className="w-3 h-3 bg-red-600 rounded-full mr-2"></div>
+            <span>Rejected</span>
+          </div>
+        </div>
+
+        {/* Project Progress Step */}
         <ProjectProgressStep projectID={projectID} />
       </div>
     </div>

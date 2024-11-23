@@ -59,6 +59,8 @@ import CampusProposal from "./pages/estaff/CampusProposal";
 import SharedProposal from "./pages/estaff/SharedProposal";
 import LoadTrainers from "./pages/estaff/LoadTrainers";
 import MoaMou from "./pages/estaff/MoaMou";
+import DirectorProjectStatistics from "./pages/director/DirectorProjectStatistics";
+
 function App() {
   return (
     <Routes>
@@ -94,6 +96,7 @@ function App() {
         <Route path="/director" element={<DirectorDashboard/>} />
         <Route path="/review-project/:reviewID/:projectID" element={<DirectorReviewProject/>} />
         <Route path="/review-list/:status/:document" element={<DirectorReviewList/>}/>
+        <Route path="director-project-statistics" element={<DirectorProjectStatistics/>}/>
 
         {/*VPAPLA Routes  */}
         <Route path="/vpala" element={<VPALADashboard/>}/>

@@ -39,6 +39,9 @@ const ProposalFormFirstPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const [deliverables, setDeliverables] = useState([]);
+  const [isAgencyModalOpen, setIsAgencyModalOpen] = useState(false);
+  const [newAgencyName, setNewAgencyName] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     userID: userID,
@@ -683,31 +686,55 @@ const ProposalFormFirstPage = () => {
     fetchAgencies();
   }, []);
 
-  // Handle agency selection and adding new agency
   const handleAgencyFormChange = async (e) => {
     const { value } = e.target;
 
     if (value === 'add_new_agency') {
-      const newAgencyName = prompt('Enter the name of the new agency:');
-
-      if (newAgencyName) {
-        try {
-          // Send POST request to create the new agency
-          const response = await axios.post('http://127.0.0.1:8000/create_agency', {
-            agencyName: newAgencyName,
-          });
-
-          const newAgency = { agencyID: response.data.agencyID, agencyName: newAgencyName };
-
-          // Add the new agency to the list of agencies and set the selected agency
-          setAgencies((prevAgencies) => [...prevAgencies, newAgency]);
-          setFormData((prevFormData) => ({ ...prevFormData, agency: [newAgency.agencyID] }));  // Wrap in array
-        } catch (error) {
-          console.error('Error creating new agency:', error);
-        }
-      }
+      setIsAgencyModalOpen(true);
     } else {
-      setFormData((prevFormData) => ({ ...prevFormData, agency: [value] }));  // Wrap in array
+      setFormData(prevData => ({
+        ...prevData,
+        agency: [value] // Maintain array structure
+      }));
+    }
+  };
+
+  const handleSubmitNewAgency = async () => {
+    if (!newAgencyName.trim()) return;
+    
+    setIsSubmitting(true);
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/create_agency', {
+        agencyName: newAgencyName,
+      });
+
+      const newAgency = { 
+        agencyID: response.data.agencyID, 
+        agencyName: newAgencyName 
+      };
+
+      // Update agencies list
+      setAgencies(prevAgencies => [...prevAgencies, newAgency]);
+      
+      // Update form data maintaining the entire structure
+      setFormData(prevData => ({
+        ...prevData,
+        agency: [newAgency.agencyID] // Maintain array structure
+      }));
+
+      setIsAgencyModalOpen(false);
+      setNewAgencyName('');
+    } catch (error) {
+      console.error('Error creating new agency:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmitNewAgency();
     }
   };
 
@@ -1583,6 +1610,57 @@ const ProposalFormFirstPage = () => {
               </select>
             </div>
           </div>
+
+          {/* Modal */}
+          {isAgencyModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold">Add New Agency</h2>
+                  <button 
+                    onClick={() => setIsAgencyModalOpen(false)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    ✕
+                  </button>
+                </div>
+                
+                <div className="mb-6">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
+                    Agency Name
+                    <span className="text-red-500 ml-1">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={newAgencyName}
+                    onChange={(e) => setNewAgencyName(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Enter agency name"
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    autoFocus
+                  />
+                </div>
+
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => setIsAgencyModalOpen(false)}
+                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSubmitNewAgency}
+                    disabled={isSubmitting || !newAgencyName.trim()}
+                    className={`px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none ${
+                      (isSubmitting || !newAgencyName.trim()) && 'opacity-50 cursor-not-allowed'
+                    }`}
+                  >
+                    {isSubmitting ? 'Adding...' : 'Add Agency'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
 
           {/* Seventh Row */}

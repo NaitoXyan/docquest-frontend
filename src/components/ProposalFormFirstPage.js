@@ -792,8 +792,7 @@ const ProposalFormFirstPage = () => {
     }));
   };
 
-  const handleCheckboxChange = (event) => {
-    setIsChecked(event.target.checked);
+  const handleSkillsTraining = () => {
     setShowTrainers(!showTrainers);
   };
 
@@ -943,7 +942,7 @@ const ProposalFormFirstPage = () => {
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-2 font-bold text-base">
+              {/* <label className="block mb-2 font-bold text-base">
                 Training
                 <input
                   className="ml-2"
@@ -951,7 +950,7 @@ const ProposalFormFirstPage = () => {
                   checked={isChecked}
                   onChange={handleCheckboxChange}
                 />
-              </label>
+              </label> */}
             </div>
           </div>
           {/* First Row */}
@@ -1019,7 +1018,7 @@ const ProposalFormFirstPage = () => {
                 value={projectTypeOptions.find((option) => option.value === formData.projectType)} // Find the selected option
                 onChange={handleProjTypeChange}
                 options={projectTypeOptions}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full"
                 placeholder="Select a project type"
               />
             </div>
@@ -1061,6 +1060,11 @@ const ProposalFormFirstPage = () => {
                     ...formData,
                     projectCategory: selectedOptions.map((option) => option.value),
                   });
+                  // Check if 'Skills Training' is selected
+                  const selectedCategories = selectedOptions.map((option) => option.label);
+                  if (selectedCategories.includes('Skills Training/Capacity Building')) {
+                    handleSkillsTraining();  // Trigger handleSkillsTraining when 'Skills Training' is selected
+                  }
                 }}
                 classNamePrefix="react-select"
                 className="w-full"

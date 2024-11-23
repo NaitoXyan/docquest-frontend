@@ -22,6 +22,7 @@ const ProposalFormFirstPage = () => {
   const [proponents, setProponents] = useState([]);
   const [programCategory, setProgramCategory] = useState([]);
   const [projectCategory, setProjectCategory] = useState([]);
+  const [campus, setCampus] = useState([]);
   const [college, setCollege] = useState([]);
   const [program, setProgram] = useState([]);
   const [nonUserProponents, setNonUserProponents] = useState([]);
@@ -180,6 +181,7 @@ const ProposalFormFirstPage = () => {
     },
     deliverables: [],
 
+    campus: [],
     college: [],
     region: '',
     province: '',
@@ -792,9 +794,14 @@ const ProposalFormFirstPage = () => {
     }));
   };
 
-  const handleCheckboxChange = (event) => {
-    setIsChecked(event.target.checked);
-    setShowTrainers(!showTrainers);
+  const handleSkillsTraining = (selectedOptions) => {
+    // Check if 'Skills Training' is in the selected options
+    const selectedCategories = selectedOptions.map(option => option.label);
+    if (selectedCategories.includes('Skills Training/Capacity Building')) {
+      setShowTrainers(true);
+    } else {
+      setShowTrainers(false);
+    }
   };
 
   const handleProjTypeChange = (selectedOption) => {
@@ -818,9 +825,47 @@ const ProposalFormFirstPage = () => {
 
   // Fetch colleges on component mount
   useEffect(() => {
-    const fetchColleges = async () => {
+    const fetchCampus = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/get_colleges');
+        const response = await axios.get('http://127.0.0.1:8000/get_campuses');
+        setCampus(response.data);
+      } catch (error) {
+        console.error('Error fetching campus:', error);
+      }
+    };
+
+    fetchCampus();
+  }, []);
+
+  // Handle college selection - toggle selection on click
+  const handleCampusChange = (campusID) => {
+    setFormData(prev => {
+      const newCampuses = prev.campus.includes(campusID)
+        ? prev.campus.filter(id => id !== campusID)  // Remove if already selected
+        : [...prev.campus, campusID];                // Add if not selected
+
+      return {
+        ...prev,
+        campus: newCampuses,
+        college: [],
+        program: [] // Clear program selection when colleges change
+      };
+    });
+  };
+
+  // Fetch programs whenever selected colleges change
+  useEffect(() => {
+    const fetchColleges = async () => {
+      if (formData.campus.length === 0) {
+        setCollege([]); // Clear programs if no college is selected
+        setFormData(prev => ({ ...prev, college: [] })); // Also clear selected programs
+        return;
+      }
+
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/get_colleges/', {
+          campusIDs: formData.campus,
+        });
         setCollege(response.data);
       } catch (error) {
         console.error('Error fetching colleges:', error);
@@ -828,7 +873,7 @@ const ProposalFormFirstPage = () => {
     };
 
     fetchColleges();
-  }, []);
+  }, [formData.campus]);
 
   // Handle college selection - toggle selection on click
   const handleCollegeChange = (collegeId) => {
@@ -881,28 +926,6 @@ const ProposalFormFirstPage = () => {
     });
   };
 
-
-  // const [formDataCampus, setFormDataCampus] = useState({
-  //   campus: [], // Ensure campus is initialized as an array
-  // });
-
-  // const [campus, setCampus] = useState([
-  //   { campusID: 1, title: 'Campus A', abbreviation: 'CA' },
-  //   { campusID: 2, title: 'Campus B', abbreviation: 'CB' },
-  // ]);
-
-  // const handleCampusChange = (campusID) => {
-  //   setFormData((prevFormData) => ({
-  //     ...prevFormData,
-  //     campus: prevFormData.campus.includes(campusID)
-  //       ? prevFormData.campus.filter((id) => id !== campusID)
-  //       : [...prevFormData.campus, campusID],
-  //   }));
-  // };
-
-
-
-
   const selectedOptions = formData.programCategory.map((id) => {
     const category = programCategory.find(
       (category) => category.programCategoryID === id
@@ -943,7 +966,7 @@ const ProposalFormFirstPage = () => {
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-2 font-bold text-base">
+              {/* <label className="block mb-2 font-bold text-base">
                 Training
                 <input
                   className="ml-2"
@@ -951,7 +974,7 @@ const ProposalFormFirstPage = () => {
                   checked={isChecked}
                   onChange={handleCheckboxChange}
                 />
-              </label>
+              </label> */}
             </div>
           </div>
           {/* First Row */}
@@ -1019,7 +1042,7 @@ const ProposalFormFirstPage = () => {
                 value={projectTypeOptions.find((option) => option.value === formData.projectType)} // Find the selected option
                 onChange={handleProjTypeChange}
                 options={projectTypeOptions}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full"
                 placeholder="Select a project type"
               />
             </div>
@@ -1039,33 +1062,36 @@ const ProposalFormFirstPage = () => {
 
               <Select
                 required
-                options={
-                  projectCategory.length
-                    ? projectCategory.map((category) => ({
-                      value: category.projectCategoryID,
-                      label: category.title,
-                    }))
-                    : []
-                }
+                options={projectCategory.map(category => ({
+                  value: category.projectCategoryID,
+                  label: category.title,
+                }))}
                 isMulti
-                value={formData.projectCategory.map((id) => {
-                  const category = projectCategory.find(
-                    (category) => category.projectCategoryID === id
-                  );
-                  return category
-                    ? { value: category.projectCategoryID, label: category.title }
-                    : null;
-                }).filter(Boolean)}
+                value={formData.projectCategory
+                  .map(id => {
+                    const category = projectCategory.find(
+                      category => category.projectCategoryID === id
+                    );
+                    return category
+                      ? { value: category.projectCategoryID, label: category.title }
+                      : null;
+                  })
+                  .filter(Boolean)}
                 onChange={(selectedOptions) => {
+                  // Update formData with selected category IDs
+                  const selectedValues = selectedOptions?.map(option => option.value) || [];
                   setFormData({
                     ...formData,
-                    projectCategory: selectedOptions.map((option) => option.value),
+                    projectCategory: selectedValues,
                   });
+
+                  // Handle 'Skills Training' selection
+                  handleSkillsTraining(selectedOptions || []);
                 }}
                 classNamePrefix="react-select"
                 className="w-full"
-                placeholder={programCategory.length ? "Select" : "No options available"}
-                isDisabled={!programCategory.length} // Disable when no options
+                placeholder={projectCategory.length ? "Select" : "No options available"}
+                isDisabled={!projectCategory.length}
               />
             </div>
           </div>
@@ -1224,26 +1250,80 @@ const ProposalFormFirstPage = () => {
 
 
           {/* Fourth Row */}
-          <div className="grid grid-cols-6 gap-4">
-            {/* <div className="col-span-1">
-              <label className="block mb-2 font-semibold">CAMPUS</label>
-              <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
-                <div className="absolute inset-0 overflow-y-auto">
-                  {campus.map((camp) => (
-                    <div
-                      key={camp.campusID}
-                      className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
-                        formData.campus?.includes(camp.campusID) ? 'bg-blue-100 hover:bg-blue-200' : ''
-                      }`}
-                      onClick={() => handleCampusChange(camp.campusID)}
-                    >
-                      <div className="font-medium">{camp.title}</div>
-                      <div className="text-sm text-gray-600">{camp.abbreviation}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div> */}
+          <div className="grid grid-cols-7 gap-4">
+            {/* CAMPUS */}
+            <div className="col-span-2">
+            <label className="block mb-2 font-semibold">
+                CAMPUS
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Select the campus/campuses, including those in collaboration."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
+              <Select
+                required
+                options={campus.map((col) => ({
+                  value: col.campusID,
+                  title: col.name
+                }))}
+                components={{
+                  Option: CustomOption,
+                  SingleValue: CustomSingleValue,
+                }}
+                getOptionLabel={(e) => `${e.title}`}
+                isMulti
+                value={formData.campus.map((id) => {
+                  const col = campus.find((c) => c.campusID === id);
+                  return col
+                    ? {
+                      value: col.campusID,
+                      title: col.name,
+                    }
+                    : null;
+                }).filter(Boolean)}
+                onChange={(selectedOptions) => {
+                  setFormData({
+                    ...formData,
+                    campus: selectedOptions.map((option) => option.value),
+                  });
+                }}
+                classNamePrefix="react-select"
+                className="w-full"
+                placeholder="Select campus"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    display: 'flex',
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
+                    scrollbarWidth: 'thin',
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? 'rgba(59, 130, 246, 0.1)'
+                      : state.isFocused
+                        ? 'rgba(229, 231, 235, 1)'
+                        : 'transparent',
+                    color: state.isSelected ? '#2563EB' : base.color,
+                  }),
+                  multiValue: (base) => ({
+                    ...base,
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  }),
+                  multiValueLabel: (base) => ({
+                    ...base,
+                    color: '#2563EB',
+                  }),
+                }}
+              />
+            </div>
+
+            {/* COLLEGE */}
             <div className="col-span-2">
               <label className="block mb-2 font-semibold">
                 COLLEGE
@@ -1287,6 +1367,7 @@ const ProposalFormFirstPage = () => {
                 }}
                 classNamePrefix="react-select"
                 className="w-full"
+                isDisabled={formData.campus.length === 0}
                 placeholder="Select colleges"
                 styles={{
                   control: (base) => ({

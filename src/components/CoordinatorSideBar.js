@@ -1,10 +1,16 @@
 import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 function CoordinatorSidebar() {
-    const [isSubMenuVisible, setIsSubMenuVisible] = useState(false);
+    const [isProposalMenuVisible, setProposalMenuVisible] = useState(false);
+    const [isUserMenuVisible, setUserMenuVisible] = useState(false);
 
-    const toggleSubMenu = () => {
-        setIsSubMenuVisible(!isSubMenuVisible)
+    const toggleProposalMenu = () => {
+        setProposalMenuVisible(!isProposalMenuVisible);
+    };
+
+    const toggleUserMenu = () => {
+        setUserMenuVisible(!isUserMenuVisible);
     };
 
     return (
@@ -15,20 +21,91 @@ function CoordinatorSidebar() {
             <nav>
                 <ul>
                     <li>
-                        <a href="#" className="text-lg font-bold block px-6 py-3 text-yellow-500">Dashboard</a>
+                        <NavLink 
+                            to="/coordinatordashboard" 
+                            className={({ isActive }) => 
+                                `text-lg font-bold block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
+                            }>
+                            Dashboard
+                        </NavLink>
                     </li>
                     <li>
-                        <button onClick={toggleSubMenu} className="text-lg w-full text-left block px-6 py-3 hover:text-yellow-500 focus:outline-none">
+                        <button onClick={toggleProposalMenu} className="text-lg w-full text-left block px-6 py-3 hover:text-yellow-500 focus:outline-none">
                             Project Proposal
                         </button>
-                        <ul className={`${isSubMenuVisible ? '' : 'hidden'} bg-indigo-900`}>
-                            <li><a href="#" className="block px-6 py-3 hover:text-yellow-500">Approved</a></li>
-                            <li><a href="#" className="block px-6 py-3 hover:text-yellow-500">Ongoing</a></li>
-                            <li><a href="#" className="block px-6 py-3 hover:text-yellow-500">Denied</a></li>
+                        <ul className={`${isProposalMenuVisible ? '' : 'hidden'} bg-indigo-900`}>
+                            <li>
+                                <NavLink 
+                                    to="/approved" 
+                                    className={({ isActive }) => 
+                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
+                                    }>
+                                    Approved
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink 
+                                    to="/ongoing" 
+                                    className={({ isActive }) => 
+                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
+                                    }>
+                                    Ongoing
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink 
+                                    to="/denied" 
+                                    className={({ isActive }) => 
+                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
+                                    }>
+                                    Denied
+                                </NavLink>
+                            </li>
                         </ul>
                     </li>
-                    <li><a href="#" className="text-lg block px-6 py-3 hover:text-yellow-500">Documents</a></li>
-                    <li><a href="#" className="text-lg block px-6 py-3 hover:text-yellow-500">Log out</a></li>
+                    <li>
+                        <button onClick={toggleUserMenu} className="text-lg w-full text-left block px-6 py-3 hover:text-yellow-500 focus:outline-none">
+                            Accounts
+                        </button>
+                        <ul className={`${isUserMenuVisible ? '' : 'hidden'} bg-indigo-900`}>
+                            <li>
+                                <NavLink 
+                                    to="/coordusers" 
+                                    className={({ isActive }) => 
+                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
+                                    }>
+                                    User List
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink 
+                                    to="/createuser:id" 
+                                    className={({ isActive }) => 
+                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
+                                    }>
+                                    Create User
+                                </NavLink>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <NavLink 
+                            to="/documents-coord" 
+                            className={({ isActive }) => 
+                                `text-lg block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
+                            }>
+                            Documents
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink 
+                            to="/logout" 
+                            className={({ isActive }) => 
+                                `text-lg block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
+                            }>
+                            Log out
+                        </NavLink>
+                    </li>
                 </ul>
             </nav>
         </div>

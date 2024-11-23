@@ -52,6 +52,7 @@ import CollegeDeanReviewList from "./pages/collegeDean/CollegeDeanReviewList";
 import CollegeDeanReviewProject from "./pages/collegeDean/CollegeDeanReviewProject";
 import ProjLeadViewProjectProgress from "./pages/projectlead/ProjLeadViewProjectProgress";
 import EStaffProfilePage from "./pages/estaff/EStaffProfilePage";
+import DirectorProjectStatistics from "./pages/director/DirectorProjectStatistics";
 function App() {
   return (
     <Routes>
@@ -87,6 +88,7 @@ function App() {
         <Route path="/director" element={<DirectorDashboard/>} />
         <Route path="/review-project/:reviewID/:projectID" element={<DirectorReviewProject/>} />
         <Route path="/review-list/:status/:document" element={<DirectorReviewList/>}/>
+        <Route path="director-project-statistics" element={<DirectorProjectStatistics/>}/>
 
         {/*VPAPLA Routes  */}
         <Route path="/vpala" element={<VPALADashboard/>}/>

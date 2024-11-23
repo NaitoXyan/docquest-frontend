@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Topbar from "../../components/Topbar";
 import EstaffSideBar from "../../components/EstaffSideBar";
+import { NavLink } from "react-router-dom";
 
 const EstaffDashboard = () => {
     const [users, setUsers] = useState([]);
@@ -61,25 +62,45 @@ const EstaffDashboard = () => {
                     <h1 className="text-2xl font-bold mb-5">DOCUMENTS OVERVIEW</h1>
 
                     <div className="grid grid-cols-4 gap-4 mb-10">
-                        <div className="bg-gray-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                        <div className="bg-blue-300 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold text-black">Campus Proposal</h2>
                             <h2 className="text-7xl">{campusProposalCount}</h2>
-                            <button className="mt-2 underline text-black">View</button>
+                            <NavLink
+                                to="/campus-proposal"
+                                className="mt-2 underline text-black hover:text-blue-600"
+                            >
+                                View
+                            </NavLink>
                         </div>
-                        <div className="bg-gray-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                        <div className="bg-green-300 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold text-black">Shared Proposal</h2>
                             <h2 className="text-7xl">{sharedProposalCount}</h2>
-                            <button className="mt-2 underline text-black">View</button>
+                            <NavLink
+                                to="/shared-proposal"
+                                className="mt-2 underline text-black hover:text-blue-600"
+                            >
+                                View
+                            </NavLink>
                         </div>
-                        <div className="bg-gray-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                        <div className="bg-orange-300 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold text-black">Load Trainers</h2>
                             <h2 className="text-7xl">{loadTrainersCount}</h2>
-                            <button className="mt-2 underline text-black">View</button>
+                            <NavLink
+                                to="/load-trainers"
+                                className="mt-2 underline text-black hover:text-blue-600"
+                            >
+                                View
+                            </NavLink>
                         </div>
-                        <div className="bg-gray-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                        <div className="bg-purple-300 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold text-black">MOA/MOU</h2>
                             <h2 className="text-7xl">{moaMouCount}</h2>
-                            <button className="mt-2 underline text-black">View</button>
+                            <NavLink
+                                to="/moa-mou"
+                                className="mt-2 underline text-black hover:text-blue-600"
+                            >
+                                View
+                            </NavLink>
                         </div>
                     </div>
 
@@ -112,12 +133,17 @@ const EstaffDashboard = () => {
                             </table>
                         </div>
                         <div className="mt-4 flex justify-between items-center">
-                            <div>Showing {indexOfFirstUser + 1} to {Math.min(indexOfLastUser, users.length)} of {users.length} entries</div>
+                            <div>
+                                Showing {indexOfFirstUser + 1} to{" "}
+                                {Math.min(indexOfLastUser, users.length)} of {users.length} entries
+                            </div>
                             <div className="flex space-x-2">
                                 <button
                                     onClick={prevPage}
                                     disabled={currentPage === 1}
-                                    className={`px-3 py-1 rounded-lg ${currentPage === 1 ? 'bg-gray-300' : 'bg-gray-100'}`}
+                                    className={`px-3 py-1 rounded-lg ${
+                                        currentPage === 1 ? "bg-gray-300" : "bg-gray-100"
+                                    }`}
                                 >
                                     Previous
                                 </button>
@@ -125,7 +151,9 @@ const EstaffDashboard = () => {
                                 <button
                                     onClick={nextPage}
                                     disabled={currentPage === totalPages}
-                                    className={`px-3 py-1 rounded-lg ${currentPage === totalPages ? 'bg-gray-300' : 'bg-gray-100'}`}
+                                    className={`px-3 py-1 rounded-lg ${
+                                        currentPage === totalPages ? "bg-gray-300" : "bg-gray-100"
+                                    }`}
                                 >
                                     Next
                                 </button>

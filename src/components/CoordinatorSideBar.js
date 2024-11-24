@@ -29,40 +29,7 @@ function CoordinatorSidebar() {
                             Dashboard
                         </NavLink>
                     </li>
-                    <li>
-                        <button onClick={toggleProposalMenu} className="text-lg w-full text-left block px-6 py-3 hover:text-yellow-500 focus:outline-none">
-                            Project Proposal
-                        </button>
-                        <ul className={`${isProposalMenuVisible ? '' : 'hidden'} bg-indigo-900`}>
-                            <li>
-                                <NavLink 
-                                    to="/approved" 
-                                    className={({ isActive }) => 
-                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
-                                    }>
-                                    Approved
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink 
-                                    to="/ongoing" 
-                                    className={({ isActive }) => 
-                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
-                                    }>
-                                    Ongoing
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink 
-                                    to="/denied" 
-                                    className={({ isActive }) => 
-                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
-                                    }>
-                                    Denied
-                                </NavLink>
-                            </li>
-                        </ul>
-                    </li>
+                  
                     <li>
                         <button onClick={toggleUserMenu} className="text-lg w-full text-left block px-6 py-3 hover:text-yellow-500 focus:outline-none">
                             Accounts

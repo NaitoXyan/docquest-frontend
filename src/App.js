@@ -60,6 +60,7 @@ import SharedProposal from "./pages/estaff/SharedProposal";
 import LoadTrainers from "./pages/estaff/LoadTrainers";
 import MoaMou from "./pages/estaff/MoaMou";
 import DirectorProjectStatistics from "./pages/director/DirectorProjectStatistics";
+import CoordProjectStatus from "./pages/coordinator/CoordProjectStatus";
 
 function App() {
   return (
@@ -125,6 +126,8 @@ function App() {
         <Route path="/createuser:id" element={<CreateUserCoord />} />
         <Route path="/documents-coord" element={<DocListCoord />} />
         
+        <Route path="/projects/:statusFilterParam" element={<CoordProjectStatus />} />
+
         {/* Create proposal routes */}
         {<Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} />}
 

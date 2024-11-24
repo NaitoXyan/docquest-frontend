@@ -49,7 +49,8 @@ const ProposalFormFirstPage = () => {
     program: [],
     accreditationLevel: "",
     beneficiaries: "",
-    targetImplementation: "",
+    targetStartDateImplementation: "",
+    targetEndDateImplementation: "",
     totalHours: 0,
     background: "",
     projectComponent: "",
@@ -1520,8 +1521,8 @@ const ProposalFormFirstPage = () => {
               </label>
               <input
               required
-                name="targetImplementation"
-                value={formData.targetImplementation}
+                name="targetStartDateImplementation"
+                value={formData.targetStartDateImplementation}
                 onChange={handleFormChange}
                 type="month"
                 min={new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().slice(0, 7)}  // Sets the minimum date to the previous month
@@ -1542,8 +1543,8 @@ const ProposalFormFirstPage = () => {
               </label>
               <input
               required
-                name="targetImplementation"
-                value={formData.targetImplementation}
+                name="targetEndDateImplementation"
+                value={formData.targetEndDateImplementation}
                 onChange={handleFormChange}
                 type="month"
                 min={new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().slice(0, 7)}  // Sets the minimum date to the previous month

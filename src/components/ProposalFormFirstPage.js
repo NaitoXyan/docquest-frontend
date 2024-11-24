@@ -22,6 +22,7 @@ const ProposalFormFirstPage = () => {
   const [proponents, setProponents] = useState([]);
   const [programCategory, setProgramCategory] = useState([]);
   const [projectCategory, setProjectCategory] = useState([]);
+  const [campus, setCampus] = useState([]);
   const [college, setCollege] = useState([]);
   const [program, setProgram] = useState([]);
   const [nonUserProponents, setNonUserProponents] = useState([]);
@@ -38,6 +39,9 @@ const ProposalFormFirstPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const [deliverables, setDeliverables] = useState([]);
+  const [isAgencyModalOpen, setIsAgencyModalOpen] = useState(false);
+  const [newAgencyName, setNewAgencyName] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     userID: userID,
@@ -181,6 +185,7 @@ const ProposalFormFirstPage = () => {
     },
     deliverables: [],
 
+    campus: [],
     college: [],
     region: '',
     province: '',
@@ -682,31 +687,55 @@ const ProposalFormFirstPage = () => {
     fetchAgencies();
   }, []);
 
-  // Handle agency selection and adding new agency
   const handleAgencyFormChange = async (e) => {
     const { value } = e.target;
 
     if (value === 'add_new_agency') {
-      const newAgencyName = prompt('Enter the name of the new agency:');
-
-      if (newAgencyName) {
-        try {
-          // Send POST request to create the new agency
-          const response = await axios.post('http://127.0.0.1:8000/create_agency', {
-            agencyName: newAgencyName,
-          });
-
-          const newAgency = { agencyID: response.data.agencyID, agencyName: newAgencyName };
-
-          // Add the new agency to the list of agencies and set the selected agency
-          setAgencies((prevAgencies) => [...prevAgencies, newAgency]);
-          setFormData((prevFormData) => ({ ...prevFormData, agency: [newAgency.agencyID] }));  // Wrap in array
-        } catch (error) {
-          console.error('Error creating new agency:', error);
-        }
-      }
+      setIsAgencyModalOpen(true);
     } else {
-      setFormData((prevFormData) => ({ ...prevFormData, agency: [value] }));  // Wrap in array
+      setFormData(prevData => ({
+        ...prevData,
+        agency: [value] // Maintain array structure
+      }));
+    }
+  };
+
+  const handleSubmitNewAgency = async () => {
+    if (!newAgencyName.trim()) return;
+    
+    setIsSubmitting(true);
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/create_agency', {
+        agencyName: newAgencyName,
+      });
+
+      const newAgency = { 
+        agencyID: response.data.agencyID, 
+        agencyName: newAgencyName 
+      };
+
+      // Update agencies list
+      setAgencies(prevAgencies => [...prevAgencies, newAgency]);
+      
+      // Update form data maintaining the entire structure
+      setFormData(prevData => ({
+        ...prevData,
+        agency: [newAgency.agencyID] // Maintain array structure
+      }));
+
+      setIsAgencyModalOpen(false);
+      setNewAgencyName('');
+    } catch (error) {
+      console.error('Error creating new agency:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmitNewAgency();
     }
   };
 
@@ -793,9 +822,14 @@ const ProposalFormFirstPage = () => {
     }));
   };
 
-  const handleCheckboxChange = (event) => {
-    setIsChecked(event.target.checked);
-    setShowTrainers(!showTrainers);
+  const handleSkillsTraining = (selectedOptions) => {
+    // Check if 'Skills Training' is in the selected options
+    const selectedCategories = selectedOptions.map(option => option.label);
+    if (selectedCategories.includes('Skills Training/Capacity Building')) {
+      setShowTrainers(true);
+    } else {
+      setShowTrainers(false);
+    }
   };
 
   const handleProjTypeChange = (selectedOption) => {
@@ -819,9 +853,47 @@ const ProposalFormFirstPage = () => {
 
   // Fetch colleges on component mount
   useEffect(() => {
-    const fetchColleges = async () => {
+    const fetchCampus = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/get_colleges');
+        const response = await axios.get('http://127.0.0.1:8000/get_campuses');
+        setCampus(response.data);
+      } catch (error) {
+        console.error('Error fetching campus:', error);
+      }
+    };
+
+    fetchCampus();
+  }, []);
+
+  // Handle college selection - toggle selection on click
+  const handleCampusChange = (campusID) => {
+    setFormData(prev => {
+      const newCampuses = prev.campus.includes(campusID)
+        ? prev.campus.filter(id => id !== campusID)  // Remove if already selected
+        : [...prev.campus, campusID];                // Add if not selected
+
+      return {
+        ...prev,
+        campus: newCampuses,
+        college: [],
+        program: [] // Clear program selection when colleges change
+      };
+    });
+  };
+
+  // Fetch programs whenever selected colleges change
+  useEffect(() => {
+    const fetchColleges = async () => {
+      if (formData.campus.length === 0) {
+        setCollege([]); // Clear programs if no college is selected
+        setFormData(prev => ({ ...prev, college: [] })); // Also clear selected programs
+        return;
+      }
+
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/get_colleges/', {
+          campusIDs: formData.campus,
+        });
         setCollege(response.data);
       } catch (error) {
         console.error('Error fetching colleges:', error);
@@ -829,7 +901,7 @@ const ProposalFormFirstPage = () => {
     };
 
     fetchColleges();
-  }, []);
+  }, [formData.campus]);
 
   // Handle college selection - toggle selection on click
   const handleCollegeChange = (collegeId) => {
@@ -882,28 +954,6 @@ const ProposalFormFirstPage = () => {
     });
   };
 
-
-  // const [formDataCampus, setFormDataCampus] = useState({
-  //   campus: [], // Ensure campus is initialized as an array
-  // });
-
-  // const [campus, setCampus] = useState([
-  //   { campusID: 1, title: 'Campus A', abbreviation: 'CA' },
-  //   { campusID: 2, title: 'Campus B', abbreviation: 'CB' },
-  // ]);
-
-  // const handleCampusChange = (campusID) => {
-  //   setFormData((prevFormData) => ({
-  //     ...prevFormData,
-  //     campus: prevFormData.campus.includes(campusID)
-  //       ? prevFormData.campus.filter((id) => id !== campusID)
-  //       : [...prevFormData.campus, campusID],
-  //   }));
-  // };
-
-
-
-
   const selectedOptions = formData.programCategory.map((id) => {
     const category = programCategory.find(
       (category) => category.programCategoryID === id
@@ -944,7 +994,7 @@ const ProposalFormFirstPage = () => {
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-2 font-bold text-base">
+              {/* <label className="block mb-2 font-bold text-base">
                 Training
                 <input
                   className="ml-2"
@@ -952,7 +1002,7 @@ const ProposalFormFirstPage = () => {
                   checked={isChecked}
                   onChange={handleCheckboxChange}
                 />
-              </label>
+              </label> */}
             </div>
           </div>
           {/* First Row */}
@@ -1020,7 +1070,7 @@ const ProposalFormFirstPage = () => {
                 value={projectTypeOptions.find((option) => option.value === formData.projectType)} // Find the selected option
                 onChange={handleProjTypeChange}
                 options={projectTypeOptions}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="w-full"
                 placeholder="Select a project type"
               />
             </div>
@@ -1040,33 +1090,36 @@ const ProposalFormFirstPage = () => {
 
               <Select
                 required
-                options={
-                  projectCategory.length
-                    ? projectCategory.map((category) => ({
-                      value: category.projectCategoryID,
-                      label: category.title,
-                    }))
-                    : []
-                }
+                options={projectCategory.map(category => ({
+                  value: category.projectCategoryID,
+                  label: category.title,
+                }))}
                 isMulti
-                value={formData.projectCategory.map((id) => {
-                  const category = projectCategory.find(
-                    (category) => category.projectCategoryID === id
-                  );
-                  return category
-                    ? { value: category.projectCategoryID, label: category.title }
-                    : null;
-                }).filter(Boolean)}
+                value={formData.projectCategory
+                  .map(id => {
+                    const category = projectCategory.find(
+                      category => category.projectCategoryID === id
+                    );
+                    return category
+                      ? { value: category.projectCategoryID, label: category.title }
+                      : null;
+                  })
+                  .filter(Boolean)}
                 onChange={(selectedOptions) => {
+                  // Update formData with selected category IDs
+                  const selectedValues = selectedOptions?.map(option => option.value) || [];
                   setFormData({
                     ...formData,
-                    projectCategory: selectedOptions.map((option) => option.value),
+                    projectCategory: selectedValues,
                   });
+
+                  // Handle 'Skills Training' selection
+                  handleSkillsTraining(selectedOptions || []);
                 }}
                 classNamePrefix="react-select"
                 className="w-full"
-                placeholder={programCategory.length ? "Select" : "No options available"}
-                isDisabled={!programCategory.length} // Disable when no options
+                placeholder={projectCategory.length ? "Select" : "No options available"}
+                isDisabled={!projectCategory.length}
               />
             </div>
           </div>
@@ -1225,26 +1278,80 @@ const ProposalFormFirstPage = () => {
 
 
           {/* Fourth Row */}
-          <div className="grid grid-cols-6 gap-4">
-            {/* <div className="col-span-1">
-              <label className="block mb-2 font-semibold">CAMPUS</label>
-              <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
-                <div className="absolute inset-0 overflow-y-auto">
-                  {campus.map((camp) => (
-                    <div
-                      key={camp.campusID}
-                      className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
-                        formData.campus?.includes(camp.campusID) ? 'bg-blue-100 hover:bg-blue-200' : ''
-                      }`}
-                      onClick={() => handleCampusChange(camp.campusID)}
-                    >
-                      <div className="font-medium">{camp.title}</div>
-                      <div className="text-sm text-gray-600">{camp.abbreviation}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div> */}
+          <div className="grid grid-cols-7 gap-4">
+            {/* CAMPUS */}
+            <div className="col-span-2">
+            <label className="block mb-2 font-semibold">
+                CAMPUS
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Select the campus/campuses, including those in collaboration."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
+              <Select
+                required
+                options={campus.map((col) => ({
+                  value: col.campusID,
+                  title: col.name
+                }))}
+                components={{
+                  Option: CustomOption,
+                  SingleValue: CustomSingleValue,
+                }}
+                getOptionLabel={(e) => `${e.title}`}
+                isMulti
+                value={formData.campus.map((id) => {
+                  const col = campus.find((c) => c.campusID === id);
+                  return col
+                    ? {
+                      value: col.campusID,
+                      title: col.name,
+                    }
+                    : null;
+                }).filter(Boolean)}
+                onChange={(selectedOptions) => {
+                  setFormData({
+                    ...formData,
+                    campus: selectedOptions.map((option) => option.value),
+                  });
+                }}
+                classNamePrefix="react-select"
+                className="w-full"
+                placeholder="Select campus"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    display: 'flex',
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
+                    scrollbarWidth: 'thin',
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? 'rgba(59, 130, 246, 0.1)'
+                      : state.isFocused
+                        ? 'rgba(229, 231, 235, 1)'
+                        : 'transparent',
+                    color: state.isSelected ? '#2563EB' : base.color,
+                  }),
+                  multiValue: (base) => ({
+                    ...base,
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  }),
+                  multiValueLabel: (base) => ({
+                    ...base,
+                    color: '#2563EB',
+                  }),
+                }}
+              />
+            </div>
+
+            {/* COLLEGE */}
             <div className="col-span-2">
               <label className="block mb-2 font-semibold">
                 COLLEGE
@@ -1288,6 +1395,7 @@ const ProposalFormFirstPage = () => {
                 }}
                 classNamePrefix="react-select"
                 className="w-full"
+                isDisabled={formData.campus.length === 0}
                 placeholder="Select colleges"
                 styles={{
                   control: (base) => ({
@@ -1503,6 +1611,57 @@ const ProposalFormFirstPage = () => {
               </select>
             </div>
           </div>
+
+          {/* Modal */}
+          {isAgencyModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold">Add New Agency</h2>
+                  <button 
+                    onClick={() => setIsAgencyModalOpen(false)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    ✕
+                  </button>
+                </div>
+                
+                <div className="mb-6">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
+                    Agency Name
+                    <span className="text-red-500 ml-1">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={newAgencyName}
+                    onChange={(e) => setNewAgencyName(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Enter agency name"
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    autoFocus
+                  />
+                </div>
+
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => setIsAgencyModalOpen(false)}
+                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSubmitNewAgency}
+                    disabled={isSubmitting || !newAgencyName.trim()}
+                    className={`px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none ${
+                      (isSubmitting || !newAgencyName.trim()) && 'opacity-50 cursor-not-allowed'
+                    }`}
+                  >
+                    {isSubmitting ? 'Adding...' : 'Add Agency'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
 
           {/* Seventh Row */}

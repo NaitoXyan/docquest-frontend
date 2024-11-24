@@ -34,7 +34,7 @@ const ProponentsDeliverables = ({ formData, setFormData }) => {
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-4 mt-10">Proponents Deliverables</h2>
+      <h2 className="text-2xl font-semibold mb-4 mt-10">Checklist of Documentary Requirements</h2>
       <div className="bg-white p-6 rounded-lg shadow-md">
         <div className="grid grid-cols-2 gap-2 text-gray-700 mr-5">
           {deliverables.map((item) => (

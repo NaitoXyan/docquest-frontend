@@ -305,6 +305,42 @@ const CreateUser = () => {
                         >
                           Villanueva
                         </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSelectCampus("Alubijid")}
+                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                        >
+                          Alubijid
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSelectCampus("Panaon")}
+                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                        >
+                          Panaon
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSelectCampus("Jasaan")}
+                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                        >
+                          Jasaan
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSelectCampus("Balubal")}
+                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                        >
+                          Balubal
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSelectCampus("Oroquieta")}
+                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+                        >
+                          Oroquieta
+                        </button>
+                        
                       </div>
                     </div>
                   )}

@@ -109,6 +109,7 @@ const LoginPage = () => {
 
       </div>
       <div className=" flex absolute bottom-5 left-5 items-center" style={{ height: '13%' }}>
+        <img src="/images/ustplogo.png" alt="DocQuestLogo" style={{ paddingBottom: 10, height: '86%', marginRight: 4, marginTop: 5}} />
         <img src="/images/E1.png" alt="DocQuestLogo" style={{ paddingBottom: 10, height: '86%', marginRight: 4, marginTop: 5}} />
         <img src="/images/C1.png" alt="DocQuestLogo" style={{ height: '70%', marginRight: 13 }} />
         <img src="/images/D1.png" alt="DocQuestLogo" style={{ height: '70%',}} />

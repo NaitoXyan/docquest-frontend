@@ -190,7 +190,7 @@ const CreateUserStaffCoord = () => {
               <Dropdown
                 label="Campus"
                 name="campus"
-                options={["Cagayan de Oro", "Claveria", "Villanueva"]}
+                options={["Alubijid", "Balubal", "Cagayan de Oro", "Claveria","Jasaan", "Panaon", "Oroquieta", "Villanueva"]}
                 value={formData.campus}
                 onSelect={handleSelectCampus}
                 toggleDropdown={toggleDropdownCampus}

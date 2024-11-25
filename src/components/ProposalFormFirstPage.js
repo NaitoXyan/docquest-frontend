@@ -53,7 +53,8 @@ const ProposalFormFirstPage = () => {
     program: [],
     accreditationLevel: "",
     beneficiaries: "",
-    targetImplementation: "",
+    targetStartDateImplementation: "",
+    targetEndDateImplementation: "",
     totalHours: 0,
     background: "",
     projectComponent: "",
@@ -361,21 +362,26 @@ const ProposalFormFirstPage = () => {
 
   const handleTrainerChange = (index, e) => {
     const { name, value } = e.target;
-    const updatedTrainers = formData.loadingOfTrainers.map((trainer, i) => {
-      if (i === index) {
-        let updatedTrainer = { ...trainer, [name]: value };
-
-        // Automatically calculate totalBudgetRequirement when budget values change
-        if (name === 'ustpBudget' || name === 'agencyBudget') {
-          updatedTrainer.totalBudgetRequirement = parseFloat(updatedTrainer.ustpBudget) + parseFloat(updatedTrainer.agencyBudget);
-        }
-        return updatedTrainer;
-      }
-      return trainer;
+    const updatedTrainers = [...formData.loadingOfTrainers];
+  
+    // Update the specific trainer's field
+    updatedTrainers[index] = {
+      ...updatedTrainers[index],
+      [name]: value,
+    };
+  
+    // Recalculate the Total Budgetary Requirement
+    const hours = parseFloat(updatedTrainers[index].hours) || 0;
+    const agencyBudget = parseFloat(updatedTrainers[index].agencyBudget) || 0;
+    updatedTrainers[index].totalBudgetRequirement = hours * 150 + agencyBudget;
+  
+    setFormData({
+      ...formData,
+      loadingOfTrainers: updatedTrainers,
     });
-
-    setFormData({ ...formData, loadingOfTrainers: updatedTrainers });
   };
+  
+  
 
   const addTrainerRow = () => {
     setFormData({
@@ -388,9 +394,18 @@ const ProposalFormFirstPage = () => {
   };
 
   const removeTrainerRow = (index) => {
+    // Prevent removal of the first row
+    if (index === 0) {
+      alert("The first row cannot be removed.");
+      return;
+    }
+  
+    // Proceed to remove the specified row
     const updatedTrainers = formData.loadingOfTrainers.filter((_, i) => i !== index);
     setFormData({ ...formData, loadingOfTrainers: updatedTrainers });
   };
+  
+  
 
   // Function to handle changes in proponents inputs
   const handleNonUserProponentChange = (index, value) => {
@@ -982,6 +997,50 @@ const ProposalFormFirstPage = () => {
     );
   };
 
+    // Function to remove a specific proponent, but not the first one
+    const handleRemoveProponent = (index) => {
+      if (index > 0) {
+        const updatedProponents = formData.nonUserProponents.filter((_, i) => i !== index);
+        setFormData({
+          ...formData,
+          nonUserProponents: updatedProponents,
+        });
+      }
+    };
+
+      // Function to remove a specific objective, but not the first one
+      const handleRemoveObjective = (index) => {
+        if (index > 0) {
+          const updatedObjectives = formData.goalsAndObjectives.filter((_, i) => i !== index);
+          setFormData({
+            ...formData,
+            goalsAndObjectives: updatedObjectives,
+          });
+        }
+      };
+
+      // Function to remove a specific activity row, but not the first one
+      const handleRemoveActivityRow = (index) => {
+        if (index > 0) { // Prevent removal of the first row
+          const updatedActivities = formData.projectActivities.filter((_, i) => i !== index);
+          setFormData({
+            ...formData,
+            projectActivities: updatedActivities,
+          });
+        }
+      };
+
+      // Function to remove a specific person, but not the first one
+      const handleRemovePerson = (index) => {
+        if (index > 0) { // Prevent removal of the first row (person)
+          const updatedTeam = formData.projectManagementTeam.filter((_, i) => i !== index);
+          setFormData({
+            ...formData,
+            projectManagementTeam: updatedTeam,
+          });
+        }
+      };
+
   return (
     <div className="flex flex-col mt-14 px-10">
       <h1 className="text-2xl font-semibold mb-5 mt-3">
@@ -1240,15 +1299,26 @@ const ProposalFormFirstPage = () => {
               </label>
               {/* Render input fields for each proponent */}
               {formData.nonUserProponents.map((proponentObj, index) => (
-                <input
-                  required
-                  key={index}
-                  name={`proponent-${index}`}
-                  value={proponentObj.name} // Access 'name' field in the object
-                  onChange={(e) => handleNonUserProponentChange(index, e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded mt-2"
-                  placeholder={`Proponent ${index + 1}`}
-                />
+                <div key={index} className="flex items-center space-x-2 mb-2">
+                  <input
+                    required
+                    name={`proponent-${index}`}
+                    value={proponentObj.name} // Access 'name' field in the object
+                    onChange={(e) => handleNonUserProponentChange(index, e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                    placeholder={`Proponent ${index + 1}`}
+                  />
+                  {/* Remove Button for specific row, but not for the first row */}
+                  {index > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveProponent(index)} // Call the remove function
+                      className="bg-red-500 text-white px-4 py-2 rounded"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
               ))}
 
               <div className="flex space-x-2 mt-2">
@@ -1274,7 +1344,6 @@ const ProposalFormFirstPage = () => {
               </div>
             </div>
           </div>
-
 
           {/* Fourth Row */}
           <div className="grid grid-cols-7 gap-4">
@@ -1679,8 +1748,8 @@ const ProposalFormFirstPage = () => {
               </label>
               <input
               required
-                name="targetImplementation"
-                value={formData.targetImplementation}
+                name="targetStartDateImplementation"
+                value={formData.targetStartDateImplementation}
                 onChange={handleFormChange}
                 type="month"
                 min={new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().slice(0, 7)}  // Sets the minimum date to the previous month
@@ -1701,8 +1770,8 @@ const ProposalFormFirstPage = () => {
               </label>
               <input
               required
-                name="targetImplementation"
-                value={formData.targetImplementation}
+                name="targetEndDateImplementation"
+                value={formData.targetEndDateImplementation}
                 onChange={handleFormChange}
                 type="month"
                 min={new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().slice(0, 7)}  // Sets the minimum date to the previous month
@@ -1925,15 +1994,26 @@ const ProposalFormFirstPage = () => {
 
               {/* Render input fields for each objective */}
               {formData.goalsAndObjectives.map((goal, index) => (
-                <textarea
-                required
-                  key={index}
-                  name={`objective-${index}`}
-                  value={goal.goalsAndObjectives}
-                  onChange={(e) => handleObjectiveChange(index, e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded mt-2"
-                  placeholder={`Objective ${index + 1}`}
-                />
+                <div key={index} className="flex items-center space-x-2 mb-2">
+                  <textarea
+                    required
+                    name={`objective-${index}`}
+                    value={goal.goalsAndObjectives}
+                    onChange={(e) => handleObjectiveChange(index, e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded mt-2"
+                    placeholder={`Objective ${index + 1}`}
+                  />
+                  {/* Remove button visible only for rows other than the first */}
+                  {index > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveObjective(index)} // Call the remove function
+                      className="bg-red-500 text-white px-4 py-2 rounded"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
               ))}
 
               <div className="flex space-x-2 mt-2">
@@ -2010,7 +2090,7 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <textarea
-                required
+                  required
                   name="objective"
                   value={activity.objective}
                   onChange={(e) => handleActivityChange(index, e)}
@@ -2024,7 +2104,7 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <textarea
-                required
+                  required
                   name="involved"
                   value={activity.involved}
                   onChange={(e) => handleActivityChange(index, e)}
@@ -2038,10 +2118,10 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
-                required
+                  required
                   name="targetDate"
-                  value={formData.targetDate}
-                  onChange={handleFormChange}
+                  value={activity.targetDate}
+                  onChange={(e) => handleActivityChange(index, e)}
                   type="month"
                   className="w-full p-2 border border-gray-300 rounded"
                   min={new Date().toISOString().slice(0, 7)} // Current month and year
@@ -2054,17 +2134,30 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
-                required
+                  required
                   name="personResponsible"
                   value={activity.personResponsible}
                   onChange={(e) => handleActivityChange(index, e)}
                   className="w-full p-2 border border-gray-300 rounded"
-                ></input>
+                />
+              </div>
+
+              {/* Remove Button for specific row (but not the first one) */}
+              <div className="col-span-4 mt-2 flex justify-end">
+                {index > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveActivityRow(index)} // Remove specific activity row
+                    className="bg-red-500 text-white px-4 py-2 rounded"
+                  >
+                    Remove Row
+                  </button>
+                )}
               </div>
             </div>
           ))}
 
-          {/* Add Button and remove button */}
+          {/* Add Button and Remove Button */}
           <div className="flex space-x-2 mt-2">
             <button
               type="button"
@@ -2131,15 +2224,26 @@ const ProposalFormFirstPage = () => {
 
               {/* Render input fields for each TRAINER */}
               {formData.projectManagementTeam.map((personObj, index) => (
-                <input
-                required
-                  key={index}
-                  name={`person-${index}`}
-                  value={personObj.name} // Access 'name' field in the object
-                  onChange={(e) => handleProjectManagementTeamChange(index, e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded mt-2"
-                  placeholder={`Person ${index + 1}`}
-                />
+                <div key={index} className="flex items-center space-x-2">
+                  <input
+                    required
+                    name={`person-${index}`}
+                    value={personObj.name} // Access 'name' field in the object
+                    onChange={(e) => handleProjectManagementTeamChange(index, e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded mt-2"
+                    placeholder={`Person ${index + 1}`}
+                  />
+                  {/* Remove Button for specific row (but not the first one) */}
+                  {index > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemovePerson(index)} // Remove specific person from the list
+                      className="bg-red-500 text-white px-4 py-2 rounded"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
               ))}
 
               <div className="flex space-x-2 mt-2">
@@ -2166,6 +2270,7 @@ const ProposalFormFirstPage = () => {
             </div>
           </div>
         </div>
+
 
         {/* BUDGETARY REQUIREMENTS */}
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -2259,7 +2364,7 @@ const ProposalFormFirstPage = () => {
                   <button
                     type="button"
                     onClick={() => removeBudgetItem(index)}
-                    className="p-1 text-xl text-red-500 font-bold"
+                    className="p-1 text-3xl text-red-500 font-bold"
                     title="Remove Item"
                   >
                     −
@@ -2494,119 +2599,125 @@ const ProposalFormFirstPage = () => {
         </div>
 
         {showTrainers && (
-          <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-            <label className="block mb-2 font-bold">LOADING OF TRAINERS</label>
-            <div className="relative">
-              <label className="block mb-2 font-semibold">Trainers:</label>
-              <div className="overflow-x-auto">
-                <table className="min-w-full border">
-                  <thead>
-                    <tr>
-                      <th className="px-4 py-2 border bg-gray-300">Name of Faculty</th>
-                      <th className="px-4 py-2 border bg-gray-300">Training Load</th>
-                      <th className="px-4 py-2 border bg-gray-300">No. of Hours</th>
-                      <th className="px-4 py-2 border bg-gray-300">USTP Budget</th>
-                      <th className="px-4 py-2 border bg-gray-300">Partner Agency Budget</th>
-                      <th className="px-4 py-2 border bg-gray-300">Total Budgetary Requirement</th>
+        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
+          <label className="block mb-2 font-bold">LOADING OF TRAINERS</label>
+          <div className="relative">
+            <label className="block mb-2 font-semibold">Trainers:</label>
+            <div className="overflow-x-auto">
+              <table className="min-w-full border">
+                <thead>
+                  <tr>
+                    <th className="px-4 py-2 border bg-gray-300">Name of Faculty</th>
+                    <th className="px-4 py-2 border bg-gray-300">Training Load</th>
+                    <th className="px-4 py-2 border bg-gray-300">No. of Hours</th>
+                    <th className="px-4 py-2 border bg-gray-300">USTP Budget</th>
+                    <th className="px-4 py-2 border bg-gray-300">Partner Agency Budget</th>
+                    <th className="px-4 py-2 border bg-gray-300">Total Budgetary Requirement</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {formData.loadingOfTrainers.map((trainer, index) => (
+                    <tr key={index}>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="faculty"
+                          value={trainer.faculty}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="text"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Faculty Name"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="trainingLoad"
+                          value={trainer.trainingLoad}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="text"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Training Load"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="hours"
+                          value={trainer.hours}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="number"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Hours"
+                          min="0"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                      <input
+                        name="ustpBudget"
+                        value={150}
+                        readOnly
+                        className="w-full p-1 border border-gray-300 bg-gray-100"
+                        placeholder="USTP Budget"
+                      />
+                    </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="agencyBudget"
+                          value={trainer.agencyBudget}
+                          onChange={(e) => handleTrainerChange(index, e)}
+                          type="number"
+                          required
+                          className="w-full p-1 border border-gray-300 rounded"
+                          placeholder="Partner Agency Budget"
+                          min="0"
+                        />
+                      </td>
+                      <td className="px-4 py-2 border">
+                        <input
+                          name="totalBudgetRequirement"
+                          value={
+                            trainer.hours
+                              ? trainer.hours * 150 + (parseFloat(trainer.agencyBudget) || 0)
+                              : parseFloat(trainer.agencyBudget) || 0
+                          }
+                          readOnly
+                          className="w-full p-1 bg-gray-100"
+                          placeholder="Total"
+                        />
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {formData.loadingOfTrainers.map((trainer, index) => (
-                      <tr key={index}>
-                        <td className="px-4 py-2 border">
-                          <input
-                            name="faculty"
-                            value={trainer.faculty}
-                            onChange={(e) => handleTrainerChange(index, e)}
-                            type="text"
-                            required
-                            className="w-full p-1 border border-gray-300 rounded"
-                            placeholder="Faculty Name"
-                          />
-                        </td>
-                        <td className="px-4 py-2 border">
-                          <input
-                            name="trainingLoad"
-                            value={trainer.trainingLoad}
-                            onChange={(e) => handleTrainerChange(index, e)}
-                            type="text"
-                            required
-                            className="w-full p-1 border border-gray-300 rounded"
-                            placeholder="Training Load"
-                          />
-                        </td>
-                        <td className="px-4 py-2 border">
-                          <input
-                            name="hours"
-                            value={trainer.hours}
-                            onChange={(e) => handleTrainerChange(index, e)}
-                            type="number"
-                            required
-                            className="w-full p-1 border border-gray-300 rounded"
-                            placeholder="Hours"
-                            min="0"
-                          />
-                        </td>
-                        <td className="px-4 py-2 border">
-                          <input
-                            name="ustpBudget"
-                            value={trainer.ustpBudget}
-                            onChange={(e) => handleTrainerChange(index, e)}
-                            type="number"
-                            required
-                            className="w-full p-1 border border-gray-300 rounded"
-                            placeholder="USTP Budget"
-                            min="0"
-                          />
-                        </td>
-                        <td className="px-4 py-2 border">
-                          <input
-                            name="agencyBudget"
-                            value={trainer.agencyBudget}
-                            onChange={(e) => handleTrainerChange(index, e)}
-                            type="number"
-                            required
-                            className="w-full p-1 border border-gray-300 rounded"
-                            placeholder="Partner Agency Budget"
-                            min="0"
-                          />
-                        </td>
-                        <td className="px-4 py-2 border">
-                          <input
-                            name="totalBudgetRequirement"
-                            value={trainer.totalBudgetRequirement}
-                            readOnly
-                            className="w-full p-1"
-                            placeholder="Total"
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              {/* Add and Remove Buttons */}
-              <div className="flex justify-between mt-2">
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Add and Remove Buttons */}
+            <div className="flex justify-between mt-2">
+              <button
+                type="button"
+                onClick={addTrainerRow}
+                className="text-green-500 hover:underline"
+              >
+                + Add Row
+              </button>
+              {formData.loadingOfTrainers.length > 1 && (
                 <button
                   type="button"
-                  onClick={addTrainerRow}
-                  className="text-green-500 hover:underline"
+                  onClick={() => {
+                    if (formData.loadingOfTrainers.length > 1) {
+                      removeTrainerRow(formData.loadingOfTrainers.length - 1);
+                    }
+                  }}
+                  className="text-red-500 hover:underline"
+                  title="Remove Last Row"
                 >
-                  + Add Row
+                  - Remove Row
                 </button>
-                {formData.loadingOfTrainers.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeTrainerRow(formData.loadingOfTrainers.length - 1)}
-                    className="text-red-500 hover:underline"
-                    title="Remove Last Row"
-                  >
-                    - Remove Row
-                  </button>
-                )}
-              </div>
+              )}
             </div>
           </div>
+        </div>
         )}
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">

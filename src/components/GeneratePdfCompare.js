@@ -550,7 +550,7 @@ const MyDocument = ({ projectID }) => {
               University of Science and Technology of Southern Philippines
             </Text>
             <Text style={{ textAlign: 'center', marginBottom: 2, fontFamily: 'Zapf', fontSize: 7 }}>
-              Alubijid | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon
+            Alubijid | Balubal | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon | Villanueva
             </Text>
           </View>
         </View>
@@ -1358,7 +1358,7 @@ const MyDocument = ({ projectID }) => {
               University of Science and Technology of Southern Philippines
             </Text>
             <Text style={{ textAlign: 'center', marginBottom: 2, fontFamily: 'Zapf', fontSize: 7 }}>
-              Alubijid | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon
+            Alubijid | Balubal | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon | Villanueva
             </Text>
           </View>
         </View>

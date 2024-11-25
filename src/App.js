@@ -60,7 +60,9 @@ import SharedProposal from "./pages/estaff/SharedProposal";
 import LoadTrainers from "./pages/estaff/LoadTrainers";
 import MoaMou from "./pages/estaff/MoaMou";
 import DirectorProjectStatistics from "./pages/director/DirectorProjectStatistics";
-
+import CoordProjectStatus from "./pages/coordinator/CoordProjectStatus";
+import VPALAScanCall from "./pages/vpala/VPALAScanCall";
+import VPALADocStatus from "./pages/vpala/VPALADocStatus";
 function App() {
   return (
     <Routes>
@@ -101,6 +103,9 @@ function App() {
         {/*VPAPLA Routes  */}
         <Route path="/vpala" element={<VPALADashboard/>}/>
         <Route path="/vpala-generate-moa" element={<MOAGenerator/>}/>
+        <Route path="/scan/:id" element={<VPALAScanCall />} />
+        <Route path="/documents-approved" element={<VPALADocStatus />} />
+        <Route path="/documents-pending" element={<VPALADocStatus />} />
         
         {/* EStaff routes */}
         <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>
@@ -125,6 +130,8 @@ function App() {
         <Route path="/createuser:id" element={<CreateUserCoord />} />
         <Route path="/documents-coord" element={<DocListCoord />} />
         
+        <Route path="/projects/:statusFilterParam" element={<CoordProjectStatus />} />
+
         {/* Create proposal routes */}
         {<Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} />}
 

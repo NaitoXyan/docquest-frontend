@@ -57,7 +57,7 @@ const DocumentsListCoord = () => {
                 {/* Sidebar */}
             </div>
 
-            <div className="flex-1 ml-[20%] p-6">
+            <div className="flex-1 ml-[0%] p-6">
                 <div className="flex flex-col mt-14 space-y-8">
                     <h1 className="text-2xl font-semibold mb-4">Documents</h1>
 

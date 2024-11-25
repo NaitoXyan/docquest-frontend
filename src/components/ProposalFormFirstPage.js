@@ -966,8 +966,9 @@ const ProposalFormFirstPage = () => {
     const { data, innerRef, innerProps } = props;
     return (
       <div ref={innerRef} {...innerProps} className="p-2 hover:bg-gray-100">
-        <div className="font-medium">{data.title}</div>
-        <div className="text-sm text-gray-600">{data.abbreviation}</div>
+      <span className="font-medium">{data.title}</span> {/* Title */}
+      <br />
+      <span className="text-sm text-gray-600">{data.campus} - {data.abbreviation}</span> {/* Abbreviation */}
       </div>
     );
   };
@@ -1368,24 +1369,28 @@ const ProposalFormFirstPage = () => {
                 options={college.map((col) => ({
                   value: col.collegeID,
                   title: col.title,
+                  campus: col.campus?.name || 'Unknown Campus', // Ensure fallback for campus
                   abbreviation: col.abbreviation,
                 }))}
                 components={{
                   Option: CustomOption,
                   SingleValue: CustomSingleValue,
                 }}
-                getOptionLabel={(e) => `${e.title} ${e.abbreviation}`}
+                getOptionLabel={(e) => `${e.campus} - ${e.title} (${e.abbreviation})`} // Label format: Campus - Title (Abbreviation)
                 isMulti
-                value={formData.college.map((id) => {
-                  const col = college.find((c) => c.collegeID === id);
-                  return col
-                    ? {
-                      value: col.collegeID,
-                      title: col.title,
-                      abbreviation: col.abbreviation,
-                    }
-                    : null;
-                }).filter(Boolean)}
+                value={formData.college
+                  .map((id) => {
+                    const col = college.find((c) => c.collegeID === id);
+                    return col
+                      ? {
+                          value: col.collegeID,
+                          title: col.title,
+                          campus: col.campus?.name || 'Unknown Campus', // Ensure fallback for campus
+                          abbreviation: col.abbreviation,
+                        }
+                      : null;
+                  })
+                  .filter(Boolean)}
                 onChange={(selectedOptions) => {
                   setFormData({
                     ...formData,
@@ -1409,8 +1414,8 @@ const ProposalFormFirstPage = () => {
                     backgroundColor: state.isSelected
                       ? 'rgba(59, 130, 246, 0.1)'
                       : state.isFocused
-                        ? 'rgba(229, 231, 235, 1)'
-                        : 'transparent',
+                      ? 'rgba(229, 231, 235, 1)'
+                      : 'transparent',
                     color: state.isSelected ? '#2563EB' : base.color,
                   }),
                   multiValue: (base) => ({
@@ -1423,7 +1428,6 @@ const ProposalFormFirstPage = () => {
                   }),
                 }}
               />
-
               <p className="text-sm text-gray-500 mt-1">Click items to select/deselect</p>
             </div>
 
@@ -1448,7 +1452,7 @@ const ProposalFormFirstPage = () => {
                   label: (
                     <div>
                       <div className="font-medium">{prog.title}</div>
-                      <div className="text-sm text-gray-600">{prog.college.abbreviation}</div>
+                      <div className="text-sm text-gray-600">{prog.college.campus.name} ({prog.college.abbreviation}) - {prog.abbreviation}</div>
                     </div>
                   ),
                 }))}

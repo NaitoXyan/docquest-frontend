@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import Topbar from "../../components/Topbar";
 import CoordinatorSidebar from "../../components/CoordinatorSideBar";
 
@@ -21,19 +22,25 @@ const CoordinatorDashboard = () => {
                         <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Approved</h2>
                             <h2 className="text-4xl font-bold">2</h2>
-                            <button className="mt-2 underline">View</button>
+                            <NavLink to="/projects/approved" className="mt-2 underline">
+                                View
+                            </NavLink>
                         </div>
                         {/* Pending */}
                         <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Pending</h2>
                             <h2 className="text-4xl font-bold">10</h2>
-                            <button className="mt-2 underline">View</button>
+                            <NavLink to="/projects/pending" className="mt-2 underline">
+                                View
+                            </NavLink>
                         </div>
                         {/* Rejected */}
                         <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Rejected</h2>
                             <h2 className="text-4xl font-bold">3</h2>
-                            <button className="mt-2 underline">View</button>
+                            <NavLink to="/projects/rejected" className="mt-2 underline">
+                                View
+                            </NavLink>
                         </div>
                     </div>
 
@@ -93,6 +100,6 @@ const CoordinatorDashboard = () => {
             </div>
         </div>
     );
-}
+};
 
 export default CoordinatorDashboard;

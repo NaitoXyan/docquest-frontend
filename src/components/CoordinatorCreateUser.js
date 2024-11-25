@@ -118,7 +118,7 @@ const CoordinatorCreateUser = () => {
         
       </div>
 
-      <div className="flex-1 ml-[20%]">
+      <div className="flex-1 ml-0%]">
         
         <div className="flex flex-col mt-14">
           <h1 className="text-2xl font-semibold m-7">Create User Account</h1>

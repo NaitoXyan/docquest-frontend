@@ -1516,17 +1516,19 @@ const ProposalFormFirstPage = () => {
               {/* Fixed height container with shadow to indicate scrollability */}
               <Select
                 required
-                options={program.map((prog) => ({
+                options={Array.isArray(program) ? program.map((prog) => ({
                   value: prog.programID,
                   label: (
                     <div>
                       <div className="font-medium">{prog.title}</div>
-                      <div className="text-sm text-gray-600">{prog.college.campus.name} ({prog.college.abbreviation}) - {prog.abbreviation}</div>
+                      <div className="text-sm text-gray-600">
+                        {prog.college?.campus?.name} ({prog.college?.abbreviation}) - {prog.abbreviation}
+                      </div>
                     </div>
                   ),
-                }))}
+                })) : []}
                 isMulti
-                value={formData.program.map((id) => {
+                value={Array.isArray(formData.program) ? formData.program.map((id) => {
                   const prog = program.find((p) => p.programID === id);
                   return prog
                     ? {
@@ -1534,12 +1536,12 @@ const ProposalFormFirstPage = () => {
                       label: (
                         <div>
                           <div className="font-medium">{prog.title}</div>
-                          <div className="text-sm text-gray-600">{prog.college.abbreviation}</div>
+                          <div className="text-sm text-gray-600">{prog.college?.abbreviation}</div>
                         </div>
                       ),
                     }
                     : null;
-                }).filter(Boolean)} // Filter out null values
+                }).filter(Boolean) : []} // Filter out null values
                 onChange={(selectedOptions) => {
                   const selectedIDs = selectedOptions.map((option) => option.value);
                   setFormData({
@@ -1547,9 +1549,9 @@ const ProposalFormFirstPage = () => {
                     program: selectedIDs,
                   });
                 }}
-                isDisabled={formData.college.length === 0} // Disable if no college is selected
+                isDisabled={!Array.isArray(formData.college) || formData.college.length === 0} // Disable if no college is selected
                 placeholder={
-                  formData.college.length === 0
+                  !Array.isArray(formData.college) || formData.college.length === 0
                     ? "Please select college(s) first"
                     : "Select programs"
                 }

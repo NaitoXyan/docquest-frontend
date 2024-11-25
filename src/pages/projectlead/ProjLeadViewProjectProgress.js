@@ -179,19 +179,59 @@ const ProjectProgressStep = ({ projectID }) => {
   return (
     <Box sx={{ maxWidth: 300 }}>
       <Stepper activeStep={activeStep} orientation="vertical">
-        {steps.map((step, index) => (
-          <Step key={step.label}>
-            <StepLabel>
-              {step.label}
-            </StepLabel>
-            <StepContent>
-              <Typography>{step.description}</Typography>
-              <Box sx={{ mb: 2 }}>
-                
-              </Box>
-            </StepContent>
-          </Step>
-        ))}
+        {steps.map((step, index) => {
+          // Determine the color based on the step index and approval status
+          let stepColor = "inherit"; // Default color
+
+          if (index === 0) {
+            // Program Chair
+            stepColor =
+              formData.approvalCounter < 0
+                ? "orange" // Pending
+                : formData.approvalCounter >= 0
+                ? "green" // Approved
+                : "inherit"; // Default
+          } else if (index === 1) {
+            // College Dean
+            stepColor =
+              formData.approvalCounter < 1
+                ? "orange" // Pending
+                : formData.approvalCounter >= 1
+                ? "green" // Approved
+                : "inherit"; // Default
+          } else if (index === 2) {
+            // Director, Extension & Community Relations
+            stepColor =
+              formData.approvalCounter < 2
+                ? "orange" // Pending
+                : formData.approvalCounter >= 2
+                ? "green" // Approved
+                : "inherit"; // Default
+          }
+
+          // Add rejection status dynamically
+          if (formData.reviewStatus === "rejected") {
+            stepColor = "red";
+          }
+
+          return (
+            <Step key={step.label}>
+              <StepLabel
+                StepIconProps={{
+                  style: {
+                    color: stepColor,
+                  },
+                }}
+              >
+                {step.label}
+              </StepLabel>
+              <StepContent>
+                <Typography>{step.description}</Typography>
+                <Box sx={{ mb: 2 }}></Box>
+              </StepContent>
+            </Step>
+          );
+        })}
       </Stepper>
 
       <Button

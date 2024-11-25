@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import ReactTooltip from 'react-tooltip';
 
 const EditProposalForm = ({ projectID }) => {
   const userID = localStorage.getItem('userid');
@@ -43,7 +44,8 @@ const EditProposalForm = ({ projectID }) => {
     accreditationLevel: "",
     college: "",
     beneficiaries: "",
-    targetImplementation: "",
+    targetStartDateImplementation: "",
+    targetEndDateImplementation: "",
     totalHours: 0,
     background: "",
     projectComponent: "",
@@ -1011,24 +1013,47 @@ const handleAgencyFormChange = async (e) => {
 
           {/* Seventh Row */}
           <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block mb-2 font-semibold">TARGET DATE OF IMPLEMENTATION</label>
+          <div>
+              <label className="block mb-2 font-semibold">
+                TARGET START DATE OF IMPLEMENTATION
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Select the target START date when the implementation is expected to start."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
               <input
-                name="targetImplementation"
-                value={formData.targetImplementation}
+              required
+                name="targetStartDateImplementation"
+                value={formData.targetStartDateImplementation}
                 onChange={handleFormChange}
-                type="date"
+                type="month"
+                min={new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().slice(0, 7)}  // Sets the minimum date to the previous month
                 className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
-
             <div>
-              <label className="block mb-2 font-semibold">TOTAL HOURS</label>
+              <label className="block mb-2 font-semibold">
+                TARGET END DATE OF IMPLEMENTATION
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Select the target END date when the implementation is expected to end."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
               <input
-                name="totalHours"
-                value={formData.totalHours}
+              required
+                name="targetEndDateImplementation"
+                value={formData.targetEndDateImplementation}
                 onChange={handleFormChange}
-                type="number"
+                type="month"
+                min={new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().slice(0, 7)}  // Sets the minimum date to the previous month
                 className="w-full p-2 border border-gray-300 rounded"
               />
             </div>

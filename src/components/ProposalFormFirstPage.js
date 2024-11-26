@@ -331,8 +331,22 @@ const ProposalFormFirstPage = () => {
 
   const handleActivityChange = (index, event) => {
     const { name, value } = event.target;
+  
     const updatedActivities = [...formData.projectActivities];
-    updatedActivities[index][name] = value;
+    
+    // For date inputs (targetDate)
+    if (name === 'targetDate') {
+      // Format date to include the last day of the month
+      const formattedDate = value 
+        ? `${value}-${new Date(value.split('-')[0], value.split('-')[1], 0).getDate()}` 
+        : '';
+      
+      updatedActivities[index][name] = formattedDate;
+    } else {
+      // Handle other inputs (objective, involved, personResponsible)
+      updatedActivities[index][name] = value;
+    }
+  
     setFormData({ ...formData, projectActivities: updatedActivities });
   };
 
@@ -1059,38 +1073,76 @@ const ProposalFormFirstPage = () => {
     );
   };
 
-    // Function to remove a specific proponent, but not the first one
-    const handleRemoveProponent = (index) => {
-      if (index > 0) {
-        const updatedProponents = formData.nonUserProponents.filter((_, i) => i !== index);
-        setFormData({
-          ...formData,
-          nonUserProponents: updatedProponents,
-        });
+  // Function to remove a specific proponent, but not the first one
+  const handleRemoveProponent = (index) => {
+    if (index > 0) {
+      const updatedProponents = formData.nonUserProponents.filter((_, i) => i !== index);
+      setFormData({
+        ...formData,
+        nonUserProponents: updatedProponents,
+      });
+    }
+  };
+
+  // Function to remove a specific objective, but not the first one
+  const handleRemoveObjective = (index) => {
+    if (index > 0) {
+      const updatedObjectives = formData.goalsAndObjectives.filter((_, i) => i !== index);
+      setFormData({
+        ...formData,
+        goalsAndObjectives: updatedObjectives,
+      });
+    }
+  };
+
+  // Function to remove a specific person, but not the first one
+  const handleRemovePerson = (index) => {
+    if (index > 0) { // Prevent removal of the first row (person)
+      const updatedTeam = formData.projectManagementTeam.filter((_, i) => i !== index);
+      setFormData({
+        ...formData,
+        projectManagementTeam: updatedTeam,
+      });
+    }
+  };
+
+  const handleTargetDateFormChange = (e) => {
+    const { name, value } = e.target;
+    
+    // Convert month input to full date format (last day of the month)
+    const formattedDate = value ? `${value}-${new Date(value.split('-')[0], value.split('-')[1], 0).getDate()}` : '';
+    
+    setFormData(prev => ({
+      ...prev,
+      [name]: formattedDate
+    }));
+
+    // Additional logic for start/end date validation
+    if (name === 'targetStartDateImplementation') {
+      // Reset end date if it is earlier than the new start date
+      if (
+        formData.targetEndDateImplementation &&
+        formattedDate > formData.targetEndDateImplementation
+      ) {
+        setFormData(prev => ({
+          ...prev,
+          targetEndDateImplementation: '',
+        }));
       }
-    };
+    }
+  };
 
-      // Function to remove a specific objective, but not the first one
-      const handleRemoveObjective = (index) => {
-        if (index > 0) {
-          const updatedObjectives = formData.goalsAndObjectives.filter((_, i) => i !== index);
-          setFormData({
-            ...formData,
-            goalsAndObjectives: updatedObjectives,
-          });
-        }
-      };
+  // Get the previous month in YYYY-MM format
+  const getPreviousMonth = () => {
+    const date = new Date();
+    date.setMonth(date.getMonth() - 1);
+    return date.toISOString().slice(0, 7);
+  };
 
-      // Function to remove a specific person, but not the first one
-      const handleRemovePerson = (index) => {
-        if (index > 0) { // Prevent removal of the first row (person)
-          const updatedTeam = formData.projectManagementTeam.filter((_, i) => i !== index);
-          setFormData({
-            ...formData,
-            projectManagementTeam: updatedTeam,
-          });
-        }
-      };
+  // Get the current month in YYYY-MM format
+  const getCurrentMonth = () => {
+    return new Date().toISOString().slice(0, 7);
+  };
 
   return (
     <div className="flex flex-col mt-14 px-10">
@@ -1880,73 +1932,57 @@ const ProposalFormFirstPage = () => {
 
           {/* Seventh Row */}
           <div className="grid grid-cols-3 gap-4">
-            {/* Target Start Date */}
-            <div>
-              <label className="block mb-2 font-semibold">
-                TARGET START DATE OF IMPLEMENTATION
-                <span className="text-red-500 ml-1">*</span>
-                <span
-                  data-tip="Select the target START date when the implementation is expected to start."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
-              <input
-                required
-                name="targetStartDateImplementation"
-                value={formData.targetStartDateImplementation}
-                onChange={(e) => {
-                  handleFormChange(e);
-                  // Reset end date if it is earlier than the new start date
-                  if (
-                    formData.targetEndDateImplementation &&
-                    e.target.value > formData.targetEndDateImplementation
-                  ) {
-                    setFormData((prev) => ({
-                      ...prev,
-                      targetEndDateImplementation: "",
-                    }));
-                  }
-                }}
-                type="month"
-                min={new Date(new Date().setMonth(new Date().getMonth() - 1))
-                  .toISOString()
-                  .slice(0, 7)} // Sets the minimum date to the previous month
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-
-            {/* Target End Date */}
-            <div>
-              <label className="block mb-2 font-semibold">
-                TARGET END DATE OF IMPLEMENTATION
-                <span className="text-red-500 ml-1">*</span>
-                <span
-                  data-tip="Select the target END date when the implementation is expected to end."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
-              <input
-                required
-                name="targetEndDateImplementation"
-                value={formData.targetEndDateImplementation}
-                onChange={handleFormChange}
-                type="month"
-                min={
-                  formData.targetStartDateImplementation ||
-                  new Date(new Date().setMonth(new Date().getMonth() - 1))
-                    .toISOString()
-                    .slice(0, 7)
-                } // Dynamically set min date to the start date
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
+          {/* Target Start Date */}
+          <div>
+            <label className="block mb-2 font-semibold">
+              TARGET START DATE OF IMPLEMENTATION
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the target START date when the implementation is expected to start."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
+            <input
+              required
+              name="targetStartDateImplementation"
+              value={formData.targetStartDateImplementation.slice(0, 7)}
+              onChange={handleTargetDateFormChange}
+              type="month"
+              min={getPreviousMonth()}
+              className="w-full p-2 border border-gray-300 rounded"
+            />
           </div>
+
+          {/* Target End Date */}
+          <div>
+            <label className="block mb-2 font-semibold">
+              TARGET END DATE OF IMPLEMENTATION
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the target END date when the implementation is expected to end."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
+            <input
+              required
+              name="targetEndDateImplementation"
+              value={formData.targetEndDateImplementation.slice(0, 7)}
+              onChange={handleTargetDateFormChange}
+              type="month"
+              min={
+                formData.targetStartDateImplementation.slice(0, 7) || 
+                getPreviousMonth()
+              }
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+        </div>
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1 mt-1">
@@ -2244,13 +2280,14 @@ const ProposalFormFirstPage = () => {
                   ACTIVITIES INVOLVED
                   <span className="text-red-500 ml-1">*</span>
                 </label>
-                <textarea
+                <input
                   required
                   name="involved"
                   value={activity.involved}
                   onChange={(e) => handleActivityChange(index, e)}
+                  type="text"
                   className="w-full p-2 border border-gray-300 rounded"
-                ></textarea>
+                />
               </div>
 
               <div>
@@ -2261,11 +2298,11 @@ const ProposalFormFirstPage = () => {
                 <input
                   required
                   name="targetDate"
-                  value={activity.targetDate}
+                  value={activity.targetDate ? activity.targetDate.slice(0, 7) : ''}
                   onChange={(e) => handleActivityChange(index, e)}
                   type="month"
                   className="w-full p-2 border border-gray-300 rounded"
-                  min={new Date().toISOString().slice(0, 7)} // Current month and year
+                  min={new Date().toISOString().slice(0, 7)}
                 />
               </div>
 

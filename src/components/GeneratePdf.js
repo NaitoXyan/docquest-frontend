@@ -293,7 +293,7 @@ const MyDocument = ({ projectID }) => {
     program: [],
     accreditationLevel: "",
     beneficiaries: "",
-    targetImplementation: "",
+    targetStartDateImplementation: "",
     totalHours: null,
     background: "",
     projectComponent: "",
@@ -626,8 +626,8 @@ const MyDocument = ({ projectID }) => {
         <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, textAlign: 'center' }]}>
           <View style={[{ width: '60%', borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
             <Text>
-              {formData.targetImplementation
-                ? new Date(formData.targetImplementation).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
+              {formData.targetStartDateImplementation
+                ? new Date(formData.targetStartDateImplementation).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
                 : 'None'}
             </Text>
           </View>

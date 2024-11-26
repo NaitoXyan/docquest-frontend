@@ -5,6 +5,9 @@ import ProponentsDeliverables from "./ProposalFormFirstPage_Deliverables";
 import ReactTooltip from 'react-tooltip';
 import Select from 'react-select';
 import CreatableSelect from "react-select/creatable";
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root'); // Ensure accessibility for screen readers
 
 const ProposalFormFirstPage = () => {
   const userID = localStorage.getItem('userid');
@@ -42,6 +45,10 @@ const ProposalFormFirstPage = () => {
   const [isAgencyModalOpen, setIsAgencyModalOpen] = useState(false);
   const [newAgencyName, setNewAgencyName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPersonResponsibleModalOpen, setIsPersonResponsibleModalOpen] = useState(false);
+  const [customName, setCustomName] = useState("");
+  const [pickedProponents, setPickedProponents] = useState([]);
+  const [editingRowIndex, setEditingRowIndex] = useState(null);
 
   const [formData, setFormData] = useState({
     userID: userID,
@@ -318,12 +325,51 @@ const ProposalFormFirstPage = () => {
     });
   };
 
-
   const handleActivityChange = (index, event) => {
     const { name, value } = event.target;
     const updatedActivities = [...formData.projectActivities];
     updatedActivities[index][name] = value;
     setFormData({ ...formData, projectActivities: updatedActivities });
+  };
+
+  // onChange for Person Responsible selection
+  const handlePersonResponsibleChange = (selectedOption, index) => {
+    if (selectedOption?.value === 'add_custom') {
+      // Store the index of the row being edited
+      setEditingRowIndex(index);
+      setIsPersonResponsibleModalOpen(true);
+    } else if (selectedOption) {
+      // Update the person responsible with the selected proponent
+      const updatedActivities = [...formData.projectActivities];
+      updatedActivities[index].personResponsible = selectedOption.label;
+      setFormData({ ...formData, projectActivities: updatedActivities });
+    } else {
+      // Handle clearing the selection
+      const updatedActivities = [...formData.projectActivities];
+      updatedActivities[index].personResponsible = '';
+      setFormData({ ...formData, projectActivities: updatedActivities });
+    }
+  };
+
+  const handleAddCustomName = () => {
+    if (customName.trim() && editingRowIndex !== null) {
+      const updatedActivities = [...formData.projectActivities].map((activity, index) => 
+        index === editingRowIndex 
+          ? { ...activity, personResponsible: customName } 
+          : activity
+      );
+  
+      setFormData({ 
+        ...formData, 
+        projectActivities: updatedActivities 
+      });
+  
+      setIsPersonResponsibleModalOpen(false);
+      setCustomName('');
+      setEditingRowIndex(null);
+    } else {
+      console.error("Name cannot be empty or no row selected");
+    }
   };
 
   const addActivityRow = () => {
@@ -345,6 +391,13 @@ const ProposalFormFirstPage = () => {
     if (formData.projectActivities.length > 1) {
       const projectActivities = formData.projectActivities.slice(0, -1);
       setFormData({ ...formData, projectActivities: projectActivities });
+    }
+  };
+  
+  const handleRemoveActivityRow = (index) => {
+    if (formData.projectActivities.length > 1) {
+      const updatedActivities = formData.projectActivities.filter((_, i) => i !== index);
+      setFormData({ ...formData, projectActivities: updatedActivities });
     }
   };
 
@@ -1020,17 +1073,6 @@ const ProposalFormFirstPage = () => {
         }
       };
 
-      // Function to remove a specific activity row, but not the first one
-      const handleRemoveActivityRow = (index) => {
-        if (index > 0) { // Prevent removal of the first row
-          const updatedActivities = formData.projectActivities.filter((_, i) => i !== index);
-          setFormData({
-            ...formData,
-            projectActivities: updatedActivities,
-          });
-        }
-      };
-
       // Function to remove a specific person, but not the first one
       const handleRemovePerson = (index) => {
         if (index > 0) { // Prevent removal of the first row (person)
@@ -1273,6 +1315,14 @@ const ProposalFormFirstPage = () => {
                       ...formData,
                       proponents: selectedOptions.map((option) => option.value), // Map back to userIDs
                     });
+                    // Correctly set picked proponents with full name
+                    setPickedProponents(
+                      selectedOptions 
+                        ? selectedOptions.map((option) => ({
+                            fullname: option.label, // Save the full combined name
+                          }))
+                        : []
+                    );
                   }}
                   classNamePrefix="react-select"
                   className="w-full"
@@ -1740,6 +1790,7 @@ const ProposalFormFirstPage = () => {
 
           {/* Seventh Row */}
           <div className="grid grid-cols-3 gap-4">
+            {/* Target Start Date */}
             <div>
               <label className="block mb-2 font-semibold">
                 TARGET START DATE OF IMPLEMENTATION
@@ -1753,15 +1804,31 @@ const ProposalFormFirstPage = () => {
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
               <input
-              required
+                required
                 name="targetStartDateImplementation"
                 value={formData.targetStartDateImplementation}
-                onChange={handleFormChange}
+                onChange={(e) => {
+                  handleFormChange(e);
+                  // Reset end date if it is earlier than the new start date
+                  if (
+                    formData.targetEndDateImplementation &&
+                    e.target.value > formData.targetEndDateImplementation
+                  ) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      targetEndDateImplementation: "",
+                    }));
+                  }
+                }}
                 type="month"
-                min={new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().slice(0, 7)}  // Sets the minimum date to the previous month
+                min={new Date(new Date().setMonth(new Date().getMonth() - 1))
+                  .toISOString()
+                  .slice(0, 7)} // Sets the minimum date to the previous month
                 className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
+
+            {/* Target End Date */}
             <div>
               <label className="block mb-2 font-semibold">
                 TARGET END DATE OF IMPLEMENTATION
@@ -1775,42 +1842,20 @@ const ProposalFormFirstPage = () => {
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
               <input
-              required
+                required
                 name="targetEndDateImplementation"
                 value={formData.targetEndDateImplementation}
                 onChange={handleFormChange}
                 type="month"
-                min={new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().slice(0, 7)}  // Sets the minimum date to the previous month
+                min={
+                  formData.targetStartDateImplementation ||
+                  new Date(new Date().setMonth(new Date().getMonth() - 1))
+                    .toISOString()
+                    .slice(0, 7)
+                } // Dynamically set min date to the start date
                 className="w-full p-2 border border-gray-300 rounded"
               />
             </div>
-
-            <div>
-              <label className="block mb-2 font-semibold">
-                TOTAL HOURS
-                <span className="text-red-500 ml-1">*</span>
-                <span
-                  data-tip="Enter the total hours required for the implementation of the project."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
-              <input
-              required
-                name="totalHours"
-                value={formData.totalHours}
-                onChange={(e) => {
-                  const value = Math.max(0, e.target.value); // Ensure the value is greater than zero
-                  handleFormChange({ target: { name: "totalHours", value } });
-                }}
-                type="number"
-                min="0"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-
           </div>
         </div>
 
@@ -2139,13 +2184,67 @@ const ProposalFormFirstPage = () => {
                   PERSON RESPONSIBLE
                   <span className="text-red-500 ml-1">*</span>
                 </label>
-                <input
-                  required
-                  name="personResponsible"
-                  value={activity.personResponsible}
-                  onChange={(e) => handleActivityChange(index, e)}
-                  className="w-full p-2 border border-gray-300 rounded"
+
+                {/* Dropdown for selecting person responsible */}
+                <Select
+                  value={
+                    activity.personResponsible
+                      ? { label: activity.personResponsible }
+                      : null
+                  }
+                  onChange={(selectedOption) =>
+                    handlePersonResponsibleChange(selectedOption, index) // Pass the correct index
+                  }
+                  options={[
+                    ...pickedProponents.map((proponent) => ({
+                      value: proponent.fullname,
+                      label: `${proponent.fullname}`,
+                    })),
+                    { value: 'add_custom', label: 'Add Custom Name' },
+                  ]}
+                  isSearchable
+                  placeholder="Search or select a person"
+                  isClearable
+                  getOptionLabel={(e) => e.label}
+                  components={{
+                    DropdownIndicator: () => null,
+                  }}
+                  noOptionsMessage={() => 'No match found'}
                 />
+              </div>
+
+              {/* Modal for adding custom name (Tailwind CSS modal) */}
+              <div
+                className={`fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50 ${
+                  isPersonResponsibleModalOpen ? "block" : "hidden"
+                }`}
+              >
+                <div className="bg-white w-96 p-6 rounded-lg shadow-lg">
+                  <h2 className="text-xl font-semibold mb-4">Add a Custom Name</h2>
+                  <input
+                    type="text"
+                    value={customName}
+                    onChange={(e) => setCustomName(e.target.value)}
+                    placeholder="Enter the name"
+                    className="w-full p-2 border border-gray-300 rounded mt-2"
+                  />
+                  <div className="mt-4">
+                    <button
+                      type="button"
+                      onClick={handleAddCustomName} // Adds the name and closes the modal
+                      className="bg-blue-500 text-white p-2 rounded mr-2"
+                    >
+                      Add Name
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsPersonResponsibleModalOpen(false)} // Closes the modal without adding
+                      className="bg-gray-300 p-2 rounded"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
               </div>
 
               {/* Remove Button for specific row (but not the first one) */}

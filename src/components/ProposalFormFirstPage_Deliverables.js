@@ -28,19 +28,23 @@ const ProponentsDeliverables = ({ formData, setFormData, showTrainers }) => {
   // Effect to manage deliverables based on showTrainers
   useEffect(() => {
     setFormData((prevFormData) => {
-      // If showTrainers is true, ensure all deliverables are checked
+      // If showTrainers is true, add ALL deliverable IDs
       if (showTrainers) {
         return {
           ...prevFormData,
-          deliverables: deliverables.map(item => item.deliverableName)
+          deliverables: deliverables.map(item => item.deliverableID)
         };
       } 
-      // If showTrainers is false, remove trainer-related deliverables
+      // If showTrainers is false, remove ONLY trainer-related deliverable IDs
       else {
+        const trainerDeliverableIDs = deliverables
+          .filter(item => trainerDeliverableNames.includes(item.deliverableName))
+          .map(item => item.deliverableID);
+
         return {
           ...prevFormData,
           deliverables: prevFormData.deliverables.filter(
-            deliverable => !trainerDeliverableNames.includes(deliverable)
+            id => !trainerDeliverableIDs.includes(id)
           )
         };
       }

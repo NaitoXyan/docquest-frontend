@@ -88,9 +88,7 @@ const ProposalFormFirstPage = () => {
       }
     ],
     projectManagementTeam: [
-      {
-        name: ""
-      }
+      
     ],
     budgetRequirements: [
       {
@@ -304,11 +302,17 @@ const ProposalFormFirstPage = () => {
 
   // Add a new person to the project management team
   const handleProjectManagementTeamButtonClick = () => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      projectManagementTeam: [...prevFormData.projectManagementTeam, { name: "" }],
-    }));
-  };
+    const customName = prompt("Enter the name of the person:");
+    if (customName) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        projectManagementTeam: [
+          ...prevFormData.projectManagementTeam,
+          { value: `custom-${Date.now()}`, label: customName }, // Add custom person
+        ],
+      }));
+    }
+  };  
 
   // Remove the last person from the project management team
   const handleProjectManagementTeamRemoveClick = () => {
@@ -415,26 +419,19 @@ const ProposalFormFirstPage = () => {
 
   const handleTrainerChange = (index, e) => {
     const { name, value } = e.target;
-    const updatedTrainers = [...formData.loadingOfTrainers];
-  
-    // Update the specific trainer's field
-    updatedTrainers[index] = {
-      ...updatedTrainers[index],
-      [name]: value,
-    };
-  
-    // Recalculate the Total Budgetary Requirement
-    const hours = parseFloat(updatedTrainers[index].hours) || 0;
-    const agencyBudget = parseFloat(updatedTrainers[index].agencyBudget) || 0;
-    updatedTrainers[index].totalBudgetRequirement = hours * 150 + agencyBudget;
-  
-    setFormData({
-      ...formData,
-      loadingOfTrainers: updatedTrainers,
+    setFormData(prevState => {
+      const updatedLoadingOfTrainers = [...prevState.loadingOfTrainers];
+      updatedLoadingOfTrainers[index] = {
+        ...updatedLoadingOfTrainers[index],
+        [name]: value,
+        faculty: prevState.projectManagementTeam[index].name // Ensure faculty is always set
+      };
+      return {
+        ...prevState,
+        loadingOfTrainers: updatedLoadingOfTrainers
+      };
     });
   };
-  
-  
 
   const addTrainerRow = () => {
     setFormData({
@@ -458,7 +455,18 @@ const ProposalFormFirstPage = () => {
     setFormData({ ...formData, loadingOfTrainers: updatedTrainers });
   };
   
-  
+  useEffect(() => {
+  // Initialize loadingOfTrainers with the same number of rows as projectManagementTeam
+  setFormData(prevState => ({
+    ...prevState,
+    loadingOfTrainers: formData.projectManagementTeam.map(() => ({
+      faculty: '', 
+      trainingLoad: '', 
+      hours: '', 
+      agencyBudget: ''
+    }))
+  }));
+}, [formData.projectManagementTeam]);
 
   // Function to handle changes in proponents inputs
   const handleNonUserProponentChange = (index, value) => {
@@ -1277,8 +1285,11 @@ const ProposalFormFirstPage = () => {
           </div>
 
 
+        </div>
+
+        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           {/* Third Row */}
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 gap-4 mb-3">
             <div>
               <label className="block mb-2 font-bold text-base">
                 PROPONENTS
@@ -1332,7 +1343,6 @@ const ProposalFormFirstPage = () => {
               </div>
             </div>
           </div>
-
 
           {/* Third Row */}
           <div className="grid grid-cols-1 gap-4">
@@ -1396,7 +1406,87 @@ const ProposalFormFirstPage = () => {
             </div>
           </div>
 
-          {/* Fourth Row */}
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <label className="block mb-2 font-bold text-base">
+                PROJECT MANAGEMENT TEAM/TRAINERS
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="List the individuals responsible for overseeing the project and training efforts."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
+
+              {/* Multi-select dropdown for project management team/trainers */}
+              <Select
+                isMulti
+                value={formData.projectManagementTeam.map((member) => ({
+                  label: member.name,
+                  value: member.name,
+                }))} 
+                onChange={(selectedOptions) => {
+                  console.log('Selected Options:', selectedOptions);
+                  const updatedTeam = selectedOptions
+                    ? selectedOptions.map((option) => ({ 
+                        name: option.label || option.value 
+                      }))
+                    : [{ name: "" }]; 
+
+                  setFormData((prevFormData) => ({
+                    ...prevFormData,
+                    projectManagementTeam: updatedTeam,
+                  }));
+                }}
+                options={(() => {
+                  const options = pickedProponents.map((proponent) => {
+                    // Split the fullname into firstname and lastname
+                    const nameParts = proponent.fullname.split(' ');
+                    const firstname = nameParts[0];
+                    const lastname = nameParts.slice(1).join(' ');
+
+                    return {
+                      value: proponent.fullname, // Use fullname as value
+                      label: proponent.fullname
+                    };
+                  });
+                  console.log('Generated Options:', options);
+                  return options;
+                })()}
+                isSearchable
+                placeholder="Search or select team members"
+                isClearable
+                noOptionsMessage={() => "No match found"}
+              />
+            </div>
+
+            {/* Add Person Button
+            <div className="flex space-x-2 mt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  const customName = prompt("Enter the name of the person:");
+                  if (customName) {
+                    setFormData((prevFormData) => ({
+                      ...prevFormData,
+                      projectManagementTeam: [
+                        ...prevFormData.projectManagementTeam,
+                        { name: customName }, // Add custom person in the required format
+                      ],
+                    }));
+                  }
+                }}
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+              >
+                Add Custom Person
+              </button>
+            </div> */}
+          </div>
+        </div>
+
+        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-7 gap-4">
             {/* CAMPUS */}
             <div className="col-span-2">
@@ -2286,7 +2376,7 @@ const ProposalFormFirstPage = () => {
             </button>
           </div>
         </div>
-
+        
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-1 gap-4">
             <div>
@@ -2311,71 +2401,6 @@ const ProposalFormFirstPage = () => {
             </div>
           </div>
         </div>
-
-        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-          <div className="grid grid-cols-1 gap-4">
-            <div>
-              <label className="block mb-2 font-bold text-base">
-                PROJECT MANAGEMENT TEAM/TRAINERS
-                <span className="text-red-500 ml-1">*</span>
-                <span
-                  data-tip="List the individuals responsible for overseeing the project and training efforts."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
-
-              {/* Render input fields for each TRAINER */}
-              {formData.projectManagementTeam.map((personObj, index) => (
-                <div key={index} className="flex items-center space-x-2">
-                  <input
-                    required
-                    name={`person-${index}`}
-                    value={personObj.name} // Access 'name' field in the object
-                    onChange={(e) => handleProjectManagementTeamChange(index, e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded mt-2"
-                    placeholder={`Person ${index + 1}`}
-                  />
-                  {/* Remove Button for specific row (but not the first one) */}
-                  {index > 0 && (
-                    <button
-                      type="button"
-                      onClick={() => handleRemovePerson(index)} // Remove specific person from the list
-                      className="bg-red-500 text-white px-4 py-2 rounded"
-                    >
-                      Remove
-                    </button>
-                  )}
-                </div>
-              ))}
-
-              <div className="flex space-x-2 mt-2">
-                <button
-                  type="button" // Prevent default form submission
-                  onClick={handleProjectManagementTeamButtonClick}
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
-                >
-                  Add Person
-                </button>
-                <button
-                  type="button" // Prevent default form submission
-                  onClick={handleProjectManagementTeamRemoveClick}
-                  className={
-                    formData.projectManagementTeam.length === 1
-                      ? "bg-gray-400 text-gray-300 px-4 py-2 rounded"
-                      : "bg-red-500 text-white px-4 py-2 rounded"
-                  }
-                  disabled={formData.projectManagementTeam.length === 1}
-                >
-                  Remove Person
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
 
         {/* BUDGETARY REQUIREMENTS */}
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -2704,125 +2729,100 @@ const ProposalFormFirstPage = () => {
         </div>
 
         {showTrainers && (
-        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-          <label className="block mb-2 font-bold">LOADING OF TRAINERS</label>
-          <div className="relative">
-            <label className="block mb-2 font-semibold">Trainers:</label>
-            <div className="overflow-x-auto">
-              <table className="min-w-full border">
-                <thead>
-                  <tr>
-                    <th className="px-4 py-2 border bg-gray-300">Name of Faculty</th>
-                    <th className="px-4 py-2 border bg-gray-300">Training Load</th>
-                    <th className="px-4 py-2 border bg-gray-300">No. of Hours</th>
-                    <th className="px-4 py-2 border bg-gray-300">USTP Budget</th>
-                    <th className="px-4 py-2 border bg-gray-300">Partner Agency Budget</th>
-                    <th className="px-4 py-2 border bg-gray-300">Total Budgetary Requirement</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {formData.loadingOfTrainers.map((trainer, index) => (
-                    <tr key={index}>
-                      <td className="px-4 py-2 border">
-                        <input
-                          name="faculty"
-                          value={trainer.faculty}
-                          onChange={(e) => handleTrainerChange(index, e)}
-                          type="text"
-                          required
-                          className="w-full p-1 border border-gray-300 rounded"
-                          placeholder="Faculty Name"
-                        />
-                      </td>
-                      <td className="px-4 py-2 border">
-                        <input
-                          name="trainingLoad"
-                          value={trainer.trainingLoad}
-                          onChange={(e) => handleTrainerChange(index, e)}
-                          type="text"
-                          required
-                          className="w-full p-1 border border-gray-300 rounded"
-                          placeholder="Training Load"
-                        />
-                      </td>
-                      <td className="px-4 py-2 border">
-                        <input
-                          name="hours"
-                          value={trainer.hours}
-                          onChange={(e) => handleTrainerChange(index, e)}
-                          type="number"
-                          required
-                          className="w-full p-1 border border-gray-300 rounded"
-                          placeholder="Hours"
-                          min="0"
-                        />
-                      </td>
-                      <td className="px-4 py-2 border">
-                      <input
-                        name="ustpBudget"
-                        value={150}
-                        readOnly
-                        className="w-full p-1 border border-gray-300 bg-gray-100"
-                        placeholder="USTP Budget"
-                      />
-                    </td>
-                      <td className="px-4 py-2 border">
-                        <input
-                          name="agencyBudget"
-                          value={trainer.agencyBudget}
-                          onChange={(e) => handleTrainerChange(index, e)}
-                          type="number"
-                          required
-                          className="w-full p-1 border border-gray-300 rounded"
-                          placeholder="Partner Agency Budget"
-                          min="0"
-                        />
-                      </td>
-                      <td className="px-4 py-2 border">
-                        <input
-                          name="totalBudgetRequirement"
-                          value={
-                            trainer.hours
-                              ? trainer.hours * 150 + (parseFloat(trainer.agencyBudget) || 0)
-                              : parseFloat(trainer.agencyBudget) || 0
-                          }
-                          readOnly
-                          className="w-full p-1 bg-gray-100"
-                          placeholder="Total"
-                        />
-                      </td>
+          <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
+            <label className="block mb-2 font-bold">LOADING OF TRAINERS</label>
+            <div className="relative">
+              <label className="block mb-2 font-semibold">Trainers:</label>
+              <div className="overflow-x-auto">
+                <table className="min-w-full border">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-2 border bg-gray-300">Name of Faculty</th>
+                      <th className="px-4 py-2 border bg-gray-300">Training Load</th>
+                      <th className="px-4 py-2 border bg-gray-300">No. of Hours</th>
+                      <th className="px-4 py-2 border bg-gray-300">USTP Budget</th>
+                      <th className="px-4 py-2 border bg-gray-300">Partner Agency Budget</th>
+                      <th className="px-4 py-2 border bg-gray-300">Total Budgetary Requirement</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Add and Remove Buttons */}
-            <div className="flex justify-between mt-2">
-              <button
-                type="button"
-                onClick={addTrainerRow}
-                className="text-green-500 hover:underline"
-              >
-                + Add Row
-              </button>
-              {formData.loadingOfTrainers.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (formData.loadingOfTrainers.length > 1) {
-                      removeTrainerRow(formData.loadingOfTrainers.length - 1);
-                    }
-                  }}
-                  className="text-red-500 hover:underline"
-                  title="Remove Last Row"
-                >
-                  - Remove Row
-                </button>
-              )}
+                  </thead>
+                  <tbody>
+                    {formData.projectManagementTeam.map((member, memberIndex) => (
+                      <tr key={memberIndex}>
+                        <td className="px-4 py-2 border">
+                          <select
+                            name="faculty"
+                            value={member.name}
+                            readOnly
+                            className="w-full p-1 border border-gray-300 rounded bg-gray-100"
+                          >
+                            <option value={member.name}>{member.name}</option>
+                          </select>
+                        </td>
+                        <td className="px-4 py-2 border">
+                          <input
+                            name="trainingLoad"
+                            value={formData.loadingOfTrainers[memberIndex]?.trainingLoad || ''}
+                            onChange={(e) => handleTrainerChange(memberIndex, e)}
+                            type="text"
+                            required
+                            className="w-full p-1 border border-gray-300 rounded"
+                            placeholder="Training Load"
+                          />
+                        </td>
+                        <td className="px-4 py-2 border">
+                          <input
+                            name="hours"
+                            value={formData.loadingOfTrainers[memberIndex]?.hours || ''}
+                            onChange={(e) => handleTrainerChange(memberIndex, e)}
+                            type="number"
+                            required
+                            className="w-full p-1 border border-gray-300 rounded"
+                            placeholder="Hours"
+                            min="0"
+                          />
+                        </td>
+                        <td className="px-4 py-2 border">
+                          <input
+                            name="ustpBudget"
+                            value={150}
+                            readOnly
+                            className="w-full p-1 border border-gray-300 bg-gray-100"
+                            placeholder="USTP Budget"
+                          />
+                        </td>
+                        <td className="px-4 py-2 border">
+                          <input
+                            name="agencyBudget"
+                            value={formData.loadingOfTrainers[memberIndex]?.agencyBudget || ''}
+                            onChange={(e) => handleTrainerChange(memberIndex, e)}
+                            type="number"
+                            required
+                            className="w-full p-1 border border-gray-300 rounded"
+                            placeholder="Partner Agency Budget"
+                            min="0"
+                          />
+                        </td>
+                        <td className="px-4 py-2 border">
+                          <input
+                            name="totalBudgetRequirement"
+                            value={
+                              formData.loadingOfTrainers[memberIndex]?.hours
+                                ? formData.loadingOfTrainers[memberIndex].hours * 150 + 
+                                  (parseFloat(formData.loadingOfTrainers[memberIndex]?.agencyBudget) || 0)
+                                : parseFloat(formData.loadingOfTrainers[memberIndex]?.agencyBudget) || 0
+                            }
+                            readOnly
+                            className="w-full p-1 bg-gray-100"
+                            placeholder="Total"
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
         )}
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">

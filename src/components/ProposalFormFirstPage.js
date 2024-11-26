@@ -49,6 +49,8 @@ const ProposalFormFirstPage = () => {
   const [customName, setCustomName] = useState("");
   const [pickedProponents, setPickedProponents] = useState([]);
   const [editingRowIndex, setEditingRowIndex] = useState(null);
+  const [programChairList, setProgramChairList] = useState([]);
+  const [collegeDeanList, setCollegeDeanList] = useState([]);
 
   const [formData, setFormData] = useState({
     userID: userID,
@@ -431,20 +433,22 @@ const ProposalFormFirstPage = () => {
     });
   };
 
-  const handleTrainerChange = (index, e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => {
-      const updatedLoadingOfTrainers = [...prevState.loadingOfTrainers];
-      updatedLoadingOfTrainers[index] = {
-        ...updatedLoadingOfTrainers[index],
-        [name]: value,
-        faculty: prevState.projectManagementTeam[index].name // Ensure faculty is always set
-      };
-      return {
-        ...prevState,
-        loadingOfTrainers: updatedLoadingOfTrainers
-      };
-    });
+  const handleTrainerChange = (index, updatedTrainer) => {
+    const newLoadingOfTrainers = [...formData.loadingOfTrainers];
+    newLoadingOfTrainers[index] = {
+      faculty: updatedTrainer.faculty || '',
+      trainingLoad: updatedTrainer.trainingLoad || '',
+      hours: updatedTrainer.hours || 0,
+      ustpBudget: 150, // fixed value
+      agencyBudget: updatedTrainer.agencyBudget || 0,
+      totalBudgetRequirement: 
+        (updatedTrainer.hours || 0) * 150 + (updatedTrainer.agencyBudget || 0)
+    };
+  
+    setFormData(prevData => ({
+      ...prevData,
+      loadingOfTrainers: newLoadingOfTrainers
+    }));
   };
 
   const addTrainerRow = () => {
@@ -1007,6 +1011,14 @@ const ProposalFormFirstPage = () => {
     });
   };
 
+  useEffect(() => {
+    console.log("programChairList updated:", programChairList);
+  }, [programChairList]);
+
+  useEffect(() => {
+    console.log("CollegeDeanList updated:", collegeDeanList);
+  }, [collegeDeanList]);
+
   // Fetch programs whenever selected colleges change
   useEffect(() => {
     const fetchPrograms = async () => {
@@ -1059,6 +1071,15 @@ const ProposalFormFirstPage = () => {
       <span className="font-medium">{data.title}</span> {/* Title */}
       <br />
       <span className="text-sm text-gray-600">{data.campus} - {data.abbreviation}</span> {/* Abbreviation */}
+      </div>
+    );
+  };
+
+  const CustomCampusOption = (props) => {
+    const { data, innerRef, innerProps } = props;
+    return (
+      <div ref={innerRef} {...innerProps} className="p-2 hover:bg-gray-100">
+      <span className="font-medium">{data.title}</span> {/* Title */}
       </div>
     );
   };
@@ -1560,7 +1581,7 @@ const ProposalFormFirstPage = () => {
                   title: col.name
                 }))}
                 components={{
-                  Option: CustomOption,
+                  Option: CustomCampusOption,
                   SingleValue: CustomSingleValue,
                 }}
                 getOptionLabel={(e) => `${e.title}`}
@@ -1657,6 +1678,9 @@ const ProposalFormFirstPage = () => {
                     ...formData,
                     college: selectedOptions.map((option) => option.value),
                   });
+                  setCollegeDeanList(
+                    selectedOptions.map((option) => (option.value))
+                  );
                 }}
                 classNamePrefix="react-select"
                 className="w-full"
@@ -1740,6 +1764,9 @@ const ProposalFormFirstPage = () => {
                     ...formData,
                     program: selectedIDs,
                   });
+                  setProgramChairList(
+                    selectedOptions.map((option) => (option.value))
+                  );
                 }}
                 isDisabled={!Array.isArray(formData.college) || formData.college.length === 0} // Disable if no college is selected
                 placeholder={
@@ -2799,7 +2826,11 @@ const ProposalFormFirstPage = () => {
                           <input
                             name="trainingLoad"
                             value={formData.loadingOfTrainers[memberIndex]?.trainingLoad || ''}
-                            onChange={(e) => handleTrainerChange(memberIndex, e)}
+                            onChange={(e) => handleTrainerChange(memberIndex, {
+                              ...formData.loadingOfTrainers[memberIndex],
+                              faculty: member.name,
+                              trainingLoad: e.target.value
+                            })}
                             type="text"
                             required
                             className="w-full p-1 border border-gray-300 rounded"
@@ -2809,8 +2840,12 @@ const ProposalFormFirstPage = () => {
                         <td className="px-4 py-2 border">
                           <input
                             name="hours"
-                            value={formData.loadingOfTrainers[memberIndex]?.hours || ''}
-                            onChange={(e) => handleTrainerChange(memberIndex, e)}
+                            value={formData.loadingOfTrainers[memberIndex]?.hours || 0}
+                            onChange={(e) => handleTrainerChange(memberIndex, {
+                              ...formData.loadingOfTrainers[memberIndex],
+                              faculty: member.name,
+                              hours: parseInt(e.target.value) || 0
+                            })}
                             type="number"
                             required
                             className="w-full p-1 border border-gray-300 rounded"
@@ -2830,8 +2865,12 @@ const ProposalFormFirstPage = () => {
                         <td className="px-4 py-2 border">
                           <input
                             name="agencyBudget"
-                            value={formData.loadingOfTrainers[memberIndex]?.agencyBudget || ''}
-                            onChange={(e) => handleTrainerChange(memberIndex, e)}
+                            value={formData.loadingOfTrainers[memberIndex]?.agencyBudget || 0}
+                            onChange={(e) => handleTrainerChange(memberIndex, {
+                              ...formData.loadingOfTrainers[memberIndex],
+                              faculty: member.name,
+                              agencyBudget: parseFloat(e.target.value) || 0
+                            })}
                             type="number"
                             required
                             className="w-full p-1 border border-gray-300 rounded"
@@ -2845,8 +2884,8 @@ const ProposalFormFirstPage = () => {
                             value={
                               formData.loadingOfTrainers[memberIndex]?.hours
                                 ? formData.loadingOfTrainers[memberIndex].hours * 150 + 
-                                  (parseFloat(formData.loadingOfTrainers[memberIndex]?.agencyBudget) || 0)
-                                : parseFloat(formData.loadingOfTrainers[memberIndex]?.agencyBudget) || 0
+                                  (formData.loadingOfTrainers[memberIndex]?.agencyBudget || 0)
+                                : (formData.loadingOfTrainers[memberIndex]?.agencyBudget || 0)
                             }
                             readOnly
                             className="w-full p-1 bg-gray-100"

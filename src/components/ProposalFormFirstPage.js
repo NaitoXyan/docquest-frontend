@@ -2947,6 +2947,7 @@ const ProposalFormFirstPage = () => {
         <ProponentsDeliverables
           formData={formData}
           setFormData={setFormData}
+          showTrainers={showTrainers}
         />
 
         {/* submit naa */}

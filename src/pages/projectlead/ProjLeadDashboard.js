@@ -122,9 +122,9 @@ const ProjLeadDashboard = () => {
             <div className="flex-1 ml-[20%]">
                 <Topbar />
                 <div className="flex flex-col mt-16 px-10">
-                    <h1 className="text-2xl font-semibold mb-2">PROJECTS OVERVIEW</h1>
+                    <h1 className="text-2xl font-bold mb-3 mt-3">PROJECTS OVERVIEW</h1>
                     <div className="grid grid-cols-3 gap-4 mb-5">
-                        <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                        <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center shadow-lg">
                             <h2 className="text-lg font-semibold">Approved</h2>
                             <h2 className="text-4xl font-bold">{statusCounts.approved}</h2>
                             <button className="mt-2 underline"
@@ -132,7 +132,7 @@ const ProjLeadDashboard = () => {
                                 View
                             </button>
                         </div>
-                        <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                        <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center shadow-lg">
                             <h2 className="text-lg font-semibold">Pending</h2>
                             <h2 className="text-4xl font-bold">{statusCounts.pending}</h2>
 
@@ -141,7 +141,7 @@ const ProjLeadDashboard = () => {
                                 View
                             </button>
                         </div>
-                        <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                        <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center shadow-lg">
                             <h2 className="text-lg font-semibold">Rejected</h2>
                             <h2 className="text-4xl font-bold">{statusCounts.rejected}</h2>
                             <button className="mt-2 underline"
@@ -151,7 +151,7 @@ const ProjLeadDashboard = () => {
                         </div>
                     </div>
 
-                    <h1 className="text-2xl font-semibold mb-2">PROJECTS</h1>
+                    <h1 className="text-2xl font-semibold mb-3">PROJECTS</h1>
                     <div className="bg-white shadow-lg rounded-lg py-4 px-4">
                         <div className="overflow-x-auto">
                             <table className="min-w-full table-auto">
@@ -160,8 +160,8 @@ const ProjLeadDashboard = () => {
                                         <th style={{ width: "15%" }} className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project ID</th>
                                         <th style={{ width: "40%" }} className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Name</th>
                                         <th style={{ width: "15%" }} className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Created</th>
-                                        <th style={{ width: "15%" }} className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
-                                        <th style={{ width: "15%" }} className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">View Progress</th>
+                                        <th style={{ width: "15%" }} className="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Status</th>
+                                        <th style={{ width: "15%" }} className="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">View Progress</th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
@@ -181,9 +181,9 @@ const ProjLeadDashboard = () => {
                                                 </span>
                                             </td>
                                             <td style={{ width: "15%" }} className="px-6 py-4 whitespace-nowrap">{new Date(project.dateCreated).toLocaleDateString()}</td>
-                                            <td style={{ width: "15%" }} className="px-6 py-4">
+                                            <td style={{ width: "15%" }} className="px-6 py-4 text-center">
                                                 <span
-                                                    className={`px-2 py-1 rounded-md text-white ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
+                                                    className={`px-4 py-1 rounded-md text-white shadow-lg ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
                                                             project.status.toLowerCase() === 'pending' ? 'bg-yellow-500' :
                                                                 'bg-red-500'
                                                         }`}
@@ -191,8 +191,8 @@ const ProjLeadDashboard = () => {
                                                     {project.status}
                                                 </span>
                                             </td>
-                                            <td style={{ width: "15%" }} className="px-6 py-4 whitespace-nowrap">
-                                                <button className="text-blue-900 underline" onClick={() => handleViewProjectProgress(project.projectID)}>View</button>
+                                            <td style={{ width: "15%" }} className="px-6 py-4 whitespace-nowrap text-center">
+                                                <button className="text-blue-900 underline " onClick={() => handleViewProjectProgress(project.projectID)}>View</button>
                                             </td>
                                         </tr>
                                     ))}

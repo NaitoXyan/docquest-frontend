@@ -180,7 +180,7 @@ const ProjLeadProjectStatus = () => {
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Leader</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Title</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Status</th>
                     <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">View Document</th>
                     <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">View Progress</th>
                   </tr>
@@ -189,24 +189,25 @@ const ProjLeadProjectStatus = () => {
                   {currentProjects.length > 0 ? (
                     currentProjects.map((project, index) => (
                       <tr key={index}>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">{`${project.projectUser.firstname} ${project.projectUser.lastname}`}</td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-left">{`${project.projectUser.firstname} ${project.projectUser.lastname}`}</td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap overflow-hidden text-ellipsis">
                           <span title={project.projectTitle}>
                             {project.projectTitle.length > characterLimit ? `${project.projectTitle.slice(0, characterLimit)}...` : project.projectTitle}
                           </span>
                         </td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
                           {new Date(project.dateCreated).toLocaleDateString()}
                         </td>
                         <td className="px-3 sm:px-4 py-3">
-                          <span
-                            className={`px-2 py-1 rounded-md text-white ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
-                                project.status.toLowerCase() === 'pending' ? 'bg-yellow-500' :
-                                  'bg-red-500'
-                              }`}
-                          >
-                            {project.status}
-                          </span>
+                        <span
+                          className={`px-4 py-1 rounded-md text-white shadow-lg text-center ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
+                            project.status.toLowerCase() === 'pending' ? 'bg-yellow-500' :
+                              'bg-red-500'
+                          }`}
+                        >
+                          {project.status}
+                        </span>
+
                         </td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
                           <button

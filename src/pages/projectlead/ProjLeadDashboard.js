@@ -183,7 +183,7 @@ const ProjLeadDashboard = () => {
                                             <td style={{ width: "15%" }} className="px-6 py-4 whitespace-nowrap">{new Date(project.dateCreated).toLocaleDateString()}</td>
                                             <td style={{ width: "15%" }} className="px-6 py-4 text-center">
                                                 <span
-                                                    className={`px-4 py-1 rounded-md text-white shadow-lg ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
+                                                    className={`px-2 py-1 rounded-md text-white w-24 text-center block ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
                                                             project.status.toLowerCase() === 'pending' ? 'bg-yellow-500' :
                                                                 'bg-red-500'
                                                         }`}

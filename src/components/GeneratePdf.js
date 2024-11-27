@@ -471,12 +471,35 @@ const MyDocument = ({ projectID }) => {
             Continuing Project
           </Text>
         </View>
-        <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
+        <View
+          style={[
+            styles.tableColone,
+            {
+              flexDirection: 'row',
+              flexWrap: 'wrap', // Allow wrapping to the next line
+              borderWidth: 1,
+              borderBottomWidth: 0,
+              paddingLeft: '1%',
+              paddingRight: '1%',
+              backgroundColor: '#a4b494',
+              fontFamily: 'ArialB',
+            }
+          ]}
+        >
           <Text>PROJECT CATEGORY: </Text>
           {formData.projectCategory?.length
             ? formData.projectCategory.map((projectCategory, index) => (
-              <Text style={[{ paddingHorizontal: 3 }]} key={index} >
-                <Image src={selected} style={{ marginTop: 2, width: 7, height: 7, paddingRight: 3 }} />
+              <Text style={{ paddingHorizontal: 3, flexShrink: 1 }} key={index}>
+                <Image
+                  src={selected}
+                  style={{
+                    marginTop: 2,
+                    width: 7,
+                    height: 7,
+                    paddingRight: 3,
+                    paddingLeft: 3,
+                  }}
+                />
                 {projectCategory.title}
               </Text>
             ))

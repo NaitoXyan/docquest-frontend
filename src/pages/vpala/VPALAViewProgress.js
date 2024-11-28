@@ -4,7 +4,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { PDFViewer } from "@react-pdf/renderer";
 import MyDocument from "../../components/GeneratePdf";
 import axios from "axios";
-import ProjLeadSidebar from '../../components/ProjLeadSideBar';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -13,6 +12,7 @@ import StepContent from '@mui/material/StepContent';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import VPALASideBar from "../../components/VPALASideBar";
 
 const ProjectProgressStep = ({ projectID }) => {
   const [activeStep, setActiveStep] = React.useState(0);
@@ -20,7 +20,6 @@ const ProjectProgressStep = ({ projectID }) => {
   const navigate = useNavigate();
 
   const [signatories, setSignatories] = useState([]);
-
   const [formData, setFormData] = useState({
     reviewID: 0,
     contentOwnerID: 0,
@@ -75,7 +74,7 @@ const ProjectProgressStep = ({ projectID }) => {
             {collegeDean.title}
           </>
         ) : (
-          "college Dean not found"
+          "College Dean not found"
         );
       })(),
       description: (() => {
@@ -180,36 +179,31 @@ const ProjectProgressStep = ({ projectID }) => {
     <Box sx={{ maxWidth: 300 }}>
       <Stepper activeStep={activeStep} orientation="vertical">
         {steps.map((step, index) => {
-          // Determine the color based on the step index and approval status
-          let stepColor = "inherit"; // Default color
+          let stepColor = "inherit"; 
 
           if (index === 0) {
-            // Program Chair
             stepColor =
               formData.approvalCounter < 0
-                ? "orange" // Pending
+                ? "orange"
                 : formData.approvalCounter >= 0
-                ? "green" // Approved
-                : "inherit"; // Default
+                ? "green"
+                : "inherit";
           } else if (index === 1) {
-            // College Dean
             stepColor =
               formData.approvalCounter < 1
-                ? "orange" // Pending
+                ? "orange"
                 : formData.approvalCounter >= 1
-                ? "green" // Approved
-                : "inherit"; // Default
+                ? "green"
+                : "inherit";
           } else if (index === 2) {
-            // Director, Extension & Community Relations
             stepColor =
               formData.approvalCounter < 2
-                ? "orange" // Pending
+                ? "orange"
                 : formData.approvalCounter >= 2
-                ? "green" // Approved
-                : "inherit"; // Default
+                ? "green"
+                : "inherit";
           }
 
-          // Add rejection status dynamically
           if (formData.reviewStatus === "rejected") {
             stepColor = "red";
           }
@@ -246,13 +240,12 @@ const ProjectProgressStep = ({ projectID }) => {
   );
 };
 
-const ProjLeadViewProjectProgress = () => {
+const VPALAViewProgress = () => {
   const { projectID } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    // Check if token is present
     if (!token) {
       navigate('/login', { replace: true });
       return;
@@ -260,49 +253,48 @@ const ProjLeadViewProjectProgress = () => {
   }, [token, navigate]);
 
   return (
-  <div className="bg-gray-200 min-h-screen flex flex-col">
-    {/* Topbar */}
-    <div className="flex-none">
-      <Topbar />
-    </div>
-  
-    {/* Main Content */}
-    <div className="flex flex-1">
+    <div className="bg-gray-200 min-h-screen flex">
       {/* Sidebar */}
-      <div className="flex-none">
-        <ProjLeadSidebar />
-      </div>
-  
-      {/* PDF Viewer */}
-      <div className="flex-1 mt-14 ml-[19%] w-80">
-        <PDFViewer className="w-full h-full border shadow-lg">
-          <MyDocument projectID={projectID} />
-        </PDFViewer>
+      <div className="w-1/4 fixed h-full bg-white z-10 shadow-lg">
+        <VPALASideBar />
       </div>
 
-      <div className="flex-none mt-20 ml-[2%]">
-        {/* Progress Legend */}
-        <div className="flex space-x-4 mb-4">
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-green-600 rounded-full mr-2"></div>
-            <span>Approved</span>
+      {/* Main Content */}
+      <div className="flex-1 ml-[25%] mt-16">
+        {/* Topbar */}
+        <Topbar />
+
+        <div className="flex">
+          {/* PDF Viewer */}
+          <div className="flex-grow mt-14 ml-4 w-full">
+            <PDFViewer className="w-full h-full border shadow-lg">
+              <MyDocument projectID={projectID} />
+            </PDFViewer>
           </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-orange-400 rounded-full mr-2"></div>
-            <span>Pending</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-red-600 rounded-full mr-2"></div>
-            <span>Rejected</span>
+
+          {/* Progress Legend and Steps */}
+          <div className="w-1/4 mt-16 ml-4">
+            <div className="flex space-x-4 mb-4">
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-green-600 rounded-full mr-2"></div>
+                <span>Approved</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-orange-400 rounded-full mr-2"></div>
+                <span>Pending</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 bg-red-600 rounded-full mr-2"></div>
+                <span>Rejected</span>
+              </div>
+            </div>
+
+            <ProjectProgressStep projectID={projectID} />
           </div>
         </div>
-
-        {/* Project Progress Step */}
-        <ProjectProgressStep projectID={projectID} />
       </div>
     </div>
-  </div>
   );
 };
 
-export default ProjLeadViewProjectProgress;
+export default VPALAViewProgress;

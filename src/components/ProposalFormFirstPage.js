@@ -5,6 +5,9 @@ import ProponentsDeliverables from "./ProposalFormFirstPage_Deliverables";
 import ReactTooltip from 'react-tooltip';
 import Select from 'react-select';
 import CreatableSelect from "react-select/creatable";
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root'); // Ensure accessibility for screen readers
 
 const ProposalFormFirstPage = () => {
   const userID = localStorage.getItem('userid');
@@ -22,6 +25,7 @@ const ProposalFormFirstPage = () => {
   const [proponents, setProponents] = useState([]);
   const [programCategory, setProgramCategory] = useState([]);
   const [projectCategory, setProjectCategory] = useState([]);
+  const [campus, setCampus] = useState([]);
   const [college, setCollege] = useState([]);
   const [program, setProgram] = useState([]);
   const [nonUserProponents, setNonUserProponents] = useState([]);
@@ -38,6 +42,15 @@ const ProposalFormFirstPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const [deliverables, setDeliverables] = useState([]);
+  const [isAgencyModalOpen, setIsAgencyModalOpen] = useState(false);
+  const [newAgencyName, setNewAgencyName] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isPersonResponsibleModalOpen, setIsPersonResponsibleModalOpen] = useState(false);
+  const [customName, setCustomName] = useState("");
+  const [pickedProponents, setPickedProponents] = useState([]);
+  const [editingRowIndex, setEditingRowIndex] = useState(null);
+  const [programChairList, setProgramChairList] = useState([]);
+  const [collegeDeanList, setCollegeDeanList] = useState([]);
 
   const [formData, setFormData] = useState({
     userID: userID,
@@ -49,7 +62,8 @@ const ProposalFormFirstPage = () => {
     program: [],
     accreditationLevel: "",
     beneficiaries: "",
-    targetImplementation: "",
+    targetStartDateImplementation: "",
+    targetEndDateImplementation: "",
     totalHours: 0,
     background: "",
     projectComponent: "",
@@ -76,9 +90,7 @@ const ProposalFormFirstPage = () => {
       }
     ],
     projectManagementTeam: [
-      {
-        name: ""
-      }
+      
     ],
     budgetRequirements: [
       {
@@ -150,36 +162,18 @@ const ProposalFormFirstPage = () => {
     ],
     signatories: [],
 
-    programChair: {
-      name: programChair,
-      title: "Program Chair"
-    },
-    collegeDean: {
-      name: collegeDean,
-      title: "College Dean"
-    },
-    director: {
-      name: director,
-      title: "Director, Extension & Community Relations"
-    },
-    vcaa: {
-      name: vcaa,
-      title: "Vice - Chancellor for Academic Affairs"
-    },
-    vcri: {
-      name: vcri,
-      title: "Vice - Chancellor for Research and Innovation"
-    },
-    accountant: {
-      name: accountant,
-      title: "Accountant III"
-    },
-    chancellor: {
-      name: chancellor,
-      title: "Chancellor, USTP CDO"
-    },
-    deliverables: [],
+    programChair: [], // Array to handle multiple Program Chair signatories
+    collegeDean: [],  // Array to handle multiple College Dean signatories
+    director: { name: director, title: "Director, Extension & Community Relations" },
+    vcaa: { name: vcaa, title: "Vice - Chancellor for Academic Affairs" },
+    vcri: { name: vcri, title: "Vice - Chancellor for Research and Innovation" },
+    accountant: { name: accountant, title: "Accountant III" },
+    chancellor: { name: chancellor, title: "Chancellor, USTP CDO" },
 
+    deliverables: [],
+    approvers: [],
+
+    campus: [],
     college: [],
     region: '',
     province: '',
@@ -197,14 +191,44 @@ const ProposalFormFirstPage = () => {
     // Create a copy of formData
     const modifiedData = { ...formData };
 
+    console.log('Program Chair:', formData.programChair);
+    console.log('College Dean:', formData.collegeDean);
+
     const signatories = [
-      formData.programChair,
-      formData.collegeDean,
-      formData.director,
-      formData.vcaa,
-      formData.vcri,
-      formData.accountant,
-      formData.chancellor,
+      ...formData.programChair.filter(chair => chair.name).map((chair, index) => {
+        const selectedProgram = program.find(p => p.programID === chair.programId);
+        return {
+          name: chair.name,
+          title: `Program Chair, ${selectedProgram?.abbreviation || 'Program'}`,
+        };
+      }),
+      ...formData.collegeDean.filter(dean => dean.name).map((dean, index) => {
+        const selectedCollege = college.find(c => c.collegeID === dean.collegeId);
+        return {
+          name: dean.name,
+          title: `College Dean, ${selectedCollege?.abbreviation || 'College'}`,
+        };
+      }),
+      {
+        name: formData.director.name,
+        title: "Director, Extension & Community Relations",
+      },
+      {
+        name: formData.vcaa.name,
+        title: "Vice - Chancellor for Academic Affairs",
+      },
+      {
+        name: formData.vcri.name,
+        title: "Vice - Chancellor for Research and Innovation",
+      },
+      {
+        name: formData.accountant.name,
+        title: "Accountant III",
+      },
+      {
+        name: formData.chancellor.name,
+        title: "Chancellor, USTP CDO",
+      },
       ...formData.signatories, // If there are any other signatories already in the list, keep them
     ];
 
@@ -222,6 +246,7 @@ const ProposalFormFirstPage = () => {
     delete modifiedData.province;
     delete modifiedData.city;
     delete modifiedData.barangay;
+    delete modifiedData.campus;
     delete modifiedData.college;
 
     if (showTrainers === false) {
@@ -291,11 +316,17 @@ const ProposalFormFirstPage = () => {
 
   // Add a new person to the project management team
   const handleProjectManagementTeamButtonClick = () => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      projectManagementTeam: [...prevFormData.projectManagementTeam, { name: "" }],
-    }));
-  };
+    const customName = prompt("Enter the name of the person:");
+    if (customName) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        projectManagementTeam: [
+          ...prevFormData.projectManagementTeam,
+          { value: `custom-${Date.now()}`, label: customName }, // Add custom person
+        ],
+      }));
+    }
+  };  
 
   // Remove the last person from the project management team
   const handleProjectManagementTeamRemoveClick = () => {
@@ -312,12 +343,65 @@ const ProposalFormFirstPage = () => {
     });
   };
 
-
   const handleActivityChange = (index, event) => {
     const { name, value } = event.target;
+  
     const updatedActivities = [...formData.projectActivities];
-    updatedActivities[index][name] = value;
+    
+    // For date inputs (targetDate)
+    if (name === 'targetDate') {
+      // Format date to include the last day of the month
+      const formattedDate = value 
+        ? `${value}-${new Date(value.split('-')[0], value.split('-')[1], 0).getDate()}` 
+        : '';
+      
+      updatedActivities[index][name] = formattedDate;
+    } else {
+      // Handle other inputs (objective, involved, personResponsible)
+      updatedActivities[index][name] = value;
+    }
+  
     setFormData({ ...formData, projectActivities: updatedActivities });
+  };
+
+  // onChange for Person Responsible selection
+  const handlePersonResponsibleChange = (selectedOption, index) => {
+    if (selectedOption?.value === 'add_custom') {
+      // Store the index of the row being edited
+      setEditingRowIndex(index);
+      setIsPersonResponsibleModalOpen(true);
+    } else if (selectedOption) {
+      // Update the person responsible with the selected proponent
+      const updatedActivities = [...formData.projectActivities];
+      updatedActivities[index].personResponsible = selectedOption.label;
+      setFormData({ ...formData, projectActivities: updatedActivities });
+    } else {
+      // Handle clearing the selection
+      const updatedActivities = [...formData.projectActivities];
+      updatedActivities[index].personResponsible = '';
+      setFormData({ ...formData, projectActivities: updatedActivities });
+    }
+  };
+
+  const handleAddCustomName = () => {
+    if (customName.trim() && editingRowIndex !== null) {
+      const updatedActivities = [...formData.projectActivities].map((activity, index) => 
+        index === editingRowIndex 
+          ? { ...activity, personResponsible: customName } 
+          : activity
+      );
+  
+      setFormData({ 
+        ...formData, 
+        projectActivities: updatedActivities 
+      });
+  
+      setIsPersonResponsibleModalOpen(false);
+      setCustomName('');
+      setEditingRowIndex(null);
+    } else {
+      console.error("Name cannot be empty or no row selected");
+    }
   };
 
   const addActivityRow = () => {
@@ -341,6 +425,13 @@ const ProposalFormFirstPage = () => {
       setFormData({ ...formData, projectActivities: projectActivities });
     }
   };
+  
+  const handleRemoveActivityRow = (index) => {
+    if (formData.projectActivities.length > 1) {
+      const updatedActivities = formData.projectActivities.filter((_, i) => i !== index);
+      setFormData({ ...formData, projectActivities: updatedActivities });
+    }
+  };
 
   const handleMonitoringPlanScheduleRowChange = (index, field, value) => {
     setFormData((prevData) => {
@@ -354,22 +445,22 @@ const ProposalFormFirstPage = () => {
     });
   };
 
-  const handleTrainerChange = (index, e) => {
-    const { name, value } = e.target;
-    const updatedTrainers = formData.loadingOfTrainers.map((trainer, i) => {
-      if (i === index) {
-        let updatedTrainer = { ...trainer, [name]: value };
-
-        // Automatically calculate totalBudgetRequirement when budget values change
-        if (name === 'ustpBudget' || name === 'agencyBudget') {
-          updatedTrainer.totalBudgetRequirement = parseFloat(updatedTrainer.ustpBudget) + parseFloat(updatedTrainer.agencyBudget);
-        }
-        return updatedTrainer;
-      }
-      return trainer;
-    });
-
-    setFormData({ ...formData, loadingOfTrainers: updatedTrainers });
+  const handleTrainerChange = (index, updatedTrainer) => {
+    const newLoadingOfTrainers = [...formData.loadingOfTrainers];
+    newLoadingOfTrainers[index] = {
+      faculty: updatedTrainer.faculty || '',
+      trainingLoad: updatedTrainer.trainingLoad || '',
+      hours: updatedTrainer.hours || 0,
+      ustpBudget: 150, // fixed value
+      agencyBudget: updatedTrainer.agencyBudget || 0,
+      totalBudgetRequirement: 
+        (updatedTrainer.hours || 0) * 150 + (updatedTrainer.agencyBudget || 0)
+    };
+  
+    setFormData(prevData => ({
+      ...prevData,
+      loadingOfTrainers: newLoadingOfTrainers
+    }));
   };
 
   const addTrainerRow = () => {
@@ -383,9 +474,29 @@ const ProposalFormFirstPage = () => {
   };
 
   const removeTrainerRow = (index) => {
+    // Prevent removal of the first row
+    if (index === 0) {
+      alert("The first row cannot be removed.");
+      return;
+    }
+  
+    // Proceed to remove the specified row
     const updatedTrainers = formData.loadingOfTrainers.filter((_, i) => i !== index);
     setFormData({ ...formData, loadingOfTrainers: updatedTrainers });
   };
+  
+  useEffect(() => {
+  // Initialize loadingOfTrainers with the same number of rows as projectManagementTeam
+  setFormData(prevState => ({
+    ...prevState,
+    loadingOfTrainers: formData.projectManagementTeam.map(() => ({
+      faculty: '', 
+      trainingLoad: '', 
+      hours: '', 
+      agencyBudget: ''
+    }))
+  }));
+}, [formData.projectManagementTeam]);
 
   // Function to handle changes in proponents inputs
   const handleNonUserProponentChange = (index, value) => {
@@ -681,31 +792,55 @@ const ProposalFormFirstPage = () => {
     fetchAgencies();
   }, []);
 
-  // Handle agency selection and adding new agency
   const handleAgencyFormChange = async (e) => {
     const { value } = e.target;
 
     if (value === 'add_new_agency') {
-      const newAgencyName = prompt('Enter the name of the new agency:');
-
-      if (newAgencyName) {
-        try {
-          // Send POST request to create the new agency
-          const response = await axios.post('http://127.0.0.1:8000/create_agency', {
-            agencyName: newAgencyName,
-          });
-
-          const newAgency = { agencyID: response.data.agencyID, agencyName: newAgencyName };
-
-          // Add the new agency to the list of agencies and set the selected agency
-          setAgencies((prevAgencies) => [...prevAgencies, newAgency]);
-          setFormData((prevFormData) => ({ ...prevFormData, agency: [newAgency.agencyID] }));  // Wrap in array
-        } catch (error) {
-          console.error('Error creating new agency:', error);
-        }
-      }
+      setIsAgencyModalOpen(true);
     } else {
-      setFormData((prevFormData) => ({ ...prevFormData, agency: [value] }));  // Wrap in array
+      setFormData(prevData => ({
+        ...prevData,
+        agency: [value] // Maintain array structure
+      }));
+    }
+  };
+
+  const handleSubmitNewAgency = async () => {
+    if (!newAgencyName.trim()) return;
+    
+    setIsSubmitting(true);
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/create_agency', {
+        agencyName: newAgencyName,
+      });
+
+      const newAgency = { 
+        agencyID: response.data.agencyID, 
+        agencyName: newAgencyName 
+      };
+
+      // Update agencies list
+      setAgencies(prevAgencies => [...prevAgencies, newAgency]);
+      
+      // Update form data maintaining the entire structure
+      setFormData(prevData => ({
+        ...prevData,
+        agency: [newAgency.agencyID] // Maintain array structure
+      }));
+
+      setIsAgencyModalOpen(false);
+      setNewAgencyName('');
+    } catch (error) {
+      console.error('Error creating new agency:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmitNewAgency();
     }
   };
 
@@ -792,9 +927,14 @@ const ProposalFormFirstPage = () => {
     }));
   };
 
-  const handleCheckboxChange = (event) => {
-    setIsChecked(event.target.checked);
-    setShowTrainers(!showTrainers);
+  const handleSkillsTraining = (selectedOptions) => {
+    // Check if 'Skills Training' is in the selected options
+    const selectedCategories = selectedOptions.map(option => option.label);
+    if (selectedCategories.includes('Skills Training/Capacity Building')) {
+      setShowTrainers(true);
+    } else {
+      setShowTrainers(false);
+    }
   };
 
   const handleProjTypeChange = (selectedOption) => {
@@ -818,9 +958,47 @@ const ProposalFormFirstPage = () => {
 
   // Fetch colleges on component mount
   useEffect(() => {
-    const fetchColleges = async () => {
+    const fetchCampus = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/get_colleges');
+        const response = await axios.get('http://127.0.0.1:8000/get_campuses');
+        setCampus(response.data);
+      } catch (error) {
+        console.error('Error fetching campus:', error);
+      }
+    };
+
+    fetchCampus();
+  }, []);
+
+  // Handle college selection - toggle selection on click
+  const handleCampusChange = (campusID) => {
+    setFormData(prev => {
+      const newCampuses = prev.campus.includes(campusID)
+        ? prev.campus.filter(id => id !== campusID)  // Remove if already selected
+        : [...prev.campus, campusID];                // Add if not selected
+
+      return {
+        ...prev,
+        campus: newCampuses,
+        college: [],
+        program: [] // Clear program selection when colleges change
+      };
+    });
+  };
+
+  // Fetch programs whenever selected colleges change
+  useEffect(() => {
+    const fetchColleges = async () => {
+      if (formData.campus.length === 0) {
+        setCollege([]); // Clear programs if no college is selected
+        setFormData(prev => ({ ...prev, college: [] })); // Also clear selected programs
+        return;
+      }
+
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/get_colleges/', {
+          campusIDs: formData.campus,
+        });
         setCollege(response.data);
       } catch (error) {
         console.error('Error fetching colleges:', error);
@@ -828,7 +1006,7 @@ const ProposalFormFirstPage = () => {
     };
 
     fetchColleges();
-  }, []);
+  }, [formData.campus]);
 
   // Handle college selection - toggle selection on click
   const handleCollegeChange = (collegeId) => {
@@ -844,6 +1022,14 @@ const ProposalFormFirstPage = () => {
       };
     });
   };
+
+  useEffect(() => {
+    console.log("programChairList updated:", programChairList);
+  }, [programChairList]);
+
+  useEffect(() => {
+    console.log("CollegeDeanList updated:", collegeDeanList);
+  }, [collegeDeanList]);
 
   // Fetch programs whenever selected colleges change
   useEffect(() => {
@@ -894,8 +1080,18 @@ const ProposalFormFirstPage = () => {
     const { data, innerRef, innerProps } = props;
     return (
       <div ref={innerRef} {...innerProps} className="p-2 hover:bg-gray-100">
-        <div className="font-medium">{data.title}</div>
-        <div className="text-sm text-gray-600">{data.abbreviation}</div>
+      <span className="font-medium">{data.title}</span> {/* Title */}
+      <br />
+      <span className="text-sm text-gray-600">{data.campus} - {data.abbreviation}</span> {/* Abbreviation */}
+      </div>
+    );
+  };
+
+  const CustomCampusOption = (props) => {
+    const { data, innerRef, innerProps } = props;
+    return (
+      <div ref={innerRef} {...innerProps} className="p-2 hover:bg-gray-100">
+      <span className="font-medium">{data.title}</span> {/* Title */}
       </div>
     );
   };
@@ -909,10 +1105,130 @@ const ProposalFormFirstPage = () => {
       </div>
     );
   };
+
+  // Function to remove a specific proponent, but not the first one
+  const handleRemoveProponent = (index) => {
+    if (index > 0) {
+      const updatedProponents = formData.nonUserProponents.filter((_, i) => i !== index);
+      setFormData({
+        ...formData,
+        nonUserProponents: updatedProponents,
+      });
+    }
+  };
+
+  // Function to remove a specific objective, but not the first one
+  const handleRemoveObjective = (index) => {
+    if (index > 0) {
+      const updatedObjectives = formData.goalsAndObjectives.filter((_, i) => i !== index);
+      setFormData({
+        ...formData,
+        goalsAndObjectives: updatedObjectives,
+      });
+    }
+  };
+
+  // Function to remove a specific person, but not the first one
+  const handleRemovePerson = (index) => {
+    if (index > 0) { // Prevent removal of the first row (person)
+      const updatedTeam = formData.projectManagementTeam.filter((_, i) => i !== index);
+      setFormData({
+        ...formData,
+        projectManagementTeam: updatedTeam,
+      });
+    }
+  };
+
+  const handleTargetDateFormChange = (e) => {
+    const { name, value } = e.target;
+    
+    // Convert month input to full date format (last day of the month)
+    const formattedDate = value ? `${value}-${new Date(value.split('-')[0], value.split('-')[1], 0).getDate()}` : '';
+    
+    setFormData(prev => ({
+      ...prev,
+      [name]: formattedDate
+    }));
+
+    // Additional logic for start/end date validation
+    if (name === 'targetStartDateImplementation') {
+      // Reset end date if it is earlier than the new start date
+      if (
+        formData.targetEndDateImplementation &&
+        formattedDate > formData.targetEndDateImplementation
+      ) {
+        setFormData(prev => ({
+          ...prev,
+          targetEndDateImplementation: '',
+        }));
+      }
+    }
+  };
+
+  // Get the previous month in YYYY-MM format
+  const getPreviousMonth = () => {
+    const date = new Date();
+    date.setMonth(date.getMonth() - 1);
+    return date.toISOString().slice(0, 7);
+  };
+
+  // Get the current month in YYYY-MM format
+  const getCurrentMonth = () => {
+    return new Date().toISOString().slice(0, 7);
+  };
+
+  useEffect(() => {
+    const updatedApprovers = collegeDeanList.map((collegeId) => {
+      // Find the college dean's userID for this college
+      const dean = program.find(p => p.college.collegeID === collegeId)?.college.collegeDean.userID;
+  
+      // Find program chairs' userIDs for this college
+      const programChairs = programChairList
+        .map(programId => {
+          const prog = program.find(p => p.programID === programId);
+          return prog?.programChair?.userID;
+        })
+        .filter(userId => userId); // Remove any undefined userIds
+  
+      return {
+        collegeID: collegeId,
+        programChairs: programChairs,
+        collegeDean: dean || "", // Use the dean's userID or empty string
+      };
+    });
+  
+    setFormData(prev => ({ ...prev, approvers: updatedApprovers }));
+  }, [collegeDeanList, programChairList, program]);
+
+  useEffect(() => {
+    // Populate programChair and collegeDean when component loads
+    const initialProgramChairs = formData.program.map((programId, index) => {
+      const selectedProgram = program.find(p => p.programID === programId);
+      return {
+        name: `${selectedProgram?.programChair?.firstname || ""} ${selectedProgram?.programChair?.lastname || ""}`.trim(),
+        programId: programId
+      };
+    });
+  
+    const initialCollegeDeans = formData.college.map((collegeId, index) => {
+      const selectedCollege = college.find(c => c.collegeID === collegeId);
+      return {
+        name: `${selectedCollege?.collegeDean?.firstname || ""} ${selectedCollege?.collegeDean?.lastname || ""}`.trim(),
+        collegeId: collegeId
+      };
+    });
+  
+    setFormData(prev => ({
+      ...prev,
+      programChair: initialProgramChairs,
+      collegeDean: initialCollegeDeans
+    }));
+  }, [formData.program, formData.college, program, college]);
+
   return (
     <div className="flex flex-col mt-14 px-10">
-      <h1 className="text-2xl font-semibold mb-5 mt-3">
-        Extension Project Proposal
+      <h1 className="text-2xl font-bold mb-5 mt-3">
+        EXTENSION PROJECT PROPOSAL
       </h1>
 
 
@@ -920,7 +1236,7 @@ const ProposalFormFirstPage = () => {
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-2 font-bold text-base">
+              {/* <label className="block mb-2 font-bold text-base">
                 Training
                 <input
                   className="ml-2"
@@ -928,7 +1244,7 @@ const ProposalFormFirstPage = () => {
                   checked={isChecked}
                   onChange={handleCheckboxChange}
                 />
-              </label>
+              </label> */}
             </div>
           </div>
           {/* First Row */}
@@ -1016,33 +1332,36 @@ const ProposalFormFirstPage = () => {
 
               <Select
                 required
-                options={
-                  projectCategory.length
-                    ? projectCategory.map((category) => ({
-                      value: category.projectCategoryID,
-                      label: category.title,
-                    }))
-                    : []
-                }
+                options={projectCategory.map(category => ({
+                  value: category.projectCategoryID,
+                  label: category.title,
+                }))}
                 isMulti
-                value={formData.projectCategory.map((id) => {
-                  const category = projectCategory.find(
-                    (category) => category.projectCategoryID === id
-                  );
-                  return category
-                    ? { value: category.projectCategoryID, label: category.title }
-                    : null;
-                }).filter(Boolean)}
+                value={formData.projectCategory
+                  .map(id => {
+                    const category = projectCategory.find(
+                      category => category.projectCategoryID === id
+                    );
+                    return category
+                      ? { value: category.projectCategoryID, label: category.title }
+                      : null;
+                  })
+                  .filter(Boolean)}
                 onChange={(selectedOptions) => {
+                  // Update formData with selected category IDs
+                  const selectedValues = selectedOptions?.map(option => option.value) || [];
                   setFormData({
                     ...formData,
-                    projectCategory: selectedOptions.map((option) => option.value),
+                    projectCategory: selectedValues,
                   });
+
+                  // Handle 'Skills Training' selection
+                  handleSkillsTraining(selectedOptions || []);
                 }}
                 classNamePrefix="react-select"
                 className="w-full"
-                placeholder={programCategory.length ? "Select" : "No options available"}
-                isDisabled={!programCategory.length} // Disable when no options
+                placeholder={projectCategory.length ? "Select" : "No options available"}
+                isDisabled={!projectCategory.length}
               />
             </div>
           </div>
@@ -1099,8 +1418,11 @@ const ProposalFormFirstPage = () => {
           </div>
 
 
+        </div>
+
+        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           {/* Third Row */}
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 gap-4 mb-3">
             <div>
               <label className="block mb-2 font-bold text-base">
                 PROPONENTS
@@ -1137,6 +1459,14 @@ const ProposalFormFirstPage = () => {
                       ...formData,
                       proponents: selectedOptions.map((option) => option.value), // Map back to userIDs
                     });
+                    // Correctly set picked proponents with full name
+                    setPickedProponents(
+                      selectedOptions 
+                        ? selectedOptions.map((option) => ({
+                            fullname: option.label, // Save the full combined name
+                          }))
+                        : []
+                    );
                   }}
                   classNamePrefix="react-select"
                   className="w-full"
@@ -1146,7 +1476,6 @@ const ProposalFormFirstPage = () => {
               </div>
             </div>
           </div>
-
 
           {/* Third Row */}
           <div className="grid grid-cols-1 gap-4">
@@ -1164,26 +1493,48 @@ const ProposalFormFirstPage = () => {
               </label>
               {/* Render input fields for each proponent */}
               {formData.nonUserProponents.map((proponentObj, index) => (
-                <input
-                  required
-                  key={index}
-                  name={`proponent-${index}`}
-                  value={proponentObj.name} // Access 'name' field in the object
-                  onChange={(e) => handleNonUserProponentChange(index, e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded mt-2"
-                  placeholder={`Proponent ${index + 1}`}
-                />
+                <div key={index} className="flex items-center space-x-2 mb-2">
+                  <input
+                    required
+                    name={`proponent-${index}`}
+                    value={proponentObj.name} // Access 'name' field in the object
+                    onChange={(e) => handleNonUserProponentChange(index, e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                    placeholder={`Proponent ${index + 1}`}
+                  />
+                  {/* Remove Button for specific row, but not for the first row */}
+                  {index > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveProponent(index)} // Call the remove function
+                      className="bg-red-500 text-white px-4 py-2 rounded"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
               ))}
 
               <div className="flex space-x-2 mt-2">
                 <button
                   type="button" // Prevent default form submission
                   onClick={handleNonUserProponentButtonClick}
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                  className={`${
+                    formData.nonUserProponents.some(
+                      (proponentObj) => proponentObj.name.trim() === ""
+                    )
+                      ? "bg-gray-400 text-gray-300 cursor-not-allowed"
+                      : "bg-blue-500 text-white"
+                  } px-4 py-2 rounded`}
+                  disabled={
+                    formData.nonUserProponents.some(
+                      (proponentObj) => proponentObj.name.trim() === ""
+                    )
+                  }
                 >
                   Add Proponent
                 </button>
-                <button
+                {/* <button
                   type="button" // Prevent default form submission
                   onClick={handleNonUserProponentRemoveClick}
                   className={
@@ -1194,39 +1545,100 @@ const ProposalFormFirstPage = () => {
                   disabled={formData.nonUserProponents.length === 1}
                 >
                   Remove Proponent
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
 
-
-          {/* Fourth Row */}
-          <div className="grid grid-cols-5 gap-4">
-            {/* <div className="col-span-1">
-              <label className="block mb-2 font-semibold">CAMPUS</label>
-                <div className="relative h-[100px] border border-gray-300 rounded shadow-inner">
-                      <div className="absolute inset-0 overflow-y-auto">
-                            {campus.map((camp) => (
-                              <div
-                                key={camp.campusID}
-                                className={`p-3 cursor-pointer border-b border-gray-200 last:border-b-0 hover:bg-gray-100 transition-colors ${
-                                  formData.campus.includes(camp.campusID) ? 'bg-blue-100 hover:bg-blue-200' : ''
-                                }`}
-                                onClick={() => handleCampusChange(camp.campusID)}
-                              >
-                                <div className="font-medium">{camp.title}</div>
-                                <div className="text-sm text-gray-600">{camp.abbreviation}</div>
-                              </div>
-                            ))}
-                      </div>
-                </div>
-            </div> */}
-            <div className="col-span-2">
-              <label className="block mb-2 font-semibold">
-                COLLEGE
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <label className="block mb-2 font-bold text-base">
+                PROJECT MANAGEMENT TEAM/TRAINERS
                 <span className="text-red-500 ml-1">*</span>
                 <span
-                  data-tip="Select the college(s), including those in collaboration."
+                  data-tip="List the individuals responsible for overseeing the project and training efforts."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
+
+              {/* Multi-select dropdown for project management team/trainers */}
+              <Select
+                isMulti
+                value={formData.projectManagementTeam.map((member) => ({
+                  label: member.name,
+                  value: member.name,
+                }))} 
+                onChange={(selectedOptions) => {
+                  console.log('Selected Options:', selectedOptions);
+                  const updatedTeam = selectedOptions
+                    ? selectedOptions.map((option) => ({ 
+                        name: option.label || option.value 
+                      }))
+                    : [{ name: "" }]; 
+
+                  setFormData((prevFormData) => ({
+                    ...prevFormData,
+                    projectManagementTeam: updatedTeam,
+                  }));
+                }}
+                options={(() => {
+                  const options = pickedProponents.map((proponent) => {
+                    // Split the fullname into firstname and lastname
+                    const nameParts = proponent.fullname.split(' ');
+                    const firstname = nameParts[0];
+                    const lastname = nameParts.slice(1).join(' ');
+
+                    return {
+                      value: proponent.fullname, // Use fullname as value
+                      label: proponent.fullname
+                    };
+                  });
+                  console.log('Generated Options:', options);
+                  return options;
+                })()}
+                isSearchable
+                placeholder="Search or select team members"
+                isClearable
+                noOptionsMessage={() => "No match found"}
+              />
+            </div>
+
+            {/* Add Person Button
+            <div className="flex space-x-2 mt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  const customName = prompt("Enter the name of the person:");
+                  if (customName) {
+                    setFormData((prevFormData) => ({
+                      ...prevFormData,
+                      projectManagementTeam: [
+                        ...prevFormData.projectManagementTeam,
+                        { name: customName }, // Add custom person in the required format
+                      ],
+                    }));
+                  }
+                }}
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+              >
+                Add Custom Person
+              </button>
+            </div> */}
+          </div>
+        </div>
+
+        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
+          <div className="grid grid-cols-7 gap-4">
+            {/* CAMPUS */}
+            <div className="col-span-2">
+            <label className="block mb-2 font-semibold">
+                CAMPUS
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Select the campus/campuses, including those in collaboration."
                   className="ml-2 text-gray-500 cursor-pointer text-sm"
                 >
                   ⓘ
@@ -1235,36 +1647,34 @@ const ProposalFormFirstPage = () => {
               </label>
               <Select
                 required
-                options={college.map((col) => ({
-                  value: col.collegeID,
-                  title: col.title,
-                  abbreviation: col.abbreviation,
+                options={campus.map((col) => ({
+                  value: col.campusID,
+                  title: col.name
                 }))}
                 components={{
-                  Option: CustomOption,
+                  Option: CustomCampusOption,
                   SingleValue: CustomSingleValue,
                 }}
-                getOptionLabel={(e) => `${e.title} ${e.abbreviation}`}
+                getOptionLabel={(e) => `${e.title}`}
                 isMulti
-                value={formData.college.map((id) => {
-                  const col = college.find((c) => c.collegeID === id);
+                value={formData.campus.map((id) => {
+                  const col = campus.find((c) => c.campusID === id);
                   return col
                     ? {
-                      value: col.collegeID,
-                      title: col.title,
-                      abbreviation: col.abbreviation,
+                      value: col.campusID,
+                      title: col.name,
                     }
                     : null;
                 }).filter(Boolean)}
                 onChange={(selectedOptions) => {
                   setFormData({
                     ...formData,
-                    college: selectedOptions.map((option) => option.value),
+                    campus: selectedOptions.map((option) => option.value),
                   });
                 }}
                 classNamePrefix="react-select"
                 className="w-full"
-                placeholder="Select colleges"
+                placeholder="Select campus"
                 styles={{
                   control: (base) => ({
                     ...base,
@@ -1292,7 +1702,88 @@ const ProposalFormFirstPage = () => {
                   }),
                 }}
               />
+            </div>
 
+            {/* COLLEGE */}
+            <div className="col-span-2">
+              <label className="block mb-2 font-semibold">
+                COLLEGE
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Select the college(s), including those in collaboration."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
+              <Select
+                required
+                options={college.map((col) => ({
+                  value: col.collegeID,
+                  title: col.title,
+                  campus: col.campus?.name || 'Unknown Campus', // Ensure fallback for campus
+                  abbreviation: col.abbreviation,
+                }))}
+                components={{
+                  Option: CustomOption,
+                  SingleValue: CustomSingleValue,
+                }}
+                getOptionLabel={(e) => `${e.campus} - ${e.title} (${e.abbreviation})`} // Label format: Campus - Title (Abbreviation)
+                isMulti
+                value={formData.college
+                  .map((id) => {
+                    const col = college.find((c) => c.collegeID === id);
+                    return col
+                      ? {
+                          value: col.collegeID,
+                          title: col.title,
+                          campus: col.campus?.name || 'Unknown Campus', // Ensure fallback for campus
+                          abbreviation: col.abbreviation,
+                        }
+                      : null;
+                  })
+                  .filter(Boolean)}
+                onChange={(selectedOptions) => {
+                  setFormData({
+                    ...formData,
+                    college: selectedOptions.map((option) => option.value),
+                  });
+                  setCollegeDeanList(
+                    selectedOptions.map((option) => (option.value))
+                  );
+                }}
+                classNamePrefix="react-select"
+                className="w-full"
+                isDisabled={formData.campus.length === 0}
+                placeholder="Select colleges"
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    display: 'flex',
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
+                    scrollbarWidth: 'thin',
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? 'rgba(59, 130, 246, 0.1)'
+                      : state.isFocused
+                      ? 'rgba(229, 231, 235, 1)'
+                      : 'transparent',
+                    color: state.isSelected ? '#2563EB' : base.color,
+                  }),
+                  multiValue: (base) => ({
+                    ...base,
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  }),
+                  multiValueLabel: (base) => ({
+                    ...base,
+                    color: '#2563EB',
+                  }),
+                }}
+              />
               <p className="text-sm text-gray-500 mt-1">Click items to select/deselect</p>
             </div>
 
@@ -1312,17 +1803,19 @@ const ProposalFormFirstPage = () => {
               {/* Fixed height container with shadow to indicate scrollability */}
               <Select
                 required
-                options={program.map((prog) => ({
+                options={Array.isArray(program) ? program.map((prog) => ({
                   value: prog.programID,
                   label: (
                     <div>
                       <div className="font-medium">{prog.title}</div>
-                      <div className="text-sm text-gray-600">{prog.college.abbreviation}</div>
+                      <div className="text-sm text-gray-600">
+                        {prog.college?.campus?.name} ({prog.college?.abbreviation}) - {prog.abbreviation}
+                      </div>
                     </div>
                   ),
-                }))}
+                })) : []}
                 isMulti
-                value={formData.program.map((id) => {
+                value={Array.isArray(formData.program) ? formData.program.map((id) => {
                   const prog = program.find((p) => p.programID === id);
                   return prog
                     ? {
@@ -1330,22 +1823,25 @@ const ProposalFormFirstPage = () => {
                       label: (
                         <div>
                           <div className="font-medium">{prog.title}</div>
-                          <div className="text-sm text-gray-600">{prog.college.abbreviation}</div>
+                          <div className="text-sm text-gray-600">{prog.college?.abbreviation}</div>
                         </div>
                       ),
                     }
                     : null;
-                }).filter(Boolean)} // Filter out null values
+                }).filter(Boolean) : []} // Filter out null values
                 onChange={(selectedOptions) => {
                   const selectedIDs = selectedOptions.map((option) => option.value);
                   setFormData({
                     ...formData,
                     program: selectedIDs,
                   });
+                  setProgramChairList(
+                    selectedOptions.map((option) => (option.value))
+                  );
                 }}
-                isDisabled={formData.college.length === 0} // Disable if no college is selected
+                isDisabled={!Array.isArray(formData.college) || formData.college.length === 0} // Disable if no college is selected
                 placeholder={
-                  formData.college.length === 0
+                  !Array.isArray(formData.college) || formData.college.length === 0
                     ? "Please select college(s) first"
                     : "Select programs"
                 }
@@ -1480,81 +1976,111 @@ const ProposalFormFirstPage = () => {
             </div>
           </div>
 
+          {/* Modal */}
+          {isAgencyModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+              <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold">Add New Agency</h2>
+                  <button 
+                    onClick={() => setIsAgencyModalOpen(false)}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    ✕
+                  </button>
+                </div>
+                
+                <div className="mb-6">
+                  <label className="block mb-2 text-sm font-medium text-gray-700">
+                    Agency Name
+                    <span className="text-red-500 ml-1">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={newAgencyName}
+                    onChange={(e) => setNewAgencyName(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Enter agency name"
+                    className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    autoFocus
+                  />
+                </div>
+
+                <div className="flex justify-end space-x-2">
+                  <button
+                    onClick={() => setIsAgencyModalOpen(false)}
+                    className="px-4 py-2 text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSubmitNewAgency}
+                    disabled={isSubmitting || !newAgencyName.trim()}
+                    className={`px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none ${
+                      (isSubmitting || !newAgencyName.trim()) && 'opacity-50 cursor-not-allowed'
+                    }`}
+                  >
+                    {isSubmitting ? 'Adding...' : 'Add Agency'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
 
           {/* Seventh Row */}
           <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block mb-2 font-semibold">
-                TARGET START DATE OF IMPLEMENTATION
-                <span className="text-red-500 ml-1">*</span>
-                <span
-                  data-tip="Select the target START date when the implementation is expected to start."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
-              <input
+          {/* Target Start Date */}
+          <div>
+            <label className="block mb-2 font-semibold">
+              TARGET START DATE OF IMPLEMENTATION
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the target START date when the implementation is expected to start."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
+            <input
               required
-                name="targetImplementation"
-                value={formData.targetImplementation}
-                onChange={handleFormChange}
-                type="month"
-                min={new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().slice(0, 7)}  // Sets the minimum date to the previous month
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-            <div>
-              <label className="block mb-2 font-semibold">
-                TARGET END DATE OF IMPLEMENTATION
-                <span className="text-red-500 ml-1">*</span>
-                <span
-                  data-tip="Select the target END date when the implementation is expected to end."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
-              <input
-              required
-                name="targetImplementation"
-                value={formData.targetImplementation}
-                onChange={handleFormChange}
-                type="month"
-                min={new Date(new Date().setMonth(new Date().getMonth() - 1)).toISOString().slice(0, 7)}  // Sets the minimum date to the previous month
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-
-            <div>
-              <label className="block mb-2 font-semibold">
-                TOTAL HOURS
-                <span className="text-red-500 ml-1">*</span>
-                <span
-                  data-tip="Enter the total hours required for the implementation of the project."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
-              <input
-              required
-                name="totalHours"
-                value={formData.totalHours}
-                onChange={(e) => {
-                  const value = Math.max(0, e.target.value); // Ensure the value is greater than zero
-                  handleFormChange({ target: { name: "totalHours", value } });
-                }}
-                type="number"
-                min="0"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-
+              name="targetStartDateImplementation"
+              value={formData.targetStartDateImplementation.slice(0, 7)}
+              onChange={handleTargetDateFormChange}
+              type="month"
+              min={getPreviousMonth()}
+              className="w-full p-2 border border-gray-300 rounded"
+            />
           </div>
+
+          {/* Target End Date */}
+          <div>
+            <label className="block mb-2 font-semibold">
+              TARGET END DATE OF IMPLEMENTATION
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the target END date when the implementation is expected to end."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
+            <input
+              required
+              name="targetEndDateImplementation"
+              value={formData.targetEndDateImplementation.slice(0, 7)}
+              onChange={handleTargetDateFormChange}
+              type="month"
+              min={
+                formData.targetStartDateImplementation.slice(0, 7) || 
+                getPreviousMonth()
+              }
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+        </div>
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1 mt-1">
@@ -1743,26 +2269,48 @@ const ProposalFormFirstPage = () => {
 
               {/* Render input fields for each objective */}
               {formData.goalsAndObjectives.map((goal, index) => (
-                <textarea
-                required
-                  key={index}
-                  name={`objective-${index}`}
-                  value={goal.goalsAndObjectives}
-                  onChange={(e) => handleObjectiveChange(index, e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded mt-2"
-                  placeholder={`Objective ${index + 1}`}
-                />
+                <div key={index} className="flex items-center space-x-2 mb-2">
+                  <textarea
+                    required
+                    name={`objective-${index}`}
+                    value={goal.goalsAndObjectives}
+                    onChange={(e) => handleObjectiveChange(index, e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded mt-2"
+                    placeholder={`Objective ${index + 1}`}
+                  />
+                  {/* Remove button visible only for rows other than the first */}
+                  {index > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveObjective(index)} // Call the remove function
+                      className="bg-red-500 text-white px-4 py-2 rounded"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
               ))}
 
               <div className="flex space-x-2 mt-2">
                 <button
                   type="button"
                   onClick={handleObjectiveButtonClick}
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                  className={`${
+                    formData.goalsAndObjectives.some(
+                      (goal) => goal.goalsAndObjectives.trim() === ""
+                    )
+                      ? "bg-gray-400 text-gray-300 cursor-not-allowed"
+                      : "bg-blue-500 text-white"
+                  } px-4 py-2 rounded`}
+                  disabled={
+                    formData.goalsAndObjectives.some(
+                      (goal) => goal.goalsAndObjectives.trim() === ""
+                    )
+                  }
                 >
                   Add Objective
                 </button>
-                <button
+                {/* <button
                   type="button"
                   onClick={handleObjectiveRemoveClick}
                   className={
@@ -1772,7 +2320,7 @@ const ProposalFormFirstPage = () => {
                   }
                 >
                   Remove Objective
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
@@ -1828,7 +2376,7 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <textarea
-                required
+                  required
                   name="objective"
                   value={activity.objective}
                   onChange={(e) => handleActivityChange(index, e)}
@@ -1841,13 +2389,14 @@ const ProposalFormFirstPage = () => {
                   ACTIVITIES INVOLVED
                   <span className="text-red-500 ml-1">*</span>
                 </label>
-                <textarea
-                required
+                <input
+                  required
                   name="involved"
                   value={activity.involved}
                   onChange={(e) => handleActivityChange(index, e)}
+                  type="text"
                   className="w-full p-2 border border-gray-300 rounded"
-                ></textarea>
+                />
               </div>
 
               <div>
@@ -1856,13 +2405,13 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
-                required
+                  required
                   name="targetDate"
-                  value={formData.targetDate}
-                  onChange={handleFormChange}
+                  value={activity.targetDate ? activity.targetDate.slice(0, 7) : ''}
+                  onChange={(e) => handleActivityChange(index, e)}
                   type="month"
                   className="w-full p-2 border border-gray-300 rounded"
-                  min={new Date().toISOString().slice(0, 7)} // Current month and year
+                  min={new Date().toISOString().slice(0, 7)}
                 />
               </div>
 
@@ -1871,119 +2420,145 @@ const ProposalFormFirstPage = () => {
                   PERSON RESPONSIBLE
                   <span className="text-red-500 ml-1">*</span>
                 </label>
-                <input
-                required
-                  name="personResponsible"
-                  value={activity.personResponsible}
-                  onChange={(e) => handleActivityChange(index, e)}
-                  className="w-full p-2 border border-gray-300 rounded"
-                ></input>
+
+                {/* Dropdown for selecting person responsible */}
+                <Select
+                  value={activity.personResponsible ? { label: activity.personResponsible } : null}
+                  onChange={(selectedOption) => handlePersonResponsibleChange(selectedOption, index)} // Pass the correct index
+                  options={[
+                    ...pickedProponents.map((proponent) => ({
+                      value: proponent.fullname,
+                      label: `${proponent.fullname}`,
+                    })),
+                    { value: 'add_custom', label: 'Add Custom Name' },
+                  ]}
+                  isSearchable
+                  placeholder="Search or select a person"
+                  isClearable
+                  getOptionLabel={(e) => e.label}
+                  components={{
+                    DropdownIndicator: () => null,
+                  }}
+                  noOptionsMessage={() => 'No match found'}
+                />
+              </div>
+
+              {/* Modal for adding custom name */}
+              <div
+                className={`fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50 ${isPersonResponsibleModalOpen ? 'block' : 'hidden'}`}
+              >
+                <div className="bg-white w-96 p-6 rounded-lg shadow-lg">
+                  <h2 className="text-xl font-semibold mb-4">Add a Custom Name</h2>
+                  <input
+                    type="text"
+                    value={customName}
+                    onChange={(e) => setCustomName(e.target.value)}
+                    placeholder="Enter the name"
+                    className="w-full p-2 border border-gray-300 rounded mt-2"
+                  />
+                  <div className="mt-4">
+                    <button
+                      type="button"
+                      onClick={handleAddCustomName} // Adds the name and closes the modal
+                      className="bg-blue-500 text-white p-2 rounded mr-2"
+                    >
+                      Add Name
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setIsPersonResponsibleModalOpen(false)} // Closes the modal without adding
+                      className="bg-gray-300 p-2 rounded"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Remove Button for specific row (but not the first one) */}
+              <div className="col-span-4 mt-2 flex justify-end">
+                {index > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveActivityRow(index)} // Remove specific activity row
+                    className="bg-red-500 text-white px-4 py-2 rounded"
+                  >
+                    Remove Row
+                  </button>
+                )}
               </div>
             </div>
           ))}
 
-          {/* Add Button and remove button */}
+          {/* Add Button and Remove Button */}
           <div className="flex space-x-2 mt-2">
             <button
               type="button"
               onClick={addActivityRow}
-              className="mt-4 p-2 bg-blue-500 text-white rounded"
+              disabled={
+                formData.projectActivities.some((activity) => 
+                  !activity.objective || !activity.involved || !activity.targetDate || !activity.personResponsible
+                )
+              }
+              className={`mt-4 p-2 bg-blue-500 text-white rounded ${
+                formData.projectActivities.some((activity) => 
+                  !activity.objective || !activity.involved || !activity.targetDate || !activity.personResponsible
+                ) 
+                  ? 'opacity-50 cursor-not-allowed' 
+                  : ''
+              }`}
             >
               Add Row
             </button>
 
-            <button
+            {/* <button
               type="button"
               disabled={formData.projectActivities.length === 1}
               onClick={removeLastActivityRow} // Function to remove the last row
               className={
                 formData.projectActivities.length === 1
-                  ? "mt-4 p-2 bg-gray-400 text-gray-200 rounded"
-                  : "mt-4 p-2 bg-red-500 text-white rounded"
+                  ? 'mt-4 p-2 bg-gray-400 text-gray-200 rounded'
+                  : 'mt-4 p-2 bg-red-500 text-white rounded'
               }
             >
               Remove Last Row
-            </button>
+            </button> */}
           </div>
         </div>
 
+
+
+        
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-          <div className="grid grid-cols-1 gap-4">
-            <div>
-              <label className="block mb-2 font-bold text-base">
-                PROJECT LOCATION AND BENEFICIARIES
-                <span className="text-red-500 ml-1">*</span>
-                <span
-                  data-tip="Provide the location of the project and specify the beneficiaries it will serve."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
-              <textarea
-              required
-                name="targetScope"
-                value={formData.targetScope}
-                onChange={handleFormChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              ></textarea>
-            </div>
-          </div>
-        </div>
+  <div className="grid grid-cols-1 gap-4">
+    <div>
+      <label className="block mb-2 font-bold text-base">
+        PROJECT LOCATION AND BENEFICIARIES
+        <span className="text-red-500 ml-1">*</span>
+        <span
+          data-tip="Provide the location of the project and specify the beneficiaries it will serve."
+          className="ml-2 text-gray-500 cursor-pointer text-sm"
+        >
+          ⓘ
+        </span>
+        <ReactTooltip place="top" type="dark" effect="solid" />
+      </label>
+      <textarea
+        required
+        name="targetScope"
+        value={formData.targetScope}
+        onChange={handleFormChange}
+        className="w-full p-2 border border-gray-300 rounded overflow-auto resize-none"
+        style={{
+          verticalAlign: 'top',  // Ensures content is aligned to the top
+          paddingTop: '0',       // Removes any top padding if present
+        }}
+      ></textarea>
+    </div>
+  </div>
+</div>
 
-        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-          <div className="grid grid-cols-1 gap-4">
-            <div>
-              <label className="block mb-2 font-bold text-base">
-                PROJECT MANAGEMENT TEAM/TRAINERS
-                <span className="text-red-500 ml-1">*</span>
-                <span
-                  data-tip="List the individuals responsible for overseeing the project and training efforts."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
 
-              {/* Render input fields for each TRAINER */}
-              {formData.projectManagementTeam.map((personObj, index) => (
-                <input
-                required
-                  key={index}
-                  name={`person-${index}`}
-                  value={personObj.name} // Access 'name' field in the object
-                  onChange={(e) => handleProjectManagementTeamChange(index, e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded mt-2"
-                  placeholder={`Person ${index + 1}`}
-                />
-              ))}
-
-              <div className="flex space-x-2 mt-2">
-                <button
-                  type="button" // Prevent default form submission
-                  onClick={handleProjectManagementTeamButtonClick}
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
-                >
-                  Add Person
-                </button>
-                <button
-                  type="button" // Prevent default form submission
-                  onClick={handleProjectManagementTeamRemoveClick}
-                  className={
-                    formData.projectManagementTeam.length === 1
-                      ? "bg-gray-400 text-gray-300 px-4 py-2 rounded"
-                      : "bg-red-500 text-white px-4 py-2 rounded"
-                  }
-                  disabled={formData.projectManagementTeam.length === 1}
-                >
-                  Remove Person
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* BUDGETARY REQUIREMENTS */}
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -2011,11 +2586,15 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
-                required
+                  required
                   name="itemName"
                   value={budgetItem.itemName}
                   onChange={(e) => handleBudgetChange(index, "itemName", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
+                  style={{
+                    verticalAlign: 'top',  // Ensures content is aligned to the top
+                    paddingTop: '0',       // Removes any top padding if present
+                  }}
                 />
               </div>
               <div>
@@ -2024,7 +2603,7 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
-                required
+                  required
                   type="number" // Allows only numeric input
                   name="ustpAmount"
                   value={budgetItem.ustpAmount}
@@ -2046,7 +2625,7 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
-                required
+                  required
                   type="number" // Allows only numeric input
                   name="partnerAmount"
                   value={budgetItem.partnerAmount}
@@ -2062,8 +2641,7 @@ const ProposalFormFirstPage = () => {
                 />
               </div>
 
-
-              <div className=" justify-between items-center gap-2">
+              <div className="justify-between items-center gap-2">
                 <label className="block font-semibold">
                   ITEM TOTAL
                 </label>
@@ -2077,7 +2655,7 @@ const ProposalFormFirstPage = () => {
                   <button
                     type="button"
                     onClick={() => removeBudgetItem(index)}
-                    className="p-1 text-xl text-red-500 font-bold"
+                    className="p-1 text-3xl text-red-500 font-bold"
                     title="Remove Item"
                   >
                     −
@@ -2086,13 +2664,31 @@ const ProposalFormFirstPage = () => {
               </div>
             </div>
           ))}
+
           <div>
             <div className="grid grid-cols-4">
               <div className="flex space-x-2">
                 <button
                   type="button"
                   onClick={addBudgetItem}
-                  className="p-3 bg-blue-500 text-white rounded"
+                  disabled={
+                    formData.budgetRequirements.some(
+                      (budgetItem) =>
+                        !budgetItem.itemName ||
+                        !budgetItem.ustpAmount ||
+                        !budgetItem.partnerAmount
+                    )
+                  }
+                  className={`p-3 text-white rounded ${
+                    formData.budgetRequirements.some(
+                      (budgetItem) =>
+                        !budgetItem.itemName ||
+                        !budgetItem.ustpAmount ||
+                        !budgetItem.partnerAmount
+                    )
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-blue-500'
+                  }`}
                 >
                   Add Item
                 </button>
@@ -2117,19 +2713,19 @@ const ProposalFormFirstPage = () => {
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-          <div>
-            <label className="block mb-2 font-bold">
-              PROJECT EVALUATION AND MONITORING
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Describe the strategies for monitoring the project's progress and evaluating its success."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
-          </div>
+                <div>
+                  <label className="block mb-2 font-bold">
+                    PROJECT EVALUATION AND MONITORING
+                    <span className="text-red-500 ml-1">*</span>
+                    <span
+                      data-tip="Describe the strategies for monitoring the project's progress and evaluating its success."
+                      className="ml-2 text-gray-500 cursor-pointer text-sm"
+                    >
+                      ⓘ
+                    </span>
+                    <ReactTooltip place="top" type="dark" effect="solid" />
+                  </label>
+                </div>
 
           <div className="grid grid-cols-4 gap-4">
             <div>
@@ -2164,58 +2760,94 @@ const ProposalFormFirstPage = () => {
               {/* Project Summary */}
               <div>
                 <textarea
-                required
+                  required
                   rows="4"
                   name="projectSummary"
                   value={evaluation.projectSummary}
                   onChange={(e) => handleEvaluationChange(index, "projectSummary", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Project Summary (${evaluation.type.toUpperCase()})`}
+                  style={{ 
+                    overflowY: 'hidden', 
+                    verticalAlign: 'top',  // Ensures content is aligned to the top
+                    paddingTop: '0',  // Removes top padding
+                  }}
+                  onInput={(e) => {
+                    e.target.style.height = 'auto';  // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                  }}
                 ></textarea>
               </div>
 
               {/* Indicators */}
               <div>
                 <textarea
-                required
+                  required
                   rows="4"
                   name="indicators"
                   value={evaluation.indicators}
                   onChange={(e) => handleEvaluationChange(index, "indicators", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Indicators (${evaluation.type.toUpperCase()})`}
+                  style={{ 
+                    overflowY: 'hidden', 
+                    verticalAlign: 'top',  // Ensures content is aligned to the top
+                    paddingTop: '0',  // Removes top padding
+                  }}
+                  onInput={(e) => {
+                    e.target.style.height = 'auto';  // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                  }}
                 ></textarea>
               </div>
 
               {/* Means of Verification */}
               <div>
                 <textarea
-                required
+                  required
                   rows="4"
                   name="meansOfVerification"
                   value={evaluation.meansOfVerification}
                   onChange={(e) => handleEvaluationChange(index, "meansOfVerification", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Means of Verification (${evaluation.type.toUpperCase()})`}
+                  style={{ 
+                    overflowY: 'hidden', 
+                    verticalAlign: 'top',  // Ensures content is aligned to the top
+                    paddingTop: '0',  // Removes top padding
+                  }}
+                  onInput={(e) => {
+                    e.target.style.height = 'auto';  // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                  }}
                 ></textarea>
               </div>
 
               {/* Risks/Assumptions */}
               <div>
                 <textarea
-                required
+                  required
                   rows="4"
                   name="risksAssumptions"
                   value={evaluation.risksAssumptions}
                   onChange={(e) => handleEvaluationChange(index, "risksAssumptions", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Risks/Assumptions (${evaluation.type.toUpperCase()})`}
+                  style={{ 
+                    overflowY: 'hidden', 
+                    verticalAlign: 'top',  // Ensures content is aligned to the top
+                    paddingTop: '0',  // Removes top padding
+                  }}
+                  onInput={(e) => {
+                    e.target.style.height = 'auto';  // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                  }}
                 ></textarea>
               </div>
             </div>
           ))}
-
         </div>
+
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div>
@@ -2253,9 +2885,9 @@ const ProposalFormFirstPage = () => {
                 {formData.monitoringPlanSchedules.map((row, index) => (
                   <tr key={index}>
                     <td className="border border-gray-300 p-2">{row.implementationPhase}</td>
-                    <td className="border border-gray-300 p-2">
+                    <td className="border border-gray-300 p-2" style={{verticalAlign: 'top', }}>
                       <textarea
-                      required
+                        required
                         name="approach"
                         value={row.approach}
                         onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "approach", e.target.value)}
@@ -2268,11 +2900,16 @@ const ProposalFormFirstPage = () => {
                             "Effect of Project to Participants and Community Questionnaire Trainings Need Assessment",
                           ][index] || "Default placeholder for Approach"
                         }
+                        style={{ overflowY: 'hidden', verticalAlign: 'top', }}
+                        onInput={(e) => {
+                          e.target.style.height = 'auto';  // Reset height before adjusting
+                          e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                        }}
                       />
                     </td>
-                    <td className="border border-gray-300 p-2">
+                    <td className="border border-gray-300 p-2" style={{verticalAlign: 'top', }}>
                       <textarea
-                      required
+                        required
                         name="dataGatheringStrategy"
                         value={row.dataGatheringStrategy}
                         onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "dataGatheringStrategy", e.target.value)}
@@ -2283,13 +2920,18 @@ const ProposalFormFirstPage = () => {
                             "Survey Questionnaire Interview with Key Informant of FGD",
                             "Multiple Choice Questionnaire, Survey Questionnaire, Competency Checklist",
                             "Survey Questionnaire, Interview with Key Informant or FGD",
-                          ][index] || "Default placeholder for Approach"
+                          ][index] || "Default placeholder for Data Gathering Strategy"
                         }
+                        style={{ overflowY: 'hidden', verticalAlign: 'top', }}
+                        onInput={(e) => {
+                          e.target.style.height = 'auto';  // Reset height before adjusting
+                          e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                        }}
                       />
                     </td>
-                    <td className="border border-gray-300 p-2">
+                    <td className="border border-gray-300 p-2" style={{verticalAlign: 'top', }}>
                       <textarea
-                      required
+                        required
                         name="schedule"
                         value={row.schedule}
                         onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "schedule", e.target.value)}
@@ -2300,8 +2942,13 @@ const ProposalFormFirstPage = () => {
                             "A Week after receiving training/extension request",
                             "During Training Proper",
                             "May be periodically scheduled based on the objectives of the extension project (e.g. after 3 months, after 6 months, etc.)",
-                          ][index] || "Default placeholder for Approach"
+                          ][index] || "Default placeholder for Schedule"
                         }
+                        style={{ overflowY: 'hidden', verticalAlign: 'top', }}
+                        onInput={(e) => {
+                          e.target.style.height = 'auto';  // Reset height before adjusting
+                          e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                        }}
                       />
                     </td>
                   </tr>
@@ -2310,6 +2957,7 @@ const ProposalFormFirstPage = () => {
             </table>
           </div>
         </div>
+
 
         {showTrainers && (
           <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -2320,44 +2968,57 @@ const ProposalFormFirstPage = () => {
                 <table className="min-w-full border">
                   <thead>
                     <tr>
-                      <th className="px-4 py-2 border bg-gray-300">Name of Faculty</th>
-                      <th className="px-4 py-2 border bg-gray-300">Training Load</th>
-                      <th className="px-4 py-2 border bg-gray-300">No. of Hours</th>
-                      <th className="px-4 py-2 border bg-gray-300">USTP Budget</th>
-                      <th className="px-4 py-2 border bg-gray-300">Partner Agency Budget</th>
-                      <th className="px-4 py-2 border bg-gray-300">Total Budgetary Requirement</th>
+                      <th className="px-4 py-2 border bg-gray-300 w-1/6">Name of Faculty</th>
+                      <th className="px-4 py-2 border bg-gray-300 w-1/3">Training Load</th>
+                      <th className="px-4 py-2 border bg-gray-300 w-1/12">No. of Hours</th>
+                      <th className="px-4 py-2 border bg-gray-300 w-1/8">USTP Budget</th>
+                      <th className="px-4 py-2 border bg-gray-300 w-1/8">Partner Agency Budget</th>
+                      <th className="px-4 py-2 border bg-gray-300 w-1/10">Total Budgetary Requirement</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {formData.loadingOfTrainers.map((trainer, index) => (
-                      <tr key={index}>
+                    {formData.projectManagementTeam.map((member, memberIndex) => (
+                      <tr key={memberIndex}>
                         <td className="px-4 py-2 border">
-                          <input
+                          <select
                             name="faculty"
-                            value={trainer.faculty}
-                            onChange={(e) => handleTrainerChange(index, e)}
-                            type="text"
-                            required
-                            className="w-full p-1 border border-gray-300 rounded"
-                            placeholder="Faculty Name"
-                          />
+                            value={member.name}
+                            readOnly
+                            className="w-full p-1 border border-gray-300 rounded bg-gray-100"
+                          >
+                            <option value={member.name}>{member.name}</option>
+                          </select>
                         </td>
                         <td className="px-4 py-2 border">
-                          <input
+                          <textarea
                             name="trainingLoad"
-                            value={trainer.trainingLoad}
-                            onChange={(e) => handleTrainerChange(index, e)}
-                            type="text"
+                            value={formData.loadingOfTrainers[memberIndex]?.trainingLoad || ''}
+                            onChange={(e) => handleTrainerChange(memberIndex, {
+                              ...formData.loadingOfTrainers[memberIndex],
+                              faculty: member.name,
+                              trainingLoad: e.target.value
+                            })}
                             required
-                            className="w-full p-1 border border-gray-300 rounded"
+                            className="w-full p-1 border border-gray-300 rounded resize-none"
                             placeholder="Training Load"
+                            rows="1"  // Initial row size (height of the textarea)
+                            style={{ overflowY: 'hidden' }}  // Hides vertical scrollbar
+                            onInput={(e) => {
+                              // Adjusts the height of the textarea based on content length
+                              e.target.style.height = 'auto';  // Reset height before adjusting
+                              e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                            }}
                           />
                         </td>
                         <td className="px-4 py-2 border">
                           <input
                             name="hours"
-                            value={trainer.hours}
-                            onChange={(e) => handleTrainerChange(index, e)}
+                            value={formData.loadingOfTrainers[memberIndex]?.hours || 0}
+                            onChange={(e) => handleTrainerChange(memberIndex, {
+                              ...formData.loadingOfTrainers[memberIndex],
+                              faculty: member.name,
+                              hours: parseInt(e.target.value) || 0
+                            })}
                             type="number"
                             required
                             className="w-full p-1 border border-gray-300 rounded"
@@ -2368,20 +3029,21 @@ const ProposalFormFirstPage = () => {
                         <td className="px-4 py-2 border">
                           <input
                             name="ustpBudget"
-                            value={trainer.ustpBudget}
-                            onChange={(e) => handleTrainerChange(index, e)}
-                            type="number"
-                            required
-                            className="w-full p-1 border border-gray-300 rounded"
+                            value={150}
+                            readOnly
+                            className="w-full p-1 border border-gray-300 bg-gray-100"
                             placeholder="USTP Budget"
-                            min="0"
                           />
                         </td>
                         <td className="px-4 py-2 border">
                           <input
                             name="agencyBudget"
-                            value={trainer.agencyBudget}
-                            onChange={(e) => handleTrainerChange(index, e)}
+                            value={formData.loadingOfTrainers[memberIndex]?.agencyBudget || 0}
+                            onChange={(e) => handleTrainerChange(memberIndex, {
+                              ...formData.loadingOfTrainers[memberIndex],
+                              faculty: member.name,
+                              agencyBudget: parseFloat(e.target.value) || 0
+                            })}
                             type="number"
                             required
                             className="w-full p-1 border border-gray-300 rounded"
@@ -2392,9 +3054,14 @@ const ProposalFormFirstPage = () => {
                         <td className="px-4 py-2 border">
                           <input
                             name="totalBudgetRequirement"
-                            value={trainer.totalBudgetRequirement}
+                            value={
+                              formData.loadingOfTrainers[memberIndex]?.hours
+                                ? formData.loadingOfTrainers[memberIndex].hours * 150 + 
+                                  (formData.loadingOfTrainers[memberIndex]?.agencyBudget || 0)
+                                : (formData.loadingOfTrainers[memberIndex]?.agencyBudget || 0)
+                            }
                             readOnly
-                            className="w-full p-1"
+                            className="w-full p-1 bg-gray-100"
                             placeholder="Total"
                           />
                         </td>
@@ -2402,26 +3069,6 @@ const ProposalFormFirstPage = () => {
                     ))}
                   </tbody>
                 </table>
-              </div>
-              {/* Add and Remove Buttons */}
-              <div className="flex justify-between mt-2">
-                <button
-                  type="button"
-                  onClick={addTrainerRow}
-                  className="text-green-500 hover:underline"
-                >
-                  + Add Row
-                </button>
-                {formData.loadingOfTrainers.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeTrainerRow(formData.loadingOfTrainers.length - 1)}
-                    className="text-red-500 hover:underline"
-                    title="Remove Last Row"
-                  >
-                    - Remove Row
-                  </button>
-                )}
               </div>
             </div>
           </div>
@@ -2432,34 +3079,73 @@ const ProposalFormFirstPage = () => {
           <label className="block mb-2 font-semibold">Endorsed by:</label>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-2 font-semibold">
-                Program Chair
-              </label>
-              <input
-              required
-                name="programChair"
-                value={formData.programChair.name}
-                onChange={handleSignatoryFormChange}
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
+              <label className="block mb-2 font-semibold">Program Chair</label>
+              {formData.program.map((programId, index) => {
+                const selectedProgram = program.find(p => p.programID === programId);
+                return (
+                  <div key={`programChair-${programId}`} className="mb-4">
+                    <label className="block mb-2 text-sm text-gray-600">
+                      Program Chair of {selectedProgram?.title || 'Selected Program'}
+                    </label>
+                    <input
+                      readOnly={true}
+                      name={`programChair-${programId}`}
+                      value={
+                        formData.programChair[index]?.name || 
+                        `${selectedProgram?.programChair?.firstname || ""} ${selectedProgram?.programChair?.lastname || ""}`.trim()
+                      }
+                      onChange={(e) => {
+                        const updatedList = [...formData.programChair];
+                        updatedList[index] = { 
+                          name: e.target.value, 
+                          programId: programId 
+                        };
+                        setFormData({ ...formData, programChair: updatedList });
+                      }}
+                      type="text"
+                      className="w-full p-2 mb-2 border border-gray-300 rounded"
+                      placeholder={`Enter Program Chair Name`}
+                    />
+                  </div>
+                );
+              })}
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold">
-                College Dean
-              </label>
-              <input
-              required
-                name="collegeDean"
-                value={formData.collegeDean.name}
-                onChange={handleSignatoryFormChange}
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
+              <label className="block mb-2 font-semibold">College Dean</label>
+              {formData.college.map((collegeId, index) => {
+                const selectedCollege = college.find(c => c.collegeID === collegeId);
+                return (
+                  <div key={`collegeDean-${collegeId}`} className="mb-4">
+                    <label className="block mb-2 text-sm text-gray-600">
+                      College Dean of {selectedCollege?.title || 'Selected College'}
+                    </label>
+                    <input
+                      readOnly={true}
+                      name={`collegeDean-${collegeId}`}
+                      value={
+                        formData.collegeDean[index]?.name || 
+                        `${selectedCollege?.collegeDean?.firstname || ""} ${selectedCollege?.collegeDean?.lastname || ""}`.trim()
+                      }
+                      onChange={(e) => {
+                        const updatedList = [...formData.collegeDean];
+                        updatedList[index] = { 
+                          name: e.target.value, 
+                          collegeId: collegeId 
+                        };
+                        setFormData({ ...formData, collegeDean: updatedList });
+                      }}
+                      type="text"
+                      className="w-full p-2 mb-2 border border-gray-300 rounded"
+                      placeholder={`Enter College Dean Name`}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
 
+          {/* Rest of the existing signatories section remains the same */}
           <label className="block mb-2 mt-10 font-semibold">Recommending Approval:</label>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -2467,7 +3153,7 @@ const ProposalFormFirstPage = () => {
                 Director, Extension & Community Relations
               </label>
               <input
-              required
+                required
                 name="director"
                 value={formData.director.name}
                 onChange={handleSignatoryFormChange}
@@ -2483,7 +3169,7 @@ const ProposalFormFirstPage = () => {
                 Vice - Chancellor for Academic Affairs
               </label>
               <input
-              required
+                required
                 name="vcaa"
                 value={formData.vcaa.name}
                 onChange={handleSignatoryFormChange}
@@ -2497,7 +3183,7 @@ const ProposalFormFirstPage = () => {
                 Vice - Chancellor for Research and Innovation
               </label>
               <input
-              required
+                required
                 name="vcri"
                 value={formData.vcri.name}
                 onChange={handleSignatoryFormChange}
@@ -2507,14 +3193,13 @@ const ProposalFormFirstPage = () => {
             </div>
           </div>
 
-          {/* <label className="block mb-2 font-semibold">Funds Available:</label> */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block mb-2 font-semibold">
                 Accountant III
               </label>
               <input
-              required
+                required
                 name="accountant"
                 value={formData.accountant.name}
                 onChange={handleSignatoryFormChange}
@@ -2528,7 +3213,7 @@ const ProposalFormFirstPage = () => {
                 Chancellor, USTP CDO
               </label>
               <input
-              required
+                required
                 name="chancellor"
                 value={formData.chancellor.name}
                 onChange={handleSignatoryFormChange}
@@ -2538,7 +3223,6 @@ const ProposalFormFirstPage = () => {
             </div>
           </div>
 
-          {/* row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
               <label className="block mb-2 font-semibold">SUBMITTED BY: {username}</label>
@@ -2549,6 +3233,7 @@ const ProposalFormFirstPage = () => {
         <ProponentsDeliverables
           formData={formData}
           setFormData={setFormData}
+          showTrainers={showTrainers}
         />
 
         {/* submit naa */}

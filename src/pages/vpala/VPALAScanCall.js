@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import EstaffSideBar from '../../components/EstaffSideBar';
-import Topbar from '../../components/Topbar';
+import VPALASideBar from "../../components/VPALASideBar";
 
-const EstaffScancopy = () => {
+const VPALAScanCall = () => {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState('');
   const [isUploading, setIsUploading] = useState(false);
@@ -32,15 +31,14 @@ const EstaffScancopy = () => {
     <div className="bg-gray-100 min-h-screen flex">
       {/* Sidebar */}
       <div className="w-1/5 fixed h-full bg-white shadow-md">
-        <EstaffSideBar />
+        <VPALASideBar />
       </div>
 
       {/* Main Content */}
       <div className="flex-1 ml-[20%]">
-        <Topbar />
         <div className="m-8 mt-16">
           <h1 className="text-3xl font-bold text-gray-800 mb-4">
-            Upload Copy
+            Upload Scanned Copy
           </h1>
           <p className="text-gray-600 mb-6">
             Use this page to upload scanned documents related to project proposals or agreements. Only PDF, JPG, and PNG files are allowed.
@@ -68,9 +66,7 @@ const EstaffScancopy = () => {
             <button
               onClick={handleUpload}
               disabled={isUploading}
-              className={`w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                isUploading ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+              className={`w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {isUploading ? 'Uploading...' : 'Upload File'}
             </button>
@@ -78,11 +74,7 @@ const EstaffScancopy = () => {
             {/* Message Display */}
             {message && (
               <div
-                className={`mt-4 p-3 rounded-lg ${
-                  message.includes('successfully')
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-red-100 text-red-700'
-                }`}
+                className={`mt-4 p-3 rounded-lg ${message.includes('successfully') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
               >
                 {message}
               </div>
@@ -94,4 +86,4 @@ const EstaffScancopy = () => {
   );
 };
 
-export default EstaffScancopy;
+export default VPALAScanCall;

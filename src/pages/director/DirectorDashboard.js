@@ -346,8 +346,8 @@ const DirectorDashboard = () => {
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Owner</th>
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Type</th>
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Title</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Created</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
+                                                <th className="px- py-3 text-center text-xs font-bold text-gray-600 uppercase">Date Created</th>
+                                                <th className="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Status</th>
                                             </tr>
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">

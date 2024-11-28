@@ -1312,7 +1312,7 @@ const ProposalFormFirstPage = () => {
                 value={projectTypeOptions.find((option) => option.value === formData.projectType)} // Find the selected option
                 onChange={handleProjTypeChange}
                 options={projectTypeOptions}
-                className="w-full"
+                className="w-full rounded"
                 placeholder="Select a project type"
               />
             </div>

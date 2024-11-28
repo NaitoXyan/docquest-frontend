@@ -34,6 +34,7 @@ import PickProjCreateMoa from "./pages/projectlead/ProjLeadPickProjCreateMoa";
 import ProjLeadMoaStatus from "./pages/projectlead/ProjLeadMoaStatus";
 import ProjLeadEditProject from "./pages/projectlead/ProjLeadEditProject";
 import ProjLeadEditMoaForm from "./pages/projectlead/ProjLeadEditMoaForm";
+import ProjLeadViewMoa from "./components/GenerateMOA-PDF";
 import DirectorReviewProject from "./pages/director/DirectorReviewProject";
 import ProposalFormFirstPage_Deliverables from "./components/ProposalFormFirstPage_Deliverables";
 import DirectorDashboard from "./pages/director/DirectorDashboard";
@@ -70,6 +71,7 @@ function App() {
         <Route path="/projectlead" element={<ProjLeadStatusBar />} />
         <Route path="/moa-status/:statusFilterParam" element={<ProjLeadMoaStatus/>} />
         <Route path="/edit-moa/:moaID" element={<ProjLeadEditMoaForm/>}/>
+        <Route path="/moa-pdf-viewer/:moaID" element={<ProjLeadViewMoa/>}/>
         <Route path="/deliverables" element={<ProposalFormFirstPage_Deliverables/>}/>
         <Route path="/view-project-progress/:projectID" element={<ProjLeadViewProjectProgress/>}/>
 

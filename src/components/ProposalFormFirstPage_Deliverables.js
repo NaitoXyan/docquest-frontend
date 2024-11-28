@@ -71,7 +71,7 @@ const ProponentsDeliverables = ({ formData, setFormData, showTrainers }) => {
                   type="checkbox"
                   className="mr-2"
                   checked={isChecked}
-                  disabled
+                  readOnly={true}
                 />
                 {item.deliverableName}
               </label>

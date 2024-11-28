@@ -64,7 +64,7 @@ const ProjLeadMOA = () => {
                             This Memorandum of Agreement executed and entered into by and between:
                         </p>
                         <p className="mb-4 text-gray-700">
-                            UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS (USTP CDO), a state educational institution duly established under Philippine law, whose office address located at Claro M. Recto Avenue, Lapasan, Cagayan de Oro City, represented herein by its Chancellor ATTY. DIONEL O. ALBINA, hereafter referred to as the FIRST PARTY;
+                        UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS, a State University created and existing under the laws of the Republic of the Philippines, with principal office address located at Claro M. Recto Avenue, Lapasan, Cagayan de Oro City, represented herein by its System President,  DR. AMBROSIO B. CULTURA II, hereafter referred to as the “FIRST PARTY”;
                         </p>
                         <p className="mb-4 text-gray-700 text-center">-and-</p>
                         <p className="mb-4 text-gray-700">

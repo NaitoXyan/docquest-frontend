@@ -162,35 +162,16 @@ const ProposalFormFirstPage = () => {
     ],
     signatories: [],
 
-    programChair: {
-      name: programChair,
-      title: "Program Chair"
-    },
-    collegeDean: {
-      name: collegeDean,
-      title: "College Dean"
-    },
-    director: {
-      name: director,
-      title: "Director, Extension & Community Relations"
-    },
-    vcaa: {
-      name: vcaa,
-      title: "Vice - Chancellor for Academic Affairs"
-    },
-    vcri: {
-      name: vcri,
-      title: "Vice - Chancellor for Research and Innovation"
-    },
-    accountant: {
-      name: accountant,
-      title: "Accountant III"
-    },
-    chancellor: {
-      name: chancellor,
-      title: "Chancellor, USTP CDO"
-    },
+    programChair: [], // Array to handle multiple Program Chair signatories
+    collegeDean: [],  // Array to handle multiple College Dean signatories
+    director: { name: director, title: "Director, Extension & Community Relations" },
+    vcaa: { name: vcaa, title: "Vice - Chancellor for Academic Affairs" },
+    vcri: { name: vcri, title: "Vice - Chancellor for Research and Innovation" },
+    accountant: { name: accountant, title: "Accountant III" },
+    chancellor: { name: chancellor, title: "Chancellor, USTP CDO" },
+
     deliverables: [],
+    approvers: [],
 
     campus: [],
     college: [],
@@ -210,14 +191,44 @@ const ProposalFormFirstPage = () => {
     // Create a copy of formData
     const modifiedData = { ...formData };
 
+    console.log('Program Chair:', formData.programChair);
+    console.log('College Dean:', formData.collegeDean);
+
     const signatories = [
-      formData.programChair,
-      formData.collegeDean,
-      formData.director,
-      formData.vcaa,
-      formData.vcri,
-      formData.accountant,
-      formData.chancellor,
+      ...formData.programChair.filter(chair => chair.name).map((chair, index) => {
+        const selectedProgram = program.find(p => p.programID === chair.programId);
+        return {
+          name: chair.name,
+          title: `Program Chair, ${selectedProgram?.abbreviation || 'Program'}`,
+        };
+      }),
+      ...formData.collegeDean.filter(dean => dean.name).map((dean, index) => {
+        const selectedCollege = college.find(c => c.collegeID === dean.collegeId);
+        return {
+          name: dean.name,
+          title: `College Dean, ${selectedCollege?.abbreviation || 'College'}`,
+        };
+      }),
+      {
+        name: formData.director.name,
+        title: "Director, Extension & Community Relations",
+      },
+      {
+        name: formData.vcaa.name,
+        title: "Vice - Chancellor for Academic Affairs",
+      },
+      {
+        name: formData.vcri.name,
+        title: "Vice - Chancellor for Research and Innovation",
+      },
+      {
+        name: formData.accountant.name,
+        title: "Accountant III",
+      },
+      {
+        name: formData.chancellor.name,
+        title: "Chancellor, USTP CDO",
+      },
       ...formData.signatories, // If there are any other signatories already in the list, keep them
     ];
 
@@ -235,6 +246,7 @@ const ProposalFormFirstPage = () => {
     delete modifiedData.province;
     delete modifiedData.city;
     delete modifiedData.barangay;
+    delete modifiedData.campus;
     delete modifiedData.college;
 
     if (showTrainers === false) {
@@ -1164,6 +1176,54 @@ const ProposalFormFirstPage = () => {
   const getCurrentMonth = () => {
     return new Date().toISOString().slice(0, 7);
   };
+
+  useEffect(() => {
+    const updatedApprovers = collegeDeanList.map((collegeId) => {
+      // Find the college dean's userID for this college
+      const dean = program.find(p => p.college.collegeID === collegeId)?.college.collegeDean.userID;
+  
+      // Find program chairs' userIDs for this college
+      const programChairs = programChairList
+        .map(programId => {
+          const prog = program.find(p => p.programID === programId);
+          return prog?.programChair?.userID;
+        })
+        .filter(userId => userId); // Remove any undefined userIds
+  
+      return {
+        collegeID: collegeId,
+        programChairs: programChairs,
+        collegeDean: dean || "", // Use the dean's userID or empty string
+      };
+    });
+  
+    setFormData(prev => ({ ...prev, approvers: updatedApprovers }));
+  }, [collegeDeanList, programChairList, program]);
+
+  useEffect(() => {
+    // Populate programChair and collegeDean when component loads
+    const initialProgramChairs = formData.program.map((programId, index) => {
+      const selectedProgram = program.find(p => p.programID === programId);
+      return {
+        name: `${selectedProgram?.programChair?.firstname || ""} ${selectedProgram?.programChair?.lastname || ""}`.trim(),
+        programId: programId
+      };
+    });
+  
+    const initialCollegeDeans = formData.college.map((collegeId, index) => {
+      const selectedCollege = college.find(c => c.collegeID === collegeId);
+      return {
+        name: `${selectedCollege?.collegeDean?.firstname || ""} ${selectedCollege?.collegeDean?.lastname || ""}`.trim(),
+        collegeId: collegeId
+      };
+    });
+  
+    setFormData(prev => ({
+      ...prev,
+      programChair: initialProgramChairs,
+      collegeDean: initialCollegeDeans
+    }));
+  }, [formData.program, formData.college, program, college]);
 
   return (
     <div className="flex flex-col mt-14 px-10">
@@ -3019,34 +3079,73 @@ const ProposalFormFirstPage = () => {
           <label className="block mb-2 font-semibold">Endorsed by:</label>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-2 font-semibold">
-                Program Chair
-              </label>
-              <input
-              required
-                name="programChair"
-                value={formData.programChair.name}
-                onChange={handleSignatoryFormChange}
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
+              <label className="block mb-2 font-semibold">Program Chair</label>
+              {formData.program.map((programId, index) => {
+                const selectedProgram = program.find(p => p.programID === programId);
+                return (
+                  <div key={`programChair-${programId}`} className="mb-4">
+                    <label className="block mb-2 text-sm text-gray-600">
+                      Program Chair of {selectedProgram?.title || 'Selected Program'}
+                    </label>
+                    <input
+                      readOnly={true}
+                      name={`programChair-${programId}`}
+                      value={
+                        formData.programChair[index]?.name || 
+                        `${selectedProgram?.programChair?.firstname || ""} ${selectedProgram?.programChair?.lastname || ""}`.trim()
+                      }
+                      onChange={(e) => {
+                        const updatedList = [...formData.programChair];
+                        updatedList[index] = { 
+                          name: e.target.value, 
+                          programId: programId 
+                        };
+                        setFormData({ ...formData, programChair: updatedList });
+                      }}
+                      type="text"
+                      className="w-full p-2 mb-2 border border-gray-300 rounded"
+                      placeholder={`Enter Program Chair Name`}
+                    />
+                  </div>
+                );
+              })}
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold">
-                College Dean
-              </label>
-              <input
-              required
-                name="collegeDean"
-                value={formData.collegeDean.name}
-                onChange={handleSignatoryFormChange}
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
+              <label className="block mb-2 font-semibold">College Dean</label>
+              {formData.college.map((collegeId, index) => {
+                const selectedCollege = college.find(c => c.collegeID === collegeId);
+                return (
+                  <div key={`collegeDean-${collegeId}`} className="mb-4">
+                    <label className="block mb-2 text-sm text-gray-600">
+                      College Dean of {selectedCollege?.title || 'Selected College'}
+                    </label>
+                    <input
+                      readOnly={true}
+                      name={`collegeDean-${collegeId}`}
+                      value={
+                        formData.collegeDean[index]?.name || 
+                        `${selectedCollege?.collegeDean?.firstname || ""} ${selectedCollege?.collegeDean?.lastname || ""}`.trim()
+                      }
+                      onChange={(e) => {
+                        const updatedList = [...formData.collegeDean];
+                        updatedList[index] = { 
+                          name: e.target.value, 
+                          collegeId: collegeId 
+                        };
+                        setFormData({ ...formData, collegeDean: updatedList });
+                      }}
+                      type="text"
+                      className="w-full p-2 mb-2 border border-gray-300 rounded"
+                      placeholder={`Enter College Dean Name`}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
 
+          {/* Rest of the existing signatories section remains the same */}
           <label className="block mb-2 mt-10 font-semibold">Recommending Approval:</label>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -3054,7 +3153,7 @@ const ProposalFormFirstPage = () => {
                 Director, Extension & Community Relations
               </label>
               <input
-              required
+                required
                 name="director"
                 value={formData.director.name}
                 onChange={handleSignatoryFormChange}
@@ -3070,7 +3169,7 @@ const ProposalFormFirstPage = () => {
                 Vice - Chancellor for Academic Affairs
               </label>
               <input
-              required
+                required
                 name="vcaa"
                 value={formData.vcaa.name}
                 onChange={handleSignatoryFormChange}
@@ -3084,7 +3183,7 @@ const ProposalFormFirstPage = () => {
                 Vice - Chancellor for Research and Innovation
               </label>
               <input
-              required
+                required
                 name="vcri"
                 value={formData.vcri.name}
                 onChange={handleSignatoryFormChange}
@@ -3094,14 +3193,13 @@ const ProposalFormFirstPage = () => {
             </div>
           </div>
 
-          {/* <label className="block mb-2 font-semibold">Funds Available:</label> */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block mb-2 font-semibold">
                 Accountant III
               </label>
               <input
-              required
+                required
                 name="accountant"
                 value={formData.accountant.name}
                 onChange={handleSignatoryFormChange}
@@ -3115,7 +3213,7 @@ const ProposalFormFirstPage = () => {
                 Chancellor, USTP CDO
               </label>
               <input
-              required
+                required
                 name="chancellor"
                 value={formData.chancellor.name}
                 onChange={handleSignatoryFormChange}
@@ -3125,7 +3223,6 @@ const ProposalFormFirstPage = () => {
             </div>
           </div>
 
-          {/* row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
               <label className="block mb-2 font-semibold">SUBMITTED BY: {username}</label>

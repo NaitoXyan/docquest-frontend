@@ -436,13 +436,13 @@ const EditMOAForm = ({ moaID }) => {
             <label className="block mb-2 font-semibold">
               COVERAGE AND EFFECTIVITY:
             </label>
-            <input
-              name="coverageAndEffectivty"
+            <textarea
+              name="coverageAndEffectivity"
               value={formData.coverageAndEffectivity}
               onChange={handleFormChange}
               className="w-full p-2 border border-gray-300 rounded"
               placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-            ></input>
+            ></textarea>
           </div>
         </div>
 
@@ -451,13 +451,13 @@ const EditMOAForm = ({ moaID }) => {
             <label className="block mb-2 font-semibold">
               CONFIDENTIALITY CLAUSE:
             </label>
-            <input
+            <textarea
               name="confidentialityClause"
               value={formData.confidentialityClause}
               onChange={handleFormChange}
               className="w-full p-2 border border-gray-300 rounded"
               placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-            ></input>
+            ></textarea>
           </div>
         </div>
 
@@ -465,13 +465,13 @@ const EditMOAForm = ({ moaID }) => {
           <label className="block mb-2 font-semibold">
             TERMINATION:
           </label>
-          <input
+          <textarea
             name="termination"
             value={formData.termination}
             onChange={handleFormChange}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-          ></input>
+          ></textarea>
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -590,7 +590,7 @@ const EditMOAForm = ({ moaID }) => {
 
         {/* submit naa */}
         <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-4 mb-4">
-          Create
+          Confirm Changes
         </button>
       </form>
 

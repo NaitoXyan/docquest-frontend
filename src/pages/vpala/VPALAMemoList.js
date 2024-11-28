@@ -133,8 +133,8 @@ const VPALAMemoList = () => {
             <thead>
               <tr className="bg-vlu text-white">
                 <th className="py-2 px-4 text-left">PROJECT TITLE</th>
-                <th className="py-2 px-4 text-center">COLLEGE</th>
-                <th className="py-2 px-4 text-center">DATE SUBMITTED</th>
+                <th className="py-2 px-4 text-left">COLLEGE</th>
+                <th className="py-2 px-4 text-left">DATE SUBMITTED</th>
                 <th className="py-2 px-4 text-center">STATUS</th>
                 <th className="py-2 px-4 text-center">ACTIONS</th>
               </tr>
@@ -145,6 +145,21 @@ const VPALAMemoList = () => {
                   <td className="py-2 px-4">{doc.projectLeader}</td>
                   <td className="py-2 px-4">{doc.college}</td>
                   <td className="py-2 px-4">{doc.date}</td>
+                  <td className="py-2 px-4 text-center">
+                    <span
+                      className={`inline-block px-3 py-1 text-sm font-semibold rounded-full ${
+                        doc.status === 'Pending'
+                          ? 'bg-orange-100 text-orange-500'
+                          : doc.status === 'Approved'
+                          ? 'bg-green-100 text-green-500'
+                          : doc.status === 'Rejected'
+                          ? 'bg-red-100 text-red-500'
+                          : 'bg-gray-100 text-gray-500'
+                      }`}
+                    >
+                      {doc.status}
+                    </span>
+                  </td>
                   <td className="py-2 px-4 text-center">
                     <button
                       className={`${getStatusColor(doc.status)} text-white px-4 py-2 rounded`}

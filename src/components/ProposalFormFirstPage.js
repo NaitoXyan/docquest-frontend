@@ -162,35 +162,16 @@ const ProposalFormFirstPage = () => {
     ],
     signatories: [],
 
-    programChair: {
-      name: programChair,
-      title: "Program Chair"
-    },
-    collegeDean: {
-      name: collegeDean,
-      title: "College Dean"
-    },
-    director: {
-      name: director,
-      title: "Director, Extension & Community Relations"
-    },
-    vcaa: {
-      name: vcaa,
-      title: "Vice - Chancellor for Academic Affairs"
-    },
-    vcri: {
-      name: vcri,
-      title: "Vice - Chancellor for Research and Innovation"
-    },
-    accountant: {
-      name: accountant,
-      title: "Accountant III"
-    },
-    chancellor: {
-      name: chancellor,
-      title: "Chancellor, USTP CDO"
-    },
+    programChair: [], // Array to handle multiple Program Chair signatories
+    collegeDean: [],  // Array to handle multiple College Dean signatories
+    director: { name: director, title: "Director, Extension & Community Relations" },
+    vcaa: { name: vcaa, title: "Vice - Chancellor for Academic Affairs" },
+    vcri: { name: vcri, title: "Vice - Chancellor for Research and Innovation" },
+    accountant: { name: accountant, title: "Accountant III" },
+    chancellor: { name: chancellor, title: "Chancellor, USTP CDO" },
+
     deliverables: [],
+    approvers: [],
 
     campus: [],
     college: [],
@@ -210,14 +191,44 @@ const ProposalFormFirstPage = () => {
     // Create a copy of formData
     const modifiedData = { ...formData };
 
+    console.log('Program Chair:', formData.programChair);
+    console.log('College Dean:', formData.collegeDean);
+
     const signatories = [
-      formData.programChair,
-      formData.collegeDean,
-      formData.director,
-      formData.vcaa,
-      formData.vcri,
-      formData.accountant,
-      formData.chancellor,
+      ...formData.programChair.filter(chair => chair.name).map((chair, index) => {
+        const selectedProgram = program.find(p => p.programID === chair.programId);
+        return {
+          name: chair.name,
+          title: `Program Chair, ${selectedProgram?.abbreviation || 'Program'}`,
+        };
+      }),
+      ...formData.collegeDean.filter(dean => dean.name).map((dean, index) => {
+        const selectedCollege = college.find(c => c.collegeID === dean.collegeId);
+        return {
+          name: dean.name,
+          title: `College Dean, ${selectedCollege?.abbreviation || 'College'}`,
+        };
+      }),
+      {
+        name: formData.director.name,
+        title: "Director, Extension & Community Relations",
+      },
+      {
+        name: formData.vcaa.name,
+        title: "Vice - Chancellor for Academic Affairs",
+      },
+      {
+        name: formData.vcri.name,
+        title: "Vice - Chancellor for Research and Innovation",
+      },
+      {
+        name: formData.accountant.name,
+        title: "Accountant III",
+      },
+      {
+        name: formData.chancellor.name,
+        title: "Chancellor, USTP CDO",
+      },
       ...formData.signatories, // If there are any other signatories already in the list, keep them
     ];
 
@@ -235,6 +246,7 @@ const ProposalFormFirstPage = () => {
     delete modifiedData.province;
     delete modifiedData.city;
     delete modifiedData.barangay;
+    delete modifiedData.campus;
     delete modifiedData.college;
 
     if (showTrainers === false) {
@@ -1165,10 +1177,58 @@ const ProposalFormFirstPage = () => {
     return new Date().toISOString().slice(0, 7);
   };
 
+  useEffect(() => {
+    const updatedApprovers = collegeDeanList.map((collegeId) => {
+      // Find the college dean's userID for this college
+      const dean = program.find(p => p.college.collegeID === collegeId)?.college.collegeDean.userID;
+  
+      // Find program chairs' userIDs for this college
+      const programChairs = programChairList
+        .map(programId => {
+          const prog = program.find(p => p.programID === programId);
+          return prog?.programChair?.userID;
+        })
+        .filter(userId => userId); // Remove any undefined userIds
+  
+      return {
+        collegeID: collegeId,
+        programChairs: programChairs,
+        collegeDean: dean || "", // Use the dean's userID or empty string
+      };
+    });
+  
+    setFormData(prev => ({ ...prev, approvers: updatedApprovers }));
+  }, [collegeDeanList, programChairList, program]);
+
+  useEffect(() => {
+    // Populate programChair and collegeDean when component loads
+    const initialProgramChairs = formData.program.map((programId, index) => {
+      const selectedProgram = program.find(p => p.programID === programId);
+      return {
+        name: `${selectedProgram?.programChair?.firstname || ""} ${selectedProgram?.programChair?.lastname || ""}`.trim(),
+        programId: programId
+      };
+    });
+  
+    const initialCollegeDeans = formData.college.map((collegeId, index) => {
+      const selectedCollege = college.find(c => c.collegeID === collegeId);
+      return {
+        name: `${selectedCollege?.collegeDean?.firstname || ""} ${selectedCollege?.collegeDean?.lastname || ""}`.trim(),
+        collegeId: collegeId
+      };
+    });
+  
+    setFormData(prev => ({
+      ...prev,
+      programChair: initialProgramChairs,
+      collegeDean: initialCollegeDeans
+    }));
+  }, [formData.program, formData.college, program, college]);
+
   return (
     <div className="flex flex-col mt-14 px-10">
-      <h1 className="text-2xl font-semibold mb-5 mt-3">
-        Extension Project Proposal
+      <h1 className="text-2xl font-bold mb-5 mt-3">
+        EXTENSION PROJECT PROPOSAL
       </h1>
 
 
@@ -1459,11 +1519,22 @@ const ProposalFormFirstPage = () => {
                 <button
                   type="button" // Prevent default form submission
                   onClick={handleNonUserProponentButtonClick}
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                  className={`${
+                    formData.nonUserProponents.some(
+                      (proponentObj) => proponentObj.name.trim() === ""
+                    )
+                      ? "bg-gray-400 text-gray-300 cursor-not-allowed"
+                      : "bg-blue-500 text-white"
+                  } px-4 py-2 rounded`}
+                  disabled={
+                    formData.nonUserProponents.some(
+                      (proponentObj) => proponentObj.name.trim() === ""
+                    )
+                  }
                 >
                   Add Proponent
                 </button>
-                <button
+                {/* <button
                   type="button" // Prevent default form submission
                   onClick={handleNonUserProponentRemoveClick}
                   className={
@@ -1474,7 +1545,7 @@ const ProposalFormFirstPage = () => {
                   disabled={formData.nonUserProponents.length === 1}
                 >
                   Remove Proponent
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
@@ -2224,11 +2295,22 @@ const ProposalFormFirstPage = () => {
                 <button
                   type="button"
                   onClick={handleObjectiveButtonClick}
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                  className={`${
+                    formData.goalsAndObjectives.some(
+                      (goal) => goal.goalsAndObjectives.trim() === ""
+                    )
+                      ? "bg-gray-400 text-gray-300 cursor-not-allowed"
+                      : "bg-blue-500 text-white"
+                  } px-4 py-2 rounded`}
+                  disabled={
+                    formData.goalsAndObjectives.some(
+                      (goal) => goal.goalsAndObjectives.trim() === ""
+                    )
+                  }
                 >
                   Add Objective
                 </button>
-                <button
+                {/* <button
                   type="button"
                   onClick={handleObjectiveRemoveClick}
                   className={
@@ -2238,7 +2320,7 @@ const ProposalFormFirstPage = () => {
                   }
                 >
                   Remove Objective
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
@@ -2341,14 +2423,8 @@ const ProposalFormFirstPage = () => {
 
                 {/* Dropdown for selecting person responsible */}
                 <Select
-                  value={
-                    activity.personResponsible
-                      ? { label: activity.personResponsible }
-                      : null
-                  }
-                  onChange={(selectedOption) =>
-                    handlePersonResponsibleChange(selectedOption, index) // Pass the correct index
-                  }
+                  value={activity.personResponsible ? { label: activity.personResponsible } : null}
+                  onChange={(selectedOption) => handlePersonResponsibleChange(selectedOption, index)} // Pass the correct index
                   options={[
                     ...pickedProponents.map((proponent) => ({
                       value: proponent.fullname,
@@ -2367,11 +2443,9 @@ const ProposalFormFirstPage = () => {
                 />
               </div>
 
-              {/* Modal for adding custom name (Tailwind CSS modal) */}
+              {/* Modal for adding custom name */}
               <div
-                className={`fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50 ${
-                  isPersonResponsibleModalOpen ? "block" : "hidden"
-                }`}
+                className={`fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-50 ${isPersonResponsibleModalOpen ? 'block' : 'hidden'}`}
               >
                 <div className="bg-white w-96 p-6 rounded-lg shadow-lg">
                   <h2 className="text-xl font-semibold mb-4">Add a Custom Name</h2>
@@ -2421,50 +2495,70 @@ const ProposalFormFirstPage = () => {
             <button
               type="button"
               onClick={addActivityRow}
-              className="mt-4 p-2 bg-blue-500 text-white rounded"
+              disabled={
+                formData.projectActivities.some((activity) => 
+                  !activity.objective || !activity.involved || !activity.targetDate || !activity.personResponsible
+                )
+              }
+              className={`mt-4 p-2 bg-blue-500 text-white rounded ${
+                formData.projectActivities.some((activity) => 
+                  !activity.objective || !activity.involved || !activity.targetDate || !activity.personResponsible
+                ) 
+                  ? 'opacity-50 cursor-not-allowed' 
+                  : ''
+              }`}
             >
               Add Row
             </button>
 
-            <button
+            {/* <button
               type="button"
               disabled={formData.projectActivities.length === 1}
               onClick={removeLastActivityRow} // Function to remove the last row
               className={
                 formData.projectActivities.length === 1
-                  ? "mt-4 p-2 bg-gray-400 text-gray-200 rounded"
-                  : "mt-4 p-2 bg-red-500 text-white rounded"
+                  ? 'mt-4 p-2 bg-gray-400 text-gray-200 rounded'
+                  : 'mt-4 p-2 bg-red-500 text-white rounded'
               }
             >
               Remove Last Row
-            </button>
+            </button> */}
           </div>
         </div>
+
+
+
         
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-          <div className="grid grid-cols-1 gap-4">
-            <div>
-              <label className="block mb-2 font-bold text-base">
-                PROJECT LOCATION AND BENEFICIARIES
-                <span className="text-red-500 ml-1">*</span>
-                <span
-                  data-tip="Provide the location of the project and specify the beneficiaries it will serve."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
-              <textarea
-              required
-                name="targetScope"
-                value={formData.targetScope}
-                onChange={handleFormChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              ></textarea>
-            </div>
-          </div>
-        </div>
+  <div className="grid grid-cols-1 gap-4">
+    <div>
+      <label className="block mb-2 font-bold text-base">
+        PROJECT LOCATION AND BENEFICIARIES
+        <span className="text-red-500 ml-1">*</span>
+        <span
+          data-tip="Provide the location of the project and specify the beneficiaries it will serve."
+          className="ml-2 text-gray-500 cursor-pointer text-sm"
+        >
+          ⓘ
+        </span>
+        <ReactTooltip place="top" type="dark" effect="solid" />
+      </label>
+      <textarea
+        required
+        name="targetScope"
+        value={formData.targetScope}
+        onChange={handleFormChange}
+        className="w-full p-2 border border-gray-300 rounded overflow-auto resize-none"
+        style={{
+          verticalAlign: 'top',  // Ensures content is aligned to the top
+          paddingTop: '0',       // Removes any top padding if present
+        }}
+      ></textarea>
+    </div>
+  </div>
+</div>
+
+
 
         {/* BUDGETARY REQUIREMENTS */}
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -2492,11 +2586,15 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
-                required
+                  required
                   name="itemName"
                   value={budgetItem.itemName}
                   onChange={(e) => handleBudgetChange(index, "itemName", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
+                  style={{
+                    verticalAlign: 'top',  // Ensures content is aligned to the top
+                    paddingTop: '0',       // Removes any top padding if present
+                  }}
                 />
               </div>
               <div>
@@ -2505,7 +2603,7 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
-                required
+                  required
                   type="number" // Allows only numeric input
                   name="ustpAmount"
                   value={budgetItem.ustpAmount}
@@ -2527,7 +2625,7 @@ const ProposalFormFirstPage = () => {
                   <span className="text-red-500 ml-1">*</span>
                 </label>
                 <input
-                required
+                  required
                   type="number" // Allows only numeric input
                   name="partnerAmount"
                   value={budgetItem.partnerAmount}
@@ -2543,8 +2641,7 @@ const ProposalFormFirstPage = () => {
                 />
               </div>
 
-
-              <div className=" justify-between items-center gap-2">
+              <div className="justify-between items-center gap-2">
                 <label className="block font-semibold">
                   ITEM TOTAL
                 </label>
@@ -2567,13 +2664,31 @@ const ProposalFormFirstPage = () => {
               </div>
             </div>
           ))}
+
           <div>
             <div className="grid grid-cols-4">
               <div className="flex space-x-2">
                 <button
                   type="button"
                   onClick={addBudgetItem}
-                  className="p-3 bg-blue-500 text-white rounded"
+                  disabled={
+                    formData.budgetRequirements.some(
+                      (budgetItem) =>
+                        !budgetItem.itemName ||
+                        !budgetItem.ustpAmount ||
+                        !budgetItem.partnerAmount
+                    )
+                  }
+                  className={`p-3 text-white rounded ${
+                    formData.budgetRequirements.some(
+                      (budgetItem) =>
+                        !budgetItem.itemName ||
+                        !budgetItem.ustpAmount ||
+                        !budgetItem.partnerAmount
+                    )
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-blue-500'
+                  }`}
                 >
                   Add Item
                 </button>
@@ -2598,19 +2713,19 @@ const ProposalFormFirstPage = () => {
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-          <div>
-            <label className="block mb-2 font-bold">
-              PROJECT EVALUATION AND MONITORING
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Describe the strategies for monitoring the project's progress and evaluating its success."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
-          </div>
+                <div>
+                  <label className="block mb-2 font-bold">
+                    PROJECT EVALUATION AND MONITORING
+                    <span className="text-red-500 ml-1">*</span>
+                    <span
+                      data-tip="Describe the strategies for monitoring the project's progress and evaluating its success."
+                      className="ml-2 text-gray-500 cursor-pointer text-sm"
+                    >
+                      ⓘ
+                    </span>
+                    <ReactTooltip place="top" type="dark" effect="solid" />
+                  </label>
+                </div>
 
           <div className="grid grid-cols-4 gap-4">
             <div>
@@ -2645,58 +2760,94 @@ const ProposalFormFirstPage = () => {
               {/* Project Summary */}
               <div>
                 <textarea
-                required
+                  required
                   rows="4"
                   name="projectSummary"
                   value={evaluation.projectSummary}
                   onChange={(e) => handleEvaluationChange(index, "projectSummary", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Project Summary (${evaluation.type.toUpperCase()})`}
+                  style={{ 
+                    overflowY: 'hidden', 
+                    verticalAlign: 'top',  // Ensures content is aligned to the top
+                    paddingTop: '0',  // Removes top padding
+                  }}
+                  onInput={(e) => {
+                    e.target.style.height = 'auto';  // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                  }}
                 ></textarea>
               </div>
 
               {/* Indicators */}
               <div>
                 <textarea
-                required
+                  required
                   rows="4"
                   name="indicators"
                   value={evaluation.indicators}
                   onChange={(e) => handleEvaluationChange(index, "indicators", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Indicators (${evaluation.type.toUpperCase()})`}
+                  style={{ 
+                    overflowY: 'hidden', 
+                    verticalAlign: 'top',  // Ensures content is aligned to the top
+                    paddingTop: '0',  // Removes top padding
+                  }}
+                  onInput={(e) => {
+                    e.target.style.height = 'auto';  // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                  }}
                 ></textarea>
               </div>
 
               {/* Means of Verification */}
               <div>
                 <textarea
-                required
+                  required
                   rows="4"
                   name="meansOfVerification"
                   value={evaluation.meansOfVerification}
                   onChange={(e) => handleEvaluationChange(index, "meansOfVerification", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Means of Verification (${evaluation.type.toUpperCase()})`}
+                  style={{ 
+                    overflowY: 'hidden', 
+                    verticalAlign: 'top',  // Ensures content is aligned to the top
+                    paddingTop: '0',  // Removes top padding
+                  }}
+                  onInput={(e) => {
+                    e.target.style.height = 'auto';  // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                  }}
                 ></textarea>
               </div>
 
               {/* Risks/Assumptions */}
               <div>
                 <textarea
-                required
+                  required
                   rows="4"
                   name="risksAssumptions"
                   value={evaluation.risksAssumptions}
                   onChange={(e) => handleEvaluationChange(index, "risksAssumptions", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Risks/Assumptions (${evaluation.type.toUpperCase()})`}
+                  style={{ 
+                    overflowY: 'hidden', 
+                    verticalAlign: 'top',  // Ensures content is aligned to the top
+                    paddingTop: '0',  // Removes top padding
+                  }}
+                  onInput={(e) => {
+                    e.target.style.height = 'auto';  // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                  }}
                 ></textarea>
               </div>
             </div>
           ))}
-
         </div>
+
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div>
@@ -2734,9 +2885,9 @@ const ProposalFormFirstPage = () => {
                 {formData.monitoringPlanSchedules.map((row, index) => (
                   <tr key={index}>
                     <td className="border border-gray-300 p-2">{row.implementationPhase}</td>
-                    <td className="border border-gray-300 p-2">
+                    <td className="border border-gray-300 p-2" style={{verticalAlign: 'top', }}>
                       <textarea
-                      required
+                        required
                         name="approach"
                         value={row.approach}
                         onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "approach", e.target.value)}
@@ -2749,11 +2900,16 @@ const ProposalFormFirstPage = () => {
                             "Effect of Project to Participants and Community Questionnaire Trainings Need Assessment",
                           ][index] || "Default placeholder for Approach"
                         }
+                        style={{ overflowY: 'hidden', verticalAlign: 'top', }}
+                        onInput={(e) => {
+                          e.target.style.height = 'auto';  // Reset height before adjusting
+                          e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                        }}
                       />
                     </td>
-                    <td className="border border-gray-300 p-2">
+                    <td className="border border-gray-300 p-2" style={{verticalAlign: 'top', }}>
                       <textarea
-                      required
+                        required
                         name="dataGatheringStrategy"
                         value={row.dataGatheringStrategy}
                         onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "dataGatheringStrategy", e.target.value)}
@@ -2764,13 +2920,18 @@ const ProposalFormFirstPage = () => {
                             "Survey Questionnaire Interview with Key Informant of FGD",
                             "Multiple Choice Questionnaire, Survey Questionnaire, Competency Checklist",
                             "Survey Questionnaire, Interview with Key Informant or FGD",
-                          ][index] || "Default placeholder for Approach"
+                          ][index] || "Default placeholder for Data Gathering Strategy"
                         }
+                        style={{ overflowY: 'hidden', verticalAlign: 'top', }}
+                        onInput={(e) => {
+                          e.target.style.height = 'auto';  // Reset height before adjusting
+                          e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                        }}
                       />
                     </td>
-                    <td className="border border-gray-300 p-2">
+                    <td className="border border-gray-300 p-2" style={{verticalAlign: 'top', }}>
                       <textarea
-                      required
+                        required
                         name="schedule"
                         value={row.schedule}
                         onChange={(e) => handleMonitoringPlanScheduleRowChange(index, "schedule", e.target.value)}
@@ -2781,8 +2942,13 @@ const ProposalFormFirstPage = () => {
                             "A Week after receiving training/extension request",
                             "During Training Proper",
                             "May be periodically scheduled based on the objectives of the extension project (e.g. after 3 months, after 6 months, etc.)",
-                          ][index] || "Default placeholder for Approach"
+                          ][index] || "Default placeholder for Schedule"
                         }
+                        style={{ overflowY: 'hidden', verticalAlign: 'top', }}
+                        onInput={(e) => {
+                          e.target.style.height = 'auto';  // Reset height before adjusting
+                          e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                        }}
                       />
                     </td>
                   </tr>
@@ -2791,6 +2957,7 @@ const ProposalFormFirstPage = () => {
             </table>
           </div>
         </div>
+
 
         {showTrainers && (
           <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -2801,12 +2968,12 @@ const ProposalFormFirstPage = () => {
                 <table className="min-w-full border">
                   <thead>
                     <tr>
-                      <th className="px-4 py-2 border bg-gray-300">Name of Faculty</th>
-                      <th className="px-4 py-2 border bg-gray-300">Training Load</th>
-                      <th className="px-4 py-2 border bg-gray-300">No. of Hours</th>
-                      <th className="px-4 py-2 border bg-gray-300">USTP Budget</th>
-                      <th className="px-4 py-2 border bg-gray-300">Partner Agency Budget</th>
-                      <th className="px-4 py-2 border bg-gray-300">Total Budgetary Requirement</th>
+                      <th className="px-4 py-2 border bg-gray-300 w-1/6">Name of Faculty</th>
+                      <th className="px-4 py-2 border bg-gray-300 w-1/3">Training Load</th>
+                      <th className="px-4 py-2 border bg-gray-300 w-1/12">No. of Hours</th>
+                      <th className="px-4 py-2 border bg-gray-300 w-1/8">USTP Budget</th>
+                      <th className="px-4 py-2 border bg-gray-300 w-1/8">Partner Agency Budget</th>
+                      <th className="px-4 py-2 border bg-gray-300 w-1/10">Total Budgetary Requirement</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2823,7 +2990,7 @@ const ProposalFormFirstPage = () => {
                           </select>
                         </td>
                         <td className="px-4 py-2 border">
-                          <input
+                          <textarea
                             name="trainingLoad"
                             value={formData.loadingOfTrainers[memberIndex]?.trainingLoad || ''}
                             onChange={(e) => handleTrainerChange(memberIndex, {
@@ -2831,10 +2998,16 @@ const ProposalFormFirstPage = () => {
                               faculty: member.name,
                               trainingLoad: e.target.value
                             })}
-                            type="text"
                             required
-                            className="w-full p-1 border border-gray-300 rounded"
+                            className="w-full p-1 border border-gray-300 rounded resize-none"
                             placeholder="Training Load"
+                            rows="1"  // Initial row size (height of the textarea)
+                            style={{ overflowY: 'hidden' }}  // Hides vertical scrollbar
+                            onInput={(e) => {
+                              // Adjusts the height of the textarea based on content length
+                              e.target.style.height = 'auto';  // Reset height before adjusting
+                              e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                            }}
                           />
                         </td>
                         <td className="px-4 py-2 border">
@@ -2906,34 +3079,73 @@ const ProposalFormFirstPage = () => {
           <label className="block mb-2 font-semibold">Endorsed by:</label>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block mb-2 font-semibold">
-                Program Chair
-              </label>
-              <input
-              required
-                name="programChair"
-                value={formData.programChair.name}
-                onChange={handleSignatoryFormChange}
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
+              <label className="block mb-2 font-semibold">Program Chair</label>
+              {formData.program.map((programId, index) => {
+                const selectedProgram = program.find(p => p.programID === programId);
+                return (
+                  <div key={`programChair-${programId}`} className="mb-4">
+                    <label className="block mb-2 text-sm text-gray-600">
+                      Program Chair of {selectedProgram?.title || 'Selected Program'}
+                    </label>
+                    <input
+                      readOnly={true}
+                      name={`programChair-${programId}`}
+                      value={
+                        formData.programChair[index]?.name || 
+                        `${selectedProgram?.programChair?.firstname || ""} ${selectedProgram?.programChair?.lastname || ""}`.trim()
+                      }
+                      onChange={(e) => {
+                        const updatedList = [...formData.programChair];
+                        updatedList[index] = { 
+                          name: e.target.value, 
+                          programId: programId 
+                        };
+                        setFormData({ ...formData, programChair: updatedList });
+                      }}
+                      type="text"
+                      className="w-full p-2 mb-2 border border-gray-300 rounded"
+                      placeholder={`Enter Program Chair Name`}
+                    />
+                  </div>
+                );
+              })}
             </div>
 
             <div>
-              <label className="block mb-2 font-semibold">
-                College Dean
-              </label>
-              <input
-              required
-                name="collegeDean"
-                value={formData.collegeDean.name}
-                onChange={handleSignatoryFormChange}
-                type="text"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
+              <label className="block mb-2 font-semibold">College Dean</label>
+              {formData.college.map((collegeId, index) => {
+                const selectedCollege = college.find(c => c.collegeID === collegeId);
+                return (
+                  <div key={`collegeDean-${collegeId}`} className="mb-4">
+                    <label className="block mb-2 text-sm text-gray-600">
+                      College Dean of {selectedCollege?.title || 'Selected College'}
+                    </label>
+                    <input
+                      readOnly={true}
+                      name={`collegeDean-${collegeId}`}
+                      value={
+                        formData.collegeDean[index]?.name || 
+                        `${selectedCollege?.collegeDean?.firstname || ""} ${selectedCollege?.collegeDean?.lastname || ""}`.trim()
+                      }
+                      onChange={(e) => {
+                        const updatedList = [...formData.collegeDean];
+                        updatedList[index] = { 
+                          name: e.target.value, 
+                          collegeId: collegeId 
+                        };
+                        setFormData({ ...formData, collegeDean: updatedList });
+                      }}
+                      type="text"
+                      className="w-full p-2 mb-2 border border-gray-300 rounded"
+                      placeholder={`Enter College Dean Name`}
+                    />
+                  </div>
+                );
+              })}
             </div>
           </div>
 
+          {/* Rest of the existing signatories section remains the same */}
           <label className="block mb-2 mt-10 font-semibold">Recommending Approval:</label>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -2941,7 +3153,7 @@ const ProposalFormFirstPage = () => {
                 Director, Extension & Community Relations
               </label>
               <input
-              required
+                required
                 name="director"
                 value={formData.director.name}
                 onChange={handleSignatoryFormChange}
@@ -2957,7 +3169,7 @@ const ProposalFormFirstPage = () => {
                 Vice - Chancellor for Academic Affairs
               </label>
               <input
-              required
+                required
                 name="vcaa"
                 value={formData.vcaa.name}
                 onChange={handleSignatoryFormChange}
@@ -2971,7 +3183,7 @@ const ProposalFormFirstPage = () => {
                 Vice - Chancellor for Research and Innovation
               </label>
               <input
-              required
+                required
                 name="vcri"
                 value={formData.vcri.name}
                 onChange={handleSignatoryFormChange}
@@ -2981,14 +3193,13 @@ const ProposalFormFirstPage = () => {
             </div>
           </div>
 
-          {/* <label className="block mb-2 font-semibold">Funds Available:</label> */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block mb-2 font-semibold">
                 Accountant III
               </label>
               <input
-              required
+                required
                 name="accountant"
                 value={formData.accountant.name}
                 onChange={handleSignatoryFormChange}
@@ -3002,7 +3213,7 @@ const ProposalFormFirstPage = () => {
                 Chancellor, USTP CDO
               </label>
               <input
-              required
+                required
                 name="chancellor"
                 value={formData.chancellor.name}
                 onChange={handleSignatoryFormChange}
@@ -3012,7 +3223,6 @@ const ProposalFormFirstPage = () => {
             </div>
           </div>
 
-          {/* row */}
           <div className="grid grid-cols-1 gap-4">
             <div>
               <label className="block mb-2 font-semibold">SUBMITTED BY: {username}</label>

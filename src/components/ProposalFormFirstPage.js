@@ -36,7 +36,7 @@ const ProposalFormFirstPage = () => {
   var director = "Dr. Maria Teresa M. Fajardo";
   var vcaa = "Dr. Jocelyn B. Barbosa";
   var vcri = "Engr. Alex L. Maureal";
-  var accountant = "Cherry Ann S. Villarte, CPA";
+  var accountant = "Maria Rica Paje, CPA";
   var chancellor = "Atty. Dionel O. Albina";
   const [agencies, setAgencies] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);

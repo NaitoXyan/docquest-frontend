@@ -133,7 +133,7 @@ const VPALADashboard = () => {
                             <h3 className="text-lg">PENDING</h3>
                             <p className="text-4xl">{statusCounts.pending}</p>
                             <NavLink
-                                to="/documents-pending"
+                                to="/documents/pending"
                                 className="underline text-white mt-2"
                             >
                                 View
@@ -143,7 +143,7 @@ const VPALADashboard = () => {
                             <h3 className="text-lg">APPROVED</h3>
                             <p className="text-4xl">{statusCounts.approved}</p>
                             <NavLink
-                                to="/documents-approved"
+                                to="/documents/approved"
                                 className="underline text-white mt-2"
                             >
                                 View

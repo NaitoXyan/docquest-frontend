@@ -63,6 +63,7 @@ import DirectorProjectStatistics from "./pages/director/DirectorProjectStatistic
 import CoordProjectStatus from "./pages/coordinator/CoordProjectStatus";
 import VPALAScanCall from "./pages/vpala/VPALAScanCall";
 import VPALADocStatus from "./pages/vpala/VPALADocStatus";
+import VPALAViewProgress from "./pages/vpala/VPALAViewProgress";
 function App() {
   return (
     <Routes>
@@ -104,8 +105,10 @@ function App() {
         <Route path="/vpala" element={<VPALADashboard/>}/>
         <Route path="/vpala-generate-moa" element={<MOAGenerator/>}/>
         <Route path="/scan/:id" element={<VPALAScanCall />} />
-        <Route path="/documents-approved" element={<VPALADocStatus />} />
-        <Route path="/documents-pending" element={<VPALADocStatus />} />
+        <Route path="/documents" element={<VPALADocStatus />} />
+        <Route path="/documents/:statusFilter" element={<VPALADocStatus />} /> {/* Dynamic route */}
+        <Route path="/view/:id" element={<ProjectPDFViewer />} />
+        <Route path="/document/:id" element={<ProjectPDFViewer />} />
         
         {/* EStaff routes */}
         <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>
@@ -113,7 +116,7 @@ function App() {
          {/* ESTAFF ROUTING */}
          
         <Route path="/documents-list" element={<EStaffDocumentsList />} />  {/* Add this line */}
-        <Route path="/view-download/:id" element={<EstaffViewDocuments />} />  {/* Add this line */}
+        <Route path="/view-download/:id" element={<ProjectPDFViewer />} />  {/* Add this line */}
         <Route path="/user-list" element={<UserList />} />  {/* Add this line */}
         <Route path="/create-user" element={<CreateUser />} />  {/* Add this line */}
         <Route path="/profile-estaff" element={<EStaffProfilePage />} />
@@ -125,6 +128,7 @@ function App() {
         {/* <Route path="/estaff/profile-estaff" element={<EStaffProfilePage />} />  Add this line */}
 
         {/* COORDINATOR ROUTES */}
+        
         {<Route path="/coordusers" element={<UserListCoord />} />}
         <Route path="/coordinatordashboard" element={<CoordinatorDashboard />} />
         <Route path="/createuser:id" element={<CreateUserCoord />} />

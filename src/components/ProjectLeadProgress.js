@@ -54,7 +54,7 @@ const ProjLeadProgress = () => {
                 ))}
             </div>
         </div>
-    );
+    ); 
 };
 
 export default ProjLeadProgress;

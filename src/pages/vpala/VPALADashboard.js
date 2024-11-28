@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Topbar from "../../components/Topbar";
 import VPALASideBar from '../../components/VPALASideBar';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 
 const VPALADashboard = () => {
 
@@ -17,9 +17,9 @@ const VPALADashboard = () => {
         { id: 2, title: "Valueno, Rabosa A.", college: "Load Trainers", date: "04/02/2022" },
         { id: 3, title: "Valueno, Rabosa A.", college: "Project Proposal", date: "08/09/2021" },
         // Add more items if needed
-      ];
-    
-      useEffect(() => {
+    ];
+
+    useEffect(() => {
         const fetchProjects = async () => {
             try {
                 const response = await fetch(`http://127.0.0.1:8000/get_project_status/${userID}/`);
@@ -43,7 +43,7 @@ const VPALADashboard = () => {
 
         fetchProjects();
     }, []);
-    
+
     const handleNavigate = (statusFilter) => {
         navigate(`/project-status/${statusFilter.toLowerCase()}`); // Ensure it passes in lowercase
     };
@@ -120,78 +120,68 @@ const VPALADashboard = () => {
     return (
         <div className="bg-gray-200 min-h-screen flex">
             <div className="w-1/5 fixed h-full">
-                <VPALASideBar/>
+                <VPALASideBar />
             </div>
             <div className="flex-1 ml-[20%]">
                 <Topbar />
-                    <div>
-                    <div className="p-8 font-sans">
-      <h2 className="text-2xl mt-10 font-bold mb-6">OVERVIEW</h2>
+                <div className="p-8 font-sans">
+                    <h2 className="text-2xl mt-10 font-bold mb-6">OVERVIEW</h2>
 
-      {/* Status Cards */}
-      <div className="flex gap-4 justify-center mb-8">
-        <div className="flex flex-col items-center justify-center bg-yellow-500 text-white font-semibold w-60 h-40 rounded-lg">
-          <h3 className="text-lg">PENDING</h3>
-          <p className="text-4xl">0</p>
-          {/* <a href="#" className="underline">View</a> */}
-        </div>
-        <div className="flex flex-col items-center justify-center bg-green-500 text-white font-semibold w-60 h-40 rounded-lg">
-          <h3 className="text-lg">APPROVED</h3>
-          <p className="text-4xl">2</p>
-          {/* <a href="#" className="underline">View</a> */}
-        </div>
-      </div>
-
-      {/* Documents Table */}
-      <div className="bg-gray-100 p-6 rounded-lg">
-        <h3 className="text-xl font-semibold mb-4">MEMORANDUMS</h3>
-        <table className="min-w-full border border-gray-300">
-          <thead>
-            <tr className="bg-blue-900 text-white justify-center">
-              <th className="py-2 px-4 text-left">PROJECT TITLE</th>
-              <th className="py-2 px-2 text-center w-1/4">COLLEGE</th>
-              <th className="py-2 px-2 text-cente w-1/4">DATA SUBMITTED</th>
-              {/* <th className="py-2 px-4 text-left">Actions</th> */}
-            </tr> 
-          </thead>
-          <tbody>
-            {currentProjects.map((doc) => (
-              <tr key={doc.id} className="even:bg-gray-200">
-                <td className="py-2 px-4">{doc.title}</td>
-                <td className="py-2 px-4">{doc.college}</td>
-                <td className="py-2 px-4">{doc.date}</td>
-                {/* <td className="py-2 px-4">
-                  <button className="text-blue-700 mr-4">View</button>
-                  <button className="text-blue-700">Download</button>
-                </td> */}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Pagination */}
-        <div className="flex justify-center mt-4">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index + 1}
-              onClick={() => handlePageChange(index + 1)}
-              className={`px-3 py-1 mx-1 rounded ${currentPage === index + 1 ? 'bg-blue-900 text-white' : 'bg-gray-300 text-gray-700'}`}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
-      </div>
-    </div>
-  
+                    {/* Status Cards */}
+                    <div className="flex gap-4 justify-center mb-8">
+                        <div className="flex flex-col items-center justify-center bg-yellow-500 text-white font-semibold w-60 h-40 rounded-lg">
+                            <h3 className="text-lg">PENDING</h3>
+                            <p className="text-4xl">{statusCounts.pending}</p>
+                            <NavLink
+                                to="/documents/pending"
+                                className="underline text-white mt-2"
+                            >
+                                View
+                            </NavLink>
+                        </div>
+                        <div className="flex flex-col items-center justify-center bg-green-500 text-white font-semibold w-60 h-40 rounded-lg">
+                            <h3 className="text-lg">APPROVED</h3>
+                            <p className="text-4xl">{statusCounts.approved}</p>
+                            <NavLink
+                                to="/documents/approved"
+                                className="underline text-white mt-2"
+                            >
+                                View
+                            </NavLink>
+                        </div>
                     </div>
-            </div>
 
+                    {/* Documents Table */}
+                    <div className="bg-gray-100 p-6 rounded-lg">
+                        <h3 className="text-xl font-semibold mb-4">MEMORANDUMS</h3>
+                        <table className="min-w-full border border-gray-300">
+                            <thead>
+                                <tr className="bg-blue-900 text-white justify-center">
+                                    <th className="py-2 px-4 text-left">PROJECT TITLE</th>
+                                    <th className="py-2 px-2 text-center w-1/4">COLLEGE</th>
+                                    <th className="py-2 px-2 text-center w-1/4">DATE SUBMITTED</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {currentProjects.map((doc) => (
+                                    <tr key={doc.id} className="even:bg-gray-200">
+                                        <td className="py-2 px-4">{doc.title}</td>
+                                        <td className="py-2 px-4">{doc.college}</td>
+                                        <td className="py-2 px-4">{doc.date}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+
+                        {/* Pagination */}
+                        <div className="flex justify-center mt-4">
+                            {renderPageNumbers()}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
-
 };
 
-
 export default VPALADashboard;
- 

@@ -58,8 +58,10 @@ const LoginPage = () => {
         navigate('/college-dean');
       } else if (rolesList.includes('ecrd')) {
         navigate('/director');
-      } else if (rolesList.includes('vpala')) {
+      } else if (rolesList.includes('vpal')) {
         navigate('/vpala'); // Add a specific route for 'vpala' if needed
+      } else if (rolesList.includes('cord')) {
+        navigate('/coordinatordashboard'); 
       } else if (
         rolesList.includes('cldn') ||
         rolesList.includes('vcaa') ||
@@ -67,10 +69,12 @@ const LoginPage = () => {
         rolesList.includes('acnt') ||
         rolesList.includes('cclr') ||
         rolesList.includes('estf') ||
-        rolesList.includes('vpala')
+        rolesList.includes('vpala') ||
+        rolesList.includes('cord') 
       ) {
         navigate('/estaff');
       }
+      
     } catch (error) {
       // Handle errors and set error message
       if (error.response) {

@@ -135,7 +135,7 @@ function App() {
         <Route path="/documents-coord" element={<DocListCoord />} />
         
         <Route path="/projects/:statusFilterParam" element={<CoordProjectStatus />} />
-
+        <Route path="/projectpdfviewer/:projectId" element={<ProjectPDFViewer />} /> 
         {/* Create proposal routes */}
         {<Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} />}
 

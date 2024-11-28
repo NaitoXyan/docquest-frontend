@@ -15,9 +15,6 @@ const UserProfile = () => {
     firstname: '',
     middlename: '',
     lastname: '',
-    campus: '',
-    college: '',
-    department: '',
     contactNumber: '',
     password: '', // For updating password
   });
@@ -55,9 +52,6 @@ const UserProfile = () => {
         firstname: response.data.firstname || '',
         middlename: response.data.middlename || '',
         lastname: response.data.lastname || '',
-        campus: response.data.campus || '',
-        college: response.data.college || '',
-        department: response.data.department || '',
         contactNumber: response.data.contactNumber || '',
         password: '', // Password should not be pre-filled
       });
@@ -93,9 +87,6 @@ const UserProfile = () => {
         firstname: user.firstname || '',
         middlename: user.middlename || '',
         lastname: user.lastname || '',
-        campus: user.campus || '',
-        college: user.college || '',
-        department: user.department || '',
         contactNumber: user.contactNumber || '',
         password: '',
       });
@@ -115,9 +106,6 @@ const UserProfile = () => {
       firstname: formData.firstname,
       middlename: formData.middlename,
       lastname: formData.lastname,
-      campus: formData.campus,
-      college: formData.college,
-      department: formData.department,
       contactNumber: formData.contactNumber,
     };
 
@@ -126,7 +114,7 @@ const UserProfile = () => {
       payload.password = formData.password;
     }
 
-    axios.patch(`https://docquest-production.up.railway.app/edit_user_details/${userID}/`, payload, {
+    axios.patch(`http://127.0.0.1:8000/edit_user_details/${userID}/`, payload, {
       headers: {
         'Authorization': `Token ${token}`,
         'Content-Type': 'application/json',
@@ -139,9 +127,6 @@ const UserProfile = () => {
       localStorage.setItem('firstname', JSON.stringify(response.data.firstname));
       localStorage.setItem('middlename', JSON.stringify(response.data.middlename));
       localStorage.setItem('lastname', JSON.stringify(response.data.lastname));
-      localStorage.setItem('campus', JSON.stringify(response.data.campus));
-      localStorage.setItem('college', JSON.stringify(response.data.college));
-      localStorage.setItem('department', JSON.stringify(response.data.department));
       localStorage.setItem('contactNumber', JSON.stringify(response.data.contactNumber));
       // Roles are not updated here
       alert('Profile updated successfully!');
@@ -225,58 +210,13 @@ const UserProfile = () => {
             />
           </div>
 
-          {/* Last Name */}
+          {/* Middle Name */}
           <div>
-            <label className="font-semibold text-gray-700">Last Name</label>
-            <input
-              type="text"
-              name="lastname"
-              value={formData.lastname}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className={`w-full p-2 border rounded ${
-                isEditing ? 'bg-white' : 'bg-gray-200'
-              }`}
-            />
-          </div>
-
-          {/* Campus */}
-          <div>
-            <label className="font-semibold text-gray-700">Campus</label>
-            <input
-              type="text"
-              name="campus"
-              value={formData.campus}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className={`w-full p-2 border rounded ${
-                isEditing ? 'bg-white' : 'bg-gray-200'
-              }`}
-            />
-          </div>
-
-           {/* Middle Name */}
-           <div>
             <label className="font-semibold text-gray-700">Middle Name</label>
             <input
               type="text"
               name="middlename"
               value={formData.middlename}
-              onChange={handleInputChange}
-              disabled={!isEditing}
-              className={`w-full p-2 border rounded ${
-                isEditing ? 'bg-white' : 'bg-gray-200'
-              }`}
-            />
-          </div>
-
-          {/* College */}
-          <div>
-            <label className="font-semibold text-gray-700">College</label>
-            <input
-              type="text"
-              name="college"
-              value={formData.college}
               onChange={handleInputChange}
               disabled={!isEditing}
               className={`w-full p-2 border rounded ${
@@ -300,7 +240,52 @@ const UserProfile = () => {
             />
           </div>
 
-          {/* Department */}
+          {/* Last Name */}
+          <div>
+            <label className="font-semibold text-gray-700">Last Name</label>
+            <input
+              type="text"
+              name="lastname"
+              value={formData.lastname}
+              onChange={handleInputChange}
+              disabled={!isEditing}
+              className={`w-full p-2 border rounded ${
+                isEditing ? 'bg-white' : 'bg-gray-200'
+              }`}
+            />
+          </div>
+
+          {/* Campus
+          <div>
+            <label className="font-semibold text-gray-700">Campus</label>
+            <input
+              type="text"
+              name="campus"
+              value={formData.campus}
+              onChange={handleInputChange}
+              disabled={!isEditing}
+              className={`w-full p-2 border rounded ${
+                isEditing ? 'bg-white' : 'bg-gray-200'
+              }`}
+            />
+          </div> */}
+
+          {/* College
+          <div>
+            <label className="font-semibold text-gray-700">College</label>
+            <input
+              type="text"
+              name="college"
+              value={formData.college}
+              onChange={handleInputChange}
+              disabled={!isEditing}
+              className={`w-full p-2 border rounded ${
+                isEditing ? 'bg-white' : 'bg-gray-200'
+              }`}
+            />
+          </div> */}
+
+          {/* Department
           <div>
             <label className="font-semibold text-gray-700">Department</label>
             <input
@@ -313,7 +298,7 @@ const UserProfile = () => {
                 isEditing ? 'bg-white' : 'bg-gray-200'
               }`}
             />
-          </div>
+          </div> */}
         </div>
 
         {/* Password (for updating) */}

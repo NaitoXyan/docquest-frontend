@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import EstaffSideBar from "../../components/EstaffSideBar";
-import Topbar from "../../components/Topbar";
+import { useNavigate, useLocation, NavLink } from "react-router-dom";
+import axios from "axios";
 
-const CreateUser = () => {
+const CoordinatorCreateUser = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     middleInitial: "",
@@ -115,11 +115,11 @@ const CreateUser = () => {
   return (
     <div className="bg-gray-200 min-h-screen flex">
       <div className="w-1/5 fixed h-full">
-        <EstaffSideBar />
+        
       </div>
 
-      <div className="flex-1 ml-[20%]">
-        <Topbar />
+      <div className="flex-1 ml-0%]">
+        
         <div className="flex flex-col mt-14">
           <h1 className="text-2xl font-semibold m-7">Create User Account</h1>
           <form
@@ -305,42 +305,6 @@ const CreateUser = () => {
                         >
                           Villanueva
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => handleSelectCampus("Alubijid")}
-                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
-                        >
-                          Alubijid
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleSelectCampus("Panaon")}
-                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
-                        >
-                          Panaon
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleSelectCampus("Jasaan")}
-                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
-                        >
-                          Jasaan
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleSelectCampus("Balubal")}
-                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
-                        >
-                          Balubal
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleSelectCampus("Oroquieta")}
-                          className="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
-                        >
-                          Oroquieta
-                        </button>
-                        
                       </div>
                     </div>
                   )}
@@ -488,4 +452,4 @@ const CreateUser = () => {
   );
 };
 
-export default CreateUser;
+export default CoordinatorCreateUser;

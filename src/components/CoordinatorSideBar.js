@@ -1,10 +1,30 @@
 import React, { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 
 function CoordinatorSidebar() {
-    const [isSubMenuVisible, setIsSubMenuVisible] = useState(false);
+    const [isProposalMenuVisible, setProposalMenuVisible] = useState(false);
+    const [isUserMenuVisible, setUserMenuVisible] = useState(false);
+    const navigate = useNavigate(); // Hook to navigate programmatically
 
-    const toggleSubMenu = () => {
-        setIsSubMenuVisible(!isSubMenuVisible)
+    const toggleProposalMenu = () => {
+        setProposalMenuVisible(!isProposalMenuVisible);
+    };
+
+    const toggleUserMenu = () => {
+        setUserMenuVisible(!isUserMenuVisible);
+    };
+
+    // Function to handle logout
+    const handleLogout = () => {
+        // Clear localStorage items related to authentication
+        localStorage.removeItem("token");
+        localStorage.removeItem("userid");
+        localStorage.removeItem("firstname");
+        localStorage.removeItem("lastname");
+        localStorage.removeItem("roles");
+
+        // Redirect to the login page
+        navigate("/login");
     };
 
     return (
@@ -15,20 +35,53 @@ function CoordinatorSidebar() {
             <nav>
                 <ul>
                     <li>
-                        <a href="#" className="text-lg font-bold block px-6 py-3 text-yellow-500">Dashboard</a>
+                        <NavLink 
+                            to="/coordinatordashboard" 
+                            className={({ isActive }) => 
+                                `text-lg font-bold block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`}>
+                            Dashboard
+                        </NavLink>
                     </li>
+
                     <li>
-                        <button onClick={toggleSubMenu} className="text-lg w-full text-left block px-6 py-3 hover:text-yellow-500 focus:outline-none">
-                            Project Proposal
+                        <button onClick={toggleUserMenu} className="text-lg w-full text-left block px-6 py-3 hover:text-yellow-500 focus:outline-none">
+                            Accounts
                         </button>
-                        <ul className={`${isSubMenuVisible ? '' : 'hidden'} bg-indigo-900`}>
-                            <li><a href="#" className="block px-6 py-3 hover:text-yellow-500">Approved</a></li>
-                            <li><a href="#" className="block px-6 py-3 hover:text-yellow-500">Ongoing</a></li>
-                            <li><a href="#" className="block px-6 py-3 hover:text-yellow-500">Denied</a></li>
+                        <ul className={`${isUserMenuVisible ? '' : 'hidden'} bg-indigo-900`}>
+                            <li>
+                                <NavLink 
+                                    to="/coordusers" 
+                                    className={({ isActive }) => 
+                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`}>
+                                    User List
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink 
+                                    to="/createuser:id" 
+                                    className={({ isActive }) => 
+                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`}>
+                                    Create User
+                                </NavLink>
+                            </li>
                         </ul>
                     </li>
-                    <li><a href="#" className="text-lg block px-6 py-3 hover:text-yellow-500">Documents</a></li>
-                    <li><a href="#" className="text-lg block px-6 py-3 hover:text-yellow-500">Log out</a></li>
+                    <li>
+                        <NavLink 
+                            to="/documents-coord" 
+                            className={({ isActive }) => 
+                                `text-lg block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`}>
+                            Documents
+                        </NavLink>
+                    </li>
+                    {/* Log out item */}
+                    <li>
+                        <button 
+                            onClick={handleLogout} 
+                            className="text-lg block px-6 py-3 hover:text-yellow-500 focus:outline-none">
+                            Log out
+                        </button>
+                    </li>
                 </ul>
             </nav>
         </div>

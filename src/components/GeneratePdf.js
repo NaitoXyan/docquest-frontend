@@ -15,7 +15,181 @@ Font.register({
   src: '/fonts/zapf.ttf',
 });
 
-const InlineHeader = ({ dateCreated, documentCode = 'FM-USTP-ECRD-01a', revisionNo = '02' }) => {
+const InlineHeaderProjectProposal = ({ dateCreated, documentCode = 'FM-USTP-ECRD-01a', revisionNo = '02' }) => {
+  return (
+    <>
+      {/* Main Header */}
+      <View style={[styles.headerContainer]}>
+        <View style={[styles.logoContainer, { width: 60 }]}>
+          <Image style={styles.logo} src="/images/ustp_logo.png" />
+        </View>
+        <View style={styles.textContainer}>
+          <Text style={styles.universityName}>
+            University of Science and Technology of Southern Philippines
+          </Text>
+          <Text style={styles.campuses}>
+            Alubijid | Balubal | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon | Villanueva
+          </Text>
+        </View>
+      </View>
+      {/* Document Code Section */}
+      <View style={styles.right}>
+        <View
+          style={[
+            {
+              width: '40%',
+              flexDirection: 'row',
+              border: 1,
+              borderBottom: 0,
+              justifyContent: 'center',
+              backgroundColor: '#1A1851',
+            },
+          ]}
+        >
+          <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
+            Document Code No.
+          </Text>
+        </View>
+      </View>
+      <View style={styles.right}>
+        <View
+          style={[
+            {
+              width: '40%',
+              flexDirection: 'row',
+              border: 1,
+              borderBottom: 0,
+              justifyContent: 'center',
+              fontFamily: 'ArialB',
+            },
+          ]}
+        >
+          <Text>{documentCode}</Text>
+        </View>
+      </View>
+
+      {/* Revision and Effective Date Section */}
+      <View style={styles.right}>
+        <View
+          style={[
+            {
+              width: '40%',
+              flexDirection: 'row',
+              border: 1,
+              borderBottom: 0,
+            },
+          ]}
+        >
+          <View
+            style={[
+              styles.tableColthree,
+              {
+                borderRight: 1,
+                borderColor: '#000',
+                justifyContent: 'center',
+                backgroundColor: '#1A1851',
+              },
+            ]}
+          >
+            <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
+              Rev. No.
+            </Text>
+          </View>
+          <View
+            style={[
+              styles.tableColthree,
+              {
+                borderRight: 1,
+                borderColor: '#000',
+                justifyContent: 'center',
+                backgroundColor: '#1A1851',
+              },
+            ]}
+          >
+            <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
+              Effective Date
+            </Text>
+          </View>
+          <View
+            style={[
+              styles.tableColthree,
+              {
+                justifyContent: 'center',
+                backgroundColor: '#1A1851',
+              },
+            ]}
+          >
+            <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
+              Page No.
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Revision Number, Effective Date, and Pagination */}
+      <View style={styles.right}>
+        <View
+          style={[
+            {
+              width: '40%',
+              flexDirection: 'row',
+              border: 1,
+            },
+          ]}
+        >
+          <View
+            style={[
+              styles.tableColthree,
+              {
+                borderRight: 1,
+                borderColor: '#000',
+                justifyContent: 'center',
+                fontSize: 8,
+                fontFamily: 'ArialB',
+                paddingTop: 1,
+                paddingBottom: 1,
+              },
+            ]}
+          >
+            <Text>{revisionNo}</Text>
+          </View>
+          <View
+            style={[
+              styles.tableColthree,
+              {
+                borderRight: 1,
+                borderColor: '#000',
+                justifyContent: 'center',
+                fontSize: 8,
+                fontFamily: 'ArialB',
+                paddingTop: 1,
+                paddingBottom: 1,
+              },
+            ]}
+          >
+            <Text>{dateCreated.substring(0, 10)}</Text>
+          </View>
+          <View
+            style={[
+              styles.tableColthree,
+              {
+                justifyContent: 'center',
+                fontSize: 8,
+                fontFamily: 'ArialB',
+                paddingTop: 1,
+                paddingBottom: 1,
+              },
+            ]}
+          >
+            <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
+          </View>
+        </View>
+      </View>
+    </>
+  );
+};
+
+const InlineHeaderLoadingofTrainers = ({ dateCreated, documentCode = 'FM-USTP-ECRD-02', revisionNo = '02' }) => {
   return (
     <>
       {/* Main Header */}
@@ -405,7 +579,7 @@ const MyDocument = ({ projectID }) => {
     style={styles.document}>
       {/* first page */}
       <Page style={styles.page}>
-        <InlineHeader dateCreated={formData.dateCreated} />
+        <InlineHeaderProjectProposal dateCreated={formData.dateCreated} />
         <Text style={[{ border: 1, width: '30%', padding: '1%', textAlign: 'center', marginBottom: 2, justifyContent: 'center', fontFamily: 'ArialB', }]}>
           Extension Project Proposal
         </Text>
@@ -471,12 +645,35 @@ const MyDocument = ({ projectID }) => {
             Continuing Project
           </Text>
         </View>
-        <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
+        <View
+          style={[
+            styles.tableColone,
+            {
+              flexDirection: 'row',
+              flexWrap: 'wrap', // Allow wrapping to the next line
+              borderWidth: 1,
+              borderBottomWidth: 0,
+              paddingLeft: '1%',
+              paddingRight: '1%',
+              backgroundColor: '#a4b494',
+              fontFamily: 'ArialB',
+            }
+          ]}
+        >
           <Text>PROJECT CATEGORY: </Text>
           {formData.projectCategory?.length
             ? formData.projectCategory.map((projectCategory, index) => (
-              <Text style={[{ paddingHorizontal: 3 }]} key={index} >
-                <Image src={selected} style={{ marginTop: 2, width: 7, height: 7, paddingRight: 3 }} />
+              <Text style={{ paddingHorizontal: 3, flexShrink: 1 }} key={index}>
+                <Image
+                  src={selected}
+                  style={{
+                    marginTop: 2,
+                    width: 7,
+                    height: 7,
+                    paddingRight: 3,
+                    paddingLeft: 3,
+                  }}
+                />
                 {projectCategory.title}
               </Text>
             ))
@@ -733,7 +930,7 @@ const MyDocument = ({ projectID }) => {
 
       {/* second page */}
       <Page style={styles.page}>
-        <InlineHeader dateCreated={formData.dateCreated} />
+        <InlineHeaderProjectProposal dateCreated={formData.dateCreated} />
         <View style={[{ justifyContent: 'center', alignItems: 'center', marginTop: '2%' }]}>
           <Text style={[{ fontSize: 13 }]}>
             Extension Project Proposal
@@ -1282,7 +1479,7 @@ const MyDocument = ({ projectID }) => {
 
       {/* Third page */}
       <Page style={styles.page}>
-        <InlineHeader dateCreated={formData.dateCreated} />
+        <InlineHeaderLoadingofTrainers dateCreated={formData.dateCreated} />
         <View style={[{ justifyContent: 'center', alignItems: 'center', marginVertical: '4%' }]}>
           <Text style={[{ fontSize: 10, fontFamily: 'ArialB' }]}>
             LOADING OF TRAINERS FOR EXTENSION SERVICES

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom"; // Import NavLink for navigation
+import { NavLink } from "react-router-dom";
 import Topbar from "../../components/Topbar";
 import VPALASideBar from "../../components/VPALASideBar";
 
@@ -8,9 +8,10 @@ const VPALAMemoList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState("");
   const [documentType, setDocumentType] = useState("");
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [currentDownload, setCurrentDownload] = useState(null);
   const itemsPerPage = 5;
 
-  // Mock data for documents
   useEffect(() => {
     const mockData = [
       {
@@ -19,7 +20,7 @@ const VPALAMemoList = () => {
         college: "College of Science",
         date: "2024-11-01",
         status: "Approved",
-        downloadLink: "/files/project-a.pdf", // Mock download link
+        downloadLink: "/files/project-a",
       },
       {
         id: 2,
@@ -27,7 +28,7 @@ const VPALAMemoList = () => {
         college: "College of Engineering",
         date: "2024-11-15",
         status: "Pending",
-        downloadLink: "/files/project-b.pdf",
+        downloadLink: "/files/project-b",
       },
       {
         id: 3,
@@ -35,7 +36,7 @@ const VPALAMemoList = () => {
         college: "College of Arts",
         date: "2024-11-20",
         status: "Rejected",
-        downloadLink: "/files/project-c.pdf",
+        downloadLink: "/files/project-c",
       },
     ];
     setDocuments(mockData);
@@ -61,7 +62,19 @@ const VPALAMemoList = () => {
     setDocumentType(e.target.value);
   };
 
-  // Filter and paginate documents
+  const openDownloadModal = (doc) => {
+    setCurrentDownload(doc);
+    setShowDownloadModal(true);
+  };
+
+  const handleDownload = (format) => {
+    if (currentDownload) {
+      const downloadLink = `${currentDownload.downloadLink}.${format.toLowerCase()}`;
+      alert(`Downloading as ${format}: ${downloadLink}`);
+      setShowDownloadModal(false);
+    }
+  };
+
   const filteredDocuments = documents.filter(
     (doc) =>
       doc.projectLeader.toLowerCase().includes(search.toLowerCase()) &&
@@ -71,6 +84,20 @@ const VPALAMemoList = () => {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProjects = filteredDocuments.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Function to get the status color based on the document status
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Approved":
+        return "bg-green-500";
+      case "Pending":
+        return "bg-yellow-500";
+      case "Rejected":
+        return "bg-red-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
 
   return (
     <div className="bg-gray-200 min-h-screen flex">
@@ -134,18 +161,30 @@ const VPALAMemoList = () => {
                     </span>
                   </td>
                   <td className="py-2 px-4 text-center">
-                    <a
-                      href={doc.downloadLink}
-                      download
+                    <button
+                      className={`${getStatusColor(doc.status)} text-white px-4 py-2 rounded`}
+                    >
+                      {doc.status}
+                    </button>
+                  </td>
+                  <td className="py-2 px-4 text-center">
+                    <NavLink
+                      to={`/view/${doc.id}`}
+                      className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
+                    >
+                      View Copy
+                    </NavLink>
+                    <button
+                      onClick={() => openDownloadModal(doc)}
                       className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
                     >
                       Download
-                    </a>
+                    </button>
                     <NavLink
-                      to={`/scan/${doc.id}`} // Navigates to a scan page with the document ID
+                      to={`/scan/${doc.id}`}
                       className="bg-green-500 text-white px-3 py-1 rounded"
                     >
-                      Scan Copy
+                      Upload Copy
                     </NavLink>
                   </td>
                 </tr>
@@ -173,6 +212,34 @@ const VPALAMemoList = () => {
           </p>
         </div>
       </div>
+
+      {showDownloadModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-md">
+            <h2 className="text-lg font-bold mb-4">Choose File Format</h2>
+            <div className="flex justify-between">
+              <button
+                onClick={() => handleDownload("PDF")}
+                className="px-4 py-2 bg-blue-500 text-white rounded mr-2"
+              >
+                PDF
+              </button>
+              <button
+                onClick={() => handleDownload("MS Word")}
+                className="px-4 py-2 bg-green-500 text-white rounded"
+              >
+                MS Word
+              </button>
+            </div>
+            <button
+              onClick={() => setShowDownloadModal(false)}
+              className="mt-4 px-4 py-2 bg-gray-300 rounded"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

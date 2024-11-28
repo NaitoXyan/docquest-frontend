@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-import { useParams } from 'react-router-dom';
 
 const EditMOAForm = ({ moaID }) => {
   const token = localStorage.getItem('token');
@@ -11,6 +10,8 @@ const EditMOAForm = ({ moaID }) => {
   const [formData, setFormData] = useState({
     partyADescription: "",
     partyBDescription: "",
+    coverageAndEffectivity: "",
+    confidentialityClause: "",
     termination: "",
     witnesseth: [
       {
@@ -18,11 +19,6 @@ const EditMOAForm = ({ moaID }) => {
       }
     ],
     partyObligation: [],
-    effectivity: [
-      {
-        effectivity: ""
-      }
-    ],
     firstParty: [
       {
         name: "",
@@ -61,7 +57,7 @@ const EditMOAForm = ({ moaID }) => {
       const response = await axios.get(`http://127.0.0.1:8000/get_moa/${moaID}/`, {
         headers: {
           'Authorization': `Token ${token}`,
-          'Content-Type': 'application/json',   
+          'Content-Type': 'application/json',
         }
       });
       console.log("Fetched data:", response.data); // Log fetched data for debugging
@@ -70,17 +66,17 @@ const EditMOAForm = ({ moaID }) => {
         ...prevFormData,
         ...response.data,
         partyAObligation: response.data.partyObligation
-            .filter(obligation => obligation.party === "party A")
-            .map(obligation => ({
-                obligation: obligation.obligation,
-                party: "party A",
-            })),
+          .filter(obligation => obligation.party === "party A")
+          .map(obligation => ({
+            obligation: obligation.obligation,
+            party: "party A",
+          })),
         partyBObligation: response.data.partyObligation
-            .filter(obligation => obligation.party === "party B")
-            .map(obligation => ({
-                obligation: obligation.obligation,
-                party: "party B",
-            })),
+          .filter(obligation => obligation.party === "party B")
+          .map(obligation => ({
+            obligation: obligation.obligation,
+            party: "party B",
+          })),
       }));
       console.log("Form data:", formData);
 
@@ -190,32 +186,6 @@ const EditMOAForm = ({ moaID }) => {
     }));
   };
 
-  const handleEffectivityChange = (index, value) => {
-    const updatedEffectivity = [...formData.effectivity];
-    updatedEffectivity[index].effectivity = value;
-    setFormData((prevData) => ({
-      ...prevData,
-      effectivity: updatedEffectivity,
-    }));
-  };  
-
-  const handleAddEffectivity = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      effectivity: [...prevData.effectivity, { effectivity: "" }],
-    }));
-  };
-  
-  const handleRemoveEffectivity = () => {
-    setFormData((prevData) => {
-      const updatedEffectivity = [...prevData.effectivity];
-      if (updatedEffectivity.length > 1) {
-        updatedEffectivity.pop(); // Remove the last item only if there’s more than one
-      }
-      return { ...prevData, effectivity: updatedEffectivity };
-    });
-  };  
-
   const handleFirstPartyChange = (index, field, value) => {
     setFormData((prevData) => {
       const updatedFirstParty = [...prevData.firstParty];
@@ -226,7 +196,7 @@ const EditMOAForm = ({ moaID }) => {
       };
     });
   };
-  
+
   const handleSecondPartyChange = (index, field, value) => {
     setFormData((prevData) => {
       const updatedSecondParty = [...prevData.secondParty];
@@ -237,20 +207,20 @@ const EditMOAForm = ({ moaID }) => {
       };
     });
   };
-  
+
   const handleWitnessChange = (index, field, value) => {
     const updatedWitnesses = [...formData.witnesses];
     updatedWitnesses[index][field] = value;
     setFormData({ ...formData, witnesses: updatedWitnesses });
   };
-  
+
   const handleAddWitness = () => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       witnesses: [...prevFormData.witnesses, { name: '', title: '' }]
     }));
   };
-  
+
   const handleRemoveWitness = () => {
     if (formData.witnesses.length > 1) {
       setFormData((prevFormData) => ({
@@ -264,7 +234,7 @@ const EditMOAForm = ({ moaID }) => {
     setIsModalOpen(false);
     navigate('/user');
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -280,9 +250,9 @@ const EditMOAForm = ({ moaID }) => {
 
     delete modifiedData.partyAObligation;
     delete modifiedData.partyBObligation;
-  
+
     console.log("formData to be sent:", modifiedData); // Check the structure
-  
+
     try {
       // Send POST request
       const response = await axios({
@@ -294,7 +264,7 @@ const EditMOAForm = ({ moaID }) => {
         },
         data: modifiedData, // Axios automatically stringifies the object to JSON
       });
-  
+
       // Handle successful response
       console.log('Successfully submitted:', response.data);
       setIsModalOpen(true);
@@ -464,34 +434,30 @@ const EditMOAForm = ({ moaID }) => {
               Coordination between the Parties shall be maintained for the success of the program.
             </label>
             <label className="block mb-2 font-semibold">
-              EFFECTIVITY:
+              COVERAGE AND EFFECTIVITY:
             </label>
-            {formData.effectivity.map((effectivityItem, index) => (
-              <input
-                key={index}
-                value={effectivityItem.effectivity}
-                onChange={(e) => handleEffectivityChange(index, e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded mb-2"
-                placeholder="Ex: This Agreement shall take effect upon the date it is signed by the parties until the completion of the training program."
-              />
-            ))}
+            <input
+              name="coverageAndEffectivty"
+              value={formData.coverageAndEffectivity}
+              onChange={handleFormChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
+            ></input>
           </div>
-          <div className="flex space-x-2 mb-2">
-            <button
-              type="button"
-              onClick={handleAddEffectivity}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Add effectivity
-            </button>
-            <button
-              type="button"
-              onClick={handleRemoveEffectivity}
-              className="bg-red-500 text-white px-4 py-2 rounded"
-              disabled={formData.effectivity.length === 1}
-            >
-              Remove
-            </button>
+        </div>
+
+        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
+          <div>
+            <label className="block mb-2 font-semibold">
+              CONFIDENTIALITY CLAUSE:
+            </label>
+            <input
+              name="confidentialityClause"
+              value={formData.confidentialityClause}
+              onChange={handleFormChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
+            ></input>
           </div>
         </div>
 

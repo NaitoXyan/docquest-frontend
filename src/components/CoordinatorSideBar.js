@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 function CoordinatorSidebar() {
     const [isProposalMenuVisible, setProposalMenuVisible] = useState(false);
     const [isUserMenuVisible, setUserMenuVisible] = useState(false);
+    const navigate = useNavigate(); // Hook to navigate programmatically
 
     const toggleProposalMenu = () => {
         setProposalMenuVisible(!isProposalMenuVisible);
@@ -11,6 +12,19 @@ function CoordinatorSidebar() {
 
     const toggleUserMenu = () => {
         setUserMenuVisible(!isUserMenuVisible);
+    };
+
+    // Function to handle logout
+    const handleLogout = () => {
+        // Clear localStorage items related to authentication
+        localStorage.removeItem("token");
+        localStorage.removeItem("userid");
+        localStorage.removeItem("firstname");
+        localStorage.removeItem("lastname");
+        localStorage.removeItem("roles");
+
+        // Redirect to the login page
+        navigate("/login");
     };
 
     return (
@@ -24,12 +38,11 @@ function CoordinatorSidebar() {
                         <NavLink 
                             to="/coordinatordashboard" 
                             className={({ isActive }) => 
-                                `text-lg font-bold block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
-                            }>
+                                `text-lg font-bold block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`}>
                             Dashboard
                         </NavLink>
                     </li>
-                  
+
                     <li>
                         <button onClick={toggleUserMenu} className="text-lg w-full text-left block px-6 py-3 hover:text-yellow-500 focus:outline-none">
                             Accounts
@@ -39,8 +52,7 @@ function CoordinatorSidebar() {
                                 <NavLink 
                                     to="/coordusers" 
                                     className={({ isActive }) => 
-                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
-                                    }>
+                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`}>
                                     User List
                                 </NavLink>
                             </li>
@@ -48,8 +60,7 @@ function CoordinatorSidebar() {
                                 <NavLink 
                                     to="/createuser:id" 
                                     className={({ isActive }) => 
-                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
-                                    }>
+                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`}>
                                     Create User
                                 </NavLink>
                             </li>
@@ -59,19 +70,17 @@ function CoordinatorSidebar() {
                         <NavLink 
                             to="/documents-coord" 
                             className={({ isActive }) => 
-                                `text-lg block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
-                            }>
+                                `text-lg block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`}>
                             Documents
                         </NavLink>
                     </li>
+                    {/* Log out item */}
                     <li>
-                        <NavLink 
-                            to="/logout" 
-                            className={({ isActive }) => 
-                                `text-lg block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`
-                            }>
+                        <button 
+                            onClick={handleLogout} 
+                            className="text-lg block px-6 py-3 hover:text-yellow-500 focus:outline-none">
                             Log out
-                        </NavLink>
+                        </button>
                     </li>
                 </ul>
             </nav>

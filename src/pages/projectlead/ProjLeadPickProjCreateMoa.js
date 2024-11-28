@@ -37,55 +37,92 @@ const PickProjCreateMoa = () => {
       <div className="w-1/5 fixed h-full">
                 <ProjLeadSidebar />
       </div>
-      <h2>Approved Projects</h2>
+      <h2 style={{ marginTop: '20px' }}>Approved Projects</h2>
       <div className="flex-1 ml-[10%]">
          <Topbar />
+         
         <div className="flex flex-col mt-16 px-10">
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <div className="p-1 mt-4 ml-5 font-bold text-lg text-black-500">APPROVED PROJECTS</div>
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px', fontFamily: 'Arial, sans-serif' }}>
           <thead>
-            <tr>
-              <th style={{ ...styles.th, width: '50%' }}>Project Title</th>       
-              <th style={{ ...styles.th, width: '20%' }}>Date Submitted</th>      
-              <th style={{ ...styles.th, width: '15%' }}>Document Status</th>    
-              <th style={{ ...styles.th, width: '10%' }}>Create MOA</th>         
+            <tr className="text-white">
+              <th style={{ backgroundColor: '#1a1851', border: '1px solid #ddd', padding: '8px', textAlign: 'center', fontWeight: 'bold', width: '50%' }}>
+                Project Title
+              </th>
+              <th style={{ backgroundColor: '#1a1851', border: '1px solid #ddd', padding: '8px', textAlign: 'center', fontWeight: 'bold', width: '20%' }}>
+                Date Submitted
+              </th>
+              <th style={{ backgroundColor: '#1a1851', border: '1px solid #ddd', padding: '8px', textAlign: 'center', fontWeight: 'bold', width: '15%' }}>
+                Document Status
+              </th>
+              <th style={{ backgroundColor: '#1a1851', border: '1px solid #ddd', padding: '8px', textAlign: 'center', fontWeight: 'bold', width: '10%' }}>
+                Create MOA
+              </th>
             </tr>
           </thead>
-
-            <tbody>
-              {projects.length > 0 ? (
-                projects.map((project, index) => (
-                  <tr key={index} style={styles.tr}>
-                    <td style={styles.td}>{project.projectTitle}</td>
-                    <td style={styles.td}>
-                      {new Date(project.dateCreated).toLocaleString('en-US', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false, // 24-hour format
-                      })}
-                    </td>
-                    <td style={styles.td}>{project.status}</td>
-                    <td style={styles.td}>
-                      <button 
-                        onClick={() => handleCreateMOA(project.projectID)}
-                        style={styles.button}
-                      >
-                        Create MOA
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="4" style={{ textAlign: 'center', padding: '8px' }}>
-                    No approved projects available.
+          <tbody>
+            {projects.length > 0 ? (
+              projects.map((project, index) => (
+                <tr
+                  key={index}
+                  style={{
+                    backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9f9f9',
+                    transition: 'background-color 0.3s',
+                  }}
+                >
+                  <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left', marginLeft:'3' }}>{project.projectTitle}</td>
+                  <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
+                    {new Date(project.dateCreated).toLocaleString('en-US', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: false, // 24-hour format
+                    })}
+                  </td>
+                  <td style={{ 
+                      border: '1px solid #ddd', 
+                      padding: '8px', 
+                      textAlign: 'center' 
+                  }}>
+                      <span style={{ 
+                          display: 'inline-block', 
+                          padding: '5px 10px', 
+                          borderRadius: '15px', 
+                          backgroundColor: '#e0f7e9', /* Light green background */
+                          color: 'green' /* Green text */,
+                      }}>
+                          {project.status}
+                      </span>
+                  </td>
+                  <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>
+                    <button
+                      onClick={() => handleCreateMOA(project.projectID)}
+                      style={{
+                        backgroundColor: '#007BFF',
+                        color: '#fff',
+                        border: 'none',
+                        padding: '5px 10px',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Create MOA
+                    </button>
                   </td>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="4" style={{ textAlign: 'center', padding: '8px', border: '1px solid #ddd' }}>
+                  No approved projects available.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+
         </div>
       </div>
     </div>
@@ -106,6 +143,7 @@ const styles = {
     border: '1px solid #ddd',
     padding: '12px',
     textAlign: 'left',
+    marginLeft: '1%',
   },
   tr: {
     // Optional: Add hover effect

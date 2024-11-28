@@ -62,10 +62,9 @@ const ProjLeadMoaStatus = () => {
       </div>
       <div className="flex-1 ml-[20%]">
           <Topbar/>
-        <div className="flex flex-col mt-16 px-4 md:px-10">
-          <h2>MEMORANDUM LIST</h2>
-
-          <div style={{ marginBottom: '20px', marginTop: '50px', alignItems: 'right' }}>
+        <div className="flex flex-col mt-8 px-4 md:px-10">
+          <div style={{ marginBottom: '20px', marginTop: '50px', textAlign: 'right' }}>
+          <h2 className="mt-[1%] text-start text-2xl font-bold">MEMORANDUM LIST</h2>
           <label htmlFor="statusFilter" style={{ marginRight: '10px' }}>Filter by Status:</label>
           <select
             id="statusFilter"
@@ -81,74 +80,173 @@ const ProjLeadMoaStatus = () => {
           </div>
 
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-            <th style={{ border: '1px solid #ddd', padding: '8px' }}>Project Leader</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Project Title</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Date Submitted</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>MOA Status</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>View Document</th>
-              <th style={{ border: '1px solid #ddd', padding: '8px' }}>Edit MOA</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredMoas.length > 0 ? (
-              filteredMoas.map((moa, index) => (
-                <tr key={index}>
-                  <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                    {`${moa.moaUser.firstname} ${moa.moaUser.lastname}`}
-                  </td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                          {moa.projectTitles.map((project, index) => (
-                          <div
-                              key={index}
-                              style={{
-                              border: '1px solid #ccc',
-                              padding: '8px',
-                              borderRadius: '4px',
-                              backgroundColor: '#f9f9f9',
-                              }}
-                          >
-                              {project.projectTitle}
+            <thead>
+              <tr className="w-full text-black p-5">
+                <th className="text-white text-sm" style={{
+                    backgroundColor: '#1a1851', 
+                    border: '1px solid #ddd', 
+                    padding: '10px', 
+                    width: '18%', 
+                    textAlign: 'left', 
+                    borderRadius: '5px 0 0 0'
+                  }}>
+                  Project Leader
+                </th>
+                <th className="text-white text-sm" style={{
+                    backgroundColor: '#1a1851', 
+                    border: '1px solid #ddd', 
+                    padding: '10px', 
+                    textAlign: 'center'
+                  }}>
+                  Project Title
+                </th>
+                <th className="text-white text-sm" style={{
+                    backgroundColor: '#1a1851', 
+                    border: '1px solid #ddd', 
+                    padding: '10px', 
+                    width: '15%', 
+                    textAlign: 'center'
+                  }}>
+                  Date Submitted
+                </th>
+                <th className="text-white text-sm" style={{
+                    backgroundColor: '#1a1851', 
+                    border: '1px solid #ddd', 
+                    padding: '10px', 
+                    width: '10%', 
+                    textAlign: 'center'
+                  }}>
+                  MOA Status
+                </th>
+                <th className="text-white text-sm" style={{
+                    backgroundColor: '#1a1851', 
+                    border: '1px solid #ddd', 
+                    padding: '10px', 
+                    width: '10%', 
+                    textAlign: 'center'
+                  }}>
+                  View Document
+                </th>
+                <th className="text-white text-sm" style={{
+                    backgroundColor: '#1a1851', 
+                    border: '1px solid #ddd', 
+                    padding: '10px', 
+                    width: '10%', 
+                    textAlign: 'center', 
+                    borderRadius: '0 5px 0 0'
+                  }}>
+                  Edit MOA
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredMoas.length > 0 ? (
+                filteredMoas.map((moa, index) => (
+                  <tr key={index} style={{ backgroundColor: '#f9f9f9', borderBottom: '1px solid #ddd'}}>
+                    <td style={{
+                        border: '1px solid #ddd', 
+                        padding: '15px', 
+                        textAlign: 'left', 
+                        borderRadius: '5px 0 0 0',
+                         marginLeft: '10px'
+                      }}>
+                      {`${moa.moaUser.firstname} ${moa.moaUser.lastname}`}
+                    </td>
+                    <td style={{
+                        border: '1px solid #ddd', 
+                        padding: '10px', 
+                        textAlign: 'left',
+                        marginLeft: '2px'
+                      }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                        {moa.projectTitles.map((project, index) => (
+                          <div key={index} style={{
+                              padding: '10px', 
+                            }}>
+                            {project.projectTitle}
                           </div>
-                          ))}
+                        ))}
                       </div>
-                  </td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                    {new Date(moa.dateCreated).toLocaleString('en-US', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      hour12: false, // Set to true for 12-hour format
-                    })}
-                  </td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                    {moa.status}
-                  </td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                    {/* View document button */}
-                    <button onClick={() => handleViewPDF(moa.moaID)}>
-                      View PDF
-                    </button>
-                  </td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                    {/* Edit project button */}
-                    <button onClick={() => handleEditMoa(moa.moaID)}>
-                      Edit MOA
-                    </button>
+                    </td>
+                    <td style={{
+                        border: '1px solid #ddd', 
+                        padding: '10px', 
+                        textAlign: 'center'
+                      }}>
+                      {new Date(moa.dateCreated).toLocaleString('en-US', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false, 
+                      })}
+                    </td>
+                    <td style={{
+                      border: '1px solid #ddd', 
+                      padding: '10px', 
+                      textAlign: 'center', 
+                      backgroundColor: moa.status === 'Pending' ? '#FFA500' : moa.status === 'Approved' ? '#4CAF50' : moa.status === 'Rejected' ? '#F44336' : ''
+                    }}>
+                      {moa.status}
+                    </td>
+                    <td style={{
+                        border: '1px solid #ddd', 
+                        padding: '10px', 
+                        textAlign: 'center'
+                      }}>
+                      <button onClick={() => handleViewPDF(moa.moaID)} 
+                              style={{
+                                backgroundColor: '#4CAF50', 
+                                color: 'white', 
+                                padding: '2px 16px', 
+                                border: 'none', 
+                                borderRadius: '5px', 
+                                cursor: 'pointer',
+                                transition: 'background-color 0.3s'
+                              }}
+                              onMouseOver={(e) => e.target.style.backgroundColor = '#45a049'}
+                              onMouseOut={(e) => e.target.style.backgroundColor = '#4CAF50'}>
+                        View PDF
+                      </button>
+                    </td>
+                    <td style={{
+                        border: '1px solid #ddd', 
+                        padding: '10px', 
+                        textAlign: 'center'
+                      }}>
+                      <button onClick={() => handleEditMoa(moa.moaID)} 
+                              style={{
+                                backgroundColor: '#FF9800', 
+                                color: 'white', 
+                                padding: '2px 16px', 
+                                border: 'none', 
+                                borderRadius: '5px', 
+                                cursor: 'pointer',
+                                transition: 'background-color 0.3s'
+                              }}
+                              onMouseOver={(e) => e.target.style.backgroundColor = '#fb8c00'}
+                              onMouseOut={(e) => e.target.style.backgroundColor = '#FF9800'}>
+                        Edit MOA
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" style={{
+                      textAlign: 'center', 
+                      padding: '10px', 
+                      fontStyle: 'italic', 
+                      color: '#999'
+                    }}>
+                    No MOAs available
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" style={{ textAlign: 'center', padding: '8px' }}>No MOAs available</td>
-              </tr>
-            )}
-          </tbody>
+              )}
+            </tbody>
           </table>
+
         </div>
       </div>
     </div>

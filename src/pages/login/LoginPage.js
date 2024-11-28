@@ -100,23 +100,23 @@ const LoginPage = () => {
       className="flex  min-h-screen bg-cover bg-center"
     >
       <div
-  className="h-screen w-3/4"
-  style={{
-    width: '70%',
-    height: '101vh',
-    backgroundImage: "url('/images/bg-login2.png')",
-    backgroundSize: 'cover', // Ensures the image covers the entire div
-    backgroundRepeat: 'no-repeat', // Prevents the image from repeating
-    backgroundPosition: 'center' // Centers the image within the div
-  }}
->
+        className="h-screen w-3/4"
+        style={{
+          width: '70%',
+          height: '101vh',
+          backgroundImage: "url('/images/bg-login2.png')",
+          backgroundSize: 'cover', // Ensures the image covers the entire div
+          backgroundRepeat: 'no-repeat', // Prevents the image from repeating
+          backgroundPosition: 'center' // Centers the image within the div
+        }}
+      >
 
       </div>
       <div className=" flex absolute bottom-5 left-5 items-center" style={{ height: '13%' }}>
-        <img src="/images/ustplogo.png" alt="DocQuestLogo" style={{ paddingBottom: 10, height: '86%', marginRight: 4, marginTop: 5}} />
-        <img src="/images/E1.png" alt="DocQuestLogo" style={{ paddingBottom: 10, height: '86%', marginRight: 4, marginTop: 5}} />
-        <img src="/images/C1.png" alt="DocQuestLogo" style={{ height: '70%', marginRight: 13 }} />
-        <img src="/images/D1.png" alt="DocQuestLogo" style={{ height: '70%',}} />
+        <img src="/images/USTPlogo.png" alt="UstpLogo" style={{ height: '70%', }} />
+        <img src="/images/E1.png" alt="ECRDLogo" style={{ paddingBottom: 10, height: '86%', marginRight: 4, marginTop: 5 }} />
+        <img src="/images/C1.png" alt="CITCLogo" style={{ height: '70%', marginRight: 13 }} />
+        <img src="/images/D1.png" alt="DITLogo" style={{ height: '70%', }} />
       </div>
       <div className="h-screen p-12 bg-white absolute right-0" style={{ width: '30%' }}>
         <div className="flex justify-center mb-1 mt-16">
@@ -166,11 +166,6 @@ const LoginPage = () => {
           <button type="submit" className="w-full mt-6 bg-indigo-950 text-white py-2 px-4 rounded-md shadow-sm hover:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
             <h1 className='font-semibold'>Login</h1>
           </button>
-          {/* <div className=" flex mt-12 justify-center  items-center h-24 /12 rounded-lg bg-white bg-opacity-70">
-            <img src="/images/ECRDlogo.png" alt="DocQuestLogo" className=" h-24" />
-            <img src="/images/CITClogo.png" alt="DocQuestLogo" className=" h-20" />
-            <img src="/images/DITlogo.png" alt="DocQuestLogo" className=" h-16" />
-          </div> */}
         </form>
 
         <div>

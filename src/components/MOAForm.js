@@ -11,16 +11,12 @@ const MOAForm = ({ projectID }) => {
     projectID: projectID,
     partyADescription: "",
     partyBDescription: "",
+    coverageAndEffectivity: "",
+    confidentialityClause: "",
     termination: "",
     witnesseth: [
       {
         whereas: ""
-      }
-    ],
-    partyObligation: [],
-    effectivity: [
-      {
-        effectivity: ""
       }
     ],
     firstParty: [
@@ -152,31 +148,6 @@ const MOAForm = ({ projectID }) => {
     }));
   };
 
-  const handleEffectivityChange = (index, value) => {
-    const updatedEffectivity = [...formData.effectivity];
-    updatedEffectivity[index].effectivity = value;
-    setFormData((prevData) => ({
-      ...prevData,
-      effectivity: updatedEffectivity,
-    }));
-  };  
-
-  const handleAddEffectivity = () => {
-    setFormData((prevData) => ({
-      ...prevData,
-      effectivity: [...prevData.effectivity, { effectivity: "" }],
-    }));
-  };
-  
-  const handleRemoveEffectivity = () => {
-    setFormData((prevData) => {
-      const updatedEffectivity = [...prevData.effectivity];
-      if (updatedEffectivity.length > 1) {
-        updatedEffectivity.pop(); // Remove the last item only if there’s more than one
-      }
-      return { ...prevData, effectivity: updatedEffectivity };
-    });
-  };  
 
   const handleFirstPartyChange = (index, field, value) => {
     setFormData((prevData) => {
@@ -188,7 +159,7 @@ const MOAForm = ({ projectID }) => {
       };
     });
   };
-  
+
   const handleSecondPartyChange = (index, field, value) => {
     setFormData((prevData) => {
       const updatedSecondParty = [...prevData.secondParty];
@@ -199,20 +170,20 @@ const MOAForm = ({ projectID }) => {
       };
     });
   };
-  
+
   const handleWitnessChange = (index, field, value) => {
     const updatedWitnesses = [...formData.witnesses];
     updatedWitnesses[index][field] = value;
     setFormData({ ...formData, witnesses: updatedWitnesses });
   };
-  
+
   const handleAddWitness = () => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       witnesses: [...prevFormData.witnesses, { name: '', title: '' }]
     }));
   };
-  
+
   const handleRemoveWitness = () => {
     if (formData.witnesses.length > 1) {
       setFormData((prevFormData) => ({
@@ -226,7 +197,7 @@ const MOAForm = ({ projectID }) => {
     setIsModalOpen(false);
     navigate('/user');
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -242,9 +213,9 @@ const MOAForm = ({ projectID }) => {
 
     delete modifiedData.partyAObligation;
     delete modifiedData.partyBObligation;
-  
+
     console.log("formData to be sent:", modifiedData); // Check the structure
-  
+
     try {
       // Send POST request
       const response = await axios({
@@ -256,7 +227,7 @@ const MOAForm = ({ projectID }) => {
         },
         data: modifiedData, // Axios automatically stringifies the object to JSON
       });
-  
+
       // Handle successful response
       console.log('Successfully submitted:', response.data);
       setIsModalOpen(true);
@@ -292,6 +263,7 @@ const MOAForm = ({ projectID }) => {
                 This Memorandum of Agreement executed and entered into by and between:
               </label>
               <textarea
+                required
                 name="partyADescription"
                 value={formData.partyADescription}
                 onChange={handleFormChange}
@@ -305,6 +277,7 @@ const MOAForm = ({ projectID }) => {
                 and
               </label>
               <textarea
+                required
                 name="partyBDescription"
                 value={formData.partyBDescription}
                 onChange={handleFormChange}
@@ -323,6 +296,7 @@ const MOAForm = ({ projectID }) => {
             </label>
             {formData.witnesseth.map((witness, index) => (
               <textarea
+                required
                 key={index}
                 value={witness.whereas}
                 onChange={(e) =>
@@ -361,6 +335,7 @@ const MOAForm = ({ projectID }) => {
             </label>
             {formData.partyAObligation.map((partyAObligation, index) => (
               <textarea
+                required
                 key={`partyA-${index}`}
                 value={partyAObligation.obligation}
                 onChange={(e) => handleFirstPartyObligationChange(index, e.target.value)}
@@ -393,6 +368,7 @@ const MOAForm = ({ projectID }) => {
             </label>
             {formData.partyBObligation.map((partyBObligation, index) => (
               <textarea
+                required
                 key={`partyB-${index}`}
                 value={partyBObligation.obligation}
                 onChange={(e) => handleSecondPartyObligationChange(index, e.target.value)}
@@ -423,37 +399,32 @@ const MOAForm = ({ projectID }) => {
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div>
             <label className="block mb-2 font-semibold">
-              Coordination between the Parties shall be maintained for the success of the program.
+              COVERAGE AND EFFECTIVITY:
             </label>
-            <label className="block mb-2 font-semibold">
-              EFFECTIVITY:
-            </label>
-            {formData.effectivity.map((effectivityItem, index) => (
-              <input
-                key={index}
-                value={effectivityItem.effectivity}
-                onChange={(e) => handleEffectivityChange(index, e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded mb-2"
-                placeholder="Ex: This Agreement shall take effect upon the date it is signed by the parties until the completion of the training program."
-              />
-            ))}
+            <input
+            required
+            name="coverageAndEffectivity"
+            value={formData.coverageAndEffectivity}
+            onChange={handleFormChange}
+            className="w-full p-2 border border-gray-300 rounded"
+            placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
+          ></input>
           </div>
-          <div className="flex space-x-2 mb-2">
-            <button
-              type="button"
-              onClick={handleAddEffectivity}
-              className="bg-blue-500 text-white px-4 py-2 rounded"
-            >
-              Add effectivity
-            </button>
-            <button
-              type="button"
-              onClick={handleRemoveEffectivity}
-              className="bg-red-500 text-white px-4 py-2 rounded"
-              disabled={formData.effectivity.length === 1}
-            >
-              Remove
-            </button>
+        </div>
+
+        <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
+          <div>
+            <label className="block mb-2 font-semibold">
+              CONFIDENTIALITY CLAUSE:
+            </label>
+            <input
+            required
+            name="confidentialityClause"
+            value={formData.confidentialityClause}
+            onChange={handleFormChange}
+            className="w-full p-2 border border-gray-300 rounded"
+            placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
+          ></input>
           </div>
         </div>
 
@@ -462,6 +433,7 @@ const MOAForm = ({ projectID }) => {
             TERMINATION:
           </label>
           <input
+            required
             name="termination"
             value={formData.termination}
             onChange={handleFormChange}
@@ -478,6 +450,7 @@ const MOAForm = ({ projectID }) => {
               </label>
               {formData.firstParty.map((party, index) => (
                 <input
+                  required
                   key={`firstParty-name-${index}`}
                   type="text"
                   value={party.name}
@@ -493,6 +466,7 @@ const MOAForm = ({ projectID }) => {
               </label>
               {formData.firstParty.map((party, index) => (
                 <input
+                  required
                   key={`firstParty-title-${index}`}
                   type="text"
                   value={party.title}
@@ -511,6 +485,7 @@ const MOAForm = ({ projectID }) => {
               </label>
               {formData.secondParty.map((party, index) => (
                 <input
+                  required
                   key={`secondParty-name-${index}`}
                   type="text"
                   value={party.name}
@@ -526,6 +501,7 @@ const MOAForm = ({ projectID }) => {
               </label>
               {formData.secondParty.map((party, index) => (
                 <input
+                  required
                   key={`secondParty-title-${index}`}
                   type="text"
                   value={party.title}
@@ -544,6 +520,7 @@ const MOAForm = ({ projectID }) => {
                 <div>
                   <label className="block mb-2 font-semibold">Witness Name</label>
                   <input
+                    required
                     type="text"
                     value={witness.name}
                     onChange={(e) => handleWitnessChange(index, 'name', e.target.value)}
@@ -554,6 +531,7 @@ const MOAForm = ({ projectID }) => {
                 <div>
                   <label className="block mb-2 font-semibold">Witness Title</label>
                   <input
+                    required
                     type="text"
                     value={witness.title}
                     onChange={(e) => handleWitnessChange(index, 'title', e.target.value)}
@@ -585,8 +563,8 @@ const MOAForm = ({ projectID }) => {
         </div>
 
         {/* submit naa */}
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="bg-[#FCC72C] text-[#060E57] px-4 py-2 rounded-lg mb-10 mt-5 m-auto block w-1/4"
         >
           Create

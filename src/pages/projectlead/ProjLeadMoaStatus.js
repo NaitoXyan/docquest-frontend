@@ -2,251 +2,252 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
+import { SearchIcon } from '@heroicons/react/solid';
 import Topbar from "../../components/Topbar";
 import ProjLeadSidebar from "../../components/ProjLeadSideBar";
-import Sidebar from '../../components/Sidebar';
 
 const ProjLeadMoaStatus = () => {
   const [moas, setMoas] = useState([]);
+  const [filteredMoas, setFilteredMoas] = useState([]);
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
   const userID = localStorage.getItem('userid');
   const navigate = useNavigate();
-  const [statusFilter, setStatusFilter] = useState('');
   const { statusFilterParam } = useParams();
+  const [characterLimit, setCharacterLimit] = useState(42);
 
-  // Fetch MOA data with GET request
+  // Fetch MOA data
   useEffect(() => {
     axios.get(`http://127.0.0.1:8000/get_moa_status/${userID}/`)
       .then(response => {
+        const sortedProjects = response.data.sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
+
+        // Apply the "all" filter to show all projects if statusFilterParam is "all" or not defined
+        const initialFilteredMoa = (!statusFilterParam || statusFilterParam.toLowerCase() === 'all')
+          ? sortedProjects
+          : sortedProjects.filter(project => project.status.toLowerCase() === statusFilterParam.toLowerCase());
+
+        setMoas(sortedProjects);
+        setFilteredMoas(initialFilteredMoa);
         setMoas(response.data);
-        console.log(response.data);
-        console.log(statusFilterParam);
+        setFilteredMoas(response.data);
       })
       .catch(error => {
         console.error('Error fetching MOA data:', error);
       });
   }, [userID]);
 
+  // Apply filters
   useEffect(() => {
-    if (statusFilterParam) {
-      console.log(statusFilterParam);
-      setStatusFilter(statusFilterParam.toLowerCase());
+    let filtered = [...moas];
+
+    // Apply status filter
+    if (statusFilter && statusFilter !== 'all') {
+      filtered = filtered.filter(moa => moa.status.toLowerCase() === statusFilter);
     }
-  }, [statusFilterParam]);
 
-  // Handler for viewing PDF
-  const handleViewPDF = (moaID) => {
-    console.log('MOA ID:', moaID);
-    navigate(`/moa-pdf-viewer/${moaID}`);
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter(
+        moa =>
+          `${moa.moaUser.firstname} ${moa.moaUser.lastname}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          moa.projectTitles.some(project => 
+            project.projectTitle.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+      );
+    }
+
+    setFilteredMoas(filtered);
+    setCurrentPage(1);
+  }, [moas, statusFilter, searchTerm]);
+
+  // Pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentMoas = filteredMoas.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredMoas.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
-  // Handler for editing MOA
-  const handleEditMoa = (moaID) => {
-    console.log('Editing MOA ID:', moaID);
-    navigate(`/edit-moa/${moaID}`);
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`px-3 py-1 rounded-lg ${i === currentPage ? 'bg-vlu text-white' : 'bg-gray-100'}`}
+        >
+          {i}
+        </button>
+      );
+    }
+    return pageNumbers;
   };
 
-  // Handler for status filter change
+  // Character limit for responsive design
+  useEffect(() => {
+    const updateCharacterLimit = () => {
+      if (window.innerWidth < 640) {
+        setCharacterLimit(20);
+      } else if (window.innerWidth < 1024) {
+        setCharacterLimit(30);
+      } else {
+        setCharacterLimit(42);
+      }
+    };
+
+    updateCharacterLimit();
+    window.addEventListener('resize', updateCharacterLimit);
+    return () => window.removeEventListener('resize', updateCharacterLimit);
+  }, []);
+
+  // Handlers
   const handleStatusFilterChange = (event) => {
     setStatusFilter(event.target.value);
   };
 
-  // Filter MOAs based on status
-  const filteredMoas = statusFilter
-    ? moas.filter(moa => moa.status.toLowerCase() === statusFilter.toLowerCase())
-    : moas;
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleViewPDF = (moaID) => {
+    // Assuming you have a URL to the PDF that includes the project ID
+    const pdfUrl = `/moa-pdf-viewer/${moaID}`;
+  
+    // Open the PDF URL in a new tab
+    window.open(pdfUrl, '_blank');
+  };
+
+  const handleEditMoa = (moaID) => {
+    navigate(`/edit-moa/${moaID}`);
+  };
 
   return (
     <div className="bg-gray-200 min-h-screen flex">
       <div className="w-1/5 fixed h-full">
         <ProjLeadSidebar />
       </div>
+
       <div className="flex-1 ml-[20%]">
-          <Topbar/>
-        <div className="flex flex-col mt-8 px-4 md:px-10">
-          <div style={{ marginBottom: '20px', marginTop: '50px', textAlign: 'right' }}>
-          <h2 className="mt-[1%] text-start text-2xl font-bold">MEMORANDUM LIST</h2>
-          <label htmlFor="statusFilter" style={{ marginRight: '10px' }}>Filter by Status:</label>
-          <select
-            id="statusFilter"
-            value={statusFilter}
-            onChange={handleStatusFilterChange}
-            style={{ padding: '8px', borderRadius: '4px' }}
-          >
-            <option value="">All</option>
-            <option value="pending">pending</option>
-            <option value="approved">approved</option>
-            <option value="rejected">rejected</option>
-          </select>
+        <Topbar />
+        <div className="flex flex-col mt-16 px-4 md:px-10">
+          <div className="flex flex-col sm:flex-row flex-wrap justify-between items-center mb-4 space-y-4 sm:space-y-0">
+            <h2 className="text-xl sm:text-2xl font-bold w-full sm:w-auto">MEMORANDUM OF AGREEMENT LIST</h2>
+            <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 w-full sm:w-auto">
+              <div className="relative w-full sm:w-48">
+                <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="w-full pl-10 pr-3 py-1.5 border rounded-md"
+                />
+              </div>
+
+              <div className="w-full sm:w-auto">
+                <label htmlFor="statusFilter" className="mr-2">Filter by Status:</label>
+                <select
+                  id="statusFilter"
+                  value={statusFilter}
+                  onChange={handleStatusFilterChange}
+                  className="w-full sm:w-auto px-3 py-2 border rounded-md"
+                >
+                  <option value="all">All</option>
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
           </div>
 
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr className="w-full text-black p-5">
-                <th className="text-white text-sm" style={{
-                    backgroundColor: '#1a1851', 
-                    border: '1px solid #ddd', 
-                    padding: '10px', 
-                    width: '18%', 
-                    textAlign: 'left', 
-                    borderRadius: '5px 0 0 0'
-                  }}>
-                  Project Leader
-                </th>
-                <th className="text-white text-sm" style={{
-                    backgroundColor: '#1a1851', 
-                    border: '1px solid #ddd', 
-                    padding: '10px', 
-                    textAlign: 'center'
-                  }}>
-                  Project Title
-                </th>
-                <th className="text-white text-sm" style={{
-                    backgroundColor: '#1a1851', 
-                    border: '1px solid #ddd', 
-                    padding: '10px', 
-                    width: '15%', 
-                    textAlign: 'center'
-                  }}>
-                  Date Submitted
-                </th>
-                <th className="text-white text-sm" style={{
-                    backgroundColor: '#1a1851', 
-                    border: '1px solid #ddd', 
-                    padding: '10px', 
-                    width: '10%', 
-                    textAlign: 'center'
-                  }}>
-                  MOA Status
-                </th>
-                <th className="text-white text-sm" style={{
-                    backgroundColor: '#1a1851', 
-                    border: '1px solid #ddd', 
-                    padding: '10px', 
-                    width: '10%', 
-                    textAlign: 'center'
-                  }}>
-                  View Document
-                </th>
-                <th className="text-white text-sm" style={{
-                    backgroundColor: '#1a1851', 
-                    border: '1px solid #ddd', 
-                    padding: '10px', 
-                    width: '10%', 
-                    textAlign: 'center', 
-                    borderRadius: '0 5px 0 0'
-                  }}>
-                  Edit MOA
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredMoas.length > 0 ? (
-                filteredMoas.map((moa, index) => (
-                  <tr key={index} style={{ backgroundColor: '#f9f9f9', borderBottom: '1px solid #ddd'}}>
-                    <td style={{
-                        border: '1px solid #ddd', 
-                        padding: '15px', 
-                        textAlign: 'left', 
-                        borderRadius: '5px 0 0 0',
-                         marginLeft: '10px'
-                      }}>
-                      {`${moa.moaUser.firstname} ${moa.moaUser.lastname}`}
-                    </td>
-                    <td style={{
-                        border: '1px solid #ddd', 
-                        padding: '10px', 
-                        textAlign: 'left',
-                        marginLeft: '2px'
-                      }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        {moa.projectTitles.map((project, index) => (
-                          <div key={index} style={{
-                              padding: '10px', 
-                            }}>
-                            {project.projectTitle}
-                          </div>
-                        ))}
-                      </div>
-                    </td>
-                    <td style={{
-                        border: '1px solid #ddd', 
-                        padding: '10px', 
-                        textAlign: 'center'
-                      }}>
-                      {new Date(moa.dateCreated).toLocaleString('en-US', {
-                        year: 'numeric',
-                        month: '2-digit',
-                        day: '2-digit',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        hour12: false, 
-                      })}
-                    </td>
-                    <td style={{
-                      border: '1px solid #ddd', 
-                      padding: '10px', 
-                      textAlign: 'center', 
-                      backgroundColor: moa.status === 'Pending' ? '#FFA500' : moa.status === 'Approved' ? '#4CAF50' : moa.status === 'Rejected' ? '#F44336' : ''
-                    }}>
-                      {moa.status}
-                    </td>
-                    <td style={{
-                        border: '1px solid #ddd', 
-                        padding: '10px', 
-                        textAlign: 'center'
-                      }}>
-                      <button onClick={() => handleViewPDF(moa.moaID)} 
-                              style={{
-                                backgroundColor: '#4CAF50', 
-                                color: 'white', 
-                                padding: '2px 16px', 
-                                border: 'none', 
-                                borderRadius: '5px', 
-                                cursor: 'pointer',
-                                transition: 'background-color 0.3s'
-                              }}
-                              onMouseOver={(e) => e.target.style.backgroundColor = '#45a049'}
-                              onMouseOut={(e) => e.target.style.backgroundColor = '#4CAF50'}>
-                        View PDF
-                      </button>
-                    </td>
-                    <td style={{
-                        border: '1px solid #ddd', 
-                        padding: '10px', 
-                        textAlign: 'center'
-                      }}>
-                      <button onClick={() => handleEditMoa(moa.moaID)} 
-                              style={{
-                                backgroundColor: '#FF9800', 
-                                color: 'white', 
-                                padding: '2px 16px', 
-                                border: 'none', 
-                                borderRadius: '5px', 
-                                cursor: 'pointer',
-                                transition: 'background-color 0.3s'
-                              }}
-                              onMouseOver={(e) => e.target.style.backgroundColor = '#fb8c00'}
-                              onMouseOut={(e) => e.target.style.backgroundColor = '#FF9800'}>
-                        Edit MOA
-                      </button>
-                    </td>
+          <div className="bg-white shadow-lg rounded-lg py-4 px-2 sm:px-4">
+            <div className="overflow-x-auto">
+              <table className="min-w-full table-auto">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Leader</th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Title</th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Actions</th>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="6" style={{
-                      textAlign: 'center', 
-                      padding: '10px', 
-                      fontStyle: 'italic', 
-                      color: '#999'
-                    }}>
-                    No MOAs available
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {currentMoas.length > 0 ? (
+                    currentMoas.map((moa) => (
+                      <tr key={moa.moaID}>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          {`${moa.moaUser.firstname} ${moa.moaUser.lastname}`}
+                        </td>
+                        <td className="px-3 sm:px-6 py-4">
+                          {moa.projectTitles.map((project, index) => (
+                            <div 
+                              key={index} 
+                              className="mb-2 text-sm"
+                            >
+                              {project.projectTitle.length > characterLimit
+                                ? `${project.projectTitle.substring(0, characterLimit)}...`
+                                : project.projectTitle}
+                            </div>
+                          ))}
+                        </td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          {new Date(moa.dateCreated).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                          })}
+                        </td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`px-2 py-1 rounded-md text-white ${
+                              moa.status.toLowerCase() === 'approved'
+                                ? 'bg-green-500'
+                                : moa.status.toLowerCase() === 'rejected'
+                                ? 'bg-red-400'
+                                : 'bg-amber-300'
+                            }`}
+                          >
+                            {moa.status}
+                          </span>
+                        </td>
+                        <td className="px-3 sm: py-4 whitespace-nowrap text-center space-x-10">
+                          <button 
+                            onClick={() => handleViewPDF(moa.moaID)} 
+                            className="underline text-blue-900"
+                          >
+                            View PDF
+                          </button>
+                          <button 
+                            onClick={() => handleEditMoa(moa.moaID)} 
+                            className="underline text-blue-900"
+                          >
+                            Edit
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                        No MOAs found.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-2 flex justify-center items-center space-x-2">
+            {renderPageNumbers()}
+          </div>
+          </div>
         </div>
       </div>
     </div>

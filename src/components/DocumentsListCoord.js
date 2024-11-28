@@ -7,6 +7,8 @@ const DocumentsListCoord = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [search, setSearch] = useState('');
     const [documentType, setDocumentType] = useState('');
+    const [showDownloadOptions, setShowDownloadOptions] = useState(false);
+    const [currentDocument, setCurrentDocument] = useState(null);
 
     useEffect(() => {
         fetchDocuments();
@@ -49,6 +51,22 @@ const DocumentsListCoord = () => {
     const handleDocumentTypeFilter = (e) => {
         setDocumentType(e.target.value);
         setCurrentPage(1); // Reset to first page
+    };
+
+    const handleDownloadModalOpen = (doc) => {
+        setCurrentDocument(doc);
+        setShowDownloadOptions(true);
+    };
+
+    const handleDownload = (format) => {
+        if (currentDocument) {
+            alert(`Downloading ${currentDocument.projectLeader}'s document as ${format}`);
+        }
+        setShowDownloadOptions(false); // Close the options after download
+    };
+
+    const handleCancelDownload = () => {
+        setShowDownloadOptions(false);
     };
 
     return (
@@ -108,7 +126,10 @@ const DocumentsListCoord = () => {
                                             >
                                                 View
                                             </NavLink>
-                                            <button className="text-green-600 hover:text-green-800 font-medium">
+                                            <button
+                                                className="text-green-600 hover:text-green-800 font-medium"
+                                                onClick={() => handleDownloadModalOpen(doc)}
+                                            >
                                                 Download
                                             </button>
                                         </td>
@@ -138,6 +159,35 @@ const DocumentsListCoord = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Download Options Modal */}
+            {showDownloadOptions && currentDocument && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded shadow-md w-64">
+                        <h2 className="text-lg font-bold mb-4">Choose File Format</h2>
+                        <div className="flex justify-between">
+                            <button
+                                onClick={() => handleDownload("PDF")}
+                                className="px-4 py-2 bg-blue-500 text-white rounded mr-2"
+                            >
+                                PDF
+                            </button>
+                            <button
+                                onClick={() => handleDownload("MS Word")}
+                                className="px-4 py-2 bg-green-500 text-white rounded"
+                            >
+                                MS Word
+                            </button>
+                        </div>
+                        <button
+                            onClick={handleCancelDownload}
+                            className="mt-4 px-4 py-2 bg-gray-300 rounded w-full"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

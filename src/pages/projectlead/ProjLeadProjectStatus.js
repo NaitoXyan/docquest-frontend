@@ -201,8 +201,8 @@ const ProjLeadProjectStatus = () => {
                         <td className="px-3 sm:px-4 py-3">
                           <span
                             className={`px-2 py-1 rounded-md text-white ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
-                                project.status.toLowerCase() === 'pending' ? 'bg-yellow-500' :
-                                  'bg-red-500'
+                                project.status.toLowerCase() === 'pending' ? 'bg-amber-300' :
+                                  'bg-red-400'
                               }`}
                           >
                             {project.status}

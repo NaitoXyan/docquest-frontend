@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const ProponentsDeliverables = ({ formData, setFormData }) => {
+const ProponentsDeliverables = ({ formData, setFormData, showTrainers }) => {
   const [deliverables, setDeliverables] = useState([]);
+
+  // Trainer-related deliverable names
+  const trainerDeliverableNames = [
+    "Loading of Trainers", 
+    "Trainers CV", 
+    "Trainers DTR*"
+  ];
 
   // Fetch deliverables from API
   useEffect(() => {
@@ -18,36 +25,58 @@ const ProponentsDeliverables = ({ formData, setFormData }) => {
     fetchDeliverables();
   }, []);
 
-  // Handle checkbox change
-  const handleCheckboxChange = (deliverableID) => {
+  // Effect to manage deliverables based on showTrainers
+  useEffect(() => {
     setFormData((prevFormData) => {
-      const isSelected = prevFormData.deliverables.includes(deliverableID);
+      // If showTrainers is true, add ALL deliverable IDs
+      if (showTrainers) {
+        return {
+          ...prevFormData,
+          deliverables: deliverables.map(item => item.deliverableID)
+        };
+      } 
+      // If showTrainers is false, remove ONLY trainer-related deliverable IDs
+      else {
+        const trainerDeliverableIDs = deliverables
+          .filter(item => trainerDeliverableNames.includes(item.deliverableName))
+          .map(item => item.deliverableID);
 
-      // Toggle deliverableID in the array
-      const updatedDeliverables = isSelected
-        ? prevFormData.deliverables.filter((id) => id !== deliverableID)
-        : [...prevFormData.deliverables, deliverableID];
-
-      return { ...prevFormData, deliverables: updatedDeliverables };
+        return {
+          ...prevFormData,
+          deliverables: prevFormData.deliverables.filter(
+            id => !trainerDeliverableIDs.includes(id)
+          )
+        };
+      }
     });
-  };
+  }, [showTrainers, deliverables]);
 
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-4 mt-10">Proponents Deliverables</h2>
+      <h2 className="text-2xl font-semibold mb-4 mt-10">Checklist of Documentary Requirements</h2>
       <div className="bg-white p-6 rounded-lg shadow-md">
         <div className="grid grid-cols-2 gap-2 text-gray-700 mr-5">
-          {deliverables.map((item) => (
-            <label key={item.deliverableID} className="flex items-center">
-              <input
-                type="checkbox"
-                className="mr-2"
-                checked={true}  // Ensure all checkboxes are checked by default
-                disabled  // Disables the checkbox so it cannot be unchecked
-              />
-              {item.deliverableName}
-            </label>
-          ))}
+          {deliverables.map((item) => {
+            // Determine if this is a trainer-related deliverable
+            const isTrainerDeliverable = trainerDeliverableNames.includes(item.deliverableName);
+
+            // Determine checked status
+            const isChecked = showTrainers 
+              ? true 
+              : !isTrainerDeliverable;
+
+            return (
+              <label key={item.deliverableID} className="flex items-center">
+                <input
+                  type="checkbox"
+                  className="mr-2"
+                  checked={isChecked}
+                  readOnly={true}
+                />
+                {item.deliverableName}
+              </label>
+            );
+          })}
         </div>
       </div>
     </div>

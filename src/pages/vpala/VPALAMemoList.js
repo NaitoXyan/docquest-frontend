@@ -1,172 +1,247 @@
 import React, { useState, useEffect } from "react";
+import { NavLink } from "react-router-dom";
 import Topbar from "../../components/Topbar";
-import axios from "axios";
 import VPALASideBar from "../../components/VPALASideBar";
 
 const VPALAMemoList = () => {
-    const [documents, setDocuments] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [search, setSearch] = useState("");
-    const [documentType, setDocumentType] = useState("");
-    const [totalPages, setTotalPages] = useState(1);
-    const [dropdownVisible, setDropdownVisible] = useState(null); // State for dropdown visibility
-    const itemsPerPage = 5;
+  const [documents, setDocuments] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [documentType, setDocumentType] = useState("");
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [currentDownload, setCurrentDownload] = useState(null);
+  const itemsPerPage = 5;
 
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentProjects = documents.slice(indexOfFirstItem, indexOfLastItem);
+  useEffect(() => {
+    const mockData = [
+      {
+        id: 1,
+        projectLeader: "Project A",
+        college: "College of Science",
+        date: "2024-11-01",
+        status: "Approved",
+        downloadLink: "/files/project-a",
+      },
+      {
+        id: 2,
+        projectLeader: "Project B",
+        college: "College of Engineering",
+        date: "2024-11-15",
+        status: "Pending",
+        downloadLink: "/files/project-b",
+      },
+      {
+        id: 3,
+        projectLeader: "Project C",
+        college: "College of Arts",
+        date: "2024-11-20",
+        status: "Rejected",
+        downloadLink: "/files/project-c",
+      },
+    ];
+    setDocuments(mockData);
+  }, []);
 
-    useEffect(() => {
-        fetchDocuments();
-    }, [currentPage, search, documentType]);
+  const handleNextPage = () => {
+    if (currentPage * itemsPerPage < documents.length) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
-    const fetchDocuments = async () => {
-        try {
-            const response = await axios.get("http://localhost:5000/api/documents", {
-                params: { page: currentPage, search, type: documentType },
-            });
-            setDocuments(response.data.documents);
-            setTotalPages(response.data.totalPages);
-        } catch (error) {
-            console.error("Error fetching documents:", error);
-        }
-    };
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
-    const handleNextPage = () => {
-        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-    };
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
 
-    const handlePreviousPage = () => {
-        if (currentPage > 1) setCurrentPage(currentPage - 1);
-    };
+  const handleDocumentTypeFilter = (e) => {
+    setDocumentType(e.target.value);
+  };
 
-    const handleSearch = (e) => {
-        setSearch(e.target.value);
-    };
+  const openDownloadModal = (doc) => {
+    setCurrentDownload(doc);
+    setShowDownloadModal(true);
+  };
 
-    const handleDocumentTypeFilter = (e) => {
-        setDocumentType(e.target.value);
-    };
+  const handleDownload = (format) => {
+    if (currentDownload) {
+      const downloadLink = `${currentDownload.downloadLink}.${format.toLowerCase()}`;
+      alert(`Downloading as ${format}: ${downloadLink}`);
+      setShowDownloadModal(false);
+    }
+  };
 
-    const toggleDropdown = (index) => {
-        setDropdownVisible(dropdownVisible === index ? null : index); // Toggle dropdown for the specific row
-    };
+  const filteredDocuments = documents.filter(
+    (doc) =>
+      doc.projectLeader.toLowerCase().includes(search.toLowerCase()) &&
+      (documentType === "" || doc.status === documentType)
+  );
 
-    return (
-        <div className="bg-gray-200 min-h-screen flex">
-            <div className="w-1/5 fixed h-full">
-                <VPALASideBar />
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentProjects = filteredDocuments.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Function to get the status color based on the document status
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "Approved":
+        return "bg-green-500";
+      case "Pending":
+        return "bg-yellow-500";
+      case "Rejected":
+        return "bg-red-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
+
+  return (
+    <div className="bg-gray-200 min-h-screen flex">
+      <div className="w-1/5 fixed h-full">
+        <VPALASideBar />
+      </div>
+      <div className="flex-1 ml-[20%]">
+        <Topbar />
+        <div className="flex flex-col mt-14 px-10 pt-5">
+          <div className="flex justify-between mb-5">
+            <h1 className="text-2xl font-bold">MEMORANDUM LIST</h1>
+            <div className="flex">
+              <input
+                type="text"
+                placeholder="Search by Project Title"
+                className="p-2 border"
+                value={search}
+                onChange={handleSearch}
+              />
+              <select
+                className="ml-3 p-2 border"
+                value={documentType}
+                onChange={handleDocumentTypeFilter}
+              >
+                <option value="">All</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+              </select>
             </div>
-            <div className="flex-1 ml-[20%]">
-                <Topbar />
-                <div className="flex flex-col mt-14 px-10 pt-5">
-                    <div className="flex justify-between mb-5">
-                        <h1 className="text-2xl font-bold">MEMORANDUM LIST</h1>
-                        <div className="flex">
-                            <input
-                                type="text"
-                                placeholder="Search by Project Title"
-                                className="p-2 border"
-                                value={search}
-                                onChange={handleSearch}
-                            />
-                            <select
-                                className="ml-3 p-2 border"
-                                value={documentType}
-                                onChange={handleDocumentTypeFilter}
-                            >
-                                <option value="">All</option>
-                                <option value="Project Proposal">Pending</option>
-                                <option value="Load Trainers">Approved</option>
-                            </select>
-                        </div>
-                    </div>
-                    <table className="min-w-full bg-white border">
-                        <thead>
-                            <tr className="bg-vlu text-white">
-                                <th className="py-2 px-4 text-left">PROJECT TITLE</th>
-                                <th className="py-2 px-4 text-center">COLLEGE</th>
-                                <th className="py-2 px-4 text-center">DATE SUBMITTED</th>
-                                <th className="py-2 px-4 text-center">STATUS</th>
-                                <th className="py-2 px-4 text-center">ACTIONS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {currentProjects.map((doc, index) => (
-                                <tr key={index} className="even:bg-gray-200">
-                                    <td className="py-2 px-4">{doc.projectLeader}</td>
-                                    <td className="py-2 px-4">{doc.college}</td>
-                                    <td className="py-2 px-4">{doc.date}</td>
-                                    <td className="py-2 px-4">
-                                        <a href="#" className="text-blue-500">View</a> | 
-                                        <div className="relative inline-block">
-                                            <a
-                                                href="#"
-                                                className="text-green-500"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    toggleDropdown(index);
-                                                }}
-                                            >
-                                                Download
-                                            </a>
-                                            {dropdownVisible === index && (
-                                                <div className="absolute mt-2 w-48 bg-white border rounded shadow-lg z-10">
-                                                    <ul className="py-1">
-                                                        <li>
-                                                            <a
-                                                                href="#"
-                                                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                                                            >
-                                                                Download as PDF
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a
-                                                                href="#"
-                                                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                                                            >
-                                                                Download as DOCX
-                                                            </a>
-                                                        </li>
-                                                        {/* <li>
-                                                            <a
-                                                                href="#"
-                                                                className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                                                            >
-                                                                Download as CSV
-                                                            </a>
-                                                        </li> */}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                    <div className="flex justify-between mt-5">
-                        <button
-                            onClick={handlePreviousPage}
-                            disabled={currentPage === 1}
-                            className="px-4 py-2 bg-gray-300 disabled:opacity-50"
-                        >
-                            Previous
-                        </button>
-                        <button
-                            onClick={handleNextPage}
-                            disabled={currentPage === totalPages}
-                            className="px-4 py-2 bg-gray-300 disabled:opacity-50"
-                        >
-                            Next
-                        </button>
-                    </div>
-                    <p className="mt-3">Page {currentPage} of {totalPages}</p>
-                </div>
-            </div>
+          </div>
+          <table className="min-w-full bg-white border">
+            <thead>
+              <tr className="bg-vlu text-white">
+                <th className="py-2 px-4 text-left">PROJECT TITLE</th>
+                <th className="py-2 px-4 text-left">COLLEGE</th>
+                <th className="py-2 px-4 text-left">DATE SUBMITTED</th>
+                <th className="py-2 px-4 text-center">STATUS</th>
+                <th className="py-2 px-4 text-center">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentProjects.map((doc, index) => (
+                <tr key={index} className="even:bg-gray-200">
+                  <td className="py-2 px-4">{doc.projectLeader}</td>
+                  <td className="py-2 px-4">{doc.college}</td>
+                  <td className="py-2 px-4">{doc.date}</td>
+                  <td className="py-2 px-4 text-center">
+                    <span
+                      className={`inline-block px-3 py-1 text-sm font-semibold rounded-full ${
+                        doc.status === 'Pending'
+                          ? 'bg-orange-100 text-orange-500'
+                          : doc.status === 'Approved'
+                          ? 'bg-green-100 text-green-500'
+                          : doc.status === 'Rejected'
+                          ? 'bg-red-100 text-red-500'
+                          : 'bg-gray-100 text-gray-500'
+                      }`}
+                    >
+                      {doc.status}
+                    </span>
+                  </td>
+                  <td className="py-2 px-4 text-center">
+                    <button
+                      className={`${getStatusColor(doc.status)} text-white px-4 py-2 rounded`}
+                    >
+                      {doc.status}
+                    </button>
+                  </td>
+                  <td className="py-2 px-4 text-center">
+                    <NavLink
+                      to={`/view/${doc.id}`}
+                      className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
+                    >
+                      View Copy
+                    </NavLink>
+                    <button
+                      onClick={() => openDownloadModal(doc)}
+                      className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
+                    >
+                      Download
+                    </button>
+                    <NavLink
+                      to={`/scan/${doc.id}`}
+                      className="bg-green-500 text-white px-3 py-1 rounded"
+                    >
+                      Upload Copy
+                    </NavLink>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="flex justify-between mt-5">
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-gray-300 disabled:opacity-50"
+            >
+              Previous
+            </button>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage * itemsPerPage >= filteredDocuments.length}
+              className="px-4 py-2 bg-gray-300 disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+          <p className="mt-3">
+            Page {currentPage} of {Math.ceil(filteredDocuments.length / itemsPerPage)}
+          </p>
         </div>
-    );
+      </div>
+
+      {showDownloadModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-md">
+            <h2 className="text-lg font-bold mb-4">Choose File Format</h2>
+            <div className="flex justify-between">
+              <button
+                onClick={() => handleDownload("PDF")}
+                className="px-4 py-2 bg-blue-500 text-white rounded mr-2"
+              >
+                PDF
+              </button>
+              <button
+                onClick={() => handleDownload("MS Word")}
+                className="px-4 py-2 bg-green-500 text-white rounded"
+              >
+                MS Word
+              </button>
+            </div>
+            <button
+              onClick={() => setShowDownloadModal(false)}
+              className="mt-4 px-4 py-2 bg-gray-300 rounded"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default VPALAMemoList;

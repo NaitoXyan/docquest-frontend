@@ -103,7 +103,7 @@ const MyDocument = ({ projectID }) => {
     accreditationLevel: '',
     college: '',
     beneficiaries: '',
-    targetImplementation: '',
+    targetStartDateImplementation: '',
     totalHours: 0,
     background: '',
     projectComponent: '',
@@ -210,7 +210,7 @@ const MyDocument = ({ projectID }) => {
               University of Science and Technology of Southern Philippines
             </Text>
             <Text style={{ textAlign: 'center', marginBottom: 2, fontFamily: 'Zapf', fontSize: 7 }}>
-              Alubijid | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon
+            Alubijid | Balubal | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon | Villanueva
             </Text>
           </View>
         </View>
@@ -444,8 +444,8 @@ const MyDocument = ({ projectID }) => {
         <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, textAlign: 'center' }]}>
           <View style={[{ width: '60%', borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
             <Text>
-              {formData.targetImplementation
-                ? new Date(formData.targetImplementation).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
+              {formData.targetStartDateImplementation
+                ? new Date(formData.targetStartDateImplementation).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
                 : 'None'}
             </Text>
           </View>
@@ -550,7 +550,7 @@ const MyDocument = ({ projectID }) => {
               University of Science and Technology of Southern Philippines
             </Text>
             <Text style={{ textAlign: 'center', marginBottom: 2, fontFamily: 'Zapf', fontSize: 7 }}>
-              Alubijid | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon
+            Alubijid | Balubal | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon | Villanueva
             </Text>
           </View>
         </View>
@@ -1358,7 +1358,7 @@ const MyDocument = ({ projectID }) => {
               University of Science and Technology of Southern Philippines
             </Text>
             <Text style={{ textAlign: 'center', marginBottom: 2, fontFamily: 'Zapf', fontSize: 7 }}>
-              Alubijid | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon
+            Alubijid | Balubal | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon | Villanueva
             </Text>
           </View>
         </View>

@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import Topbar from '../../components/Topbar';
-import ProjLeadSidebar from '../../components/ProjLeadSideBar';
 import { SearchIcon } from '@heroicons/react/solid';
 
-const ProjLeadProjectStatus = () => {
+const CoordStatusBar = () => {
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -134,11 +132,11 @@ const ProjLeadProjectStatus = () => {
   return (
     <div className="bg-gray-200 min-h-screen flex">
       <div className="w-1/5 fixed h-full">
-        <ProjLeadSidebar />
+       
       </div>
 
       <div className="flex-1 ml-[20%]">
-        <Topbar />
+       
         <div className="flex flex-col mt-16 px-4 md:px-10">
           {/* Title, Filter, and Search Row */}
           <div className="flex flex-col sm:flex-row flex-wrap justify-between items-center mb-4 space-y-4 sm:space-y-0">
@@ -180,7 +178,7 @@ const ProjLeadProjectStatus = () => {
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Leader</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Title</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
-                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Status</th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
                     <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">View Document</th>
                     <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">View Progress</th>
                   </tr>
@@ -189,20 +187,20 @@ const ProjLeadProjectStatus = () => {
                   {currentProjects.length > 0 ? (
                     currentProjects.map((project, index) => (
                       <tr key={index}>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-left">{`${project.projectUser.firstname} ${project.projectUser.lastname}`}</td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">{`${project.projectUser.firstname} ${project.projectUser.lastname}`}</td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap overflow-hidden text-ellipsis">
                           <span title={project.projectTitle}>
                             {project.projectTitle.length > characterLimit ? `${project.projectTitle.slice(0, characterLimit)}...` : project.projectTitle}
                           </span>
                         </td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                           {new Date(project.dateCreated).toLocaleDateString()}
                         </td>
                         <td className="px-3 sm:px-4 py-3">
                           <span
                             className={`px-2 py-1 rounded-md text-white ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
-                                project.status.toLowerCase() === 'pending' ? 'bg-amber-300' :
-                                  'bg-red-400'
+                                project.status.toLowerCase() === 'pending' ? 'bg-yellow-500' :
+                                  'bg-red-500'
                               }`}
                           >
                             {project.status}
@@ -239,4 +237,4 @@ const ProjLeadProjectStatus = () => {
   );
 };
 
-export default ProjLeadProjectStatus;
+export default CoordStatusBar;

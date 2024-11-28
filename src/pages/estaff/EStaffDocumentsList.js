@@ -9,16 +9,18 @@ const EstaffDocumentsList = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [search, setSearch] = useState('');
     const [documentType, setDocumentType] = useState('');
+    const [showDownloadModal, setShowDownloadModal] = useState(false);
+    const [currentDocument, setCurrentDocument] = useState(null);
 
     useEffect(() => {
         fetchDocuments();
     }, [currentPage, search, documentType]);
 
     const mockDocuments = [
-        { projectLeader: "Alice Johnson", documentType: "Project Proposal", date: "2024-11-01" },
-        { projectLeader: "Bob Smith", documentType: "Load Trainers", date: "2024-11-15" },
-        { projectLeader: "Cathy Lee", documentType: "Project Proposal", date: "2024-11-20" },
-        { projectLeader: "David Brown", documentType: "Load Trainers", date: "2024-11-22" },
+        { id: 1, projectLeader: "Alice Johnson", documentType: "Project Proposal", date: "2024-11-01" },
+        { id: 2, projectLeader: "Bob Smith", documentType: "Load Trainers", date: "2024-11-15" },
+        { id: 3, projectLeader: "Cathy Lee", documentType: "Project Proposal", date: "2024-11-20" },
+        { id: 4, projectLeader: "David Brown", documentType: "Load Trainers", date: "2024-11-22" },
     ];
 
     const fetchDocuments = () => {
@@ -51,6 +53,14 @@ const EstaffDocumentsList = () => {
     const handleDocumentTypeFilter = (e) => {
         setDocumentType(e.target.value);
         setCurrentPage(1);
+    };
+
+    const handleDownload = (format) => {
+        if (currentDocument) {
+            const downloadLink = `/files/${currentDocument.projectLeader}-${currentDocument.documentType.toLowerCase().replace(' ', '-')}.${format.toLowerCase()}`;
+            alert(`Downloading ${currentDocument.projectLeader}'s document as ${format}: ${downloadLink}`);
+            setShowDownloadModal(false); // Close the modal after selection
+        }
     };
 
     return (
@@ -107,7 +117,10 @@ const EstaffDocumentsList = () => {
                                             </NavLink>
 
                                             <button
-                                                onClick={() => alert(`Downloading document: ${doc.projectLeader} - ${doc.documentType}`)}
+                                                onClick={() => {
+                                                    setCurrentDocument(doc); // Set the current document to be downloaded
+                                                    setShowDownloadModal(true); // Open the download modal
+                                                }}
                                                 className="bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-700 transition duration-300"
                                             >
                                                 Download
@@ -117,9 +130,8 @@ const EstaffDocumentsList = () => {
                                                 to="/scan-copy" // Static route to the Scan Copy page
                                                 className="bg-yellow-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-yellow-700 transition duration-300"
                                             >
-                                                Scan Copy
+                                                Upload Copy
                                             </NavLink>
-
                                         </div>
                                     </td>
                                 </tr>
@@ -145,6 +157,35 @@ const EstaffDocumentsList = () => {
                     <p className="mt-3">Page {currentPage} of {totalPages}</p>
                 </div>
             </div>
+
+            {/* Download Modal */}
+            {showDownloadModal && currentDocument && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded shadow-md">
+                        <h2 className="text-lg font-bold mb-4">Choose File Format</h2>
+                        <div className="flex justify-between">
+                            <button
+                                onClick={() => handleDownload('PDF')}
+                                className="px-4 py-2 bg-blue-500 text-white rounded mr-2"
+                            >
+                                PDF
+                            </button>
+                            <button
+                                onClick={() => handleDownload('MS Word')}
+                                className="px-4 py-2 bg-green-500 text-white rounded"
+                            >
+                                MS Word
+                            </button>
+                        </div>
+                        <button
+                            onClick={() => setShowDownloadModal(false)}
+                            className="mt-4 px-4 py-2 bg-gray-300 rounded"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

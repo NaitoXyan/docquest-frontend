@@ -169,7 +169,7 @@ const MyDocument = ({ projectID }) => {
       } else if (role === 'vcri') {
         return 'Vice - Chancellor for Research and Innovation';
       } else if (role === 'acnt') {
-        return 'Accountant III';
+        return 'Accountant II';
       } else if (role === 'cclr') {
         return 'Chancellor, USTP CDO';
       } else {
@@ -530,7 +530,7 @@ const MyDocument = ({ projectID }) => {
           </View>
           <View style={[{ flexDirection: 'row', paddingBottom: '5%' }]}>
             <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
-              Accountant III
+              Accountant II
             </Text>
             <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
               Chancellor, USTP CDO

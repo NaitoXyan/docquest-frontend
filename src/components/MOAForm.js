@@ -9,19 +9,20 @@ const MOAForm = ({ projectID }) => {
 
   const [formData, setFormData] = useState({
     projectID: projectID,
-    partyDescription: `UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS, a State University created and existing under the laws of the Republic of the Philippines, with principal office address located at Claro M. Recto Avenue, Lapasan, Cagayan de Oro City, represented herein by its System President, DR. AMBROSIO B. CULTURA II, hereafter referred to as the "FIRST PARTY"`,
-    coverageAndEffectivity: ``,
+    partyADescription: `**UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS**, a State University created and existing under the laws of the Republic of the Philippines, with principal office address located at Claro M. Recto Avenue, Lapasan, Cagayan de Oro City, represented herein by its System President,  **DR. AMBROSIO B. CULTURA II**, hereafter referred to as the **“FIRST PARTY”**;`,
+    partyBDescription: ``,
+    coverageAndEffectivity: `This Agreement shall cover  CY 2024-2025 and take effect upon the date it is signed by the parties until the completion of the training  and research collaboration program.`,
     confidentialityClause: `The parties mutually agree to process personal information and sensitive personal information in conformity with the provisions of Republic Act No. 10173 (Data Privacy Act of 2012) and all other applicable laws and regulations of all the parties regarding data privacy protection laws.
-    
-    Both parties shall ensure that appropriate organizational, physical, and technical measures are in place to maintain the confidentiality, integrity and security of personal information and sensitive personal information that may come to their knowledge or possession by reason of any provision of this MOA and that their employees, agents, representatives, or any person under their authority shall hold said information under strict confidentiality at all times.`,
-   
+
+Both parties shall ensure that appropriate organizational, physical, and technical measures are in place to maintain the confidentiality, integrity and security of personal information and sensitive personal information that may come to their knowledge or possession by reason of any provision of this MOA and that their employees, agents, representatives, or any person under their authority shall hold said information under strict confidentiality at all times.`,
     termination: `Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party.`,
     witnesseth: [
       {
-        whereas: `WHEREAS, the FIRST PARTY is mandated to provide advanced education, higher technological, professional and advanced instructions in mathematics, science, technology, engineering, and advance research and extension work in human resource development in critical skills and competencies required for global competitiveness (Republic Act 10919);
-
-WHEREAS, the FIRST PARTY, has its extension function to serve the underprivileged communities/groups and other stakeholders within its sphere of influence by providing competency-based training programs, transfer of technology, technical services and/or advisory;`
-      }
+        whereas: `WHEREAS, the FIRST PARTY is mandated to provide advanced education, higher technological, professional and advanced instructions in mathematics, science, technology, engineering, and advance research and extension work in human resource development in critical skills and competencies required for global competitiveness (Republic Act 10919);`
+      },
+      {
+        whereas: `WHEREAS, the FIRST PARTY, has its extension function to serve the underprivileged communities/groups and other stakeholders within its sphere of influence by providing competency-based training programs, transfer of technology, technical services and/or advisory;`
+      },
     ],
     firstParty: [
       {
@@ -38,22 +39,22 @@ WHEREAS, the FIRST PARTY, has its extension function to serve the underprivilege
     witnesses: [
       {
         name: "DR. MARIA TERESA M. FAJARDO",
-        title: "Director, Extension & Community Relations	",
+        title: "Director, Extension & Community Relations"
       },
       {
         name: "ENGR. ALEX L. MAUREAL",
-        title: "Vice Chancellor for Research and Innovation",
+        title: "Vice Chancellor for Research and Innovation "
       }
     ],
     partyAObligation: [
       {
-        obligation: ``,
+        obligation: "",
         party: "party A"
       }
     ],
     partyBObligation: [
       {
-        obligation: ``,
+        obligation: "",
         party: "party B"
       }
     ]
@@ -272,11 +273,25 @@ WHEREAS, the FIRST PARTY, has its extension function to serve the underprivilege
               </label>
               <textarea
                 required
-                name="partyDescription"
-                value={formData.partyDescription}
+                name="partyADescription"
+                value={formData.partyADescription}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
                 placeholder="Ex: UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS (USTP CDO), a state educational institution duly established  under Philippine law, whose office address located at Claro M. Recto Avenue, Lapasan, Cagayan  de Oro City, represented herein by its Chancellor ATTY. DIONEL O. ALBINA, hereafter referred  to as the FIRST PARTY;"
+              ></textarea>
+            </div>
+
+            <div>
+              <label className="block mb-2 font-semibold">
+                and
+              </label>
+              <textarea
+                required
+                name="partyBDescription"
+                value={formData.partyBDescription}
+                onChange={handleFormChange}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder="Ex: DEPARTMENT OF EDUCATION DIVISION OF CAGAYAN DE ORO CITY, a state educational institution duly established under Philippine law, whose office address located at Fr.  William F. Masterson Avenue, Upper Balulang, Cagayan de Oro City Misamis Oriental, represented herein by the School Divisions Superintendent ROY ANGELO E. GAZO, Ph.D., hereafter referred to as the SECOND PARTY;"
               ></textarea>
             </div>
 
@@ -395,13 +410,14 @@ WHEREAS, the FIRST PARTY, has its extension function to serve the underprivilege
             <label className="block mb-2 font-semibold">
               COVERAGE AND EFFECTIVITY:
             </label>
-            <input
-              required
-              name="coverageAndEffectivity"
-              value={formData.coverageAndEffectivity}
-              onChange={handleFormChange}
-              className="w-full p-2 border border-gray-300 rounded"
-            />
+            <textarea
+            required
+            name="coverageAndEffectivity"
+            value={formData.coverageAndEffectivity}
+            onChange={handleFormChange}
+            className="w-full p-2 border border-gray-300 rounded"
+            placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
+          ></textarea>
           </div>
         </div>
 
@@ -411,12 +427,13 @@ WHEREAS, the FIRST PARTY, has its extension function to serve the underprivilege
               CONFIDENTIALITY CLAUSE:
             </label>
             <textarea
-              required
-              name="confidentialityClause"
-              value={formData.confidentialityClause}
-              onChange={handleFormChange}
-              className="w-full p-2 border border-gray-300 rounded"
-            ></textarea>
+            required
+            name="confidentialityClause"
+            value={formData.confidentialityClause}
+            onChange={handleFormChange}
+            className="w-full p-2 border border-gray-300 rounded"
+            placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
+          ></textarea>
           </div>
         </div>
 
@@ -424,17 +441,18 @@ WHEREAS, the FIRST PARTY, has its extension function to serve the underprivilege
           <label className="block mb-2 font-semibold">
             TERMINATION:
           </label>
-          <input
+          <textarea
             required
             name="termination"
             value={formData.termination}
             onChange={handleFormChange}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-          ></input>
+          ></textarea>
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
+        <label className="block font-semibold">WITNESSES:</label>
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="block mb-2 font-semibold">
@@ -451,7 +469,6 @@ WHEREAS, the FIRST PARTY, has its extension function to serve the underprivilege
                   placeholder="name"
                 />
               ))}
-
             </div>
             <div>
               <label className="block mb-2 font-semibold">
@@ -507,7 +524,7 @@ WHEREAS, the FIRST PARTY, has its extension function to serve the underprivilege
           </div>
 
           <div>
-            <label className="block mb-2 font-semibold">Witnesses:</label>
+            <label className="block mb-2 font-semibold">WITNESSES:</label>
             {formData.witnesses.map((witness, index) => (
               <div key={index} className="grid grid-cols-2 gap-2 mb-2">
                 <div>

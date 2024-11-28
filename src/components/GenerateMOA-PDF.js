@@ -98,7 +98,8 @@ const MOADocument = ({ data }) => {
   if (!data) return null;
 
   const {
-    partyDescription,
+    partyADescription,
+    partyBDescription,
     coverageAndEffectivity,
     confidentialityClause,
     termination,
@@ -118,6 +119,16 @@ const MOADocument = ({ data }) => {
   };
 
   const witnessChunks = chunkArray(witnesses, 2);
+
+  const numberToWords = (num) => {
+    const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+    const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+    const teens = ['ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+
+    if (num < 10) return ones[num];
+    if (num < 20) return teens[num - 10];
+    return tens[Math.floor(num / 10)] + (num % 10 ? '-' + ones[num % 10] : '');
+  };
 
   return (
     <Document>
@@ -140,7 +151,12 @@ const MOADocument = ({ data }) => {
         </View>
         <View style={[]}>
           <Text style={[{ textAlign: 'justify', marginBottom: 15, fontFamily: 'TimesNR', textIndent: 39 }]}>
-            ☐{parseText(partyDescription)}
+            ☐{parseText(partyADescription)}
+          </Text>
+        </View>
+        <View style={[]}>
+          <Text style={[{ textAlign: 'justify', marginBottom: 15, fontFamily: 'TimesNR', textIndent: 39 }]}>
+            ☐{parseText(partyBDescription)}
           </Text>
         </View>
         <View style={[{ alignItems: 'center' }]}>
@@ -195,7 +211,7 @@ const MOADocument = ({ data }) => {
                   {index + 1}.  {obligation.obligation}
                 </Text>
               ))}
-              <View style={[{ marginBottom: 15 }]}></View>
+            <View style={[{ marginBottom: 15 }]}></View>
 
             <View style={[{ alignItems: 'start' }]}>
               <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR-B', }]}>
@@ -369,7 +385,7 @@ const MOADocument = ({ data }) => {
             <Text></Text>
           </View>
         </View>
-        <View style={[styles.rowNormal, { borderTop: 0, marginBottom: 20, height: 30, fontFamily: 'TimesNR-B'  }]}>
+        <View style={[styles.rowNormal, { borderTop: 0, marginBottom: 20, height: 30, fontFamily: 'TimesNR-B' }]}>
           <View style={[{ justifyContent: 'center', width: '40%', paddingHorizontal: 2, borderRight: 1, borderStyle: 'solid' }]}>
             {secondParty.map((party, index) => (
               <View key={index}>
@@ -385,9 +401,13 @@ const MOADocument = ({ data }) => {
           </View>
         </View>
         <View style={[{}]}>
-          <Text style={[{ textAlign: 'justify', marginBottom: 20, fontFamily: 'TimesNR', }]}>
-            {parseText('Known to me to be the same persons who executed the foregoing MEMORANDUM OF AGREEMENT consisting of **four (4) pages**, including the pages wherein this Acknowledgement is written, signed by the parties and their respective witnesses on each and every page hereof, and they acknowledge to me that the same is their free and voluntary act and deed, as well as those of the entities they respectively represent.')}
-          </Text>
+          <Text
+            style={[{ textAlign: 'justify', marginBottom: 20, fontFamily: 'TimesNR' }]}
+            render={({ pageNumber }) => {
+              const content = `Known to me to be the same persons who executed the foregoing MEMORANDUM OF AGREEMENT consisting of **${numberToWords(pageNumber)} (${pageNumber}) pages**, including the pages wherein this Acknowledgement is written, signed by the parties and their respective witnesses on each and every page hereof, and they acknowledge to me that the same is their free and voluntary act and deed, as well as those of the entities they respectively represent.`;
+              return parseText(content);
+            }}
+          />
         </View>
         <View style={[{ alignItems: 'flex-end' }]}>
           <Text style={[{ marginBottom: 60, fontFamily: 'TimesNR', }]}>

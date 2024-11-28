@@ -26,7 +26,7 @@ const EditProposalForm = ({ projectID }) => {
   var director = "Maria Teresa M. Fajardo, Ed.D.";
   var vcaa = "Dr. Jocelyn B. Barbosa";
   var vcri = "Engr. Alex L. Maureal";
-  var accountant = "Cherry Ann S. Villarte, CPA";
+  var accountant = "Maria Rica Paje, CPA";
   var chancellor = "Atty. Dionel O. Albina";
   const [agencies, setAgencies] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -168,7 +168,7 @@ const EditProposalForm = ({ projectID }) => {
     },
     accountant: {
       name: accountant,
-      title: "Accountant III"
+      title: "Accountant II"
     },
     chancellor: {
       name: chancellor,
@@ -1802,7 +1802,7 @@ const handleAgencyFormChange = async (e) => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block mb-2 font-semibold">
-                Accountant III
+                Accountant II
               </label>
               <input
                 name="accountant"

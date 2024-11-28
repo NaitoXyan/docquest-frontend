@@ -69,8 +69,8 @@ const LoginPage = () => {
         rolesList.includes('acnt') ||
         rolesList.includes('cclr') ||
         rolesList.includes('estf') ||
-        rolesList.includes('vpala') ||
-        rolesList.includes('cord') 
+        rolesList.includes('') ||
+        rolesList.includes('') 
       ) {
         navigate('/estaff');
       }

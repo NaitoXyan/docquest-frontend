@@ -43,27 +43,28 @@ const DirectorReviewProject = () => {
     try {
       const response = await axios({
         method: "post",
-        url: `http://127.0.0.1:8000/approve_or_deny_project/${reviewID}/`,
+        url: `http://127.0.0.1:8000/review_project`,
         headers: {
            Authorization: `Token ${token}`,
           "Content-Type": "application/json"
         },
         data: {
+          reviewID: reviewID,
           action: actionType,
           comment: formData.comment
         }
       });
 
-      // Check if response contains the expected data structure
-      if (response.data.review && response.data.notification) {
-        setShowSuccessModal(true);
-      } else {
-        setError("An error occurred. Please try again.");
-      }
+    // Check if response contains the expected data structure
+    if (response.data.message && response.data.message.includes("Review successfully")) {
+      setShowSuccessModal(true);
+    } else {
+      setError("An error occurred. Please try again.");
+    }
     } catch (err) {
       console.error("Error details:", err);
       setError(
-        err.response?.data?.message || "An error occurred. Please try again."
+        err.response?.data?.error || "An error occurred. Please try again."
       );
     } finally {
       setIsLoading(false);

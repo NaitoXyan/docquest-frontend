@@ -1,237 +1,121 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
-import { SearchIcon } from '@heroicons/react/solid';
+import React, { useState } from "react";
+import { useParams, NavLink } from "react-router-dom";
 
 const CoordStatusBar = () => {
-  const [projects, setProjects] = useState([]);
-  const [filteredProjects, setFilteredProjects] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [statusFilter, setStatusFilter] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [characterLimit, setCharacterLimit] = useState(42); // Default limit
-  const itemsPerPage = 8;
-  const userID = localStorage.getItem('userid');
-  const navigate = useNavigate();
-  const { statusFilterParam } = useParams();
+  const { statusFilterParam } = useParams(); // Get status from URL parameter
 
-  useEffect(() => {
-    axios.get(`http://127.0.0.1:8000/get_project_status/${userID}/`)
-      .then(response => {
-        const sortedProjects = response.data.sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
+  // Example mock data
+  const documents = [
+    {
+      projectLeader: "Valdueno, Jero A.",
+      projectTitle: "Tesda Vocational",
+      proposedDate: "May 6, 2024, 1:30 PM",
+      documentStatus: "Approved",
+      officeStatus: "Submitted",
+      projectId: "1021210010",
+    },
+    {
+      projectLeader: "Doe, Jane",
+      projectTitle: "Community Health Program",
+      proposedDate: "May 15, 2024, 9:00 AM",
+      documentStatus: "Pending",
+      officeStatus: "Under Review",
+      projectId: "1021210011",
+    },
+    {
+      projectLeader: "Smith, John",
+      projectTitle: "Educational Outreach",
+      proposedDate: "May 20, 2024, 2:00 PM",
+      documentStatus: "Disapproved",
+      officeStatus: "Submitted",
+      projectId: "1021210012",
+    },
+  ];
 
-        // Apply the "all" filter to show all projects if statusFilterParam is "all" or not defined
-        const initialFilteredProjects = (!statusFilterParam || statusFilterParam.toLowerCase() === 'all')
-          ? sortedProjects
-          : sortedProjects.filter(project => project.status.toLowerCase() === statusFilterParam.toLowerCase());
+  // Filter documents based on the status parameter from the URL
+  const filteredDocs = documents.filter(
+    (doc) => doc.documentStatus.toLowerCase() === statusFilterParam.toLowerCase()
+  );
 
-        setProjects(sortedProjects);
-        setFilteredProjects(initialFilteredProjects);
-        setStatusFilter(statusFilterParam ? statusFilterParam.toLowerCase() : 'all');
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-  }, [userID, statusFilterParam]);
-
-
-
-
-
-  useEffect(() => {
-    if (statusFilterParam) {
-      setStatusFilter(statusFilterParam.toLowerCase());
-      filterProjects(statusFilterParam.toLowerCase());
-    }
-  }, [statusFilterParam]);
-
-  const filterProjects = (status) => {
-    const filtered = status
-      ? projects.filter(project => project.status.toLowerCase() === status)
-      : projects;
-    setFilteredProjects(filtered);
-    setCurrentPage(1);
-  };
-
-  const handleStatusFilterChange = (event) => {
-    const status = event.target.value;
-    setStatusFilter(status);
-    filterProjects(status);
-  };
-
-  const handleSearchChange = (event) => {
-    const term = event.target.value.toLowerCase();
-    setSearchTerm(term);
-    setFilteredProjects(
-      projects.filter(project =>
-        `${project.projectUser.firstname} ${project.projectUser.lastname}`.toLowerCase().includes(term) ||
-        project.projectTitle.toLowerCase().includes(term)
-      )
-    );
-    setCurrentPage(1);
-  };
-
-  const handleViewPDF = (projectID) => {
-    // Assuming you have a URL to the PDF that includes the project ID
-    const pdfUrl = `/pdf-viewer/${projectID}`;
-  
-    // Open the PDF URL in a new tab
-    window.open(pdfUrl, '_blank');
-  };
-
-  const handleEditProject = (projectID) => {
-    navigate(`/edit-project/${projectID}`);
-  };
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProjects = filteredProjects.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const renderPageNumbers = () => {
-    const pageNumbers = [];
-    for (let i = 1; i <= totalPages; i++) {
-      pageNumbers.push(
-        <button
-          key={i}
-          onClick={() => handlePageChange(i)}
-          className={`px-3 py-1 rounded-lg ${i === currentPage ? "bg-vlu text-white" : "bg-gray-100"}`}
-        >
-          {i}
-        </button>
-      );
-    }
-    return pageNumbers;
-  };
-
-  const handleViewProjectProgress = (projectID) => {
-    navigate(`/view-project-progress/${projectID}`);
-  }
-
-  // Adjust character limit based on window width
-  useEffect(() => {
-    const updateCharacterLimit = () => {
-      if (window.innerWidth < 640) {
-        setCharacterLimit(20); // Small screens
-      } else if (window.innerWidth < 1024) {
-        setCharacterLimit(30); // Medium screens
-      } else {
-        setCharacterLimit(42); // Large screens
-      }
-    };
-
-    updateCharacterLimit();
-    window.addEventListener('resize', updateCharacterLimit);
-    return () => window.removeEventListener('resize', updateCharacterLimit);
-  }, []);
+  // Search functionality
+  const [searchTerm, setSearchTerm] = useState("");
+  const filteredSearchDocs = filteredDocs.filter((doc) =>
+    doc.projectTitle.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <div className="bg-gray-200 min-h-screen flex">
-      <div className="w-1/5 fixed h-full">
-       
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-xl font-bold">Projects: {statusFilterParam}</h1>
+
+      {/* Search and Filter Section */}
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex space-x-4 items-center w-2/3">
+          <input
+            type="text"
+            placeholder="Search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border border-gray-300 rounded-lg p-2 flex-grow"
+          />
+          <select className="border border-gray-300 rounded-lg p-2">
+            <option>Search Document</option>
+          </select>
+        </div>
       </div>
 
-      <div className="flex-1 ml-[20%]">
-       
-        <div className="flex flex-col mt-16 px-4 md:px-10">
-          {/* Title, Filter, and Search Row */}
-          <div className="flex flex-col sm:flex-row flex-wrap justify-between items-center mb-4 space-y-4 sm:space-y-0">
-            <h2 className="text-xl sm:text-2xl font-bold w-full sm:w-auto">PROJECT LIST</h2>
-            <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 w-full sm:w-auto">
-              <div className="relative w-full sm:w-48">
-                <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                  className="w-full pl-10 pr-3 py-1.5 border rounded-md"
-                />
-              </div>
-              <div className="w-full sm:w-auto">
-                <label htmlFor="statusFilter" className="mr-2">Filter by Status:</label>
-                <select
-                  id="statusFilter"
-                  value={statusFilter}
-                  onChange={handleStatusFilterChange}
-                  className="w-full sm:w-auto px-3 py-2 border rounded-md"
-                >
-                  <option value="">All</option>
-                  <option value="pending">Pending</option>
-                  <option value="approved">Approved</option>
-                  <option value="rejected">Rejected</option>
-                </select>
-              </div>
-            </div>
-          </div>
+      {/* Table */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white shadow-md rounded-lg">
+          <thead>
+            <tr className="bg-blue-900 text-white">
+              <th className="py-4 px-6 text-left font-semibold">Project Leader</th>
+              <th className="py-4 px-6 text-left font-semibold">Project Title</th>
+              <th className="py-4 px-6 text-left font-semibold">Proposed Date of Implementation</th>
+              <th className="py-4 px-6 text-left font-semibold">Document Status</th>
+              <th className="py-4 px-6 text-left font-semibold">Office Status</th>
+              <th className="py-4 px-6 text-left font-semibold">Action</th> {/* New Action Column */}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredSearchDocs.map((doc, index) => (
+              <tr key={index} className={index % 2 === 0 ? "bg-gray-100" : "bg-white"}>
+                <td className="py-4 px-6">{doc.projectLeader}</td>
+                <td className="py-4 px-6">{doc.projectTitle}</td>
+                <td className="py-4 px-6">{doc.proposedDate}</td>
+                <td className="py-4 px-6">
+                  <span
+                    className={`px-4 py-1 rounded-full text-white ${
+                      doc.documentStatus === "Approved"
+                        ? "bg-green-500"
+                        : doc.documentStatus === "Pending"
+                        ? "bg-yellow-500"
+                        : "bg-red-500"
+                    }`}
+                  >
+                    {doc.documentStatus}
+                  </span>
+                </td>
+                <td className="py-4 px-6">{doc.officeStatus}</td>
+                <td className="py-4 px-6">
+                  {/* View Button with NavLink */}
+                  <NavLink
+                    to={`/projectpdfviewer/${doc.projectId}`}
+                    className="text-blue-500 hover:underline"
+                  >
+                    View
+                  </NavLink>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-          {/* Project List Table */}
-          <div className="bg-white shadow-lg rounded-lg py-4 px-2 sm:px-4">
-            <div className="overflow-x-auto">
-              <table className="min-w-full table-auto">
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Leader</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Title</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
-                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">View Document</th>
-                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">View Progress</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {currentProjects.length > 0 ? (
-                    currentProjects.map((project, index) => (
-                      <tr key={index}>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">{`${project.projectUser.firstname} ${project.projectUser.lastname}`}</td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap overflow-hidden text-ellipsis">
-                          <span title={project.projectTitle}>
-                            {project.projectTitle.length > characterLimit ? `${project.projectTitle.slice(0, characterLimit)}...` : project.projectTitle}
-                          </span>
-                        </td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                          {new Date(project.dateCreated).toLocaleDateString()}
-                        </td>
-                        <td className="px-3 sm:px-4 py-3">
-                          <span
-                            className={`px-2 py-1 rounded-md text-white ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
-                                project.status.toLowerCase() === 'pending' ? 'bg-yellow-500' :
-                                  'bg-red-500'
-                              }`}
-                          >
-                            {project.status}
-                          </span>
-                        </td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
-                          <button
-                            className="text-blue-900 underline"
-                            onClick={() => handleViewPDF(project.projectID)}
-                          >
-                            View PDF
-                          </button>
-                        </td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
-                          <button className="text-blue-900 underline" onClick={() => handleViewProjectProgress(project.projectID)}>View</button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="6" className="text-center py-4">No projects available</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-            <div className="mt-2 flex justify-center items-center space-x-2">
-              {renderPageNumbers()}
-            </div>
-          </div>
-        </div>
+      {/* Pagination */}
+      <div className="flex justify-center mt-6">
+        <button className="px-4 py-2 border rounded-lg bg-gray-300 hover:bg-gray-400">
+          1
+        </button>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 function CoordinatorSidebar() {
     const [isProposalMenuVisible, setProposalMenuVisible] = useState(false);
     const [isUserMenuVisible, setUserMenuVisible] = useState(false);
+    const [isStatusMenuVisible, setStatusMenuVisible] = useState(false); // New state for status menu
     const navigate = useNavigate(); // Hook to navigate programmatically
 
     const toggleProposalMenu = () => {
@@ -12,6 +13,10 @@ function CoordinatorSidebar() {
 
     const toggleUserMenu = () => {
         setUserMenuVisible(!isUserMenuVisible);
+    };
+
+    const toggleStatusMenu = () => {
+        setStatusMenuVisible(!isStatusMenuVisible); // Toggle visibility of status menu
     };
 
     // Function to handle logout
@@ -43,6 +48,42 @@ function CoordinatorSidebar() {
                         </NavLink>
                     </li>
 
+                    {/* Status Section (Approved, Disapproved, Pending) */}
+                    <li>
+                        <button 
+                            onClick={toggleStatusMenu} 
+                            className="text-lg w-full text-left block px-6 py-3 hover:text-yellow-500 focus:outline-none">
+                            Status
+                        </button>
+                        <ul className={`${isStatusMenuVisible ? '' : 'hidden'} bg-indigo-900`}>
+                            <li>
+                                <NavLink 
+                                    to="/projects/approved" 
+                                    className={({ isActive }) => 
+                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`}>
+                                    Approved
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink 
+                                    to="/projects/disapproved" 
+                                    className={({ isActive }) => 
+                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`}>
+                                    Disapproved
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink 
+                                    to="/projects/pending" 
+                                    className={({ isActive }) => 
+                                        `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`}>
+                                    Pending
+                                </NavLink>
+                            </li>
+                        </ul>
+                    </li>
+
+                    {/* Accounts Section */}
                     <li>
                         <button onClick={toggleUserMenu} className="text-lg w-full text-left block px-6 py-3 hover:text-yellow-500 focus:outline-none">
                             Accounts
@@ -66,6 +107,7 @@ function CoordinatorSidebar() {
                             </li>
                         </ul>
                     </li>
+
                     <li>
                         <NavLink 
                             to="/documents-coord" 

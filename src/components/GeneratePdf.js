@@ -559,7 +559,7 @@ const MyDocument = ({ projectID }) => {
       } else if (role === 'vcri') {
         return 'Vice - Chancellor for Research and Innovation';
       } else if (role === 'acnt') {
-        return 'Accountant III';
+        return 'Accountant II';
       } else if (role === 'cclr') {
         return 'Chancellor, USTP CDO';
       } else {
@@ -908,7 +908,7 @@ const MyDocument = ({ projectID }) => {
           <View style={[{ flexDirection: 'row', paddingTop: '1%' }]}>
             <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB', marginTop:20 }]}>
               {formData.signatories && formData.signatories.length > 0 &&
-                formData.signatories.find(signatory => signatory.title === 'Accountant III')?.name}
+                formData.signatories.find(signatory => signatory.title === 'Accountant II')?.name}
             </Text>
             <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB',marginTop:20 }]}>
               {formData.signatories && formData.signatories.length > 0 &&
@@ -918,7 +918,7 @@ const MyDocument = ({ projectID }) => {
           <View style={[{ flexDirection: 'row', paddingBottom: '5%' }]}>
             <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
               {formData.signatories && formData.signatories.length > 0 &&
-                formData.signatories.find(signatory => signatory.title === 'Accountant III')?.title}
+                formData.signatories.find(signatory => signatory.title === 'Accountant II')?.title}
             </Text>
             <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
               {formData.signatories && formData.signatories.length > 0 &&

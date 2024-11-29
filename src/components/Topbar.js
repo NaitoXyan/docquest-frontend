@@ -51,7 +51,7 @@ const Topbar = () => {
       } else if (role === 'vcri') {
         return 'Vice - Chancellor for Research and Innovation';
       } else if (role === 'acnt') {
-        return 'Accountant III';
+        return 'Accountant II';
       } else if (role === 'cclr') {
         return 'Chancellor, USTP CDO';
       } else {

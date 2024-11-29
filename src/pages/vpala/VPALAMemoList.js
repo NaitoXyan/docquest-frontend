@@ -93,9 +93,9 @@ const VPALAMemoList = () => {
       <div className="flex-1 ml-[20%]">
         <Topbar />
         <div className="flex flex-col mt-14 px-10 pt-5">
-          <div className="flex justify-between mb-5">
-            <h1 className="text-2xl font-bold">MEMORANDUM LIST</h1>
-            <div className="flex">
+          <div className="flex justify-end items-center mb-4">
+            {/* <h1 className="text-2xl font-bold mt-10">MEMORANDUM LIST</h1> */}
+            <div className="flex justify-between items-center mb-1">
               <input
                 type="text"
                 placeholder="Search by Project Title"
@@ -131,12 +131,16 @@ const VPALAMemoList = () => {
                   <td className="py-2 px-4">{doc.projectLeader}</td>
                   <td className="py-2 px-4">{doc.college}</td>
                   <td className="py-2 px-4">{doc.date}</td>
-                  <td className="py-2 px-4 text-center">
-                    <span className={`inline-block px-3 py-1 text-sm font-semibold rounded-full bg-gray-200`}>
+                  <td className="py-2 px-4 justify-items-center">
+                    <span 
+                      className={`ipx-2 py-1 rounded-md text-white w-24 text-center block items-center
+                        ${doc.status === 'Approved' ? 'bg-green-500 text-white' : 
+                        doc.status === 'Pending' ? 'bg-yellow-500 text-white' : 'bg-red-500'}`}
+                    >
                       {doc.status}
                     </span>
                   </td>
-                  <td className="py-2 px-4 text-center">
+                  <td className="py-2 px-4 text-center justify-items-center">
                     <NavLink
                       to={`/view/${doc.id}`}
                       className="bg-blue-500 text-white px-3 py-1 rounded mr-2"

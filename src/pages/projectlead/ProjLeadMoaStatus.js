@@ -207,7 +207,7 @@ const ProjLeadMoaStatus = () => {
                         </td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                           <span
-                            className={`px-2 py-1 rounded-md text-white ${
+                            className={`px-2 py-1 rounded-md text-white w-24 text-center block${
                               moa.status.toLowerCase() === 'approved'
                                 ? 'bg-green-500'
                                 : moa.status.toLowerCase() === 'rejected'

@@ -178,7 +178,7 @@ const DirectorProjectStatistics = () => {
 
     if (allZero) {
       return (
-        <div className="text-center text-gray-500 py-8">
+        <div className="text-center text-red-500 py-8">
           No data available for {groupBy}
         </div>
       );
@@ -191,9 +191,9 @@ const DirectorProjectStatistics = () => {
           data: data.labels 
         }]}
         series={[
-          { data: data.approved, label: 'Approved', color: '#4CAF50' },
-          { data: data.pending, label: 'Pending', color: '#FFC107' },
-          { data: data.rejected, label: 'Rejected', color: '#F44336' }
+          { data: data.approved, label: 'Approved', color: '#4ADE80' },
+          { data: data.pending, label: 'Pending', color: '#FACC15' },
+          { data: data.rejected, label: 'Rejected', color: '#F87171' }
         ]}
         width={800}
         height={400}
@@ -202,15 +202,15 @@ const DirectorProjectStatistics = () => {
   };
 
   return (
-    <div className="bg-gray-200 min-h-screen flex">
+    <div className="bg-gray-200 min-h-screen min-w-screen flex">
       <div className="w-1/5 fixed h-full">
         <DirectorSidebar />
       </div>
 
-      <div className="flex-1 ml-[20%] mr-[0%] max-w-full">
+      <div className="flex-1 ml-[20%] mr-[0%] max-w-screen">
         <Topbar />
 
-        <div className="flex flex-col mt-16 px-10 w-full">
+        <div className="flex flex-col mt-16 px-10 w-screen">
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <CircularProgress />
@@ -222,10 +222,10 @@ const DirectorProjectStatistics = () => {
           ) : (
             <div>
               
-              <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 w-full">
+              <div className="bg-white shadow-lg rounded-lg py-4 px-4 w-screen">
                 {/* Campus Bar Graph with Filters */}
                 <div className="mb-8">
-                  <h2 className="text-xl font-semibold mb-4">Projects by Campus</h2>
+                  <h2 className="text-xl font-bold mb-4">PROJECTS BY CAMPUS</h2>
                   
                   <div className="flex space-x-4 mb-4">
                     <select
@@ -272,16 +272,14 @@ const DirectorProjectStatistics = () => {
                       <option value="rejected">Rejected</option>
                     </select>
                   </div>
-
                   {renderBarChart(campusFilter, 'campus')}
                 </div>
               </div>
 
-              <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 w-full">
+              <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 w-screen">
                 {/* College Bar Graph with Filters */}
                 <div className="mb-8">
-                  <h2 className="text-xl font-semibold mb-4">Projects by College</h2>
-                  
+                  <h2 className="text-xl font-bold mb-4">PROJECTS BY COLLEGE</h2>
                   <div className="flex space-x-4 mb-4">
                     <select
                       value={collegeFilter.year}
@@ -343,10 +341,10 @@ const DirectorProjectStatistics = () => {
                 </div>
               </div>
 
-              <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 mb-4 w-full">
+              <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 mb-4 w-screen">
                 {/* Program Bar Graph with Filters */}
                 <div className="mb-8">
-                  <h2 className="text-xl font-semibold mb-4">Projects by Program</h2>
+                  <h2 className="text-xl font-bold mb-4">PROJECTS BY PROGRAM</h2>
                   
                   <div className="flex space-x-4 mb-4">
                     <select

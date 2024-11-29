@@ -241,14 +241,14 @@ const DirectorDashboard = () => {
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         {new Date(doc.dateCreated).toLocaleDateString()}
                                                     </td>
-                                                    <td className={`px-6 py-3 
+                                                    <td className={`px-6 py-3 text-center 
                                                         ${doc.reviewStatus === 'approved' 
                                                         ? 'text-green-500' : doc.reviewStatus === 'pending' 
                                                         ? 'text-yellow-500' : 'text-red-500'}`}>
                                                         {doc.reviewStatus}
                                                     </td>
                                                     <td className="px-6 py-3 ">{doc.reviewDate ? new Date(doc.reviewDate).toLocaleDateString() : "N/A"}</td>
-                                                    <td className={`px-6 py-3 
+                                                    <td className={`px-6 py-3 text-center 
                                                         ${doc.status === 'approved' 
                                                         ? 'text-green-500' : doc.status === 'pending' 
                                                         ? 'text-yellow-500' : 'text-red-500'}`}>

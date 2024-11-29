@@ -4,20 +4,14 @@ import VPALASideBar from '../../components/VPALASideBar';
 import { useNavigate, NavLink } from 'react-router-dom';
 
 const VPALADashboard = () => {
-
     const [projects, setProjects] = useState([]);
     const [statusCounts, setStatusCounts] = useState({ approved: 0, pending: 0 });
     const [currentPage, setCurrentPage] = useState(1);
+    const [showDownloadModal, setShowDownloadModal] = useState(false);
+    const [currentDownload, setCurrentDownload] = useState(null);
     const itemsPerPage = 5;
     const userID = localStorage.getItem('userid');
     const navigate = useNavigate();
-
-    const documentData = [
-        { id: 1, title: "Valueno, Rabosa A.", college: "Project Proposal", date: "03/31/2019" },
-        { id: 2, title: "Valueno, Rabosa A.", college: "Load Trainers", date: "04/02/2022" },
-        { id: 3, title: "Valueno, Rabosa A.", college: "Project Proposal", date: "08/09/2021" },
-        // Add more items if needed
-    ];
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -46,6 +40,19 @@ const VPALADashboard = () => {
 
     const handleNavigate = (statusFilter) => {
         navigate(`/project-status/${statusFilter.toLowerCase()}`); // Ensure it passes in lowercase
+    };
+
+    const openDownloadModal = (doc) => {
+        setCurrentDownload(doc);
+        setShowDownloadModal(true);
+    };
+
+    const handleDownload = (format) => {
+        if (currentDownload) {
+            const downloadLink = `${currentDownload.downloadLink}.${format.toLowerCase()}`;
+            alert(`Downloading as ${format}: ${downloadLink}`);
+            setShowDownloadModal(false);
+        }
     };
 
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -160,6 +167,7 @@ const VPALADashboard = () => {
                                     <th className="py-2 px-4 text-left">PROJECT TITLE</th>
                                     <th className="py-2 px-2 text-center w-1/4">COLLEGE</th>
                                     <th className="py-2 px-2 text-center w-1/4">DATE SUBMITTED</th>
+                                    <th className="py-2 px-4 text-center w-1/4">ACTIONS</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -168,6 +176,20 @@ const VPALADashboard = () => {
                                         <td className="py-2 px-4">{doc.title}</td>
                                         <td className="py-2 px-4">{doc.college}</td>
                                         <td className="py-2 px-4">{doc.date}</td>
+                                        <td className="py-2 px-4 flex justify-center items-center">
+                                            <NavLink
+                                                to={`/view/${doc.id}`}
+                                                className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
+                                            >
+                                                View
+                                            </NavLink>
+                                            <button
+                                                onClick={() => openDownloadModal(doc)}
+                                                className="bg-green-500 text-white px-3 py-1 rounded"
+                                            >
+                                                Download
+                                            </button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -180,6 +202,34 @@ const VPALADashboard = () => {
                     </div>
                 </div>
             </div>
+
+            {showDownloadModal && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded shadow-md">
+                        <h2 className="text-lg font-bold mb-4">Choose File Format</h2>
+                        <div className="flex justify-between">
+                            <button
+                                onClick={() => handleDownload("PDF")}
+                                className="px-4 py-2 bg-blue-500 text-white rounded mr-2"
+                            >
+                                PDF
+                            </button>
+                            <button
+                                onClick={() => handleDownload("MS Word")}
+                                className="px-4 py-2 bg-green-500 text-white rounded"
+                            >
+                                MS Word
+                            </button>
+                        </div>
+                        <button
+                            onClick={() => setShowDownloadModal(false)}
+                            className="mt-4 px-4 py-2 bg-gray-300 rounded"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

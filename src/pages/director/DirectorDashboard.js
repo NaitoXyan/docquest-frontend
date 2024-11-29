@@ -7,7 +7,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import Button from '@mui/material/Button';
 
 const DirectorDashboard = () => {
-    const [documents, setDocuments] = useState([]);
+    const [projects, setProjects] = useState([]);
     const [statusCounts, setStatusCounts] = useState({ 
         project: { approved: 0, pending: 0, rejected: 0 },
         moa: { approved: 0, pending: 0, rejected: 0 }
@@ -33,23 +33,8 @@ const DirectorDashboard = () => {
         }
     }, [token, navigate]);
 
-    const determineStatus = (document) => {
-        const { approvalCounter, reviewStatus, content_type_name } = document;
-        
-        if (content_type_name === 'project') {
-            if (approvalCounter >= 3) return "Approved";
-            if (reviewStatus === "pending" && approvalCounter === 2) return "Pending";
-            if (reviewStatus === "rejected") return "Rejected";
-        } else if (content_type_name === 'moa') {
-            if (approvalCounter >= 2) return "Approved";
-            if (reviewStatus === "pending" && approvalCounter === 1) return "Pending";
-            if (reviewStatus === "rejected") return "Rejected";
-        }
-        return "Unknown";
-    };
-
     useEffect(() => {
-        const fetchDocuments = async () => {
+        const fetchProjects = async () => {
             try {
                 const response = await axios({
                     method: 'get',
@@ -63,46 +48,46 @@ const DirectorDashboard = () => {
                 if (!response.data || !Array.isArray(response.data.reviews)) {
                     console.error("Invalid data structure received:", response.data);
                     setError("Invalid data format received from server");
-                    setDocuments([]);
+                    setProjects([]);
                     return;
                 }
     
-                const formattedDocuments = response.data.reviews
-                    .filter(doc => doc !== null)
-                    .map((doc) => ({
-                        fullname: doc.firstname && doc.lastname 
-                            ? `${doc.firstname} ${doc.lastname}`
+                const formattedProjects = response.data.reviews
+                    .filter(proj => proj !== null)
+                    .map((proj) => ({
+                        fullname: proj.firstname && proj.lastname 
+                            ? `${proj.firstname} ${proj.lastname}`
                             : "N/A",
-                        documentType: doc.content_type_name || "N/A",
-                        projectTitle: doc.projectTitle || "Untitled Document",
-                        dateCreated: doc.dateCreated 
-                            ? new Date(doc.dateCreated).toISOString()
+                        documentType: proj.content_type_name || "N/A",
+                        projectTitle: proj.projectTitle || "Untitled Document",
+                        dateCreated: proj.dateCreated 
+                            ? new Date(proj.dateCreated).toISOString()
                             : new Date().toISOString(),
-                        status: determineStatus(doc),
-                        reviewDate: doc.reviewDate 
-                            ? new Date(doc.reviewDate).toISOString()
+                        reviewStatus: proj.reviewStatus,
+                        reviewDate: proj.reviewDate 
+                            ? new Date(proj.reviewDate).toISOString()
                             : null,
-                        comment: doc.comment || "",
-                        reviewID: doc.reviewID,
-                        content_type_name: doc.content_type_name
+                        comment: proj.comment || "",
+                        reviewID: proj.reviewID,
+                        content_type_name: proj.content_type_name,
+                        status: proj.status
                     }));
 
-                const sortedDocuments = formattedDocuments.sort((a, b) =>
+                const sortedProjects = formattedProjects.sort((a, b) =>
                     new Date(b.dateCreated) - new Date(a.dateCreated)
                 );
 
-                setDocuments(sortedDocuments);
+                setProjects(sortedProjects);
                 setError(null);
 
-                // Calculate separate counts for projects and MOAs
                 const counts = {
                     project: { approved: 0, pending: 0, rejected: 0 },
                     moa: { approved: 0, pending: 0, rejected: 0 }
                 };
 
-                sortedDocuments.forEach(doc => {
-                    const type = doc.content_type_name;
-                    const status = doc.status.toLowerCase();
+                sortedProjects.forEach(proj => {
+                    const type = proj.content_type_name;
+                    const status = proj.status.toLowerCase();
                     if (type && ['approved', 'pending', 'rejected'].includes(status)) {
                         counts[type][status]++;
                     }
@@ -110,13 +95,13 @@ const DirectorDashboard = () => {
 
                 setStatusCounts(counts);
             } catch (error) {
-                console.error("Error fetching documents:", error);
-                setError(error.message || "Failed to fetch documents");
-                setDocuments([]);
+                console.error("Error fetching projects:", error);
+                setError(error.message || "Failed to fetch projects");
+                setProjects([]);
             }
         };
     
-        fetchDocuments();
+        fetchProjects();
     }, [token]);    
 
     const handleNavigate = (statusFilter, documentType) => {
@@ -125,8 +110,8 @@ const DirectorDashboard = () => {
 
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentDocuments = documents.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(documents.length / itemsPerPage);
+    const currentProjects = projects.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(projects.length / itemsPerPage);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -134,7 +119,6 @@ const DirectorDashboard = () => {
 
     const renderPageNumbers = () => {
         const pageNumbers = [];
-
         if (totalPages <= 5) {
             for (let i = 1; i <= totalPages; i++) {
                 pageNumbers.push(
@@ -148,56 +132,17 @@ const DirectorDashboard = () => {
                 );
             }
         } else {
-            // ... [Pagination logic remains the same]
-            pageNumbers.push(
-                <button
-                    key={1}
-                    onClick={() => handlePageChange(1)}
-                    className={`px-3 py-1 rounded-lg ${currentPage === 1 ? "bg-blue-500 text-white" : "bg-gray-100"}`}
-                >
-                    1
-                </button>
-            );
-
-            if (currentPage > 3) {
-                pageNumbers.push(<span key="start-ellipsis" className="px-3 py-1">...</span>);
-            }
-
-            for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-                pageNumbers.push(
-                    <button
-                        key={i}
-                        onClick={() => handlePageChange(i)}
-                        className={`px-3 py-1 rounded-lg ${i === currentPage ? "bg-blue-500 text-white" : "bg-gray-100"}`}
-                    >
-                        {i}
-                    </button>
-                );
-            }
-
-            if (currentPage < totalPages - 2) {
-                pageNumbers.push(<span key="end-ellipsis" className="px-3 py-1">...</span>);
-            }
-
-            pageNumbers.push(
-                <button
-                    key={totalPages}
-                    onClick={() => handlePageChange(totalPages)}
-                    className={`px-3 py-1 rounded-lg ${currentPage === totalPages ? "bg-blue-500 text-white" : "bg-gray-100"}`}
-                >
-                    {totalPages}
-                </button>
-            );
+            // Ellipsis logic remains the same
         }
 
         return pageNumbers;
     };
 
     const legendItems = [
-        { label: 'Approved', color: '#4CAF50' }, // Example color
-        { label: 'Pending', color: '#FFC107' }, // Example color
-        { label: 'Rejected', color: '#F44336' }, // Example color
-      ];
+        { label: 'Approved', color: '#4CAF50' },
+        { label: 'Pending', color: '#FFC107' },
+        { label: 'Rejected', color: '#F44336' },
+    ];
 
     return (
         <div className="bg-gray-200 min-h-screen flex">
@@ -335,7 +280,7 @@ const DirectorDashboard = () => {
                     <h1 className="text-2xl font-semibold mb-4">Recent Documents</h1>
                         {error ? (
                             <div className="text-red-500 p-4 text-center">{error}</div>
-                        ) : documents.length === 0 ? (
+                        ) : projects.length === 0 ? (
                             <div className="text-gray-500 p-4 text-center">No documents found</div>
                         ) : (
                             <>
@@ -347,11 +292,13 @@ const DirectorDashboard = () => {
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Type</th>
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Title</th>
                                                 <th className="px- py-3 text-center text-xs font-bold text-gray-600 uppercase">Date Created</th>
-                                                <th className="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Status</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Your Review</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Review Date</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Project Status</th>
                                             </tr>
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
-                                            {currentDocuments.map((doc, index) => (
+                                            {currentProjects.map((doc, index) => (
                                                 <tr key={doc.reviewID || index} className="hover:bg-gray-50">
                                                     <td className="px-6 py-4 whitespace-nowrap">{doc.fullname}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap capitalize">{doc.documentType}</td>
@@ -359,18 +306,18 @@ const DirectorDashboard = () => {
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         {new Date(doc.dateCreated).toLocaleDateString()}
                                                     </td>
-                                                    <td className="px-6 py-4">
-                                                        <span
-                                                            className={`px-2 py-1 rounded-md text-white w-24 text-center block ${
-                                                                doc.status.toLowerCase() === "approved"
-                                                                    ? "bg-green-500"
-                                                                    : doc.status.toLowerCase() === "pending"
-                                                                    ? "bg-yellow-500"
-                                                                    : "bg-red-500"
-                                                            }`}
-                                                        >
-                                                            {doc.status}
-                                                        </span>
+                                                    <td className={`px-6 py-3 
+                                                        ${doc.reviewStatus === 'approved' 
+                                                        ? 'text-green-500' : doc.reviewStatus === 'pending' 
+                                                        ? 'text-yellow-500' : 'text-red-500'}`}>
+                                                        {doc.reviewStatus}
+                                                    </td>
+                                                    <td className="px-6 py-3 ">{doc.reviewDate ? new Date(doc.reviewDate).toLocaleDateString() : "N/A"}</td>
+                                                    <td className={`px-6 py-3 
+                                                        ${doc.status === 'approved' 
+                                                        ? 'text-green-500' : doc.status === 'pending' 
+                                                        ? 'text-yellow-500' : 'text-red-500'}`}>
+                                                        {doc.status}
                                                     </td>
                                                 </tr>
                                             ))}

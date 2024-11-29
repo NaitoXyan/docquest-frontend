@@ -944,8 +944,13 @@ const MyDocument = ({ projectID }) => {
         <Text style={[{ fontFamily: 'ArialB' }]}>
           I. Background of the Project
         </Text>
-        <Text style={[{ padding: '1%' }]}>
-          {formData.background}
+        <Text style={[{ padding: '1%', textAlign: 'justify' }]}>
+          {formData.background.split('\n\n').map((paragraph, index) => (
+            <Text key={index}>
+              {'\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}{paragraph.trim()}
+              {'\n\n\n'}
+            </Text>
+          ))}
         </Text>
         <Text style={[{ fontFamily: 'ArialB' }]}>
           II. Goals and Objectives of the Project
@@ -953,18 +958,24 @@ const MyDocument = ({ projectID }) => {
         <Text>
           Specifically, the objectives of the project are:
         </Text>
-        <Text style={[{ padding: '1%', }]}>
+        <Text style={[{ padding: '1%', marginBottom: '3%' }]}>
           1. {formData.goalsAndObjectives?.length
             ? formData.goalsAndObjectives.map((gaoItem, index) => (
-              <Text>
-                {gaoItem.goalsAndObjectives}
-              </Text>
-            )) : <Text>No objectives available</Text>}
+                <Text style={{ paddingLeft: '20px' }} key={index}>
+                  {gaoItem.goalsAndObjectives}
+                </Text>
+              )) 
+            : <Text>No objectives available</Text>}
         </Text>
-        <Text style={[{ fontFamily: 'ArialB' }]}>
-          III. Project Component (i.e. Training Design and Content)
+        <Text>
+          <Text style={[{ fontFamily: 'ArialB' }]}>
+            III. Project Component
+          </Text>
+          <Text>
+          {'\u00A0'}(i.e. Training Design and Content)
+          </Text>
         </Text>
-        <Text style={[{ paddingHorizontal: '3.5%' }]}>
+        <Text style={[{ paddingHorizontal: '3.5%', marginBottom: '3%', marginTop: '1%', fontFamily: 'ArialB'   }]}>
           {formData.projectComponent}
         </Text>
         <Text style={[{ fontFamily: 'ArialB' }]}>
@@ -974,28 +985,28 @@ const MyDocument = ({ projectID }) => {
           A. Project Activities
         </Text>
         <View style={[{ flexDirection: 'row', borderBottom: 1 }]}>
-          <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
+          <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center' }]}>
             <Text>
               Project Objective
             </Text>
           </View>
-          <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
+          <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center' }]}>
             <Text>
               Activities Involved
             </Text>
           </View>
-          <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
+          <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center'}]}>
             <Text>
               Target Date
             </Text>
           </View>
-          <View style={[styles.tableColfour, { borderBottom: 0, }]}>
+          <View style={[styles.tableColfour, { borderBottom: 0, justifyContent: 'center'}]}>
             <Text>
               Person Responsible
             </Text>
           </View>
         </View>
-        <View style={{ flexDirection: 'column' }}>
+        <View style={{ flexDirection: 'column', marginBottom: '5%'  }}>
           {formData.projectActivities?.length ? (
             formData.projectActivities.map((activityItem, index) => (
               <View
@@ -1007,14 +1018,26 @@ const MyDocument = ({ projectID }) => {
               >
                 {/* Column for Project Objective */}
                 <View style={[styles.tableColfour, { width: '25%', padding: 1, borderTop: 0, borderRight: 0, }]}>
-                  <Text style={[{ textAlign: 'justify', padding: 3 }]}>
+                  <Text style={{
+                      overflow: 'hidden',
+                      maxWidth: '100%',
+                      flexWrap: 'wrap',
+                      padding: 3,
+                      textAlign: 'left',
+                    }}>
                     {activityItem.objective}
                   </Text>
                 </View>
 
                 {/* Column for Activities Involved */}
                 <View style={[styles.tableColfour, { width: '25%', padding: 1, borderTop: 0, borderRight: 0, }]}>
-                  <Text style={[{ textAlign: 'start', padding: 3 }]}>
+                  <Text style={{
+                      overflow: 'hidden',
+                      maxWidth: '100%',
+                      flexWrap: 'wrap',
+                      padding: 3,
+                      textAlign: 'left',
+                    }}>
                     {activityItem.involved}
                   </Text>
                 </View>
@@ -1066,7 +1089,7 @@ const MyDocument = ({ projectID }) => {
           <Text style={[{ padding: '1%' }]}>
             C. Project Management Team/Trainer
           </Text>
-          <Text style={[{ paddingHorizontal: '3.5%' }]}>
+          <Text style={[{ paddingHorizontal: '3.5%', marginBottom: '5%'  }]}>
             {formData.projectManagementTeam?.length
               ? formData.projectManagementTeam.map((teamItem, index) => (
                 <Text>
@@ -1151,7 +1174,7 @@ const MyDocument = ({ projectID }) => {
             </View>
           </View>
         </View>
-        <Text style={[{ fontFamily: 'ArialB' }]}>
+        <Text style={[{ fontFamily: 'ArialB', marginTop: '3%'  }]}>
           VI. Project Evaluation and Monitoring
         </Text>
         <Text style={[{ marginLeft: 5 }]}>
@@ -1163,24 +1186,24 @@ const MyDocument = ({ projectID }) => {
 
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
+          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center', padding: '1%'}]}>
             <Text>
               Project Summary
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
+          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center', padding: '1%' }]}>
             <Text>
               Indicators
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
+          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center', padding: '1%' }]}>
             <Text>
-              Means of Verification
+            {"Means of\nVerification"}
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderBottom: 0, }]}>
+          <View style={[styles.tableColfive, { borderBottom: 0, justifyContent: 'center', padding: '1%'}]}>
             <Text>
-              Risks/Assumptions
+            {"Risks/\nAssumptions"}
             </Text>
           </View>
         </View>
@@ -1191,28 +1214,56 @@ const MyDocument = ({ projectID }) => {
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "goal")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.projectSummary}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                  height: 'auto',
+                }}key={index}>{evalItem.projectSummary}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "goal")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.indicators}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                  height: 'auto',
+                }}key={index}>{evalItem.indicators}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "goal")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.meansOfVerification}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                  height: 'auto',
+                }}key={index}>{evalItem.meansOfVerification}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "goal")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.risksAssumptions}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                  height: 'auto',
+                }}key={index}>{evalItem.risksAssumptions}</Text>
               ))
             }
           </View>
@@ -1224,28 +1275,52 @@ const MyDocument = ({ projectID }) => {
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outcome")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.projectSummary}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                }}key={index}>{evalItem.projectSummary}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outcome")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.indicators}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                }}key={index}>{evalItem.indicators}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outcome")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.meansOfVerification}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                }}key={index}>{evalItem.meansOfVerification}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outcome")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.risksAssumptions}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                }}key={index}>{evalItem.risksAssumptions}</Text>
               ))
             }
           </View>
@@ -1257,28 +1332,52 @@ const MyDocument = ({ projectID }) => {
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outputs")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.projectSummary}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                }}key={index}>{evalItem.projectSummary}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outputs")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.indicators}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                }}key={index}>{evalItem.indicators}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outputs")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.meansOfVerification}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                }}key={index}>{evalItem.meansOfVerification}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outputs")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.risksAssumptions}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                }}key={index}>{evalItem.risksAssumptions}</Text>
               ))
             }
           </View>
@@ -1290,55 +1389,79 @@ const MyDocument = ({ projectID }) => {
           <View style={[styles.tableColfive, { borderRight: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "activities")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.projectSummary}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                }}key={index}>{evalItem.projectSummary}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "activities")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.indicators}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                }}key={index}>{evalItem.indicators}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "activities")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.meansOfVerification}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                }}key={index}>{evalItem.meansOfVerification}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "activities")
               .map((evalItem, index) => (
-                <Text key={index}>{evalItem.risksAssumptions}</Text>
+                <Text style={{
+                  overflow: 'hidden',
+                  maxWidth: '100%',
+                  flexWrap: 'wrap',
+                  padding: 1,
+                  textAlign: 'left',
+                }}key={index}>{evalItem.risksAssumptions}</Text>
               ))
             }
           </View>
         </View>
         <View wrap={false}>
-          <Text style={[{ fontFamily: 'ArialB' }]}>
+          <Text style={[{ fontFamily: 'ArialB', marginTop: '3%', marginTop: '3%' }]}>
             Monitoring and Plan Schedule
           </Text>
-          <View style={[{ flexDirection: 'row', textAlign: 'center' }]}>
-            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center' }]}>
+          <View style={[{ flexDirection: 'row', textAlign: 'center', marginTop: '3%' }]}>
+            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center', padding: '1%' }]}>
               <Text>
                 Monitoring Phase
               </Text>
             </View>
-            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center' }]}>
+            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center', padding: '1%' }]}>
               <Text>
                 M & E Instrument/{'\n'}Approach
               </Text>
             </View>
-            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center'}]}>
+            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center', padding: '1%' }]}>
               <Text>
                 Format or Strategy for Data Gathering
               </Text>
             </View>
-            <View style={[styles.tableColfour, { borderBottom: 0, }]}>
+            <View style={[styles.tableColfour, {borderBottom: 0, justifyContent: 'Top', padding: '1%', height: 100 }]}>
               <Text>
-                Schedule *As agreed with community/{'\n'}organization partner
+                Schedule{'\n'}*As agreed with{'\n'}community/organization{'\n'}partner
               </Text>
             </View>
           </View>
@@ -1351,11 +1474,17 @@ const MyDocument = ({ projectID }) => {
                 Implementation
               </Text>
             </View>
-            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
+            <View style={[styles.tableColfour, {  border: 1, borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "Before Implementation Phase" && (
-                    <Text key={index} style={[{ textAlign: 'start' }]}>
+                    <Text key={index} style={{
+                      overflow: 'hidden',
+                      maxWidth: '100%',
+                      flexWrap: 'wrap',
+                      padding: 1,
+                      textAlign: 'left',
+                    }}>
                       {monitorItem.approach}
                     </Text>
                   )
@@ -1366,7 +1495,15 @@ const MyDocument = ({ projectID }) => {
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "Before Implementation Phase" && (
-                    <Text key={index} style={[{ textAlign: 'start' }]}>
+                    <Text key={index} style={{
+                      overflow: 'hidden',
+                      maxWidth: '100%',
+                      flexWrap: 'wrap',
+                      padding: 1,
+                      textAlign: 'left',
+                      marginTop: '1%',
+                      marginBottom: '2%'
+                    }}>
                       {monitorItem.dataGatheringStrategy}
                     </Text>
                   )
@@ -1377,7 +1514,13 @@ const MyDocument = ({ projectID }) => {
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "Before Implementation Phase" && (
-                    <Text key={index} style={[{ textAlign: 'start' }]}>
+                    <Text key={index} style={{
+                      overflow: 'hidden',
+                      maxWidth: '100%',
+                      flexWrap: 'wrap',
+                      padding: 1,
+                      textAlign: 'left',
+                    }}>
                       {monitorItem.schedule}
                     </Text>
                   )
@@ -1398,7 +1541,13 @@ const MyDocument = ({ projectID }) => {
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "During Project Implementation" && (
-                    <Text key={index} style={[{ textAlign: 'start' }]}>
+                    <Text key={index} style={{
+                      overflow: 'hidden',
+                      maxWidth: '100%',
+                      flexWrap: 'wrap',
+                      padding: 1,
+                      textAlign: 'left',
+                    }}>
                       {monitorItem.approach}
                     </Text>
                   )
@@ -1409,7 +1558,13 @@ const MyDocument = ({ projectID }) => {
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "During Project Implementation" && (
-                    <Text key={index} style={[{ textAlign: 'start' }]}>
+                    <Text key={index} style={{
+                      overflow: 'hidden',
+                      maxWidth: '100%',
+                      flexWrap: 'wrap',
+                      padding: 1,
+                      textAlign: 'left',
+                    }}>
                       {monitorItem.dataGatheringStrategy}
                     </Text>
                   )
@@ -1420,7 +1575,13 @@ const MyDocument = ({ projectID }) => {
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "During Project Implementation" && (
-                    <Text key={index} style={[{ textAlign: 'start' }]}>
+                    <Text key={index} style={{
+                      overflow: 'hidden',
+                      maxWidth: '100%',
+                      flexWrap: 'wrap',
+                      padding: 1,
+                      textAlign: 'left',
+                    }}>
                       {monitorItem.schedule}
                     </Text>
                   )
@@ -1437,33 +1598,54 @@ const MyDocument = ({ projectID }) => {
                 Implementation
               </Text>
             </View>
-            <View style={[styles.tableColfour, { borderRight: 0, paddingHorizontal: '1%' }]}>
+            <View style={[styles.tableColfour, { borderRight: 0, paddingHorizontal: '1%', height: 'auto', }]}>
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "After Project Implementation" && (
-                    <Text key={index} style={[{ textAlign: 'start' }]}>
+                    <Text key={index} style={{
+                      overflow: 'hidden',
+                      maxWidth: '100%',
+                      flexWrap: 'wrap',
+                      padding: 1,
+                      textAlign: 'left',
+                      height: 'auto',
+                    }}>
                       {monitorItem.approach}
                     </Text>
                   )
                 )) : ''
               }
             </View>
-            <View style={[styles.tableColfour, { borderRight: 0, paddingHorizontal: '1%' }]}>
+            <View style={[styles.tableColfour, { borderRight: 0, paddingHorizontal: '1%', height: 'auto',  }]}>
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "After Project Implementation" && (
-                    <Text key={index} style={[{ textAlign: 'start' }]}>
+                    <Text key={index} style={{
+                      overflow: 'hidden',
+                      maxWidth: '100%',
+                      flexWrap: 'wrap',
+                      padding: 1,
+                      textAlign: 'left',
+                      height: 'auto',
+                    }}>
                       {monitorItem.dataGatheringStrategy}
                     </Text>
                   )
                 )) : ''
               }
             </View>
-            <View style={[styles.tableColfour, { paddingHorizontal: '1%' }]}>
+            <View style={[styles.tableColfour, { paddingHorizontal: '1%', minHeight: 100, height: 'auto', justifyContent: 'flex-start', flex: 1  }]}>
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "After Project Implementation" && (
-                    <Text key={index} style={[{ textAlign: 'start' }]}>
+                    <Text key={index} style={{
+                      overflow: 'hidden',
+                      maxWidth: '100%',
+                      flexWrap: 'wrap',
+                      padding: 1,
+                      textAlign: 'left',
+                      height: 'auto',
+                    }}>
                       {monitorItem.schedule}
                     </Text>
                   )

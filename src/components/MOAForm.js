@@ -9,20 +9,25 @@ const MOAForm = ({ projectID }) => {
 
   const [formData, setFormData] = useState({
     projectID: projectID,
-    partyADescription: "",
-    partyBDescription: "",
-    coverageAndEffectivity: "",
-    confidentialityClause: "",
-    termination: "",
+    partyADescription: `**UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS**, a State University created and existing under the laws of the Republic of the Philippines, with principal office address located at Claro M. Recto Avenue, Lapasan, Cagayan de Oro City, represented herein by its System President,  **DR. AMBROSIO B. CULTURA II**, hereafter referred to as the **“FIRST PARTY”**;`,
+    partyBDescription: ``,
+    coverageAndEffectivity: `This Agreement shall cover  CY 2024-2025 and take effect upon the date it is signed by the parties until the completion of the training  and research collaboration program.`,
+    confidentialityClause: `The parties mutually agree to process personal information and sensitive personal information in conformity with the provisions of Republic Act No. 10173 (Data Privacy Act of 2012) and all other applicable laws and regulations of all the parties regarding data privacy protection laws.
+
+Both parties shall ensure that appropriate organizational, physical, and technical measures are in place to maintain the confidentiality, integrity and security of personal information and sensitive personal information that may come to their knowledge or possession by reason of any provision of this MOA and that their employees, agents, representatives, or any person under their authority shall hold said information under strict confidentiality at all times.`,
+    termination: `Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party.`,
     witnesseth: [
       {
-        whereas: ""
-      }
+        whereas: `WHEREAS, the FIRST PARTY is mandated to provide advanced education, higher technological, professional and advanced instructions in mathematics, science, technology, engineering, and advance research and extension work in human resource development in critical skills and competencies required for global competitiveness (Republic Act 10919);`
+      },
+      {
+        whereas: `WHEREAS, the FIRST PARTY, has its extension function to serve the underprivileged communities/groups and other stakeholders within its sphere of influence by providing competency-based training programs, transfer of technology, technical services and/or advisory;`
+      },
     ],
     firstParty: [
       {
-        name: "",
-        title: ""
+        name: "DR. AMBROSIO B. CULTURA II",
+        title: "President, USTP System"
       }
     ],
     secondParty: [
@@ -33,8 +38,12 @@ const MOAForm = ({ projectID }) => {
     ],
     witnesses: [
       {
-        name: "",
-        title: ""
+        name: "DR. MARIA TERESA M. FAJARDO",
+        title: "Director, Extension & Community Relations"
+      },
+      {
+        name: "ENGR. ALEX L. MAUREAL",
+        title: "Vice Chancellor for Research and Innovation "
       }
     ],
     partyAObligation: [
@@ -401,14 +410,14 @@ const MOAForm = ({ projectID }) => {
             <label className="block mb-2 font-semibold">
               COVERAGE AND EFFECTIVITY:
             </label>
-            <input
+            <textarea
             required
             name="coverageAndEffectivity"
             value={formData.coverageAndEffectivity}
             onChange={handleFormChange}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-          ></input>
+          ></textarea>
           </div>
         </div>
 
@@ -417,14 +426,14 @@ const MOAForm = ({ projectID }) => {
             <label className="block mb-2 font-semibold">
               CONFIDENTIALITY CLAUSE:
             </label>
-            <input
+            <textarea
             required
             name="confidentialityClause"
             value={formData.confidentialityClause}
             onChange={handleFormChange}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-          ></input>
+          ></textarea>
           </div>
         </div>
 
@@ -432,17 +441,18 @@ const MOAForm = ({ projectID }) => {
           <label className="block mb-2 font-semibold">
             TERMINATION:
           </label>
-          <input
+          <textarea
             required
             name="termination"
             value={formData.termination}
             onChange={handleFormChange}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-          ></input>
+          ></textarea>
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
+        <label className="block font-semibold">WITNESSES:</label>
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="block mb-2 font-semibold">
@@ -514,7 +524,7 @@ const MOAForm = ({ projectID }) => {
           </div>
 
           <div>
-            <label className="block mb-2 font-semibold">Witnesses:</label>
+            <label className="block mb-2 font-semibold">WITNESSES:</label>
             {formData.witnesses.map((witness, index) => (
               <div key={index} className="grid grid-cols-2 gap-2 mb-2">
                 <div>

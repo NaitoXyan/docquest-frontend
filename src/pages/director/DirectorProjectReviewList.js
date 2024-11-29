@@ -75,15 +75,15 @@ const DirectorReviewList = () => {
   useEffect(() => {
     let filtered = [...projects];
   
-    // Apply status filter
+    // Apply status filter based on reviewStatus only
     if (statusFilter && statusFilter !== 'all') {
       filtered = filtered.filter(project => {
         if (statusFilter === 'approved') {
-          return project.approvalCounter > 2; // Approved
+          return project.reviewStatus === 'approved';
         } else if (statusFilter === 'rejected') {
-          return project.reviewStatus === 'rejected' && project.reviewedByID === userID; // Rejected by user
+          return project.reviewStatus === 'rejected';
         } else if (statusFilter === 'pending') {
-          return project.approvalCounter === 2 && project.reviewStatus !== 'rejected'; // Pending
+          return project.reviewStatus === 'pending';
         }
         return true;
       });
@@ -266,9 +266,9 @@ const DirectorReviewList = () => {
                             const isProject = project.content_type === 'project'; // Assuming 'content_type' is available in project data
                             const isMoa = project.content_type === 'moa'; // Assuming 'content_type' is available in project data
 
-                            const isApproved = project.approvalCounter === (isProject ? 3 : 2);
-                            const isPending = project.approvalCounter === (isProject ? 2 : 1) && project.reviewStatus === 'pending';
-                            const isRejected = project.approvalCounter === 0 && project.reviewStatus === 'rejected';
+                            const isApproved = project.reviewStatus === 'approved';
+                            const isPending = project.reviewStatus === 'pending';
+                            const isRejected = project.reviewStatus === 'rejected';
                             
                             const statusClass = isApproved
                               ? 'bg-green-100 text-green-700'
@@ -294,9 +294,8 @@ const DirectorReviewList = () => {
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
                           {(() => {
                             // Determine the action based on approval and review status
-                            const canViewDocument = (project.approvalCounter === 3 && project.content_type === 'project') ||
-                              (project.approvalCounter === 2 && project.content_type === 'moa') ||
-                              project.reviewStatus === 'rejected';
+                            const canViewDocument = (project.reviewStatus === 'approved') ||
+                              (project.reviewStatus === 'rejected');
                           
                             const buttonClass = canViewDocument
                               ? 'bg-blue-500 text-white hover:bg-blue-600'

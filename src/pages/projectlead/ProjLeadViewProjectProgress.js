@@ -15,233 +15,138 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 
 const ProjectProgressStep = ({ projectID }) => {
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [reviews, setReviews] = useState([]);
+  const [activeStep, setActiveStep] = useState(0);
   const token = localStorage.getItem("token");
-  const navigate = useNavigate();
 
-  const [signatories, setSignatories] = useState([]);
+  // Group reviews by college
+  const groupByCollege = (reviews) => {
+    return reviews.reduce((acc, review) => {
+      const { college } = review;
+      const collegeLabel = college || "No College"; // Handle null/undefined college
+      if (!acc[collegeLabel]) {
+        acc[collegeLabel] = [];
+      }
+      acc[collegeLabel].push(review);
+      return acc;
+    }, {});
+  };
 
-  const [formData, setFormData] = useState({
-    reviewID: 0,
-    contentOwnerID: 0,
-    firstname: "",
-    lastname: "",
-    content_type: "",
-    content_type_name: "",
-    source_id: "",
-    projectTitle: "",
-    dateCreated: "",
-    reviewByID: "",
-    reviewStatus: "",
-    reviewDate: "",
-    comment: "",
-    approvalCounter: "",
-    reviewerResponsible: ""
-  });
+  useEffect(() => {
+    const fetchProjectReviews = async () => {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/get_reviews_with_projectID/${projectID}/`,
+          {
+            headers: { Authorization: `Token ${token}` },
+          }
+        );
+        setReviews(response.data);
+      } catch (error) {
+        console.error("Error fetching project reviews:", error);
+      }
+    };
 
+    fetchProjectReviews();
+  }, [projectID, token]);
+
+  const groupedReviews = groupByCollege(reviews);
+
+  const calculateStepStatus = (reviews) => {
+    const allApproved = reviews.every((review) => review.reviewStatus === "approved");
+    const anyRejected = reviews.some((review) => review.reviewStatus === "rejected");
+    const allCompleted = reviews.every((review) => review.reviewStatus && review.reviewStatus !== "pending");
+  
+    if (allApproved) {
+      return "green"; // Approved
+    } else if (anyRejected) {
+      return "red"; // Rejected
+    } else if (allCompleted) {
+      return "yellow"; // Completed but not all approved
+    } else {
+      return "orange"; // In Progress
+    }
+  };
+
+  // Major steps include colleges and director
   const steps = [
+    ...Object.entries(groupedReviews)
+      .filter(([college]) => college !== "No College") // Exclude null/undefined colleges
+      .map(([college, collegeReviews]) => {
+        const stepColor = calculateStepStatus(collegeReviews);
+  
+        return {
+          label: college,
+          description: (
+            <Box>
+              <Stepper orientation="vertical" nonLinear>
+                {collegeReviews.map((review, index) => (
+                  <Step
+                    key={review.reviewID}
+                    active={true}
+                    completed={review.reviewStatus === "approved"}
+                  >
+                    <StepLabel
+                      StepIconProps={{
+                        style: {
+                          color:
+                            review.reviewStatus === "approved"
+                              ? "green"
+                              : review.reviewStatus === "rejected"
+                              ? "red"
+                              : "orange",
+                        },
+                      }}
+                    >
+                      {review.fullname} - {review.program || "Dean"}
+                    </StepLabel>
+                    <StepContent>
+                      <Typography>Status: {review.reviewStatus || "Pending"}</Typography>
+                      <Typography>Comment: {review.comment || "None"}</Typography>
+                    </StepContent>
+                  </Step>
+                ))}
+              </Stepper>
+            </Box>
+          ),
+          stepColor, // Add color for major step
+        };
+      }),
     {
-      label: (() => {
-        const programChair = signatories.find(
-          (signatory) => signatory.title === "Program Chair"
+      label: "Director",
+      description: (() => {
+        const directorReview = reviews.find(
+          (review) => !review.college && !review.program
         );
-        return programChair ? (
+        return directorReview ? (
           <>
-            {programChair.name}
-            <br />
-            {programChair.title}
+            <Typography>{directorReview.fullname}</Typography>
+            <Typography>Status: {directorReview.reviewStatus || "Pending"}</Typography>
+            <Typography>Comment: {directorReview.comment || "None"}</Typography>
           </>
         ) : (
-          "Program Chair not found"
+          "No Director review found"
         );
       })(),
-      description: (() => {
-        if (formData.approvalCounter < 0) {
-          return "Status: Pending";
-        } else {
-          return "Status: Approved";
-        }
-      })()
-    },
-    {
-      label: (() => {
-        const collegeDean = signatories.find(
-          (signatory) => signatory.title === "College Dean"
-        );
-        return collegeDean ? (
-          <>
-            {collegeDean.name}
-            <br />
-            {collegeDean.title}
-          </>
-        ) : (
-          "college Dean not found"
-        );
-      })(),
-      description: (() => {
-        if (formData.approvalCounter < 1) {
-          return "Status: Pending";
-        } else {
-          return "Status: Approved";
-        }
-      })()
-    },
-    {
-      label: (() => {
-        const director = signatories.find(
-          (signatory) => signatory.title === "Director, Extension & Community Relations"
-        );
-        return director ? (
-          <>
-            {director.name}
-            <br />
-            {director.title}
-          </>
-        ) : (
-          "Director not found"
-        );
-      })(),
-      description: (() => {
-        if (formData.approvalCounter < 2) {
-          return "Status: Pending";
-        } else {
-          return "Status: Approved";
-        }
-      })()
+      stepColor: calculateStepStatus(
+        reviews.filter((review) => !review.college && !review.program)
+      ),
     },
   ];
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-  };
-
-  useEffect(() => {
-    setActiveStep(formData.approvalCounter);
-  }, [formData.approvalCounter]);
-
-  useEffect(() => {
-    const fetchProject = async () => {
-        try {
-          const response = await axios({
-            method: "get",
-            url: `http://127.0.0.1:8000/get_project_review/${projectID}/`,
-            headers: {
-                Authorization: `Token ${token}`,
-              "Content-Type": "application/json"
-            }
-          });
-          setFormData(response.data);
-          console.log('get review project: ', response.data);
-
-        } catch (error) {
-            console.error("Error fetching projects:", error);
-        }
-    };
-
-    fetchProject();
-  }, [projectID, token]);
-
-  useEffect(() => {
-    const fetchSignatories = async () => {
-        try {
-          const response = await axios({
-            method: "get",
-            url: `http://127.0.0.1:8000/get_project/${projectID}/`,
-            headers: {
-                Authorization: `Token ${token}`,
-              "Content-Type": "application/json"
-            }
-          });
-          const data = response.data;
-          setSignatories(data.signatories);
-          console.log('get signatories : ', response.data.signatories);
-
-        } catch (error) {
-            console.error("Error fetching projects:", error);
-        }
-    };
-
-    fetchSignatories();
-  }, [projectID, token]);
-
-  const handleEditProject = (projectID) => {
-    navigate(`/edit-project/${projectID}`);
-  };
-
   return (
-    <Box sx={{ maxWidth: 300 }}>
+    <Box sx={{ maxWidth: 600 }}>
       <Stepper activeStep={activeStep} orientation="vertical">
-        {steps.map((step, index) => {
-          // Determine the color based on the step index and approval status
-          let stepColor = "inherit"; // Default color
-
-          if (index === 0) {
-            // Program Chair
-            stepColor =
-              formData.approvalCounter < 0
-                ? "orange" // Pending
-                : formData.approvalCounter >= 0
-                ? "green" // Approved
-                : "inherit"; // Default
-          } else if (index === 1) {
-            // College Dean
-            stepColor =
-              formData.approvalCounter < 1
-                ? "orange" // Pending
-                : formData.approvalCounter >= 1
-                ? "green" // Approved
-                : "inherit"; // Default
-          } else if (index === 2) {
-            // Director, Extension & Community Relations
-            stepColor =
-              formData.approvalCounter < 2
-                ? "orange" // Pending
-                : formData.approvalCounter >= 2
-                ? "green" // Approved
-                : "inherit"; // Default
-          }
-
-          // Add rejection status dynamically
-          if (formData.reviewStatus === "rejected") {
-            stepColor = "red";
-          }
-
-          return (
-            <Step key={step.label}>
-              <StepLabel
-                StepIconProps={{
-                  style: {
-                    color: stepColor,
-                  },
-                }}
-              >
-                {step.label}
-              </StepLabel>
-              <StepContent>
-                <Typography>{step.description}</Typography>
-                <Box sx={{ mb: 2 }}></Box>
-              </StepContent>
-            </Step>
-          );
-        })}
+        {steps.map((step, index) => (
+          <Step key={step.label}>
+            <StepLabel>{step.label}</StepLabel>
+            <StepContent>
+              {step.description}
+              <Box sx={{ mb: 2 }}></Box>
+            </StepContent>
+          </Step>
+        ))}
       </Stepper>
-
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => handleEditProject(formData.source_id)}
-        disabled={formData.reviewStatus !== 'rejected'}
-      >
-        Edit Project
-      </Button>
     </Box>
   );
 };

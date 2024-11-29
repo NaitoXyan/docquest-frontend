@@ -85,20 +85,6 @@ const VPALAMemoList = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProjects = filteredDocuments.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Function to get the status color based on the document status
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Approved":
-        return "bg-green-500";
-      case "Pending":
-        return "bg-yellow-500";
-      case "Rejected":
-        return "bg-red-500";
-      default:
-        return "bg-gray-500";
-    }
-  };
-
   return (
     <div className="bg-gray-200 min-h-screen flex">
       <div className="w-1/5 fixed h-full">
@@ -146,26 +132,9 @@ const VPALAMemoList = () => {
                   <td className="py-2 px-4">{doc.college}</td>
                   <td className="py-2 px-4">{doc.date}</td>
                   <td className="py-2 px-4 text-center">
-                    <span
-                      className={`inline-block px-3 py-1 text-sm font-semibold rounded-full ${
-                        doc.status === 'Pending'
-                          ? 'bg-orange-100 text-orange-500'
-                          : doc.status === 'Approved'
-                          ? 'bg-green-100 text-green-500'
-                          : doc.status === 'Rejected'
-                          ? 'bg-red-100 text-red-500'
-                          : 'bg-gray-100 text-gray-500'
-                      }`}
-                    >
+                    <span className={`inline-block px-3 py-1 text-sm font-semibold rounded-full bg-gray-200`}>
                       {doc.status}
                     </span>
-                  </td>
-                  <td className="py-2 px-4 text-center">
-                    <button
-                      className={`${getStatusColor(doc.status)} text-white px-4 py-2 rounded`}
-                    >
-                      {doc.status}
-                    </button>
                   </td>
                   <td className="py-2 px-4 text-center">
                     <NavLink

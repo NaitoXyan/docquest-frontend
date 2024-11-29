@@ -62,14 +62,16 @@ const ProgramChairDashboard = () => {
                         dateCreated: project.dateCreated 
                             ? new Date(project.dateCreated).toISOString()
                             : new Date().toISOString(),
-                        status:
-                            project.approvalCounter > 0
-                                ? "Approved"
-                                : project.reviewStatus === "pending" && project.approvalCounter === 0
-                                ? "Pending"
-                                : project.reviewStatus === "rejected"
-                                ? "Rejected"
-                                : "Unknown",
+                        reviewStatus: project.reviewStatus === "approved"
+                            ? "Approved"
+                            : project.reviewStatus === "pending"
+                            ? "Pending"
+                            : "Rejected",
+                        status: project.status === "approved"
+                            ? "Approved"
+                            : project.status === "pending"
+                            ? "Pending"
+                            : "Rejected",
                         reviewDate: project.reviewDate 
                             ? new Date(project.reviewDate).toISOString()
                             : null,
@@ -89,7 +91,7 @@ const ProgramChairDashboard = () => {
                 // Calculate status counts with updated logic
                 const counts = sortedProjects.reduce(
                     (acc, project) => {
-                        const status = project.status.toLowerCase();
+                        const status = project.reviewStatus.toLowerCase();
                         if (['approved', 'pending', 'rejected'].includes(status)) {
                             acc[status] = (acc[status] || 0) + 1;
                         }
@@ -107,7 +109,7 @@ const ProgramChairDashboard = () => {
         };
     
         fetchProjects();
-    }, [token]);    
+    }, [token]);
 
     const handleNavigate = (statusFilter) => {
         navigate(`/program-chair-review-list/${statusFilter.toLowerCase()}/all`);
@@ -231,41 +233,42 @@ const ProgramChairDashboard = () => {
                                     <table className="min-w-full table-auto">
                                         <thead className="bg-gray-100">
                                             <tr>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Leader</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Type</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Title</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Created</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Full Name</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Document Type</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Project Title</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Date Created</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Your Review</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Review Date</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Project Status</th>
                                             </tr>
                                         </thead>
-                                        <tbody className="bg-white divide-y divide-gray-200">
-                                            {currentProjects.map((project, index) => (
-                                                <tr key={project.reviewID || index} className="hover:bg-gray-50">
-                                                    <td className="px-6 py-4 whitespace-nowrap">{project.fullname}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{project.documentType}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{project.projectTitle}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        {new Date(project.dateCreated).toLocaleDateString()}
+                                        <tbody>
+                                            {currentProjects.map((project) => (
+                                                <tr key={project.reviewID} className="border-t border-gray-200">
+                                                    <td className="px-6 py-3">{project.fullname}</td>
+                                                    <td className="px-6 py-3">{project.documentType}</td>
+                                                    <td className="px-6 py-3">{project.projectTitle}</td>
+                                                    <td className="px-6 py-3">{new Date(project.dateCreated).toLocaleDateString()}</td>
+                                                    <td className={`px-6 py-3 
+                                                        ${project.reviewStatus === 'Approved' 
+                                                        ? 'text-green-500' : project.reviewStatus === 'Pending' 
+                                                        ? 'text-yellow-500' : 'text-red-500'}`}>
+                                                        {project.reviewStatus}
                                                     </td>
-                                                    <td className="px-6 py-4">
-                                                        <span
-                                                            className={`px-2 py-1 rounded-md text-white w-24 text-center block ${
-                                                                project.status.toLowerCase() === "approved"
-                                                                    ? "bg-green-500"
-                                                                    : project.status.toLowerCase() === "pending"
-                                                                    ? "bg-yellow-500"
-                                                                    : "bg-red-500"
-                                                            }`}
-                                                        >
-                                                            {project.status}
-                                                        </span>
+                                                    <td className="px-6 py-3 ">{project.reviewDate ? new Date(project.reviewDate).toLocaleDateString() : "N/A"}</td>
+                                                    <td className={`px-6 py-3 
+                                                        ${project.status === 'Approved' 
+                                                        ? 'text-green-500' : project.status === 'Pending' 
+                                                        ? 'text-yellow-500' : 'text-red-500'}`}>
+                                                        {project.status}
                                                     </td>
                                                 </tr>
                                             ))}
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className="mt-1 flex justify-center items-center space-x-2">
+
+                                <div className="flex justify-center mt-4">
                                     {renderPageNumbers()}
                                 </div>
                             </>

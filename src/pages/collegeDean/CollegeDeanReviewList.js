@@ -70,18 +70,19 @@ const CollegeDeanReviewList = () => {
   }, [token, statusFilterParam, documentFilterParam]);
 
   // Apply filters whenever projects, status filter, document filter, or search term changes
+  // Updated status filter logic
   useEffect(() => {
     let filtered = [...projects];
 
-    // Apply status filter
+    // Apply status filter based on reviewStatus only
     if (statusFilter && statusFilter !== 'all') {
       filtered = filtered.filter(project => {
         if (statusFilter === 'approved') {
-          return project.approvalCounter > 1;
+          return project.reviewStatus === 'approved';
         } else if (statusFilter === 'rejected') {
-          return project.reviewStatus === 'rejected' && project.reviewedByID === userID;
+          return project.reviewStatus === 'rejected';
         } else if (statusFilter === 'pending') {
-          return project.approvalCounter === 1 && project.reviewStatus !== 'rejected';
+          return project.reviewStatus === 'pending';
         }
         return true;
       });
@@ -224,8 +225,9 @@ const CollegeDeanReviewList = () => {
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Type</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Title</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Your Review</th>
                     <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Review</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Project Status</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -248,41 +250,47 @@ const CollegeDeanReviewList = () => {
                         </td>
                         <td className="px-3 sm:px-3 py-4 whitespace-nowrap">
                             <span
-                                className={`px-4 py-2 text-m rounded-full ${
-                                project.approvalCounter > 1
-                                    ? 'bg-green-100 text-green-700'
-                                    : project.reviewStatus === 'rejected' && project.approvalCounter === 0
-                                    ? 'bg-red-100 text-red-700'
-                                    : 'bg-yellow-100 text-yellow-700'
-                                }`}
+                              className={`px-4 py-2 text-m rounded-full ${
+                                project.reviewStatus === 'approved'
+                                  ? 'bg-green-100 text-green-700'
+                                  : project.reviewStatus === 'rejected'
+                                  ? 'bg-red-100 text-red-700'
+                                  : 'bg-yellow-100 text-yellow-700'
+                              }`}
                             >
-                                {project.approvalCounter > 1
-                                ? 'Approved'
-                                : project.reviewStatus === 'rejected' && project.approvalCounter === 0
-                                ? 'Rejected'
-                                : 'Pending'}
+                              {project.reviewStatus.charAt(0).toUpperCase() + project.reviewStatus.slice(1)}
                             </span>
                         </td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
-                            <button
-                                onClick={() =>
-                                (project.approvalCounter > 1) ||
-                                project.reviewStatus === 'rejected'
-                                    ? handleViewPDF(project.source_id)
-                                    : reviewDocument(project.reviewID, project.source_id)
-                                }
-                                className={`w-36 px-4 py-2 rounded-md text-center ${
-                                (project.approvalCounter > 1) ||
-                                project.reviewStatus === 'rejected'
-                                    ? 'bg-blue-500 text-white hover:bg-blue-600'
-                                    : 'bg-green-500 text-white hover:bg-green-600'
-                                }`}
+                          <button
+                            onClick={() =>
+                              project.reviewStatus === 'approved' || project.reviewStatus === 'rejected'
+                                ? handleViewPDF(project.source_id)
+                                : reviewDocument(project.reviewID, project.source_id)
+                            }
+                            className={`w-36 px-4 py-2 rounded-md text-center ${
+                              project.reviewStatus === 'approved' || project.reviewStatus === 'rejected'
+                                ? 'bg-blue-500 text-white hover:bg-blue-600'
+                                : 'bg-green-500 text-white hover:bg-green-600'
+                            }`}
+                          >
+                            {project.reviewStatus === 'approved' || project.reviewStatus === 'rejected'
+                              ? 'View Document'
+                              : 'Review'}
+                          </button>
+                        </td>
+                        <td className="px-3 sm:px-3 py-4 whitespace-nowrap">
+                            <span
+                              className={`px-4 py-2 text-m rounded-full ${
+                                project.status === 'approved'
+                                  ? 'text-green-600'
+                                  : project.status === 'rejected'
+                                  ? 'text-red-600'
+                                  : 'text-yellow-600'
+                              }`}
                             >
-                                {(project.approvalCounter > 1) ||
-                                project.reviewStatus === 'rejected'
-                                ? 'View Document'
-                                : 'Review'}
-                            </button>
+                              {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                            </span>
                         </td>
 
                       </tr>

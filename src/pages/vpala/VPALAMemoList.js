@@ -94,7 +94,7 @@ const VPALAMemoList = () => {
         <Topbar />
         <div className="flex flex-col mt-14 px-10 pt-5">
           <div className="flex justify-between mb-5">
-            <h1 className="text-2xl font-bold">MEMORANDUM LIST</h1>
+            <h1 className="text-2xl font-bold">Documents</h1>
             <div className="flex">
               <input
                 type="text"

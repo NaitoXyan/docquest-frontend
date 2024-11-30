@@ -132,7 +132,7 @@ const VPALADashboard = () => {
             <div className="flex-1 ml-[20%]">
                 <Topbar />
                 <div className="p-8 font-sans">
-                    <h2 className="text-2xl mt-10 font-bold mb-6">OVERVIEW</h2>
+                    <h2 className="text-2xl mt-10 font-bold mb-6">MOA/MOU Overview</h2>
 
                     {/* Status Cards */}
                     <div className="flex gap-4 justify-center mb-8">
@@ -140,7 +140,7 @@ const VPALADashboard = () => {
                             <h3 className="text-lg">PENDING</h3>
                             <p className="text-4xl">{statusCounts.pending}</p>
                             <NavLink
-                                to="/documents/pending"
+                                to="/vpalamemolist"
                                 className="underline text-white mt-2"
                             >
                                 View
@@ -150,7 +150,7 @@ const VPALADashboard = () => {
                             <h3 className="text-lg">APPROVED</h3>
                             <p className="text-4xl">{statusCounts.approved}</p>
                             <NavLink
-                                to="/documents/approved"
+                                to="/vpalamemolist"
                                 className="underline text-white mt-2"
                             >
                                 View

@@ -93,9 +93,9 @@ const VPALAMemoList = () => {
       <div className="flex-1 ml-[20%]">
         <Topbar />
         <div className="flex flex-col mt-14 px-10 pt-5">
-          <div className="flex justify-between mb-5">
-            <h1 className="text-2xl font-bold">Documents</h1>
-            <div className="flex">
+        <div className="flex justify-end items-center mb-4">
+            {/* <h1 className="text-2xl font-bold mt-10">MEMORANDUM LIST</h1> */}
+            <div className="flex justify-between items-center mb-1">
               <input
                 type="text"
                 placeholder="Search by Project Title"

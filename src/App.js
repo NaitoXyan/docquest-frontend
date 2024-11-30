@@ -111,8 +111,8 @@ function App() {
         <Route path="/scan/:id" element={<VPALAScanCall />} />
         <Route path="/documents" element={<VPALADocStatus />} />
         <Route path="/documents/:statusFilter" element={<VPALADocStatus />} /> {/* Dynamic route */}
-        <Route path="/view/:id" element={<ProjectPDFViewer />} />
-        <Route path="/document/:id" element={<ProjectPDFViewer />} />
+        <Route path="/view/:id" element={<VPALAViewProgress/>} />
+        <Route path="/document/:id" element={<VPALAViewProgress />} />
         
         {/* EStaff routes */}
         <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>

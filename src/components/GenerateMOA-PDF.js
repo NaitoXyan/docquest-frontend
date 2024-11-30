@@ -98,8 +98,7 @@ const MOADocument = ({ data }) => {
   if (!data) return null;
 
   const {
-    partyADescription,
-    partyBDescription,
+    partyDescription,
     coverageAndEffectivity,
     confidentialityClause,
     termination,
@@ -151,12 +150,7 @@ const MOADocument = ({ data }) => {
         </View>
         <View style={[]}>
           <Text style={[{ textAlign: 'justify', marginBottom: 15, fontFamily: 'TimesNR', textIndent: 39 }]}>
-            ☐{parseText(partyADescription)}
-          </Text>
-        </View>
-        <View style={[]}>
-          <Text style={[{ textAlign: 'justify', marginBottom: 15, fontFamily: 'TimesNR', textIndent: 39 }]}>
-            ☐{parseText(partyBDescription)}
+            ☐{parseText(partyDescription)}
           </Text>
         </View>
         <View style={[{ alignItems: 'center' }]}>

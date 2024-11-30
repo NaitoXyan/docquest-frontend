@@ -67,22 +67,22 @@ const VPALADocStatus = () => {
       <div className="w-1/5 fixed h-full">
         <VPALASideBar />
       </div>
-      <div className="flex-1 ml-[20%] pt-16">
+      <div className="flex-1 ml-[20%]">
         <Topbar />
-        <div className="flex flex-col mt-14 p-4">
-          <h1 className="text-2xl font-semibold m-7">Documents</h1>
-          <div className="flex justify-between items-center mb-4">
+        <div className="flex flex-col mt-10 p-4">
+        <h1 className="text-2xl font-bold m">DOCUMENTS LIST</h1>
+          <div className="flex justify-end items-center mb-4">
             <input
               type="text"
               placeholder="Search by project title"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="border border-gray-300 rounded-lg p-2 w-1/3"
+              className="p-2 border mr-3"
             />
             <select
               value={statusFilter || "all"}
               onChange={handleStatusChange}
-              className="border border-gray-300 rounded-lg p-2"
+              className="p-2 border"
             >
               <option value="all">All Statuses</option>
               <option value="approved">Approved</option>

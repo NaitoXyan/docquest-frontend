@@ -267,8 +267,12 @@ Both parties shall ensure that appropriate organizational, physical, and technic
               <label className="block mb-2 font-semibold">
                 KNOWN ALL MEN BY THESE PRESENTS:
               </label>
-              <label className="block mb-2 font-semibold">
-                This Memorandum of Agreement executed and entered into by and between:
+              <label 
+              className="block mb-2 font-semibold"
+              title="This field is required and should include a detailed description of the parties involved in the agreement."
+            >
+              This Memorandum of Agreement executed and entered into by and between:
+              <span className="text-red-500">*</span>
               </label>
               <textarea
                 required
@@ -276,7 +280,17 @@ Both parties shall ensure that appropriate organizational, physical, and technic
                 value={formData.partyDescription}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
-                placeholder="Ex: UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS (USTP CDO), a state educational institution duly established  under Philippine law, whose office address located at Claro M. Recto Avenue, Lapasan, Cagayan  de Oro City, represented herein by its Chancellor ATTY. DIONEL O. ALBINA, hereafter referred  to as the FIRST PARTY;"
+                placeholder="Ex: UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS (USTP CDO), a state educational institution duly established under Philippine law, whose office address located at Claro M. Recto Avenue, Lapasan, Cagayan de Oro City, represented herein by its Chancellor ATTY. DIONEL O. ALBINA, hereafter referred to as the FIRST PARTY;"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',      // Prevents manual resizing
+                  minHeight: '75px',   // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
               ></textarea>
             </div>
           </div>
@@ -297,6 +311,16 @@ Both parties shall ensure that appropriate organizational, physical, and technic
                 }
                 className="w-full p-2 border border-gray-300 rounded mb-2"
                 placeholder="Enter a witnesseth statement"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',      // Prevents manual resizing
+                  minHeight: '75px',  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
               ></textarea>
             ))}
           </div>
@@ -334,6 +358,16 @@ Both parties shall ensure that appropriate organizational, physical, and technic
                 onChange={(e) => handleFirstPartyObligationChange(index, e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded mb-2"
                 placeholder="Provide the faculty experts who will conduct the training on journalism."
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',      // Prevents manual resizing
+                  minHeight: '75px',  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
               ></textarea>
             ))}
           </div>
@@ -367,6 +401,16 @@ Both parties shall ensure that appropriate organizational, physical, and technic
                 onChange={(e) => handleSecondPartyObligationChange(index, e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded mb-2"
                 placeholder="Identify the target trainees/participants."
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',      // Prevents manual resizing
+                  minHeight: '75px',  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
               ></textarea>
             ))}
           </div>
@@ -401,6 +445,16 @@ Both parties shall ensure that appropriate organizational, physical, and technic
             onChange={handleFormChange}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
+            style={{
+              overflowY: 'hidden', // Hides vertical scrollbar
+              resize: 'none',      // Prevents manual resizing
+              minHeight: '75px',  // Ensures enough height for the placeholder
+            }}
+            onInput={(e) => {
+              // Adjusts the height of the textarea based on content length
+              e.target.style.height = 'auto'; // Reset height before adjusting
+              e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+            }}
           ></textarea>
           </div>
         </div>
@@ -417,6 +471,16 @@ Both parties shall ensure that appropriate organizational, physical, and technic
             onChange={handleFormChange}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
+            style={{
+              overflowY: 'hidden', // Hides vertical scrollbar
+              resize: 'none',      // Prevents manual resizing
+              minHeight: '75px',  // Ensures enough height for the placeholder
+            }}
+            onInput={(e) => {
+              // Adjusts the height of the textarea based on content length
+              e.target.style.height = 'auto'; // Reset height before adjusting
+              e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+            }}
           ></textarea>
           </div>
         </div>
@@ -432,6 +496,16 @@ Both parties shall ensure that appropriate organizational, physical, and technic
             onChange={handleFormChange}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
+            style={{
+              overflowY: 'hidden', // Hides vertical scrollbar
+              resize: 'none',      // Prevents manual resizing
+              minHeight: '75px',  // Ensures enough height for the placeholder
+            }}
+            onInput={(e) => {
+              // Adjusts the height of the textarea based on content length
+              e.target.style.height = 'auto'; // Reset height before adjusting
+              e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+            }}
           ></textarea>
         </div>
 
@@ -485,7 +559,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
                   value={party.name}
                   onChange={(e) => handleSecondPartyChange(index, 'name', e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
-                  placeholder="name"
+                  placeholder="NAME"
                 />
               ))}
             </div>
@@ -501,7 +575,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
                   value={party.title}
                   onChange={(e) => handleSecondPartyChange(index, 'title', e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
-                  placeholder="title"
+                  placeholder="Title"
                 />
               ))}
             </div>

@@ -110,7 +110,7 @@ function App() {
         <Route path="/documents" element={<VPALADocStatus />} />
         <Route path="/documents/:statusFilter" element={<VPALADocStatus />} /> {/* Dynamic route */}
         <Route path="/view/:id" element={<ProjLeadViewProjectProgress/>} />
-        <Route path="/document/:id" element={<ProjLeadViewProjectProgress />} />
+        <Route path="/document/:id" element={<VPALAViewProgress />} />
         
         {/* EStaff routes */}
         <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>

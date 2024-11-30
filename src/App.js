@@ -66,6 +66,7 @@ import VPALAScanCall from "./pages/vpala/VPALAScanCall";
 import VPALADocStatus from "./pages/vpala/VPALADocStatus";
 import VPALAViewProgress from "./pages/vpala/VPALAViewProgress";
 import CoordViewProgress from "./pages/coordinator/CoordViewProgress";
+import VPALAReviewProject from "./pages/vpala/VPALAReviewProject";
 function App() {
   return (
     <Routes>
@@ -110,11 +111,11 @@ function App() {
         <Route path="/scan/:id" element={<VPALAScanCall />} />
         <Route path="/documents" element={<VPALADocStatus />} />
         <Route path="/documents/:statusFilter" element={<VPALADocStatus />} /> {/* Dynamic route */}
-        <Route path="/view/:id" element={<VPALAViewProgress/>} />
-        <Route path="/document/:id" element={<VPALAViewProgress />} />
-        
-        {/* EStaff routes */}
+        <Route path="/view/:id" element={<VPALAReviewProject/>} />
+        <Route path="/document/:id" element={<VPALAReviewProject />} />
         <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>
+        {/* EStaff routes */}
+       
 
          {/* ESTAFF ROUTING */}
          

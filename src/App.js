@@ -65,6 +65,7 @@ import CoordProjectStatus from "./pages/coordinator/CoordProjectStatus";
 import VPALAScanCall from "./pages/vpala/VPALAScanCall";
 import VPALADocStatus from "./pages/vpala/VPALADocStatus";
 import VPALAViewProgress from "./pages/vpala/VPALAViewProgress";
+import CoordViewProgress from "./pages/coordinator/CoordViewProgress";
 function App() {
   return (
     <Routes>
@@ -109,8 +110,8 @@ function App() {
         <Route path="/scan/:id" element={<VPALAScanCall />} />
         <Route path="/documents" element={<VPALADocStatus />} />
         <Route path="/documents/:statusFilter" element={<VPALADocStatus />} /> {/* Dynamic route */}
-        <Route path="/view/:id" element={<ProjectPDFViewer />} />
-        <Route path="/document/:id" element={<ProjectPDFViewer />} />
+        <Route path="/view/:id" element={<VPALAViewProgress/>} />
+        <Route path="/document/:id" element={<VPALAViewProgress />} />
         
         {/* EStaff routes */}
         <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>
@@ -137,7 +138,7 @@ function App() {
         <Route path="/documents-coord" element={<DocListCoord />} />
         
         <Route path="/projects/:statusFilterParam" element={<CoordProjectStatus />} />
-        <Route path="/projectpdfviewer/:projectId" element={<ProjectPDFViewer />} /> 
+        <Route path="/projectpdfviewer/:projectId" element={<CoordViewProgress />} /> 
         {/* Create proposal routes */}
         {<Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} />}
 

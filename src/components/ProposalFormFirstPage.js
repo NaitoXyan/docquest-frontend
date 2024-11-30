@@ -1230,8 +1230,6 @@ const ProposalFormFirstPage = () => {
       <h1 className="text-2xl font-bold mb-5 mt-3">
         EXTENSION PROJECT PROPOSAL
       </h1>
-
-
       <form onSubmit={handleSubmit}>
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-2 gap-4">
@@ -1387,6 +1385,15 @@ const ProposalFormFirstPage = () => {
                 onChange={handleFormChange}
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',      // Prevents manual resizing  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
               />
             </div>
           </div>
@@ -2243,6 +2250,16 @@ const ProposalFormFirstPage = () => {
                 value={formData.background}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',      // Prevents manual resizing
+                  minHeight: '75px',  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
               ></textarea>
             </div>
           </div>
@@ -2277,6 +2294,16 @@ const ProposalFormFirstPage = () => {
                     onChange={(e) => handleObjectiveChange(index, e.target.value)}
                     className="w-full p-2 border border-gray-300 rounded mt-2"
                     placeholder={`Objective ${index + 1}`}
+                    style={{
+                      overflowY: 'hidden', // Hides vertical scrollbar
+                      resize: 'none',      // Prevents manual resizing
+                      minHeight: '75px',  // Ensures enough height for the placeholder
+                    }}
+                    onInput={(e) => {
+                      // Adjusts the height of the textarea based on content length
+                      e.target.style.height = 'auto'; // Reset height before adjusting
+                      e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                    }}
                   />
                   {/* Remove button visible only for rows other than the first */}
                   {index > 0 && (
@@ -2345,6 +2372,16 @@ const ProposalFormFirstPage = () => {
                 value={formData.projectComponent}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',      // Prevents manual resizing
+                  minHeight: '75px',  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
               ></textarea>
             </div>
           </div>
@@ -2381,6 +2418,16 @@ const ProposalFormFirstPage = () => {
                   value={activity.objective}
                   onChange={(e) => handleActivityChange(index, e)}
                   className="w-full p-2 border border-gray-300 rounded"
+                  style={{
+                    overflowY: 'hidden', // Hides vertical scrollbar
+                    resize: 'none',      // Prevents manual resizing
+                    minHeight: '75px',  // Ensures enough height for the placeholder
+                  }}
+                  onInput={(e) => {
+                    // Adjusts the height of the textarea based on content length
+                    e.target.style.height = 'auto'; // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                  }}
                 ></textarea>
               </div>
 
@@ -2389,14 +2436,24 @@ const ProposalFormFirstPage = () => {
                   ACTIVITIES INVOLVED
                   <span className="text-red-500 ml-1">*</span>
                 </label>
-                <input
+                <textarea
                   required
                   name="involved"
                   value={activity.involved}
                   onChange={(e) => handleActivityChange(index, e)}
                   type="text"
                   className="w-full p-2 border border-gray-300 rounded"
-                />
+                  style={{
+                    overflowY: 'hidden', // Hides vertical scrollbar
+                    resize: 'none',      // Prevents manual resizing
+                    minHeight: '75px',  // Ensures enough height for the placeholder
+                  }}
+                  onInput={(e) => {
+                    // Adjusts the height of the textarea based on content length
+                    e.target.style.height = 'auto'; // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                  }}
+                ></textarea>
               </div>
 
               <div>
@@ -2530,33 +2587,39 @@ const ProposalFormFirstPage = () => {
 
         
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-  <div className="grid grid-cols-1 gap-4">
-    <div>
-      <label className="block mb-2 font-bold text-base">
-        PROJECT LOCATION AND BENEFICIARIES
-        <span className="text-red-500 ml-1">*</span>
-        <span
-          data-tip="Provide the location of the project and specify the beneficiaries it will serve."
-          className="ml-2 text-gray-500 cursor-pointer text-sm"
-        >
-          ⓘ
-        </span>
-        <ReactTooltip place="top" type="dark" effect="solid" />
-      </label>
-      <textarea
-        required
-        name="targetScope"
-        value={formData.targetScope}
-        onChange={handleFormChange}
-        className="w-full p-2 border border-gray-300 rounded overflow-auto resize-none"
-        style={{
-          verticalAlign: 'top',  // Ensures content is aligned to the top
-          paddingTop: '0',       // Removes any top padding if present
-        }}
-      ></textarea>
-    </div>
-  </div>
-</div>
+          <div className="grid grid-cols-1 gap-4">
+            <div>
+              <label className="block mb-2 font-bold text-base">
+                PROJECT LOCATION AND BENEFICIARIES
+                <span className="text-red-500 ml-1">*</span>
+                <span
+                  data-tip="Provide the location of the project and specify the beneficiaries it will serve."
+                  className="ml-2 text-gray-500 cursor-pointer text-sm"
+                >
+                  ⓘ
+                </span>
+                <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
+              <textarea
+                required
+                name="targetScope"
+                value={formData.targetScope}
+                onChange={handleFormChange}
+                className="w-full p-2 border border-gray-300 rounded overflow-auto resize-none"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',      // Prevents manual resizing
+                  minHeight: '75px',  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
+              ></textarea>
+            </div>
+          </div>
+        </div>
 
 
 
@@ -2592,9 +2655,14 @@ const ProposalFormFirstPage = () => {
                   onChange={(e) => handleBudgetChange(index, "itemName", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   style={{
-                    verticalAlign: 'top',  // Ensures content is aligned to the top
-                    paddingTop: '0',       // Removes any top padding if present
-                  }}
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',      // Prevents manual resizing // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
                 />
               </div>
               <div>
@@ -2767,14 +2835,15 @@ const ProposalFormFirstPage = () => {
                   onChange={(e) => handleEvaluationChange(index, "projectSummary", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Project Summary (${evaluation.type.toUpperCase()})`}
-                  style={{ 
-                    overflowY: 'hidden', 
-                    verticalAlign: 'top',  // Ensures content is aligned to the top
-                    paddingTop: '0',  // Removes top padding
+                  style={{
+                    overflowY: 'hidden', // Hides vertical scrollbar
+                    resize: 'none',      // Prevents manual resizing
+                    minHeight: '75px',  // Ensures enough height for the placeholder
                   }}
                   onInput={(e) => {
-                    e.target.style.height = 'auto';  // Reset height before adjusting
-                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                    // Adjusts the height of the textarea based on content length
+                    e.target.style.height = 'auto'; // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                   }}
                 ></textarea>
               </div>
@@ -2789,14 +2858,15 @@ const ProposalFormFirstPage = () => {
                   onChange={(e) => handleEvaluationChange(index, "indicators", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Indicators (${evaluation.type.toUpperCase()})`}
-                  style={{ 
-                    overflowY: 'hidden', 
-                    verticalAlign: 'top',  // Ensures content is aligned to the top
-                    paddingTop: '0',  // Removes top padding
+                  style={{
+                    overflowY: 'hidden', // Hides vertical scrollbar
+                    resize: 'none',      // Prevents manual resizing
+                    minHeight: '75px',  // Ensures enough height for the placeholder
                   }}
                   onInput={(e) => {
-                    e.target.style.height = 'auto';  // Reset height before adjusting
-                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                    // Adjusts the height of the textarea based on content length
+                    e.target.style.height = 'auto'; // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                   }}
                 ></textarea>
               </div>
@@ -2811,14 +2881,15 @@ const ProposalFormFirstPage = () => {
                   onChange={(e) => handleEvaluationChange(index, "meansOfVerification", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Means of Verification (${evaluation.type.toUpperCase()})`}
-                  style={{ 
-                    overflowY: 'hidden', 
-                    verticalAlign: 'top',  // Ensures content is aligned to the top
-                    paddingTop: '0',  // Removes top padding
+                  style={{
+                    overflowY: 'hidden', // Hides vertical scrollbar
+                    resize: 'none',      // Prevents manual resizing
+                    minHeight: '75px',  // Ensures enough height for the placeholder
                   }}
                   onInput={(e) => {
-                    e.target.style.height = 'auto';  // Reset height before adjusting
-                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                    // Adjusts the height of the textarea based on content length
+                    e.target.style.height = 'auto'; // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                   }}
                 ></textarea>
               </div>
@@ -2833,14 +2904,15 @@ const ProposalFormFirstPage = () => {
                   onChange={(e) => handleEvaluationChange(index, "risksAssumptions", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Risks/Assumptions (${evaluation.type.toUpperCase()})`}
-                  style={{ 
-                    overflowY: 'hidden', 
-                    verticalAlign: 'top',  // Ensures content is aligned to the top
-                    paddingTop: '0',  // Removes top padding
+                  style={{
+                    overflowY: 'hidden', // Hides vertical scrollbar
+                    resize: 'none',      // Prevents manual resizing
+                    minHeight: '75px',  // Ensures enough height for the placeholder
                   }}
                   onInput={(e) => {
-                    e.target.style.height = 'auto';  // Reset height before adjusting
-                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                    // Adjusts the height of the textarea based on content length
+                    e.target.style.height = 'auto'; // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                   }}
                 ></textarea>
               </div>
@@ -2900,10 +2972,15 @@ const ProposalFormFirstPage = () => {
                             "Effect of Project to Participants and Community Questionnaire Trainings Need Assessment",
                           ][index] || "Default placeholder for Approach"
                         }
-                        style={{ overflowY: 'hidden', verticalAlign: 'top', }}
+                        style={{
+                          overflowY: 'hidden', // Hides vertical scrollbar
+                          resize: 'none',      // Prevents manual resizing
+                          minHeight: '75px',  // Ensures enough height for the placeholder
+                        }}
                         onInput={(e) => {
-                          e.target.style.height = 'auto';  // Reset height before adjusting
-                          e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                          // Adjusts the height of the textarea based on content length
+                          e.target.style.height = 'auto'; // Reset height before adjusting
+                          e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                         }}
                       />
                     </td>
@@ -2922,10 +2999,15 @@ const ProposalFormFirstPage = () => {
                             "Survey Questionnaire, Interview with Key Informant or FGD",
                           ][index] || "Default placeholder for Data Gathering Strategy"
                         }
-                        style={{ overflowY: 'hidden', verticalAlign: 'top', }}
+                        style={{
+                          overflowY: 'hidden', // Hides vertical scrollbar
+                          resize: 'none',      // Prevents manual resizing
+                          minHeight: '75px',  // Ensures enough height for the placeholder
+                        }}
                         onInput={(e) => {
-                          e.target.style.height = 'auto';  // Reset height before adjusting
-                          e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                          // Adjusts the height of the textarea based on content length
+                          e.target.style.height = 'auto'; // Reset height before adjusting
+                          e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                         }}
                       />
                     </td>
@@ -2944,10 +3026,15 @@ const ProposalFormFirstPage = () => {
                             "May be periodically scheduled based on the objectives of the extension project (e.g. after 3 months, after 6 months, etc.)",
                           ][index] || "Default placeholder for Schedule"
                         }
-                        style={{ overflowY: 'hidden', verticalAlign: 'top', }}
+                        style={{
+                          overflowY: 'hidden', // Hides vertical scrollbar
+                          resize: 'none',      // Prevents manual resizing
+                          minHeight: '75px',  // Ensures enough height for the placeholder
+                        }}
                         onInput={(e) => {
-                          e.target.style.height = 'auto';  // Reset height before adjusting
-                          e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                          // Adjusts the height of the textarea based on content length
+                          e.target.style.height = 'auto'; // Reset height before adjusting
+                          e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                         }}
                       />
                     </td>
@@ -3002,11 +3089,14 @@ const ProposalFormFirstPage = () => {
                             className="w-full p-1 border border-gray-300 rounded resize-none"
                             placeholder="Training Load"
                             rows="1"  // Initial row size (height of the textarea)
-                            style={{ overflowY: 'hidden' }}  // Hides vertical scrollbar
+                            style={{
+                              overflowY: 'hidden', // Hides vertical scrollbar
+                              resize: 'none',      // Prevents manual resizing
+                            }}
                             onInput={(e) => {
                               // Adjusts the height of the textarea based on content length
-                              e.target.style.height = 'auto';  // Reset height before adjusting
-                              e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                              e.target.style.height = 'auto'; // Reset height before adjusting
+                              e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                             }}
                           />
                         </td>

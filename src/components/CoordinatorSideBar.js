@@ -66,10 +66,10 @@ function CoordinatorSidebar() {
                             </li>
                             <li>
                                 <NavLink 
-                                    to="/projects/disapproved" 
+                                    to="/projects/rejected" 
                                     className={({ isActive }) => 
                                         `block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`}>
-                                    Disapproved
+                                    Rejected
                                 </NavLink>
                             </li>
                             <li>
@@ -108,15 +108,16 @@ function CoordinatorSidebar() {
                         </ul>
                     </li>
 
-                    <li>
+                    {/* <li>
                         <NavLink 
                             to="/documents-coord" 
                             className={({ isActive }) => 
                                 `text-lg block px-6 py-3 ${isActive ? "text-yellow-500" : "hover:text-yellow-500"}`}>
                             Documents
                         </NavLink>
-                    </li>
+                    </li> */}
                     {/* Log out item */}
+                    
                     <li>
                         <button 
                             onClick={handleLogout} 

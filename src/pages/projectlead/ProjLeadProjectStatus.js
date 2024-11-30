@@ -36,10 +36,6 @@ const ProjLeadProjectStatus = () => {
       });
   }, [userID, statusFilterParam]);
 
-
-
-
-
   useEffect(() => {
     if (statusFilterParam) {
       setStatusFilter(statusFilterParam.toLowerCase());
@@ -200,7 +196,7 @@ const ProjLeadProjectStatus = () => {
                         </td>
                         <td className="px-3 sm:px-4 py-3">
                           <span
-                            className={`px-2 py-1 rounded-md text-white ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
+                            className={`px-2 py-1 rounded-md text-white w-24 text-center block ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
                                 project.status.toLowerCase() === 'pending' ? 'bg-amber-300' :
                                   'bg-red-400'
                               }`}

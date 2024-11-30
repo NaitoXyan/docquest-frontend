@@ -18,173 +18,174 @@ Font.register({
 const InlineHeaderProjectProposal = ({ dateCreated, documentCode = 'FM-USTP-ECRD-01a', revisionNo = '02' }) => {
   return (
     <>
-      {/* Main Header */}
-      <View style={[styles.headerContainer]}>
-        <View style={[styles.logoContainer, { width: 60 }]}>
-          <Image style={styles.logo} src="/images/ustp_logo.png" />
+      <View style={[{ position: 'fixed', top: 0 }]}>
+        {/* Main Header */}
+        <View style={[styles.headerContainer]}>
+          <View style={[styles.logoContainer, { width: 60 }]}>
+            <Image style={styles.logo} src="/images/ustp_logo.png" />
+          </View>
+          <View style={styles.textContainer}>
+            <Text style={styles.universityName}>
+              University of Science and Technology of Southern Philippines
+            </Text>
+            <Text style={styles.campuses}>
+              Alubijid | Balubal | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon | Villanueva
+            </Text>
+          </View>
         </View>
-        <View style={styles.textContainer}>
-          <Text style={styles.universityName}>
-            University of Science and Technology of Southern Philippines
-          </Text>
-          <Text style={styles.campuses}>
-            Alubijid | Balubal | Cagayan de Oro | Claveria | Jasaan | Oroquieta | Panaon | Villanueva
-          </Text>
+        {/* Document Code Section */}
+        <View style={styles.right}>
+          <View
+            style={[
+              {
+                width: '40%',
+                flexDirection: 'row',
+                border: 1,
+                borderBottom: 0,
+                justifyContent: 'center',
+                backgroundColor: '#1A1851',
+              },
+            ]}
+          >
+            <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
+              Document Code No.
+            </Text>
+          </View>
         </View>
-      </View>
-      {/* Document Code Section */}
-      <View style={styles.right}>
-        <View
-          style={[
-            {
-              width: '40%',
-              flexDirection: 'row',
-              border: 1,
-              borderBottom: 0,
-              justifyContent: 'center',
-              backgroundColor: '#1A1851',
-            },
-          ]}
-        >
-          <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
-            Document Code No.
-          </Text>
+        <View style={styles.right}>
+          <View
+            style={[
+              {
+                width: '40%',
+                flexDirection: 'row',
+                border: 1,
+                borderBottom: 0,
+                justifyContent: 'center',
+                fontFamily: 'ArialB',
+              },
+            ]}
+          >
+            <Text>{documentCode}</Text>
+          </View>
         </View>
-      </View>
-      <View style={styles.right}>
-        <View
-          style={[
-            {
-              width: '40%',
-              flexDirection: 'row',
-              border: 1,
-              borderBottom: 0,
-              justifyContent: 'center',
-              fontFamily: 'ArialB',
-            },
-          ]}
-        >
-          <Text>{documentCode}</Text>
+        {/* Revision and Effective Date Section */}
+        <View style={styles.right}>
+          <View
+            style={[
+              {
+                width: '40%',
+                flexDirection: 'row',
+                border: 1,
+                borderBottom: 0,
+              },
+            ]}
+          >
+            <View
+              style={[
+                styles.tableColthree,
+                {
+                  borderRight: 1,
+                  borderColor: '#000',
+                  justifyContent: 'center',
+                  backgroundColor: '#1A1851',
+                },
+              ]}
+            >
+              <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
+                Rev. No.
+              </Text>
+            </View>
+            <View
+              style={[
+                styles.tableColthree,
+                {
+                  borderRight: 1,
+                  borderColor: '#000',
+                  justifyContent: 'center',
+                  backgroundColor: '#1A1851',
+                },
+              ]}
+            >
+              <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
+                Effective Date
+              </Text>
+            </View>
+            <View
+              style={[
+                styles.tableColthree,
+                {
+                  justifyContent: 'center',
+                  backgroundColor: '#1A1851',
+                },
+              ]}
+            >
+              <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
+                Page No.
+              </Text>
+            </View>
+          </View>
+        </View>
+        {/* Revision Number, Effective Date, and Pagination */}
+        <View style={styles.right}>
+          <View
+            style={[
+              {
+                width: '40%',
+                flexDirection: 'row',
+                border: 1,
+              },
+            ]}
+          >
+            <View
+              style={[
+                styles.tableColthree,
+                {
+                  borderRight: 1,
+                  borderColor: '#000',
+                  justifyContent: 'center',
+                  fontSize: 8,
+                  fontFamily: 'ArialB',
+                  paddingTop: 1,
+                  paddingBottom: 1,
+                },
+              ]}
+            >
+              <Text>{revisionNo}</Text>
+            </View>
+            <View
+              style={[
+                styles.tableColthree,
+                {
+                  borderRight: 1,
+                  borderColor: '#000',
+                  justifyContent: 'center',
+                  fontSize: 8,
+                  fontFamily: 'ArialB',
+                  paddingTop: 1,
+                  paddingBottom: 1,
+                },
+              ]}
+            >
+              <Text>{dateCreated.substring(0, 10)}</Text>
+            </View>
+            <View
+              style={[
+                styles.tableColthree,
+                {
+                  justifyContent: 'center',
+                  fontSize: 8,
+                  fontFamily: 'ArialB',
+                  paddingTop: 1,
+                  paddingBottom: 1,
+                },
+              ]}
+            >
+              <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
+            </View>
+          </View>
         </View>
       </View>
 
-      {/* Revision and Effective Date Section */}
-      <View style={styles.right}>
-        <View
-          style={[
-            {
-              width: '40%',
-              flexDirection: 'row',
-              border: 1,
-              borderBottom: 0,
-            },
-          ]}
-        >
-          <View
-            style={[
-              styles.tableColthree,
-              {
-                borderRight: 1,
-                borderColor: '#000',
-                justifyContent: 'center',
-                backgroundColor: '#1A1851',
-              },
-            ]}
-          >
-            <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
-              Rev. No.
-            </Text>
-          </View>
-          <View
-            style={[
-              styles.tableColthree,
-              {
-                borderRight: 1,
-                borderColor: '#000',
-                justifyContent: 'center',
-                backgroundColor: '#1A1851',
-              },
-            ]}
-          >
-            <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
-              Effective Date
-            </Text>
-          </View>
-          <View
-            style={[
-              styles.tableColthree,
-              {
-                justifyContent: 'center',
-                backgroundColor: '#1A1851',
-              },
-            ]}
-          >
-            <Text style={[{ color: '#fff', fontSize: 8, paddingTop: 2, paddingBottom: 2 }]}>
-              Page No.
-            </Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Revision Number, Effective Date, and Pagination */}
-      <View style={styles.right}>
-        <View
-          style={[
-            {
-              width: '40%',
-              flexDirection: 'row',
-              border: 1,
-            },
-          ]}
-        >
-          <View
-            style={[
-              styles.tableColthree,
-              {
-                borderRight: 1,
-                borderColor: '#000',
-                justifyContent: 'center',
-                fontSize: 8,
-                fontFamily: 'ArialB',
-                paddingTop: 1,
-                paddingBottom: 1,
-              },
-            ]}
-          >
-            <Text>{revisionNo}</Text>
-          </View>
-          <View
-            style={[
-              styles.tableColthree,
-              {
-                borderRight: 1,
-                borderColor: '#000',
-                justifyContent: 'center',
-                fontSize: 8,
-                fontFamily: 'ArialB',
-                paddingTop: 1,
-                paddingBottom: 1,
-              },
-            ]}
-          >
-            <Text>{dateCreated.substring(0, 10)}</Text>
-          </View>
-          <View
-            style={[
-              styles.tableColthree,
-              {
-                justifyContent: 'center',
-                fontSize: 8,
-                fontFamily: 'ArialB',
-                paddingTop: 1,
-                paddingBottom: 1,
-              },
-            ]}
-          >
-            <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
-          </View>
-        </View>
-      </View>
     </>
   );
 };
@@ -379,7 +380,9 @@ const styles = StyleSheet.create({
   page: {
     fontFamily: 'Arial',
     fontSize: 10,
-    padding: 60,
+    paddingTop: 20,
+    paddingBottom: 60,
+    paddingHorizontal: 60,
     flexDirection: 'column',
   },
   arialText: {
@@ -431,6 +434,10 @@ const styles = StyleSheet.create({
     borderWidth: '1',
     borderColor: '#000',
   },
+  tableColfive1: {
+    borderWidth: '1',
+    borderColor: '#000',
+  },
   tableColsix: {
     width: '16.6',
   },
@@ -442,6 +449,15 @@ const styles = StyleSheet.create({
     borderWidth: '1',
     borderColor: '#000',
     textAlign: 'center',
+  },
+  header: {
+    position: 'fixed', // Ensure the header is independent of content flow
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  content: {
+    marginTop: 10, // Add enough margin to avoid overlap with the header
   },
 });
 
@@ -569,361 +585,366 @@ const MyDocument = ({ projectID }) => {
   };
 
   const totalBudgetaryRequirement = formData.loadingOfTrainers.reduce(
-    (total, trainer) => total + trainer.totalBudgetRequirement,
+    (total, trainer) => trainer.totalBudgetRequirement,
     0 // Initial value for total
   );
 
   return (
-    <Document 
-    title={`${formData.projectTitle} - ${formData.dateCreated} - ${new Date().toLocaleString()}`} 
-    style={styles.document}>
+    <Document
+      title={`${formData.projectTitle} - ${formData.dateCreated} - ${new Date().toLocaleString()}`}
+      style={styles.document}>
+
       {/* first page */}
       <Page style={styles.page}>
-        <InlineHeaderProjectProposal dateCreated={formData.dateCreated} />
-        <Text style={[{ border: 1, width: '30%', padding: '1%', textAlign: 'center', marginBottom: 2, justifyContent: 'center', fontFamily: 'ArialB', }]}>
-          Extension Project Proposal
-        </Text>
-        <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
-          <Text>
-            Program Category under USTP CARES:
-          </Text>
-          <Image
-            src={
-              formData.programCategory.some(program => program.title === 'I-Share')
-                ? selected
-                : unselected
-            }
-            style={{ marginHorizontal: 3, marginTop: 2, width: 7, height: 7 }}
-          />
-          <Text style={[{ paddingRight: 5 }]}>
-            I-Share
-          </Text>
-          <Image
-            src={
-              formData.programCategory.some(program => program.title === 'I-Help')
-                ? selected
-                : unselected
-            }
-            style={{ marginHorizontal: 3, marginTop: 2, width: 7, height: 7 }}
-          />
-          <Text style={[{ paddingRight: 5 }]}>
-            I-Help
-          </Text>
-          <Image
-            src={
-              formData.programCategory.some(program => program.title === 'I-Support')
-                ? selected
-                : unselected
-            }
-            style={{ marginHorizontal: 3, marginTop: 2, width: 7, height: 7 }}
-          />
-          <Text>
-            I-Support
-          </Text>
+        <View style={styles.header} fixed>
+          <InlineHeaderProjectProposal dateCreated={formData.dateCreated} />
         </View>
-        <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
-          <Text>
-            Project Title: {formData.projectTitle}
+        <View>
+          <Text style={[{ border: 1, width: '30%', padding: '1%', textAlign: 'center', marginBottom: 2, justifyContent: 'center', fontFamily: 'ArialB', }]}>
+            Extension Project Proposal
           </Text>
-        </View>
-        <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
-          <Text style={[{ paddingRight: 20 }]}>
-            TYPE OF PROJECT:
-          </Text>
-          <Image
-            src={formData.projectType === 'New Project' ? selected : unselected}
-            style={{ marginHorizontal: 3, marginTop: 2, width: 7, height: 7 }}
-          />
-          <Text style={[{ paddingRight: 70 }]}>
-            New Project
-          </Text>
-          <Image
-            src={formData.projectType === 'Continuing Project' ? selected : unselected}
-            style={{ marginHorizontal: 3, marginTop: 2, width: 7, height: 7 }}
-          />
-          <Text>
-            Continuing Project
-          </Text>
-        </View>
-        <View
-          style={[
-            styles.tableColone,
-            {
-              flexDirection: 'row',
-              flexWrap: 'wrap', // Allow wrapping to the next line
-              borderWidth: 1,
-              borderBottomWidth: 0,
-              paddingLeft: '1%',
-              paddingRight: '1%',
-              backgroundColor: '#a4b494',
-              fontFamily: 'ArialB',
-            }
-          ]}
-        >
-          <Text>PROJECT CATEGORY: </Text>
-          {formData.projectCategory?.length
-            ? formData.projectCategory.map((projectCategory, index) => (
-              <Text style={{ paddingHorizontal: 3, flexShrink: 1 }} key={index}>
-                <Image
-                  src={selected}
-                  style={{
-                    marginTop: 2,
-                    width: 7,
-                    height: 7,
-                    paddingRight: 3,
-                    paddingLeft: 3,
-                  }}
-                />
-                {projectCategory.title}
-              </Text>
-            ))
-            : 'No agencies available'}
-        </View>
-        <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
-          <Text>
-            TITLE OF RESEARCH: {formData.researchTitle}
-          </Text>
-        </View>
-        <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, backgroundColor: '#a4b494', }]}>
-          <View style={[styles.tableColtwo, { flexDirection: 'row', borderRight: 1, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
+          <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
             <Text>
-              PROPONENTS: {/* GET: Proponents */}
+              Program Category under USTP CARES:
             </Text>
-          </View>
-          <View style={[styles.tableColtwo, { flexDirection: 'row', paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
-            <Text>
-              PROGRAM:
-              {formData.program.length === 1 ?
-                formData.program[0].abbreviation :
-                formData.program.map((prog, index) => {
-                  return (
-                    <React.Fragment key={prog.programID}>
-                      {prog.abbreviation}
-                      {/* Add a comma after each abbreviation except the last one */}
-                      {index < formData.program.length - 1 && ' and '}
-                    </React.Fragment>
-                  );
-                })
+            <Image
+              src={
+                formData.programCategory.some(program => program.title === 'I-Share')
+                  ? selected
+                  : unselected
               }
+              style={{ marginHorizontal: 3, marginTop: 2, width: 7, height: 7 }}
+            />
+            <Text style={[{ paddingRight: 5 }]}>
+              I-Share
             </Text>
-          </View>
-        </View>
-        <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0 }]}>
-          <View style={[styles.tableColtwo, { flexDirection: 'row', borderRight: 1, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
-            <Text style={[{ fontSize: 9 }]}>
-              {formData.proponents && formData.proponents.length > 0
-                ? formData.proponents
-                  .map((item) => `${item.firstname} ${item.lastname}`)
-                  .reduce((acc, name, index, array) => {
-                    // Add a newline after every second name
-                    if (index % 2 === 0 && index !== 0) acc.push('\n');
-                    acc.push(name);
-                    return acc;
-                  }, [])
-                  .join('          ') // Join with a space between names
-                : 'None'}
-            </Text>
-
-          </View>
-          <View style={[styles.tableColtwo, { flexDirection: 'col', fontFamily: 'ArialB', backgroundColor: '#a4b494' }]}>
-            <View style={[{ paddingLeft: '1%', paddingRight: '1%', borderBottom: 1 }]}>
-              <Text>
-                ACCREDITATION LEVEL: {formData.accreditationLevel}
-              </Text>
-            </View>
-            <View style={[{ paddingLeft: '1%', paddingRight: '1%', }]}>
-            <Text>
-              COLLEGE: {
-                formData.program.length === 1 ? 
-                  formData.program[0].college.abbreviation : 
-                  formData.program.reduce((acc, prog, index) => {
-                    if (!acc.includes(prog.college.abbreviation)) {
-                      acc.push(prog.college.abbreviation);
-                    }
-                    return acc;
-                  }, []).join(', ')
+            <Image
+              src={
+                formData.programCategory.some(program => program.title === 'I-Help')
+                  ? selected
+                  : unselected
               }
+              style={{ marginHorizontal: 3, marginTop: 2, width: 7, height: 7 }}
+            />
+            <Text style={[{ paddingRight: 5 }]}>
+              I-Help
             </Text>
-
-            </View>
+            <Image
+              src={
+                formData.programCategory.some(program => program.title === 'I-Support')
+                  ? selected
+                  : unselected
+              }
+              style={{ marginHorizontal: 3, marginTop: 2, width: 7, height: 7 }}
+            />
+            <Text>
+              I-Support
+            </Text>
           </View>
-        </View>
-        <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
-          <Text>
-            TARGET GROUPS/BENEFICIARIES: {formData.beneficiaries}
-          </Text>
-        </View>
-        <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
-          <Text>
-            PROJECT LOCATION: {formData.projectLocationID?.street || 'No street available'}
-          </Text>
-        </View>
-        <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
-          <Text>
-            PARTNER AGENCY: {formData.agency?.length
-              ? formData.agency.map((agencyItem, index) => (
-                <Text key={index}>
-                  {agencyItem.agencyName}
+          <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
+            <Text>
+              Project Title: {formData.projectTitle}
+            </Text>
+          </View>
+          <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
+            <Text style={[{ paddingRight: 20 }]}>
+              TYPE OF PROJECT:
+            </Text>
+            <Image
+              src={formData.projectType === 'New Project' ? selected : unselected}
+              style={{ marginHorizontal: 3, marginTop: 2, width: 7, height: 7 }}
+            />
+            <Text style={[{ paddingRight: 70 }]}>
+              New Project
+            </Text>
+            <Image
+              src={formData.projectType === 'Continuing Project' ? selected : unselected}
+              style={{ marginHorizontal: 3, marginTop: 2, width: 7, height: 7 }}
+            />
+            <Text>
+              Continuing Project
+            </Text>
+          </View>
+          <View
+            style={[
+              styles.tableColone,
+              {
+                flexDirection: 'row',
+                flexWrap: 'wrap', // Allow wrapping to the next line
+                borderWidth: 1,
+                borderBottomWidth: 0,
+                paddingLeft: '1%',
+                paddingRight: '1%',
+                backgroundColor: '#a4b494',
+                fontFamily: 'ArialB',
+              }
+            ]}
+          >
+            <Text>PROJECT CATEGORY: </Text>
+            {formData.projectCategory?.length
+              ? formData.projectCategory.map((projectCategory, index) => (
+                <Text style={{ paddingHorizontal: 3, flexShrink: 1 }} key={index}>
+                  <Image
+                    src={selected}
+                    style={{
+                      marginTop: 2,
+                      width: 7,
+                      height: 7,
+                      paddingRight: 3,
+                      paddingLeft: 3,
+                    }}
+                  />
+                  {projectCategory.title}
                 </Text>
               ))
               : 'No agencies available'}
-          </Text>
-        </View>
-        <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
-          <Text>
-            BUDGET REQUIREMENT: {/* GET: Budget Requirement */}
-          </Text>
-        </View>
-        <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, }]}>
-          <View style={[styles.tableColthree, { borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center', fontFamily: 'ArialB', }]}>
+          </View>
+          <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
             <Text>
-              USTP
+              TITLE OF RESEARCH: {formData.researchTitle}
             </Text>
           </View>
-          <View style={[styles.tableColthree, { borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center', fontFamily: 'ArialB', }]}>
+          <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, backgroundColor: '#a4b494', }]}>
+            <View style={[styles.tableColtwo, { flexDirection: 'row', borderRight: 1, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
+              <Text>
+                PROPONENTS: {/* GET: Proponents */}
+              </Text>
+            </View>
+            <View style={[styles.tableColtwo, { flexDirection: 'row', paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
+              <Text>
+                PROGRAM:
+                {formData.program.length === 1 ?
+                  formData.program[0].abbreviation :
+                  formData.program.map((prog, index) => {
+                    return (
+                      <React.Fragment key={prog.programID}>
+                        {prog.abbreviation}
+                        {/* Add a comma after each abbreviation except the last one */}
+                        {index < formData.program.length - 1 && ' and '}
+                      </React.Fragment>
+                    );
+                  })
+                }
+              </Text>
+            </View>
+          </View>
+          <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0 }]}>
+            <View style={[styles.tableColtwo, { flexDirection: 'row', borderRight: 1, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
+              <Text style={[{ fontSize: 9 }]}>
+                {formData.proponents && formData.proponents.length > 0
+                  ? formData.proponents
+                    .map((item) => `${item.firstname} ${item.lastname}`)
+                    .reduce((acc, name, index, array) => {
+                      // Add a newline after every second name
+                      if (index % 2 === 0 && index !== 0) acc.push('\n');
+                      acc.push(name);
+                      return acc;
+                    }, [])
+                    .join('          ') // Join with a space between names
+                  : 'None'}
+              </Text>
+
+            </View>
+            <View style={[styles.tableColtwo, { flexDirection: 'col', fontFamily: 'ArialB', backgroundColor: '#a4b494' }]}>
+              <View style={[{ paddingLeft: '1%', paddingRight: '1%', borderBottom: 1 }]}>
+                <Text>
+                  ACCREDITATION LEVEL: {formData.accreditationLevel}
+                </Text>
+              </View>
+              <View style={[{ paddingLeft: '1%', paddingRight: '1%', }]}>
+                <Text>
+                  COLLEGE: {
+                    formData.program.length === 1 ?
+                      formData.program[0].college.abbreviation :
+                      formData.program.reduce((acc, prog, index) => {
+                        if (!acc.includes(prog.college.abbreviation)) {
+                          acc.push(prog.college.abbreviation);
+                        }
+                        return acc;
+                      }, []).join(', ')
+                  }
+                </Text>
+
+              </View>
+            </View>
+          </View>
+          <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
             <Text>
-              Partner Agency
+              TARGET GROUPS/BENEFICIARIES: {formData.beneficiaries}
             </Text>
           </View>
-          <View style={[styles.tableColthree, { paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center', fontFamily: 'ArialB', }]}>
+          <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
             <Text>
-              Total
+              PROJECT LOCATION: {formData.projectLocationID?.street || 'No street available'}
             </Text>
           </View>
-        </View>
-        <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, }]}>
-          <View style={[styles.tableColthree, { borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
+          <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
             <Text>
-              {formData.ustpBudget}
+              PARTNER AGENCY: {formData.agency?.length
+                ? formData.agency.map((agencyItem, index) => (
+                  <Text key={index}>
+                    {agencyItem.agencyName}
+                  </Text>
+                ))
+                : 'No agencies available'}
             </Text>
           </View>
-          <View style={[styles.tableColthree, { borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
+          <View style={[styles.tableColone, { flexDirection: 'row', border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', backgroundColor: '#a4b494', fontFamily: 'ArialB', }]}>
             <Text>
-              {formData.partnerAgencyBudget}
+              BUDGET REQUIREMENT: {/* GET: Budget Requirement */}
             </Text>
           </View>
-          <View style={[styles.tableColthree, { paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
+          <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, }]}>
+            <View style={[styles.tableColthree, { borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center', fontFamily: 'ArialB', }]}>
+              <Text>
+                USTP
+              </Text>
+            </View>
+            <View style={[styles.tableColthree, { borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center', fontFamily: 'ArialB', }]}>
+              <Text>
+                Partner Agency
+              </Text>
+            </View>
+            <View style={[styles.tableColthree, { paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center', fontFamily: 'ArialB', }]}>
+              <Text>
+                Total
+              </Text>
+            </View>
+          </View>
+          <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, }]}>
+            <View style={[styles.tableColthree, { borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
+              <Text>
+                {formData.ustpBudget}
+              </Text>
+            </View>
+            <View style={[styles.tableColthree, { borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
+              <Text>
+                {formData.partnerAgencyBudget}
+              </Text>
+            </View>
+            <View style={[styles.tableColthree, { paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
+              <Text>
+                {formData.totalBudget}
+              </Text>
+            </View>
+          </View>
+          <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, backgroundColor: '#a4b494', }]}>
+            <View style={[{ width: '60%', borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center', fontFamily: 'ArialB', }]}>
+              <Text>
+                TARGET DATE OF IMPLEMENTATION:
+              </Text>
+            </View>
+            <View style={[{ width: '40%', paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center', fontFamily: 'ArialB', }]}>
+              <Text>
+                TOTAL NUMBER OF HOURS:
+              </Text>
+            </View>
+          </View>
+          <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, textAlign: 'center' }]}>
+            <View style={[{ width: '60%', borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
+              <Text>
+                {formData.targetStartDateImplementation
+                  ? new Date(formData.targetStartDateImplementation).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
+                  : 'None'}
+              </Text>
+            </View>
+            <View style={[{ width: '40%', paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
+              <Text>
+                {formData.totalHours}
+              </Text>
+            </View>
+          </View>
+          <View style={[{ border: 1, borderBottom: 0, paddingLeft: '20%', paddingRight: '20%', fontFamily: 'ArialB', }]}>
             <Text>
-              {formData.totalBudget}
+              Submitted by:
+            </Text>
+            <Text style={[{ textAlign: 'center', paddingTop: 5, textDecoration: 'underline', }]}>
+              {`${formData.userID?.firstname} ${formData.userID?.lastname}`}
+            </Text>
+            <Text style={[{ textAlign: 'center', fontFamily: 'Arial', paddingBottom: 5 }]}>
+              {roles.length > 0 ? formatRoles(roles) : 'No roles available'}
             </Text>
           </View>
-        </View>
-        <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, backgroundColor: '#a4b494', }]}>
-          <View style={[{ width: '60%', borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center', fontFamily: 'ArialB', }]}>
+          <View style={[{ border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
             <Text>
-              TARGET DATE OF IMPLEMENTATION:
+              Endorsed by:
             </Text>
+            <View style={[{ flexDirection: 'row', paddingTop: '1%' }]}>
+              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', }]}>
+                {formData.signatories && formData.signatories.length > 0 &&
+                  formData.signatories.find(signatory => signatory.title.includes('Program Chair'))?.name}
+              </Text>
+              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', }]}>
+                {formData.signatories && formData.signatories.length > 0 &&
+                  formData.signatories.find(signatory => signatory.title.includes('College Dean'))?.name}
+              </Text>
+            </View>
+            <View style={[{ flexDirection: 'row', paddingBottom: '1%' }]}>
+              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', fontFamily: 'Arial', }]}>
+                Program Chair
+              </Text>
+              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', fontFamily: 'Arial', }]}>
+                College Dean
+              </Text>
+            </View>
           </View>
-          <View style={[{ width: '40%', paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center', fontFamily: 'ArialB', }]}>
-            <Text>
-              TOTAL NUMBER OF HOURS:
+          <View style={[{ border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%' }]}>
+            <Text style={{ fontFamily: 'ArialB', }}>
+              Recommending Approval:
             </Text>
+            <Text style={[{ textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', }]}>
+              {formData.signatories && formData.signatories.length > 0 &&
+                formData.signatories.find(signatory => signatory.title === 'Director, Extension & Community Relations')?.name}
+            </Text>
+            <Text style={[{ textAlign: 'center', }]}>
+              {formData.signatories && formData.signatories.length > 0 &&
+                formData.signatories.find(signatory => signatory.title === 'Director, Extension & Community Relations')?.title}
+            </Text>
+            <View style={[{ flexDirection: 'row', }]}>
+              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', }]}>
+                {formData.signatories && formData.signatories.length > 0 &&
+                  formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Academic Affairs')?.name}
+              </Text>
+              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', }]}>
+                {formData.signatories && formData.signatories.length > 0 &&
+                  formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Research and Innovation')?.name}
+              </Text>
+            </View>
+            <View style={[{ flexDirection: 'row', paddingBottom: '2%' }]}>
+              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
+                {formData.signatories && formData.signatories.length > 0 &&
+                  formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Academic Affairs')?.title}
+              </Text>
+              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
+                {formData.signatories && formData.signatories.length > 0 &&
+                  formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Research and Innovation')?.title}
+              </Text>
+            </View>
           </View>
-        </View>
-        <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, textAlign: 'center' }]}>
-          <View style={[{ width: '60%', borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
-            <Text>
-              {formData.targetStartDateImplementation
-                ? new Date(formData.targetStartDateImplementation).toLocaleDateString('en-US', { year: 'numeric', month: 'long' })
-                : 'None'}
+          <View style={[{ border: 1, paddingLeft: '1%', paddingRight: '1%' }]}>
+            <Text style={[{ fontFamily: 'ArialB', }]}>
+              Funds Available:
             </Text>
-          </View>
-          <View style={[{ width: '40%', paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
-            <Text>
-              {formData.totalHours}
-            </Text>
-          </View>
-        </View>
-        <View style={[{ border: 1, borderBottom: 0, paddingLeft: '20%', paddingRight: '20%', fontFamily: 'ArialB', }]}>
-          <Text>
-            Submitted by:
-          </Text>
-          <Text style={[{ textAlign: 'center', paddingTop: 5, textDecoration: 'underline', marginTop:20}]}>
-            {`${formData.userID?.firstname} ${formData.userID?.lastname}`}
-          </Text>
-          <Text style={[{ textAlign: 'center', fontFamily: 'Arial', paddingBottom: 5 }]}>
-            {roles.length > 0 ? formatRoles(roles) : 'No roles available'}
-          </Text>
-        </View>
-        <View style={[{ border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
-          <Text>
-            Endorsed by:
-          </Text>
-          <View style={[{ flexDirection: 'row', paddingTop: '1%' }]}>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline',marginTop:20 }]}>
-              {formData.signatories && formData.signatories.length > 0 &&
-                formData.signatories.find(signatory => signatory.title === 'Program Chair')?.name}
-            </Text>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', marginTop:20 }]}>
-              {formData.signatories && formData.signatories.length > 0 &&
-                formData.signatories.find(signatory => signatory.title === 'College Dean')?.name}
-            </Text>
-          </View>
-          <View style={[{ flexDirection: 'row', paddingBottom: '1%' }]}>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', fontFamily: 'Arial', }]}>
-              Program Chair
-            </Text>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', fontFamily: 'Arial', }]}>
-              College Dean
-            </Text>
-          </View>
-        </View>
-        <View style={[{ border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%' }]}>
-          <Text style={{ fontFamily: 'ArialB', }}>
-            Recommending Approval:
-          </Text>
-          <Text style={[{ textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB',marginTop:20 }]}>
-            {formData.signatories && formData.signatories.length > 0 &&
-              formData.signatories.find(signatory => signatory.title === 'Director, Extension & Community Relations')?.name}
-          </Text>
-          <Text style={[{ textAlign: 'center', }]}>
-            {formData.signatories && formData.signatories.length > 0 &&
-              formData.signatories.find(signatory => signatory.title === 'Director, Extension & Community Relations')?.title}
-          </Text>
-          <View style={[{ flexDirection: 'row', }]}>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', marginTop:30 }]}>
-              {formData.signatories && formData.signatories.length > 0 &&
-                formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Academic Affairs')?.name}
-            </Text>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', marginTop:30 }]}>
-              {formData.signatories && formData.signatories.length > 0 &&
-                formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Research and Innovation')?.name}
-            </Text>
-          </View>
-          <View style={[{ flexDirection: 'row', paddingBottom: '5%' }]}>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
-              {formData.signatories && formData.signatories.length > 0 &&
-                formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Academic Affairs')?.title}
-            </Text>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
-              {formData.signatories && formData.signatories.length > 0 &&
-                formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Research and Innovation')?.title}
-            </Text>
-          </View>
-        </View>
-        <View style={[{ border: 1, paddingLeft: '1%', paddingRight: '1%' }]}>
-          <Text style={[{ fontFamily: 'ArialB', }]}>
-            Funds Available:
-          </Text>
-          <View style={[{ flexDirection: 'row', paddingTop: '1%' }]}>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB', marginTop:20 }]}>
-              {formData.signatories && formData.signatories.length > 0 &&
-                formData.signatories.find(signatory => signatory.title === 'Accountant II')?.name}
-            </Text>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB',marginTop:20 }]}>
-              {formData.signatories && formData.signatories.length > 0 &&
-                formData.signatories.find(signatory => signatory.title === 'Chancellor, USTP CDO')?.name}
-            </Text>
-          </View>
-          <View style={[{ flexDirection: 'row', paddingBottom: '5%' }]}>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
-              {formData.signatories && formData.signatories.length > 0 &&
-                formData.signatories.find(signatory => signatory.title === 'Accountant II')?.title}
-            </Text>
-            <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
-              {formData.signatories && formData.signatories.length > 0 &&
-                formData.signatories.find(signatory => signatory.title === 'Chancellor, USTP CDO')?.title}
-            </Text>
+            <View style={[{ flexDirection: 'row', paddingTop: '1%' }]}>
+              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB', }]}>
+                {formData.signatories && formData.signatories.length > 0 &&
+                  formData.signatories.find(signatory => signatory.title.includes('Accountant'))?.name}
+              </Text>
+              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB', }]}>
+                {formData.signatories && formData.signatories.length > 0 &&
+                  formData.signatories.find(signatory => signatory.title === 'Chancellor, USTP CDO')?.name}
+              </Text>
+            </View>
+            <View style={[{ flexDirection: 'row', paddingBottom: '2%' }]}>
+              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
+                {formData.signatories && formData.signatories.length > 0 &&
+                  formData.signatories.find(signatory => signatory.title.includes('Accountant'))?.title}
+              </Text>
+              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', }]}>
+                {formData.signatories && formData.signatories.length > 0 &&
+                  formData.signatories.find(signatory => signatory.title === 'Chancellor, USTP CDO')?.title}
+              </Text>
+            </View>
           </View>
         </View>
       </Page>
@@ -944,13 +965,8 @@ const MyDocument = ({ projectID }) => {
         <Text style={[{ fontFamily: 'ArialB' }]}>
           I. Background of the Project
         </Text>
-        <Text style={[{ padding: '1%', textAlign: 'justify' }]}>
-          {formData.background.split('\n\n').map((paragraph, index) => (
-            <Text key={index}>
-              {'\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}{paragraph.trim()}
-              {'\n\n\n'}
-            </Text>
-          ))}
+        <Text style={[{ padding: '1%' }]}>
+          {formData.background}
         </Text>
         <Text style={[{ fontFamily: 'ArialB' }]}>
           II. Goals and Objectives of the Project
@@ -958,24 +974,18 @@ const MyDocument = ({ projectID }) => {
         <Text>
           Specifically, the objectives of the project are:
         </Text>
-        <Text style={[{ padding: '1%', marginBottom: '3%' }]}>
+        <Text style={[{ padding: '1%', }]}>
           1. {formData.goalsAndObjectives?.length
             ? formData.goalsAndObjectives.map((gaoItem, index) => (
-                <Text style={{ paddingLeft: '20px' }} key={index}>
-                  {gaoItem.goalsAndObjectives}
-                </Text>
-              )) 
-            : <Text>No objectives available</Text>}
+              <Text>
+                {gaoItem.goalsAndObjectives}
+              </Text>
+            )) : <Text>No objectives available</Text>}
         </Text>
-        <Text>
-          <Text style={[{ fontFamily: 'ArialB' }]}>
-            III. Project Component
-          </Text>
-          <Text>
-          {'\u00A0'}(i.e. Training Design and Content)
-          </Text>
+        <Text style={[{ fontFamily: 'ArialB' }]}>
+          III. Project Component (i.e. Training Design and Content)
         </Text>
-        <Text style={[{ paddingHorizontal: '3.5%', marginBottom: '3%', marginTop: '1%', fontFamily: 'ArialB'   }]}>
+        <Text style={[{ paddingHorizontal: '3.5%' }]}>
           {formData.projectComponent}
         </Text>
         <Text style={[{ fontFamily: 'ArialB' }]}>
@@ -985,28 +995,28 @@ const MyDocument = ({ projectID }) => {
           A. Project Activities
         </Text>
         <View style={[{ flexDirection: 'row', borderBottom: 1 }]}>
-          <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center' }]}>
+          <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
             <Text>
               Project Objective
             </Text>
           </View>
-          <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center' }]}>
+          <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
             <Text>
               Activities Involved
             </Text>
           </View>
-          <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center'}]}>
+          <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
             <Text>
               Target Date
             </Text>
           </View>
-          <View style={[styles.tableColfour, { borderBottom: 0, justifyContent: 'center'}]}>
+          <View style={[styles.tableColfour, { borderBottom: 0, }]}>
             <Text>
               Person Responsible
             </Text>
           </View>
         </View>
-        <View style={{ flexDirection: 'column', marginBottom: '5%'  }}>
+        <View style={{ flexDirection: 'column' }}>
           {formData.projectActivities?.length ? (
             formData.projectActivities.map((activityItem, index) => (
               <View
@@ -1018,42 +1028,30 @@ const MyDocument = ({ projectID }) => {
               >
                 {/* Column for Project Objective */}
                 <View style={[styles.tableColfour, { width: '25%', padding: 1, borderTop: 0, borderRight: 0, }]}>
-                  <Text style={{
-                      overflow: 'hidden',
-                      maxWidth: '100%',
-                      flexWrap: 'wrap',
-                      padding: 3,
-                      textAlign: 'left',
-                    }}>
+                  <Text style={[{ textAlign: 'justify', padding: 3 }]}>
                     {activityItem.objective}
                   </Text>
                 </View>
 
                 {/* Column for Activities Involved */}
                 <View style={[styles.tableColfour, { width: '25%', padding: 1, borderTop: 0, borderRight: 0, }]}>
-                  <Text style={{
-                      overflow: 'hidden',
-                      maxWidth: '100%',
-                      flexWrap: 'wrap',
-                      padding: 3,
-                      textAlign: 'left',
-                    }}>
+                  <Text style={[{ textAlign: 'start', padding: 3 }]}>
                     {activityItem.involved}
                   </Text>
                 </View>
 
-                {/* Column for Target Date */}
-                <View style={[styles.tableColfour, { width: '25%', padding: 1, borderRight: 0, borderTop: 0, padding: 3 }]}>
-                  <Text
-                    style={{
-                      overflow: 'hidden',
-                      maxWidth: '100%',
-                      flexWrap: 'wrap'
-                    }}
-                  >
-                    {activityItem.targetDate}
-                  </Text>
-                </View>
+                  {/* Column for Target Date */}
+                  <View style={[styles.tableColfour, { width: '25%', padding: 1, borderRight: 0, borderTop: 0, padding: 3 }]}>
+                    <Text
+                      style={{
+                        overflow: 'hidden',
+                        maxWidth: '100%',
+                        flexWrap: 'wrap'
+                      }}
+                    >
+                      {activityItem.targetDate}
+                    </Text>
+                  </View>
 
                 {/* Column for Person Responsible */}
                 <View style={[styles.tableColfour, { width: '25%', padding: 1, borderTop: 0, padding: 3 }]}>
@@ -1089,7 +1087,7 @@ const MyDocument = ({ projectID }) => {
           <Text style={[{ padding: '1%' }]}>
             C. Project Management Team/Trainer
           </Text>
-          <Text style={[{ paddingHorizontal: '3.5%', marginBottom: '5%'  }]}>
+          <Text style={[{ paddingHorizontal: '3.5%' }]}>
             {formData.projectManagementTeam?.length
               ? formData.projectManagementTeam.map((teamItem, index) => (
                 <Text>
@@ -1100,55 +1098,55 @@ const MyDocument = ({ projectID }) => {
           </Text>
           <Text style={[{ padding: '1%' }]}>
 
-          </Text>
-        </View>
-        <View wrap={false}>
-          <Text style={[{ fontFamily: 'ArialB', marginBottom: '1%', justifyContent: 'center' }]}>
-            V. Budgetary Requirements
-          </Text>
-          <View>
-            {/* Header Row */}
-            <View style={[{ flexDirection: 'row' }]}>
-              <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0 , justifyContent: 'center'}]}>
-                <Text style={[{justifyContent: 'center' }]}>Item</Text>
-              </View>
-              <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0 }]}>
-                <Text style={[{ borderBottom: 1 }]}>Amount</Text>
-                <View style={[{ flexDirection: 'row' }]}>
-                  <View style={[styles.tableColtwo, { borderRight: 1 }]}>
-                    <Text>USTP</Text>
-                  </View>
-                  <View style={[styles.tableColtwo]}>
-                    <Text>Partner Agency</Text>
-                  </View>
-                </View>
-              </View>
-              <View style={[styles.tableColthree, { border: 1, borderBottom: 0 , justifyContent: 'center'}]}>
-                <Text style={[{ fontFamily: 'ArialB', justifyContent: 'center' }]}>Total Amount</Text>
-              </View>
-            </View>
-
-            {/* Dynamic Items Rows */}
-            {formData.budgetRequirements?.map((item, index) => (
-              <View key={index} style={[{ flexDirection: 'row' }]}>
-                <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0 }]}>
-                  <Text>{item.itemName}</Text>
+            </Text>
+          </View>
+          <View wrap={false} style={[{ paddingBottom: '4%' }]}>
+            <Text style={[{ fontFamily: 'ArialB', marginBottom: '1%', justifyContent: 'center' }]}>
+              V. Budgetary Requirements
+            </Text>
+            <View>
+              {/* Header Row */}
+              <View style={[{ flexDirection: 'row' }]}>
+                <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0, justifyContent: 'center' }]}>
+                  <Text style={[{ justifyContent: 'center' }]}>Item</Text>
                 </View>
                 <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0 }]}>
+                  <Text style={[{ borderBottom: 1 }]}>Amount</Text>
                   <View style={[{ flexDirection: 'row' }]}>
                     <View style={[styles.tableColtwo, { borderRight: 1 }]}>
-                      <Text>{item.ustpAmount || '*'}</Text>
+                      <Text>USTP</Text>
                     </View>
                     <View style={[styles.tableColtwo]}>
-                      <Text>{item.partnerAmount || '*'}</Text>
+                      <Text>Partner Agency</Text>
                     </View>
                   </View>
                 </View>
-                <View style={[styles.tableColthree, { border: 1, borderBottom: 0 }]}>
-                  <Text>{item.totalAmount || '*'}</Text>
+                <View style={[styles.tableColthree, { border: 1, borderBottom: 0, justifyContent: 'center' }]}>
+                  <Text style={[{ fontFamily: 'ArialB', justifyContent: 'center' }]}>Total Amount</Text>
                 </View>
               </View>
-            ))}
+
+              {/* Dynamic Items Rows */}
+              {formData.budgetRequirements?.map((item, index) => (
+                <View key={index} style={[{ flexDirection: 'row' }]}>
+                  <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0 }]}>
+                    <Text>{item.itemName}</Text>
+                  </View>
+                  <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0 }]}>
+                    <View style={[{ flexDirection: 'row' }]}>
+                      <View style={[styles.tableColtwo, { borderRight: 1 }]}>
+                        <Text>{item.ustpAmount || '*'}</Text>
+                      </View>
+                      <View style={[styles.tableColtwo]}>
+                        <Text>{item.partnerAmount || '*'}</Text>
+                      </View>
+                    </View>
+                  </View>
+                  <View style={[styles.tableColthree, { border: 1, borderBottom: 0 }]}>
+                    <Text>{item.totalAmount || '*'}</Text>
+                  </View>
+                </View>
+              ))}
 
             {/* Total Budget Row */}
             <View style={[{ flexDirection: 'row', marginBottom: '1%' }]}>
@@ -1174,7 +1172,7 @@ const MyDocument = ({ projectID }) => {
             </View>
           </View>
         </View>
-        <Text style={[{ fontFamily: 'ArialB', marginTop: '3%'  }]}>
+        <Text style={[{ fontFamily: 'ArialB' }]}>
           VI. Project Evaluation and Monitoring
         </Text>
         <Text style={[{ marginLeft: 5 }]}>
@@ -1186,24 +1184,24 @@ const MyDocument = ({ projectID }) => {
 
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center', padding: '1%'}]}>
+          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
             <Text>
               Project Summary
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center', padding: '1%' }]}>
+          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
             <Text>
               Indicators
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center', padding: '1%' }]}>
+          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
             <Text>
-            {"Means of\nVerification"}
+              Means of Verification
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderBottom: 0, justifyContent: 'center', padding: '1%'}]}>
+          <View style={[styles.tableColfive, { borderBottom: 0, }]}>
             <Text>
-            {"Risks/\nAssumptions"}
+              Risks/Assumptions
             </Text>
           </View>
         </View>
@@ -1214,56 +1212,28 @@ const MyDocument = ({ projectID }) => {
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "goal")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                  height: 'auto',
-                }}key={index}>{evalItem.projectSummary}</Text>
+                <Text key={index}>{evalItem.projectSummary}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "goal")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                  height: 'auto',
-                }}key={index}>{evalItem.indicators}</Text>
+                <Text key={index}>{evalItem.indicators}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "goal")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                  height: 'auto',
-                }}key={index}>{evalItem.meansOfVerification}</Text>
+                <Text key={index}>{evalItem.meansOfVerification}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "goal")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                  height: 'auto',
-                }}key={index}>{evalItem.risksAssumptions}</Text>
+                <Text key={index}>{evalItem.risksAssumptions}</Text>
               ))
             }
           </View>
@@ -1275,52 +1245,28 @@ const MyDocument = ({ projectID }) => {
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outcome")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                }}key={index}>{evalItem.projectSummary}</Text>
+                <Text key={index}>{evalItem.projectSummary}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outcome")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                }}key={index}>{evalItem.indicators}</Text>
+                <Text key={index}>{evalItem.indicators}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outcome")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                }}key={index}>{evalItem.meansOfVerification}</Text>
+                <Text key={index}>{evalItem.meansOfVerification}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outcome")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                }}key={index}>{evalItem.risksAssumptions}</Text>
+                <Text key={index}>{evalItem.risksAssumptions}</Text>
               ))
             }
           </View>
@@ -1332,52 +1278,28 @@ const MyDocument = ({ projectID }) => {
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outputs")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                }}key={index}>{evalItem.projectSummary}</Text>
+                <Text key={index}>{evalItem.projectSummary}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outputs")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                }}key={index}>{evalItem.indicators}</Text>
+                <Text key={index}>{evalItem.indicators}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outputs")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                }}key={index}>{evalItem.meansOfVerification}</Text>
+                <Text key={index}>{evalItem.meansOfVerification}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderBottom: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "outputs")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                }}key={index}>{evalItem.risksAssumptions}</Text>
+                <Text key={index}>{evalItem.risksAssumptions}</Text>
               ))
             }
           </View>
@@ -1389,79 +1311,55 @@ const MyDocument = ({ projectID }) => {
           <View style={[styles.tableColfive, { borderRight: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "activities")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                }}key={index}>{evalItem.projectSummary}</Text>
+                <Text key={index}>{evalItem.projectSummary}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "activities")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                }}key={index}>{evalItem.indicators}</Text>
+                <Text key={index}>{evalItem.indicators}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { borderRight: 0, paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "activities")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                }}key={index}>{evalItem.meansOfVerification}</Text>
+                <Text key={index}>{evalItem.meansOfVerification}</Text>
               ))
             }
           </View>
           <View style={[styles.tableColfive, { paddingHorizontal: '1%' }]}>
             {formData.evaluationAndMonitorings?.filter(item => item.type.toLowerCase() === "activities")
               .map((evalItem, index) => (
-                <Text style={{
-                  overflow: 'hidden',
-                  maxWidth: '100%',
-                  flexWrap: 'wrap',
-                  padding: 1,
-                  textAlign: 'left',
-                }}key={index}>{evalItem.risksAssumptions}</Text>
+                <Text key={index}>{evalItem.risksAssumptions}</Text>
               ))
             }
           </View>
         </View>
         <View wrap={false}>
-          <Text style={[{ fontFamily: 'ArialB', marginTop: '3%', marginTop: '3%' }]}>
+          <Text style={[{ fontFamily: 'ArialB' }]}>
             Monitoring and Plan Schedule
           </Text>
-          <View style={[{ flexDirection: 'row', textAlign: 'center', marginTop: '3%' }]}>
-            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center', padding: '1%' }]}>
+          <View style={[{ flexDirection: 'row', textAlign: 'center' }]}>
+            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center' }]}>
               <Text>
                 Monitoring Phase
               </Text>
             </View>
-            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center', padding: '1%' }]}>
+            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center' }]}>
               <Text>
                 M & E Instrument/{'\n'}Approach
               </Text>
             </View>
-            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center', padding: '1%' }]}>
+            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, justifyContent: 'center'}]}>
               <Text>
                 Format or Strategy for Data Gathering
               </Text>
             </View>
-            <View style={[styles.tableColfour, {borderBottom: 0, justifyContent: 'Top', padding: '1%', height: 100 }]}>
+            <View style={[styles.tableColfour, { borderBottom: 0, }]}>
               <Text>
-                Schedule{'\n'}*As agreed with{'\n'}community/organization{'\n'}partner
+                Schedule *As agreed with community/{'\n'}organization partner
               </Text>
             </View>
           </View>
@@ -1474,17 +1372,11 @@ const MyDocument = ({ projectID }) => {
                 Implementation
               </Text>
             </View>
-            <View style={[styles.tableColfour, {  border: 1, borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
+            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, paddingHorizontal: '1%' }]}>
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "Before Implementation Phase" && (
-                    <Text key={index} style={{
-                      overflow: 'hidden',
-                      maxWidth: '100%',
-                      flexWrap: 'wrap',
-                      padding: 1,
-                      textAlign: 'left',
-                    }}>
+                    <Text key={index} style={[{ textAlign: 'start' }]}>
                       {monitorItem.approach}
                     </Text>
                   )
@@ -1495,15 +1387,7 @@ const MyDocument = ({ projectID }) => {
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "Before Implementation Phase" && (
-                    <Text key={index} style={{
-                      overflow: 'hidden',
-                      maxWidth: '100%',
-                      flexWrap: 'wrap',
-                      padding: 1,
-                      textAlign: 'left',
-                      marginTop: '1%',
-                      marginBottom: '2%'
-                    }}>
+                    <Text key={index} style={[{ textAlign: 'start' }]}>
                       {monitorItem.dataGatheringStrategy}
                     </Text>
                   )
@@ -1514,13 +1398,7 @@ const MyDocument = ({ projectID }) => {
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "Before Implementation Phase" && (
-                    <Text key={index} style={{
-                      overflow: 'hidden',
-                      maxWidth: '100%',
-                      flexWrap: 'wrap',
-                      padding: 1,
-                      textAlign: 'left',
-                    }}>
+                    <Text key={index} style={[{ textAlign: 'start' }]}>
                       {monitorItem.schedule}
                     </Text>
                   )
@@ -1541,13 +1419,7 @@ const MyDocument = ({ projectID }) => {
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "During Project Implementation" && (
-                    <Text key={index} style={{
-                      overflow: 'hidden',
-                      maxWidth: '100%',
-                      flexWrap: 'wrap',
-                      padding: 1,
-                      textAlign: 'left',
-                    }}>
+                    <Text key={index} style={[{ textAlign: 'start' }]}>
                       {monitorItem.approach}
                     </Text>
                   )
@@ -1558,13 +1430,7 @@ const MyDocument = ({ projectID }) => {
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "During Project Implementation" && (
-                    <Text key={index} style={{
-                      overflow: 'hidden',
-                      maxWidth: '100%',
-                      flexWrap: 'wrap',
-                      padding: 1,
-                      textAlign: 'left',
-                    }}>
+                    <Text key={index} style={[{ textAlign: 'start' }]}>
                       {monitorItem.dataGatheringStrategy}
                     </Text>
                   )
@@ -1575,13 +1441,7 @@ const MyDocument = ({ projectID }) => {
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "During Project Implementation" && (
-                    <Text key={index} style={{
-                      overflow: 'hidden',
-                      maxWidth: '100%',
-                      flexWrap: 'wrap',
-                      padding: 1,
-                      textAlign: 'left',
-                    }}>
+                    <Text key={index} style={[{ textAlign: 'start' }]}>
                       {monitorItem.schedule}
                     </Text>
                   )
@@ -1598,54 +1458,33 @@ const MyDocument = ({ projectID }) => {
                 Implementation
               </Text>
             </View>
-            <View style={[styles.tableColfour, { borderRight: 0, paddingHorizontal: '1%', height: 'auto', }]}>
+            <View style={[styles.tableColfour, { borderRight: 0, paddingHorizontal: '1%' }]}>
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "After Project Implementation" && (
-                    <Text key={index} style={{
-                      overflow: 'hidden',
-                      maxWidth: '100%',
-                      flexWrap: 'wrap',
-                      padding: 1,
-                      textAlign: 'left',
-                      height: 'auto',
-                    }}>
+                    <Text key={index} style={[{ textAlign: 'start' }]}>
                       {monitorItem.approach}
                     </Text>
                   )
                 )) : ''
               }
             </View>
-            <View style={[styles.tableColfour, { borderRight: 0, paddingHorizontal: '1%', height: 'auto',  }]}>
+            <View style={[styles.tableColfour, { borderRight: 0, paddingHorizontal: '1%' }]}>
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "After Project Implementation" && (
-                    <Text key={index} style={{
-                      overflow: 'hidden',
-                      maxWidth: '100%',
-                      flexWrap: 'wrap',
-                      padding: 1,
-                      textAlign: 'left',
-                      height: 'auto',
-                    }}>
+                    <Text key={index} style={[{ textAlign: 'start' }]}>
                       {monitorItem.dataGatheringStrategy}
                     </Text>
                   )
                 )) : ''
               }
             </View>
-            <View style={[styles.tableColfour, { paddingHorizontal: '1%', minHeight: 100, height: 'auto', justifyContent: 'flex-start', flex: 1  }]}>
+            <View style={[styles.tableColfour, { paddingHorizontal: '1%' }]}>
               {formData.monitoringPlanSchedules?.length
                 ? formData.monitoringPlanSchedules.map((monitorItem, index) => (
                   monitorItem.implementationPhase === "After Project Implementation" && (
-                    <Text key={index} style={{
-                      overflow: 'hidden',
-                      maxWidth: '100%',
-                      flexWrap: 'wrap',
-                      padding: 1,
-                      textAlign: 'left',
-                      height: 'auto',
-                    }}>
+                    <Text key={index} style={[{ textAlign: 'start' }]}>
                       {monitorItem.schedule}
                     </Text>
                   )
@@ -1658,6 +1497,7 @@ const MyDocument = ({ projectID }) => {
           </Text>
         </View>
       </Page>
+
 
       {/* Third page */}
       <Page style={styles.page}>
@@ -1681,93 +1521,99 @@ const MyDocument = ({ projectID }) => {
             ))
             : 'No agencies available'}
         </Text>
-        <View style={[{ flexDirection: 'row', textAlign: 'center', backgroundColor: '#DCDCDC' }]}>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center' }]}>
+        <View style={[{ flexDirection: 'row', textAlign: 'center', backgroundColor: '#DCDCDC', borderBottom: 1 }]}>
+          <View style={[styles.tableColfive1, { borderRight: 0, borderBottom: 0, justifyContent: 'center', width: '15%' }]}>
             <Text>
-              Name of Faculty
+              Name of
+              {'\n'}
+              Faculty
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center' }]}>
+          <View style={[styles.tableColfive1, { borderRight: 0, borderBottom: 0, justifyContent: 'center', width: '30%' }]}>
             <Text>
               Training Load
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center'}]}>
+          <View style={[styles.tableColfive1, { borderRight: 0, borderBottom: 0, justifyContent: 'center', width: '10%' }]}>
             <Text>
               No. of Hours
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, justifyContent: 'center'}]}>
+          <View style={[styles.tableColfive1, { borderRight: 0, borderBottom: 0, justifyContent: 'center', width: '30%' }]}>
             <Text style={[{ borderBottom: 1 }]}>
               Budget
             </Text>
-            <View style={[{ flexDirection: 'row' }]}>
-              <View style={[styles.tableColtwo, { borderRight: 1, justifyContent: 'center'}]}>
+            <View style={[{ flexDirection: 'row', }]}>
+              <View style={[styles.tableColtwo, { borderRight: 1, justifyContent: 'center', paddingVertical: 5 }]}>
                 <Text>
                   USTP
                 </Text>
               </View>
-              <View style={[styles.tableColtwo, {justifyContent: 'center'}]}>
+              <View style={[styles.tableColtwo, { justifyContent: 'center' }]}>
                 <Text>
-                  Partner Agency
+                  Partner{'\n'}Agency
                 </Text>
               </View>
             </View>
           </View>
-          <View style={[styles.tableColfive, { borderBottom: 0, justifyContent: 'center' }]}>
-          <Text>
-            Total Budgetary{'\n'}Requirement
-          </Text>
+          <View style={[styles.tableColfive1, { borderBottom: 0, justifyContent: 'center', width: '15%' }]}>
+            <Text>
+              Total{'\n'}Budgetary{'\n'}Requirement
+            </Text>
 
           </View>
         </View>
         {loadingOfTrainers && loadingOfTrainers.length > 0 ? (
           loadingOfTrainers.map((trainer, index) => (
             <View key={index} style={{ flexDirection: 'row' }}>
-              <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1 }]}>
+              <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1, width: '15%' }]}>
                 <Text>{trainer.faculty}</Text>
               </View>
-              <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1 }]}>
+              <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1, width: '30%' }]}>
                 <Text>{trainer.trainingLoad}</Text>
               </View>
-              <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1 }]}>
+              <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1, width: '10%' }]}>
                 <Text>{trainer.hours}</Text>
               </View>
-              <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1 }]}>
+              <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1, width: '30%' }]}>
                 <View style={{ flexDirection: 'row' }}>
                   <View style={[styles.tableColtwo, { borderRight: 1 }]}>
-                    <Text>{trainer.ustpBudget}</Text>
+                    <Text>{trainer.ustpBudget?.toLocaleString()}</Text>
                   </View>
                   <View style={styles.tableColtwo}>
-                    <Text>{trainer.agencyBudget}</Text>
+                    <Text>{trainer.agencyBudget?.toLocaleString()}</Text>
                   </View>
                 </View>
               </View>
-              <View style={[styles.tableColthree, { border: 1, borderTop: 0 }]}>
-                <Text>{trainer.totalBudgetRequirement}</Text>
+              <View style={[styles.tableColthree, { border: 1, borderTop: 0, width: '15%' }]}>
+                {/* Calculate sum and format it */}
+                <Text>
+                  {(Number(trainer.ustpBudget || 0) + Number(trainer.agencyBudget || 0)).toLocaleString()}
+                </Text>
               </View>
             </View>
           ))
         ) : (
-          <Text>No trainers to display</Text>
+          <Text>No trainers available</Text>
         )}
+
         <View style={[{ flexDirection: 'row', marginBottom: '1%' }]}>
-          <View style={[styles.tableColfive, { border: 1, borderRight: 0, borderTop: 0 }]}>
+          <View style={[styles.tableColfive1, { border: 1, borderRight: 0, borderTop: 0, width: '15%' }]}>
             <Text>
 
             </Text>
           </View>
-          <View style={[styles.tableColfive, { border: 1, borderRight: 0, borderLeft: 0, borderTop: 0 }]}>
+          <View style={[styles.tableColfive1, { border: 1, borderRight: 0, borderLeft: 0, borderTop: 0, width: '30%' }]}>
             <Text>
 
             </Text>
           </View>
-          <View style={[styles.tableColfive, { border: 1, borderRight: 0, borderLeft: 0, borderTop: 0 }]}>
+          <View style={[styles.tableColfive1, { border: 1, borderRight: 0, borderLeft: 0, borderTop: 0, width: '10%' }]}>
             <Text>
 
             </Text>
           </View>
-          <View style={[styles.tableColfive, { borderTop: 0, borderBottom: 1, borderRight: 0, borderLeft: 0 }]}>
+          <View style={[styles.tableColfive1, { borderTop: 0, borderBottom: 1, borderRight: 0, borderLeft: 0, width: '30%' }]}>
             <View style={[{ flexDirection: 'row', }]}>
               <View style={[styles.tableColtwo, {}]}>
                 <Text>
@@ -1781,31 +1627,48 @@ const MyDocument = ({ projectID }) => {
               </View>
             </View>
           </View>
-          <View style={[styles.tableColfive, { border: 1, borderTop: 0 }]}>
-            <Text style={[{ textAlign: 'center', fontFamily: 'ArialB' }]}>{totalBudgetaryRequirement}</Text>
-
+          <View style={[styles.tableColfive1, { border: 1, borderTop: 0, width: '15%' }]}>
+            <Text style={[{ textAlign: 'center', fontFamily: 'ArialB' }]}>
+              {totalBudgetaryRequirement?.toLocaleString()}
+            </Text>
           </View>
+
         </View>
         <Text style={[{ fontFamily: 'ArialB', paddingTop: 25 }]}>
           Prepared by:
         </Text>
-        <Text style={[{ paddingTop: 20, textDecoration: 'underline', fontFamily: 'ArialB', marginTop: 20 }]}>
+        <Text style={[{ paddingTop: 10, textDecoration: 'underline', fontFamily: 'ArialB', marginTop: 10 }]}>
           {`${formData.userID?.firstname} ${formData.userID?.lastname}`}
         </Text>
         <Text style={[{ paddingBottom: 50 }]}>
-          {roles.length > 0 ? formatRoles(roles) : 'No roles available'}
+          {roles.length > 0 ? formatRoles(roles) : ''}
         </Text>
         <Text style={[{ fontFamily: 'ArialB' }]}>
           Approved:
         </Text>
-        <Text style={[{ fontFamily: 'ArialB', textDecoration: 'underline', paddingTop: 20 }]}>
-          {formData.signatories && formData.signatories.length > 0 &&
-            formData.signatories.find(signatory => signatory.title === 'College Dean')?.name}
-        </Text>
-        <Text>
-          {formData.signatories && formData.signatories.length > 0 &&
-            formData.signatories.find(signatory => signatory.title === 'College Dean')?.title}
-        </Text>
+        {formData.signatories && formData.signatories.length > 0 && (
+          <>
+            {formData.signatories
+              .filter(signatory => signatory.title.includes('College Dean'))
+              .map((dean, index) => (
+                <Text
+                  key={index}
+                  style={[
+                    { fontFamily: 'ArialB', textDecoration: 'underline', paddingTop: index === 0 ? 20 : 10 }
+                  ]}
+                >
+                  {dean.name}
+                </Text>
+              ))}
+            {formData.signatories
+              .filter(signatory => signatory.title.includes('College Dean'))
+              .map((dean, index) => (
+                <Text key={index}>
+                  {dean.title}
+                </Text>
+              ))}
+          </>
+        )}
       </Page>
     </Document>
   );

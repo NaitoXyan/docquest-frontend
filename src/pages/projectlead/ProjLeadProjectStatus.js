@@ -36,10 +36,6 @@ const ProjLeadProjectStatus = () => {
       });
   }, [userID, statusFilterParam]);
 
-
-
-
-
   useEffect(() => {
     if (statusFilterParam) {
       setStatusFilter(statusFilterParam.toLowerCase());

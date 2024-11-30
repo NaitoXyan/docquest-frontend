@@ -156,6 +156,16 @@ const VPALADashboard = () => {
                                 View
                             </NavLink>
                         </div>
+                        <div className="flex flex-col items-center justify-center bg-red-500 text-white font-semibold w-60 h-40 rounded-lg">
+                            <h3 className="text-lg">REJECTED</h3>
+                            <p className="text-4xl">{statusCounts.rejected}</p>
+                            <NavLink
+                                to="/documents/rejected"
+                                className="underline text-white mt-2"
+                            >
+                                View
+                            </NavLink>
+                        </div>
                     </div>
 
                     {/* Documents Table */}

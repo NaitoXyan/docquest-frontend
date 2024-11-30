@@ -8,17 +8,15 @@ const EditMOAForm = ({ moaID }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    partyADescription: "",
-    partyBDescription: "",
-    coverageAndEffectivity: "",
-    confidentialityClause: "",
-    termination: "",
+    partyDescription: ``,
+    coverageAndEffectivity: ``,
+    confidentialityClause: ``,
+    termination: ``,
     witnesseth: [
       {
-        whereas: ""
+        whereas: ``
       }
     ],
-    partyObligation: [],
     firstParty: [
       {
         name: "",
@@ -300,27 +298,13 @@ const EditMOAForm = ({ moaID }) => {
                 This Memorandum of Agreement executed and entered into by and between:
               </label>
               <textarea
-                name="partyADescription"
-                value={formData.partyADescription}
+                name="partyDescription"
+                value={formData.partyDescription}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
                 placeholder="Ex: UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS (USTP CDO), a state educational institution duly established  under Philippine law, whose office address located at Claro M. Recto Avenue, Lapasan, Cagayan  de Oro City, represented herein by its Chancellor ATTY. DIONEL O. ALBINA, hereafter referred  to as the FIRST PARTY;"
               ></textarea>
             </div>
-
-            <div>
-              <label className="block mb-2 font-semibold">
-                and
-              </label>
-              <textarea
-                name="partyBDescription"
-                value={formData.partyBDescription}
-                onChange={handleFormChange}
-                className="w-full p-2 border border-gray-300 rounded"
-                placeholder="Ex: DEPARTMENT OF EDUCATION DIVISION OF CAGAYAN DE ORO CITY, a state educational institution duly established under Philippine law, whose office address located at Fr.  William F. Masterson Avenue, Upper Balulang, Cagayan de Oro City Misamis Oriental, represented herein by the School Divisions Superintendent ROY ANGELO E. GAZO, Ph.D., hereafter referred to as the SECOND PARTY;"
-              ></textarea>
-            </div>
-
           </div>
         </div>
 
@@ -436,13 +420,13 @@ const EditMOAForm = ({ moaID }) => {
             <label className="block mb-2 font-semibold">
               COVERAGE AND EFFECTIVITY:
             </label>
-            <input
-              name="coverageAndEffectivty"
+            <textarea
+              name="coverageAndEffectivity"
               value={formData.coverageAndEffectivity}
               onChange={handleFormChange}
               className="w-full p-2 border border-gray-300 rounded"
               placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-            ></input>
+            ></textarea>
           </div>
         </div>
 
@@ -451,13 +435,13 @@ const EditMOAForm = ({ moaID }) => {
             <label className="block mb-2 font-semibold">
               CONFIDENTIALITY CLAUSE:
             </label>
-            <input
+            <textarea
               name="confidentialityClause"
               value={formData.confidentialityClause}
               onChange={handleFormChange}
               className="w-full p-2 border border-gray-300 rounded"
               placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-            ></input>
+            ></textarea>
           </div>
         </div>
 
@@ -465,13 +449,13 @@ const EditMOAForm = ({ moaID }) => {
           <label className="block mb-2 font-semibold">
             TERMINATION:
           </label>
-          <input
+          <textarea
             name="termination"
             value={formData.termination}
             onChange={handleFormChange}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-          ></input>
+          ></textarea>
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -590,7 +574,7 @@ const EditMOAForm = ({ moaID }) => {
 
         {/* submit naa */}
         <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-4 mb-4">
-          Create
+          Confirm Changes
         </button>
       </form>
 

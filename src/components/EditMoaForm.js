@@ -8,17 +8,15 @@ const EditMOAForm = ({ moaID }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    partyADescription: "",
-    partyBDescription: "",
-    coverageAndEffectivity: "",
-    confidentialityClause: "",
-    termination: "",
+    partyDescription: ``,
+    coverageAndEffectivity: ``,
+    confidentialityClause: ``,
+    termination: ``,
     witnesseth: [
       {
-        whereas: ""
+        whereas: ``
       }
     ],
-    partyObligation: [],
     firstParty: [
       {
         name: "",
@@ -300,27 +298,13 @@ const EditMOAForm = ({ moaID }) => {
                 This Memorandum of Agreement executed and entered into by and between:
               </label>
               <textarea
-                name="partyADescription"
-                value={formData.partyADescription}
+                name="partyDescription"
+                value={formData.partyDescription}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
                 placeholder="Ex: UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS (USTP CDO), a state educational institution duly established  under Philippine law, whose office address located at Claro M. Recto Avenue, Lapasan, Cagayan  de Oro City, represented herein by its Chancellor ATTY. DIONEL O. ALBINA, hereafter referred  to as the FIRST PARTY;"
               ></textarea>
             </div>
-
-            <div>
-              <label className="block mb-2 font-semibold">
-                and
-              </label>
-              <textarea
-                name="partyBDescription"
-                value={formData.partyBDescription}
-                onChange={handleFormChange}
-                className="w-full p-2 border border-gray-300 rounded"
-                placeholder="Ex: DEPARTMENT OF EDUCATION DIVISION OF CAGAYAN DE ORO CITY, a state educational institution duly established under Philippine law, whose office address located at Fr.  William F. Masterson Avenue, Upper Balulang, Cagayan de Oro City Misamis Oriental, represented herein by the School Divisions Superintendent ROY ANGELO E. GAZO, Ph.D., hereafter referred to as the SECOND PARTY;"
-              ></textarea>
-            </div>
-
           </div>
         </div>
 

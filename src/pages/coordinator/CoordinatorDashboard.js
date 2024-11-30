@@ -60,7 +60,7 @@ const CoordinatorDashboard = () => {
             >
               <h2 className="text-lg font-semibold">Rejected</h2>
               <h2 className="text-4xl font-bold">{statusCounts.rejected}</h2>
-              <NavLink to="/projects/rejected" className="mt-2 underline">
+              <NavLink to="/projects/pending" className="mt-2 underline">
                 View
               </NavLink>
             </div>

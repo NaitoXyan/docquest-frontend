@@ -67,7 +67,7 @@ function VPALASideBar({ onFilterChange }) {
                                 }`
                             }
                         >
-                            Memorandum List
+                            Documents
                         </NavLink>
                     </li>
                     {/* <li>

@@ -4,7 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { PDFViewer } from "@react-pdf/renderer";
 import MyDocument from "../../components/GeneratePdf";
 import axios from "axios";
-import VPALASideBar from '../../components/VPALASideBar';
+import EstaffSideBar from '../../components/EstaffSideBar';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
@@ -151,7 +151,7 @@ const ProjectProgressStep = ({ projectID }) => {
   );
 };
 
-const VPALAViewProgress = () => {
+const EStaffViewProjProgress = () => {
   const { projectID } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -175,7 +175,7 @@ const VPALAViewProgress = () => {
     <div className="flex flex-1">
       {/* Sidebar */}
       <div className="flex-none">
-        <VPALASideBar />
+        <EstaffSideBar />
       </div>
   
       {/* PDF Viewer */}
@@ -210,4 +210,4 @@ const VPALAViewProgress = () => {
   );
 };
 
-export default VPALAViewProgress;
+export default EStaffViewProjProgress;

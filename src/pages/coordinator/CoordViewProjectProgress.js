@@ -4,15 +4,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import { PDFViewer } from "@react-pdf/renderer";
 import MyDocument from "../../components/GeneratePdf";
 import axios from "axios";
-import VPALASideBar from '../../components/VPALASideBar';
 import Box from '@mui/material/Box';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import CoordinatorSidebar from "../../components/CoordinatorSideBar";
 
 const ProjectProgressStep = ({ projectID }) => {
   const [reviews, setReviews] = useState([]);
@@ -151,7 +149,7 @@ const ProjectProgressStep = ({ projectID }) => {
   );
 };
 
-const VPALAViewProgress = () => {
+const CoordViewProjectProgress = () => {
   const { projectID } = useParams();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
@@ -175,7 +173,7 @@ const VPALAViewProgress = () => {
     <div className="flex flex-1">
       {/* Sidebar */}
       <div className="flex-none">
-        <VPALASideBar />
+        <CoordinatorSidebar />
       </div>
   
       {/* PDF Viewer */}
@@ -210,4 +208,4 @@ const VPALAViewProgress = () => {
   );
 };
 
-export default VPALAViewProgress;
+export default CoordViewProjectProgress;

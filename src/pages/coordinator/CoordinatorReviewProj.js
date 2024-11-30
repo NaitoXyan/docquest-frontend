@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
+import CoordinatorSidebar from "../../components/CoordinatorSideBar";
 import Topbar from "../../components/Topbar";
 import { useParams, useNavigate } from "react-router-dom";
 import { PDFViewer } from "@react-pdf/renderer";
-
+import MyDocument from "../../components/GeneratePdf";
 import axios from "axios";
-import ProgramChairSidebar from "../../components/ProgramChairSideBar";
-import GenerateMOAPDF from '../../components/GenerateMOA-PDF';
 
-
-const VPALAReviewProject = () => {
+const CoordinatorReviewProj = () => {
   const { reviewID, projectID } = useParams();
   const navigate = useNavigate();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -31,7 +29,7 @@ const VPALAReviewProject = () => {
     const roles = JSON.parse(localStorage.getItem('roles') || '[]');
     
     // Redirect if "ecrd" role is not found
-    if (!roles.includes("vpala")) {
+    if (!roles.includes("coord")) {
       navigate('/login', { replace: true });
     }
   }, [token, navigate]);
@@ -57,9 +55,7 @@ const VPALAReviewProject = () => {
         }
       });
 
-      console.log(response.data);
-      // Check if response contains the expected data structure
-     // Check if the response contains the success message
+    // Check if response contains the expected data structure
     if (response.data.message && response.data.message.includes("Review successfully")) {
       setShowSuccessModal(true);
     } else {
@@ -84,14 +80,14 @@ const VPALAReviewProject = () => {
 
   const closeSuccessModal = () => {
     setShowSuccessModal(false);
-    navigate("/program-chair-review-list/pending/all");
+    navigate("/review-list/pending/all");
   };
 
   return (
     <div className="bg-gray-200 min-h-screen flex">
       {/* Sidebar */}
       <div className="w-1/5 fixed h-full">
-        <ProgramChairSidebar />
+        <CoordinatorSidebar />
       </div>
 
       {/* Main Content */}
@@ -99,7 +95,7 @@ const VPALAReviewProject = () => {
         <Topbar />
         <div className="h-[calc(100vh-80px)] flex justify-center items-center p-5">
           <PDFViewer className="w-full h-full border shadow-lg">
-            <GenerateMOAPDF projectID={projectID} />
+            <MyDocument projectID={projectID} />
           </PDFViewer>
         </div>
       </div>
@@ -162,4 +158,4 @@ const VPALAReviewProject = () => {
   );
 };
 
-export default VPALAReviewProject;
+export default CoordinatorReviewProj;

@@ -67,6 +67,7 @@ import VPALADocStatus from "./pages/vpala/VPALADocStatus";
 import VPALAViewProgress from "./pages/vpala/VPALAViewProgress";
 import CoordViewProgress from "./pages/coordinator/CoordViewProgress";
 import VPALAReviewProject from "./pages/vpala/VPALAReviewProject";
+import CoordinatorReviewProj from "./pages/coordinator/CoordinatorReviewProj";
 function App() {
   return (
     <Routes>
@@ -139,7 +140,7 @@ function App() {
         <Route path="/documents-coord" element={<DocListCoord />} />
         
         <Route path="/projects/:statusFilterParam" element={<CoordProjectStatus />} />
-        <Route path="/projectpdfviewer/:projectId" element={<CoordViewProgress />} /> 
+        <Route path="/projectpdfviewer/:projectId" element={<CoordinatorReviewProj />} /> 
         {/* Create proposal routes */}
         {<Route path="/proposal_form_second_page" element={<ProposalFormSecondPage />} />}
 

@@ -9,8 +9,7 @@ const MOAForm = ({ projectID }) => {
 
   const [formData, setFormData] = useState({
     projectID: projectID,
-    partyADescription: `**UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS**, a State University created and existing under the laws of the Republic of the Philippines, with principal office address located at Claro M. Recto Avenue, Lapasan, Cagayan de Oro City, represented herein by its System President,  **DR. AMBROSIO B. CULTURA II**, hereafter referred to as the **“FIRST PARTY”**;`,
-    partyBDescription: ``,
+    partyDescription: `**UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS**, a State University created and existing under the laws of the Republic of the Philippines, with principal office address located at Claro M. Recto Avenue, Lapasan, Cagayan de Oro City, represented herein by its System President,  **DR. AMBROSIO B. CULTURA II**, hereafter referred to as the **“FIRST PARTY”**;`,
     coverageAndEffectivity: `This Agreement shall cover  CY 2024-2025 and take effect upon the date it is signed by the parties until the completion of the training  and research collaboration program.`,
     confidentialityClause: `The parties mutually agree to process personal information and sensitive personal information in conformity with the provisions of Republic Act No. 10173 (Data Privacy Act of 2012) and all other applicable laws and regulations of all the parties regarding data privacy protection laws.
 
@@ -273,28 +272,13 @@ Both parties shall ensure that appropriate organizational, physical, and technic
               </label>
               <textarea
                 required
-                name="partyADescription"
-                value={formData.partyADescription}
+                name="partyDescription"
+                value={formData.partyDescription}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
                 placeholder="Ex: UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS (USTP CDO), a state educational institution duly established  under Philippine law, whose office address located at Claro M. Recto Avenue, Lapasan, Cagayan  de Oro City, represented herein by its Chancellor ATTY. DIONEL O. ALBINA, hereafter referred  to as the FIRST PARTY;"
               ></textarea>
             </div>
-
-            <div>
-              <label className="block mb-2 font-semibold">
-                and
-              </label>
-              <textarea
-                required
-                name="partyBDescription"
-                value={formData.partyBDescription}
-                onChange={handleFormChange}
-                className="w-full p-2 border border-gray-300 rounded"
-                placeholder="Ex: DEPARTMENT OF EDUCATION DIVISION OF CAGAYAN DE ORO CITY, a state educational institution duly established under Philippine law, whose office address located at Fr.  William F. Masterson Avenue, Upper Balulang, Cagayan de Oro City Misamis Oriental, represented herein by the School Divisions Superintendent ROY ANGELO E. GAZO, Ph.D., hereafter referred to as the SECOND PARTY;"
-              ></textarea>
-            </div>
-
           </div>
         </div>
 

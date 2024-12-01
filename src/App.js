@@ -67,6 +67,9 @@ import VPALADocStatus from "./pages/vpala/VPALADocStatus";
 import VPALAViewProgress from "./pages/vpala/VPALAViewProgress";
 import CoordViewProjectProgress from "./pages/coordinator/CoordViewProjectProgress";
 import DirectorMOAReviewList from "./pages/director/DirectorMOAReviewList";
+import DirectorReviewMOA from "./pages/director/DirectorReviewMOA";
+import VPALAMOAReviewList from "./pages/vpala/VPALAMOAReviewList";
+import VPALAReviewMOA from "./pages/vpala/VPALAReviewMOA";
 
 function App() {
   return (
@@ -105,6 +108,7 @@ function App() {
         <Route path="/review-project/:reviewID/:projectID" element={<DirectorReviewProject/>} />
         <Route path="/review-list/:status/:document" element={<DirectorReviewList/>}/>
         <Route path="/moa-review-list/:status/:document" element={<DirectorMOAReviewList/>}/>
+        <Route path="/review-moa/:moaID" element={<DirectorReviewMOA/>} />
         <Route path="director-project-statistics" element={<DirectorProjectStatistics/>}/>
 
         {/*VPAPLA Routes  */}
@@ -115,7 +119,9 @@ function App() {
         <Route path="/documents/:statusFilter" element={<VPALADocStatus />} /> {/* Dynamic route */}
         <Route path="/view/:id" element={<VPALAViewProgress/>} />
         <Route path="/document/:id" element={<VPALAViewProgress />} />
-        
+        <Route path="/vpala-review-list/:status/:document" element={<VPALAMOAReviewList/>}/>
+        <Route path="/vpala-review-moa/:moaID" element={<VPALAReviewMOA/>} />
+
         {/* EStaff routes */}
         <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>
 

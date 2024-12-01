@@ -88,9 +88,9 @@ const DirectorDashboard = () => {
 
                 sortedProjects.forEach(proj => {
                     const type = proj.content_type_name;
-                    const status = proj.status.toLowerCase();
-                    if (type && ['approved', 'pending', 'rejected'].includes(status)) {
-                        counts[type][status]++;
+                    const reviewStatus = proj.reviewStatus.toLowerCase();
+                    if (type && ['approved', 'pending', 'rejected'].includes(reviewStatus)) {
+                        counts[type][reviewStatus]++;
                     }
                 });
 
@@ -129,8 +129,8 @@ const DirectorDashboard = () => {
     
                 // Iterate through the response and count statuses
                 response.data.forEach((moa) => {
-                    if (moa.status && ['approved', 'pending', 'rejected'].includes(moa.status.toLowerCase())) {
-                        counts[moa.status.toLowerCase()]++;
+                    if (moa.reviewStatus && ['approved', 'pending', 'rejected'].includes(moa.reviewStatus.toLowerCase())) {
+                        counts[moa.reviewStatus.toLowerCase()]++;
                     }
                 });
     

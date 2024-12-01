@@ -6,7 +6,8 @@ import axios from "axios";
 
 const VPALADashboard = () => {
     const [projects, setProjects] = useState([]);
-    const [statusCounts, setStatusCounts] = useState({ 
+    const [statusCounts, setStatusCounts] = useState({
+        project: { approved: 0, pending: 0, rejected: 0 },
         moa: { approved: 0, pending: 0, rejected: 0 }
     });
     const [currentPage, setCurrentPage] = useState(1);
@@ -21,9 +22,9 @@ const VPALADashboard = () => {
             navigate('/login', { replace: true });
             return;
         }
-    
+
         const roles = JSON.parse(localStorage.getItem('roles') || '[]');
-        
+
         if (!roles.includes("vpala")) {
             localStorage.clear();
             navigate('/login', { replace: true });
@@ -31,78 +32,57 @@ const VPALADashboard = () => {
     }, [token, navigate]);
 
     useEffect(() => {
-        const fetchProjects = async () => {
+        const fetchMoaReviews = async () => {
             try {
+                // Fetch MOA reviews data from the API
                 const response = await axios({
                     method: 'get',
-                    url: 'http://127.0.0.1:8000/get_review',
+                    url: 'http://127.0.0.1:8000/get_moa_reviews',
                     headers: {
                         'Authorization': `Token ${token}`,
                         'Content-Type': 'application/json',
                     },
                 });
     
-                if (!response.data || !Array.isArray(response.data.reviews)) {
+                if (!response.data) {
                     console.error("Invalid data structure received:", response.data);
                     setError("Invalid data format received from server");
-                    setProjects([]);
                     return;
                 }
+
+                // Sort MOAs by `dateCreated` in descending order
+                const sortedMOAs = response.data.sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
+                setProjects(sortedMOAs);
     
-                const formattedProjects = response.data.reviews
-                    .filter(proj => proj !== null)
-                    .map((proj) => ({
-                        fullname: proj.firstname && proj.lastname 
-                            ? `${proj.firstname} ${proj.lastname}`
-                            : "N/A",
-                        documentType: proj.content_type_name || "N/A",
-                        projectTitle: proj.projectTitle || "Untitled Document",
-                        dateCreated: proj.dateCreated 
-                            ? new Date(proj.dateCreated).toISOString()
-                            : new Date().toISOString(),
-                        reviewStatus: proj.reviewStatus,
-                        reviewDate: proj.reviewDate 
-                            ? new Date(proj.reviewDate).toISOString()
-                            : null,
-                        comment: proj.comment || "",
-                        reviewID: proj.reviewID,
-                        content_type_name: proj.content_type_name,
-                        status: proj.status
-                    }));
-
-                const sortedProjects = formattedProjects.sort((a, b) =>
-                    new Date(b.dateCreated) - new Date(a.dateCreated)
-                );
-
-                setProjects(sortedProjects);
-                setError(null);
-
-                const counts = {
-                    project: { approved: 0, pending: 0, rejected: 0 },
-                    moa: { approved: 0, pending: 0, rejected: 0 }
-                };
-
-                sortedProjects.forEach(proj => {
-                    const type = proj.content_type_name;
-                    const status = proj.status.toLowerCase();
-                    if (type && ['approved', 'pending', 'rejected'].includes(status)) {
-                        counts[type][status]++;
+                // Initialize counts for each MOA status
+                const counts = { approved: 0, pending: 0, rejected: 0 };
+    
+                // Iterate through the response and count statuses
+                response.data.forEach((moa) => {
+                    if (moa.reviewStatus && ['approved', 'pending', 'rejected'].includes(moa.reviewStatus.toLowerCase())) {
+                        counts[moa.reviewStatus.toLowerCase()]++;
                     }
                 });
-
-                setStatusCounts(counts);
+    
+                // Update the status counts in the state
+                setStatusCounts(prevState => ({
+                    ...prevState,
+                    moa: counts,
+                }));
+    
             } catch (error) {
-                console.error("Error fetching projects:", error);
-                setError(error.message || "Failed to fetch projects");
-                setProjects([]);
+                console.error("Error fetching MOA reviews:", error);
+                setError(error.message || "Failed to fetch MOA reviews");
             }
         };
     
-        fetchProjects();
-    }, [token]);    
+        // Fetch MOA reviews on component mount
+        fetchMoaReviews();
+    
+    }, [token]); // Depend on token, or set to an empty array if you don't need it to run more than once    
 
     const handleNavigate = (statusFilter, documentType) => {
-        navigate(`/review-list/${statusFilter.toLowerCase()}/${documentType}`);
+        navigate(`/vpala-review-list/${statusFilter.toLowerCase()}/${documentType}`);
     };
 
     const indexOfLastItem = currentPage * itemsPerPage;
@@ -122,7 +102,7 @@ const VPALADashboard = () => {
                     <button
                         key={i}
                         onClick={() => handlePageChange(i)}
-                        className={`px-3 py-1 rounded-lg ${i === currentPage ? "bg-blue-500 text-white" : "bg-gray-100"}`}
+                        className={`px-3 py-1 rounded-lg ${i === currentPage ? "bg-vlu text-white" : "bg-gray-100"}`}
                     >
                         {i}
                     </button>
@@ -135,11 +115,6 @@ const VPALADashboard = () => {
         return pageNumbers;
     };
 
-    const legendItems = [
-        { label: 'Approved', color: '#4CAF50' },
-        { label: 'Pending', color: '#FFC107' },
-        { label: 'Rejected', color: '#F44336' },
-    ];
 
     return (
         <div className="bg-gray-200 min-h-screen flex">
@@ -148,7 +123,7 @@ const VPALADashboard = () => {
             </div>
             <div className="flex-1 ml-[20%]">
                 <Topbar />
-                <div className="flex flex-col mt-16 px-10">
+                <div className="flex flex-col mt-16 px-10 w-full">
                     <div className="flex">
                         <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 mb-2 ml-2 flex-1">
                             <h1 className="text-2xl font-semibold mb-4">MOA Overview</h1>
@@ -178,8 +153,10 @@ const VPALADashboard = () => {
                         </div>
                     </div>
 
+
+
                     <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 mb-8">
-                    <h1 className="text-2xl font-semibold mb-4">Recent Documents</h1>
+                        <h1 className="text-2xl font-semibold mb-4">Recent Documents</h1>
                         {error ? (
                             <div className="text-red-500 p-4 text-center">{error}</div>
                         ) : projects.length === 0 ? (
@@ -195,30 +172,32 @@ const VPALADashboard = () => {
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Title</th>
                                                 <th className="px- py-3 text-center text-xs font-bold text-gray-600 uppercase">Date Created</th>
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Your Review</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Review Date</th>
+                                                
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Project Status</th>
                                             </tr>
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
-                                            {currentProjects.map((doc, index) => (
-                                                <tr key={doc.reviewID || index} className="hover:bg-gray-50">
-                                                    <td className="px-6 py-4 whitespace-nowrap">{doc.fullname}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap capitalize">{doc.documentType}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">{doc.projectTitle}</td>
+                                            {projects.map((doc, index) => (
+                                                <tr key={doc.moaID || index} className="hover:bg-gray-50">
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {`${doc.contentOwner.firstname} ${doc.contentOwner.lastname}`}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap capitalize">{doc.contentType}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{doc.project?.projectTitle ?? 'No Title'}</td> {/* Placeholder for 'Document Title' */}
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         {new Date(doc.dateCreated).toLocaleDateString()}
                                                     </td>
                                                     <td className={`px-6 py-3 text-center 
-                                                        ${doc.reviewStatus === 'approved' 
-                                                        ? 'text-green-500' : doc.reviewStatus === 'pending' 
-                                                        ? 'text-yellow-500' : 'text-red-500'}`}>
+                                                        ${doc.reviewStatus === 'approved'
+                                                            ? 'text-green-500' : doc.reviewStatus === 'pending'
+                                                                ? 'text-yellow-500' : 'text-red-500'}`}>
                                                         {doc.reviewStatus}
                                                     </td>
-                                                    <td className="px-6 py-3 ">{doc.reviewDate ? new Date(doc.reviewDate).toLocaleDateString() : "N/A"}</td>
+                                                    
                                                     <td className={`px-6 py-3 text-center 
-                                                        ${doc.status === 'approved' 
-                                                        ? 'text-green-500' : doc.status === 'pending' 
-                                                        ? 'text-yellow-500' : 'text-red-500'}`}>
+                                                        ${doc.status === 'approved'
+                                                            ? 'text-green-500' : doc.status === 'pending'
+                                                                ? 'text-yellow-500' : 'text-red-500'}`}>
                                                         {doc.status}
                                                     </td>
                                                 </tr>

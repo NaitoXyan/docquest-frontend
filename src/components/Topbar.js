@@ -63,6 +63,10 @@ const Topbar = () => {
         return 'Accountant II';
       } else if (role === 'cclr') {
         return 'Chancellor, USTP CDO';
+      } else if (role === 'coord') {
+        return 'Coordinator';
+      } else if (role === 'vpala') {
+        return 'Vice President for Administration and Legal Affair';
       } else {
         return role;
       }

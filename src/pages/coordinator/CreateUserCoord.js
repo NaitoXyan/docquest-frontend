@@ -2,6 +2,7 @@ import React from "react";
 import CoordinatorSidebar from "../../components/CoordinatorSideBar";
 import Topbar from "../../components/Topbar";
 import CoordinatorCreateUser from "../../components/CoordinatorCreateUser";
+import CreateUserPage from "./CreateUserPage";
 
 const CreateUserCoord = () => {
     return (
@@ -19,12 +20,9 @@ const CreateUserCoord = () => {
                 </div>
 
                 {/* Content below Topbar */}
-                <div className="flex flex-col mt-[64px] p-10 min-h-full">
-                    {/* Title */}
-                    <h1 className="text-2xl font-semibold mb-5">Create User</h1>
-
+                <div className="flex flex-col mt-2 p-10 min-h-full">
                     {/* Create User Form */}
-                    <CoordinatorCreateUser />
+                    <CreateUserPage />
                 </div>
             </div>
         </div>

@@ -1305,6 +1305,7 @@ const ProposalFormFirstPage = () => {
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
               <Select
+              required
                 id="projectType"
                 name="projectType"
                 value={projectTypeOptions.find((option) => option.value === formData.projectType)} // Find the selected option
@@ -2418,6 +2419,7 @@ const ProposalFormFirstPage = () => {
 
                 {/* Dropdown for selecting person responsible */}
                 <Select
+                required
                   value={activity.personResponsible ? { label: activity.personResponsible } : null}
                   onChange={(selectedOption) => handlePersonResponsibleChange(selectedOption, index)} // Pass the correct index
                   options={[

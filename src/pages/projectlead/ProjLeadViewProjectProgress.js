@@ -113,7 +113,7 @@ const ProjectProgressStep = ({ projectID }) => {
         };
       }),
     {
-      label: "Director",
+      label: "Director, Extension & Community Relations",
       description: (() => {
         const directorReview = reviews.find(
           (review) => !review.college && !review.program

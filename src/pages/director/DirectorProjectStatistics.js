@@ -10,7 +10,7 @@ const DirectorProjectStatistics = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [campusFilter, setCampusFilter] = useState({
     year: '',
     month: '',
@@ -83,7 +83,7 @@ const DirectorProjectStatistics = () => {
     }
 
     try {
-      switch(groupBy) {
+      switch (groupBy) {
         case 'campus':
           return project.program[0]?.college?.campus?.name || 'Unknown Campus';
         case 'college':
@@ -113,15 +113,15 @@ const DirectorProjectStatistics = () => {
       const date = new Date(project.dateCreated);
       const yearMatch = !filter.year || date.getFullYear() === parseInt(filter.year);
       const monthMatch = !filter.month || date.getMonth() + 1 === parseInt(filter.month);
-      const statusMatch = filter.status === 'all' || 
+      const statusMatch = filter.status === 'all' ||
         (project.status || '').toLowerCase() === filter.status;
-      
+
       const dynamicFilters = {
-        campus: !filter.campus || 
+        campus: !filter.campus ||
           safeExtract(project, 'campus').toLowerCase() === filter.campus.toLowerCase(),
-        college: !filter.college || 
+        college: !filter.college ||
           safeExtract(project, 'college').toLowerCase() === filter.college.toLowerCase(),
-        program: !filter.program || 
+        program: !filter.program ||
           safeExtract(project, 'program').toLowerCase() === filter.program.toLowerCase()
       };
 
@@ -139,13 +139,13 @@ const DirectorProjectStatistics = () => {
       const groupKey = safeExtract(project, groupBy);
 
       if (!acc[groupKey]) {
-        acc[groupKey] = { 
-          approved: 0, 
-          pending: 0, 
-          rejected: 0 
+        acc[groupKey] = {
+          approved: 0,
+          pending: 0,
+          rejected: 0
         };
       }
-      
+
       const status = project.status?.toLowerCase() || 'unknown';
       switch (status) {
         case 'approved':
@@ -171,10 +171,10 @@ const DirectorProjectStatistics = () => {
 
   const renderBarChart = (filter, groupBy) => {
     const data = generateBarData(filter, groupBy);
-    
-    const allZero = data.approved.every(val => val === 0) && 
-                    data.pending.every(val => val === 0) && 
-                    data.rejected.every(val => val === 0);
+
+    const allZero = data.approved.every(val => val === 0) &&
+      data.pending.every(val => val === 0) &&
+      data.rejected.every(val => val === 0);
 
     if (allZero) {
       return (
@@ -185,32 +185,34 @@ const DirectorProjectStatistics = () => {
     }
 
     return (
-      <BarChart
-        xAxis={[{ 
-          scaleType: 'band', 
-          data: data.labels 
-        }]}
-        series={[
-          { data: data.approved, label: 'Approved', color: '#4ADE80' },
-          { data: data.pending, label: 'Pending', color: '#FACC15' },
-          { data: data.rejected, label: 'Rejected', color: '#F87171' }
-        ]}
-        width={800}
-        height={400}
-      />
+      <div className="w-full overflow-x-auto">
+        <BarChart
+          xAxis={[{
+            scaleType: 'band',
+            data: data.labels
+          }]}
+          series={[
+            { data: data.approved, label: 'Approved', color: '#4ADE80' },
+            { data: data.pending, label: 'Pending', color: '#FACC15' },
+            { data: data.rejected, label: 'Rejected', color: '#F87171' }
+          ]}
+          width={Math.max(800, data.labels.length * 100)}
+          height={400}
+        />
+      </div>
     );
   };
 
   return (
-    <div className="bg-gray-200 min-h-screen min-w-screen flex">
-      <div className="w-1/5 fixed h-full">
+    <div className="flex h-screen overflow-hidden">
+      <div className="w-1/5 fixed h-full z-10">
         <DirectorSidebar />
       </div>
 
-      <div className="flex-1 ml-[20%] mr-[0%] max-w-screen">
+      <div className="flex-1 ml-[20%] overflow-y-auto">
         <Topbar />
 
-        <div className="flex flex-col mt-16 px-10 w-screen">
+        <div className="p-6 bg-gray-200">
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <CircularProgress />
@@ -220,204 +222,207 @@ const DirectorProjectStatistics = () => {
               {error}
             </div>
           ) : (
-            <div>
-              
-              <div className="bg-white shadow-lg rounded-lg py-4 px-4 w-screen">
-                {/* Campus Bar Graph with Filters */}
-                <div className="mb-8">
-                  <h2 className="text-xl font-bold mb-4">PROJECTS BY CAMPUS</h2>
-                  
-                  <div className="flex space-x-4 mb-4">
-                    <select
-                      value={campusFilter.year}
-                      onChange={(e) => setCampusFilter(prev => ({ ...prev, year: e.target.value }))}
-                      className="px-3 py-2 border rounded-md"
-                    >
-                      <option value="">All Years</option>
-                      {generateYearOptions().map(year => (
-                        <option key={year} value={year}>{year}</option>
-                      ))}
-                    </select>
+            <div className="space-y-6">
+              <h2 className="text-xl font-bold">PROJECTS STATISTICS</h2>
 
-                    <select
-                      value={campusFilter.month}
-                      onChange={(e) => setCampusFilter(prev => ({ ...prev, month: e.target.value }))}
-                      className="px-3 py-2 border rounded-md"
-                    >
-                      <option value="">All Months</option>
-                      {generateMonthOptions().map(month => (
-                        <option key={month.value} value={month.value}>{month.label}</option>
-                      ))}
-                    </select>
+              {/* Campus Section */}
+              <div className="bg-white shadow-lg rounded-lg p-6">
+                <h3 className="text-xl font-bold mb-4">PROJECTS BY CAMPUS</h3>
+                <div className="flex flex-wrap gap-4 mb-4">
+                  <select
+                    value={campusFilter.year}
+                    onChange={(e) => setCampusFilter(prev => ({ ...prev, year: e.target.value }))}
+                    className="px-3 py-2 border rounded-md flex-grow"
+                  >
+                    <option value="">All Years</option>
+                    {generateYearOptions().map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
 
-                    <select
-                      value={campusFilter.campus}
-                      onChange={(e) => setCampusFilter(prev => ({ ...prev, campus: e.target.value }))}
-                      className="px-3 py-2 border rounded-md"
-                    >
-                      <option value="">All Campuses</option>
-                      {generateUniqueValues('campus').map(campus => (
-                        <option key={campus} value={campus}>{campus}</option>
-                      ))}
-                    </select>
+                  <select
+                    value={campusFilter.month}
+                    onChange={(e) => setCampusFilter(prev => ({ ...prev, month: e.target.value }))}
+                    className="px-3 py-2 border rounded-md flex-grow"
+                  >
+                    <option value="">All Months</option>
+                    {generateMonthOptions().map(month => (
+                      <option key={month.value} value={month.value}>{month.label}</option>
+                    ))}
+                  </select>
 
-                    <select
-                      value={campusFilter.status}
-                      onChange={(e) => setCampusFilter(prev => ({ ...prev, status: e.target.value }))}
-                      className="px-3 py-2 border rounded-md"
-                    >
-                      <option value="all">All Statuses</option>
-                      <option value="approved">Approved</option>
-                      <option value="pending">Pending</option>
-                      <option value="rejected">Rejected</option>
-                    </select>
+                  <select
+                    value={campusFilter.campus}
+                    onChange={(e) => setCampusFilter(prev => ({ ...prev, campus: e.target.value }))}
+                    className="px-3 py-2 border rounded-md flex-grow"
+                  >
+                    <option value="">All Campuses</option>
+                    {generateUniqueValues('campus').map(campus => (
+                      <option key={campus} value={campus}>{campus}</option>
+                    ))}
+                  </select>
+
+                  <select
+                    value={campusFilter.status}
+                    onChange={(e) => setCampusFilter(prev => ({ ...prev, status: e.target.value }))}
+                    className="px-3 py-2 border rounded-md flex-grow"
+                  >
+                    <option value="all">All Statuses</option>
+                    <option value="approved">Approved</option>
+                    <option value="pending">Pending</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+                <div className='flex justify-center w-full'>
+                  <div className='justify items-center'>
+                    {renderBarChart(campusFilter, 'campus')}
                   </div>
-                  {renderBarChart(campusFilter, 'campus')}
                 </div>
               </div>
 
-              <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 w-screen">
-                {/* College Bar Graph with Filters */}
-                <div className="mb-8">
-                  <h2 className="text-xl font-bold mb-4">PROJECTS BY COLLEGE</h2>
-                  <div className="flex space-x-4 mb-4">
-                    <select
-                      value={collegeFilter.year}
-                      onChange={(e) => setCollegeFilter(prev => ({ ...prev, year: e.target.value }))}
-                      className="px-3 py-2 border rounded-md"
-                    >
-                      <option value="">All Years</option>
-                      {generateYearOptions().map(year => (
-                        <option key={year} value={year}>{year}</option>
-                      ))}
-                    </select>
+              {/* College Section */}
+              <div className="bg-white shadow-lg rounded-lg p-6 justify-center">
+                <h3 className="text-xl font-bold mb-4">PROJECTS BY COLLEGE</h3>
+                <div className="flex flex-wrap gap-4 mb-4">
+                  <select
+                    value={collegeFilter.year}
+                    onChange={(e) => setCollegeFilter(prev => ({ ...prev, year: e.target.value }))}
+                    className="px-3 py-2 border rounded-md flex-grow"
+                  >
+                    <option value="">All Years</option>
+                    {generateYearOptions().map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
 
-                    <select
-                      value={collegeFilter.month}
-                      onChange={(e) => setCollegeFilter(prev => ({ ...prev, month: e.target.value }))}
-                      className="px-3 py-2 border rounded-md"
-                    >
-                      <option value="">All Months</option>
-                      {generateMonthOptions().map(month => (
-                        <option key={month.value} value={month.value}>{month.label}</option>
-                      ))}
-                    </select>
+                  <select
+                    value={collegeFilter.month}
+                    onChange={(e) => setCollegeFilter(prev => ({ ...prev, month: e.target.value }))}
+                    className="px-3 py-2 border rounded-md flex-grow"
+                  >
+                    <option value="">All Months</option>
+                    {generateMonthOptions().map(month => (
+                      <option key={month.value} value={month.value}>{month.label}</option>
+                    ))}
+                  </select>
 
-                    <select
-                      value={collegeFilter.campus}
-                      onChange={(e) => setCollegeFilter(prev => ({ ...prev, campus: e.target.value }))}
-                      className="px-3 py-2 border rounded-md"
-                    >
-                      <option value="">All Campuses</option>
-                      {generateUniqueValues('campus').map(campus => (
-                        <option key={campus} value={campus}>{campus}</option>
-                      ))}
-                    </select>
+                  <select
+                    value={collegeFilter.campus}
+                    onChange={(e) => setCollegeFilter(prev => ({ ...prev, campus: e.target.value }))}
+                    className="px-3 py-2 border rounded-md flex-grow"
+                  >
+                    <option value="">All Campuses</option>
+                    {generateUniqueValues('campus').map(campus => (
+                      <option key={campus} value={campus}>{campus}</option>
+                    ))}
+                  </select>
 
-                    <select
-                      value={collegeFilter.college}
-                      onChange={(e) => setCollegeFilter(prev => ({ ...prev, college: e.target.value }))}
-                      className="px-3 py-2 border rounded-md"
-                    >
-                      <option value="">All Colleges</option>
-                      {generateUniqueValues('college').map(college => (
-                        <option key={college} value={college}>{college}</option>
-                      ))}
-                    </select>
+                  <select
+                    value={collegeFilter.college}
+                    onChange={(e) => setCollegeFilter(prev => ({ ...prev, college: e.target.value }))}
+                    className="px-3 py-2 border rounded-md flex-grow"
+                  >
+                    <option value="">All Colleges</option>
+                    {generateUniqueValues('college').map(college => (
+                      <option key={college} value={college}>{college}</option>
+                    ))}
+                  </select>
 
-                    <select
-                      value={collegeFilter.status}
-                      onChange={(e) => setCollegeFilter(prev => ({ ...prev, status: e.target.value }))}
-                      className="px-3 py-2 border rounded-md"
-                    >
-                      <option value="all">All Statuses</option>
-                      <option value="approved">Approved</option>
-                      <option value="pending">Pending</option>
-                      <option value="rejected">Rejected</option>
-                    </select>
+                  <select
+                    value={collegeFilter.status}
+                    onChange={(e) => setCollegeFilter(prev => ({ ...prev, status: e.target.value }))}
+                    className="px-3 py-2 border rounded-md flex-grow"
+                  >
+                    <option value="all">All Statuses</option>
+                    <option value="approved">Approved</option>
+                    <option value="pending">Pending</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+                <div className='flex justify-center w-full'>
+                  <div className='justify items-center'>
+                    {renderBarChart(collegeFilter, 'college')}
                   </div>
-
-                  {renderBarChart(collegeFilter, 'college')}
                 </div>
               </div>
 
-              <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 mb-4 w-screen">
-                {/* Program Bar Graph with Filters */}
-                <div className="mb-8">
-                  <h2 className="text-xl font-bold mb-4">PROJECTS BY PROGRAM</h2>
-                  
-                  <div className="flex space-x-4 mb-4">
-                    <select
-                      value={programFilter.year}
-                      onChange={(e) => setProgramFilter(prev => ({ ...prev, year: e.target.value }))}
-                      className="px-3 py-2 border rounded-md"
-                    >
-                      <option value="">All Years</option>
-                      {generateYearOptions().map(year => (
-                        <option key={year} value={year}>{year}</option>
-                      ))}
-                    </select>
+              {/* Program Section */}
+              <div className="bg-white shadow-lg rounded-lg p-6 mb-6">
+                <h3 className="text-xl font-bold mb-4">PROJECTS BY PROGRAM</h3>
+                <div className="flex flex-wrap gap-4 mb-4">
+                  <select
+                    value={programFilter.year}
+                    onChange={(e) => setProgramFilter(prev => ({ ...prev, year: e.target.value }))}
+                    className="px-3 py-2 border rounded-md flex-grow"
+                  >
+                    <option value="">All Years</option>
+                    {generateYearOptions().map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
 
-                    <select
-                      value={programFilter.month}
-                      onChange={(e) => setProgramFilter(prev => ({ ...prev, month: e.target.value }))}
-                      className="px-3 py-2 border rounded-md"
-                    >
-                      <option value="">All Months</option>
-                      {generateMonthOptions().map(month => (
-                        <option key={month.value} value={month.value}>{month.label}</option>
-                      ))}
-                    </select>
+                  <select
+                    value={programFilter.month}
+                    onChange={(e) => setProgramFilter(prev => ({ ...prev, month: e.target.value }))}
+                    className="px-3 py-2 border rounded-md flex-grow"
+                  >
+                    <option value="">All Months</option>
+                    {generateMonthOptions().map(month => (
+                      <option key={month.value} value={month.value}>{month.label}</option>
+                    ))}
+                  </select>
 
-                    <select
-                      value={programFilter.campus}
-                      onChange={(e) => setProgramFilter(prev => ({ ...prev, campus: e.target.value }))}
-                      className="px-3 py-2 border rounded-md"
-                    >
-                      <option value="">All Campuses</option>
-                      {generateUniqueValues('campus').map(campus => (
-                        <option key={campus} value={campus}>{campus}</option>
-                      ))}
-                    </select>
+                  <select
+                    value={programFilter.campus}
+                    onChange={(e) => setProgramFilter(prev => ({ ...prev, campus: e.target.value }))}
+                    className="px-3 py-2 border rounded-md flex-grow"
+                  >
+                    <option value="">All Campuses</option>
+                    {generateUniqueValues('campus').map(campus => (
+                      <option key={campus} value={campus}>{campus}</option>
+                    ))}
+                  </select>
 
-                    <select
-                      value={programFilter.college}
-                      onChange={(e) => setProgramFilter(prev => ({ ...prev, college: e.target.value }))}
-                      className="px-3 py-2 border rounded-md"
-                    >
-                      <option value="">All Colleges</option>
-                      {generateUniqueValues('college').map(college => (
-                        <option key={college} value={college}>{college}</option>
-                      ))}
-                    </select>
+                  <select
+                    value={programFilter.college}
+                    onChange={(e) => setProgramFilter(prev => ({ ...prev, college: e.target.value }))}
+                    className="px-3 py-2 border rounded-md flex-grow"
+                  >
+                    <option value="">All Colleges</option>
+                    {generateUniqueValues('college').map(college => (
+                      <option key={college} value={college}>{college}</option>
+                    ))}
+                  </select>
 
-                    <select
-                      value={programFilter.program}
-                      onChange={(e) => setProgramFilter(prev => ({ ...prev, program: e.target.value }))}
-                      className="px-3 py-2 border rounded-md"
-                    >
-                      <option value="">All Programs</option>
-                      {generateUniqueValues('program').map(program => (
-                        <option key={program} value={program}>{program}</option>
-                      ))}
-                    </select>
+                  <select
+                    value={programFilter.program}
+                    onChange={(e) => setProgramFilter(prev => ({ ...prev, program: e.target.value }))}
+                    className="px-3 py-2 border rounded-md flex-grow"
+                  >
+                    <option value="">All Programs</option>
+                    {generateUniqueValues('program').map(program => (
+                      <option key={program} value={program}>{program}</option>
+                    ))}
+                  </select>
 
-                    <select
-                      value={programFilter.status}
-                      onChange={(e) => setProgramFilter(prev => ({ ...prev, status: e.target.value }))}
-                      className="px-3 py-2 border rounded-md"
-                    >
-                      <option value="all">All Statuses</option>
-                      <option value="approved">Approved</option>
-                      <option value="pending">Pending</option>
-                      <option value="rejected">Rejected</option>
-                    </select>
-                  </div>
-
-                  {renderBarChart(programFilter, 'program')}
+                  <select
+                    value={programFilter.status}
+                    onChange={(e) => setProgramFilter(prev => ({ ...prev, status: e.target.value }))}
+                    className="px-3 py-2 border rounded-md flex-grow"
+                  >
+                    <option value="all">All Statuses</option>
+                    <option value="approved">Approved</option>
+                    <option value="pending">Pending</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
                 </div>
-              </div>
+                <div className='flex justify-center w-full'>
+                  <div className='justify items-center'>
+                    {renderBarChart(programFilter, 'program')}
+                  </div>
+                </div>
 
+              </div>
             </div>
           )}
         </div>

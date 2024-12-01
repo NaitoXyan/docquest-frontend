@@ -225,7 +225,7 @@ const CoordinatorDashboard = () => {
             </div>
           </div>
 
-          <h1 className="text-2xl font-semibold mb-5">Projects</h1>
+          <h1 className="text-2xl font-semibold mb-5">PROJECTS</h1>
 
           {/* Projects table */}
           <div className="bg-white shadow-lg rounded-lg py-4 px-4">
@@ -243,10 +243,10 @@ const CoordinatorDashboard = () => {
                   <table className="min-w-full table-auto">
                     <thead className="bg-gray-100">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Project ID</th>
-                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Project Title</th>
-                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Date Created</th>
-                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Status</th>
+                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">PROJECT ID</th>
+                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">PROJECT TITLE</th>
+                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">DATE CREATED</th>
+                        <th className="px-6 py-3 text-center text-xs font-bold text-gray-500">STATUS</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -255,7 +255,7 @@ const CoordinatorDashboard = () => {
                           <td className="px-6 py-3">{project.uniqueCode}</td>
                           <td className="px-6 py-3">{project.projectTitle}</td>
                           <td className="px-6 py-3">{new Date(project.dateCreated).toLocaleDateString()}</td>
-                          <td className={`px-6 py-3 
+                          <td className={`px-6 py-3 text-center justify-items-center 
                             ${project.status === 'Approved' 
                               ? 'text-green-500' 
                               : project.status === 'Pending' 

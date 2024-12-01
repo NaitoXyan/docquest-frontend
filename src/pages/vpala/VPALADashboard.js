@@ -151,7 +151,7 @@ const VPALADashboard = () => {
                 <div className="flex flex-col mt-16 px-10">
                     <div className="flex">
                         <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 mb-2 ml-2 flex-1">
-                            <h1 className="text-2xl font-semibold mb-4">MOA Overview</h1>
+                            <h1 className="text-2xl font-bold mb-4">MOA OVERVIEW</h1>
                             <div className="grid grid-cols-3 gap-4 mb-1">
                                 <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                                     <h2 className="text-lg font-semibold">Approved</h2>
@@ -179,7 +179,7 @@ const VPALADashboard = () => {
                     </div>
 
                     <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 mb-8">
-                    <h1 className="text-2xl font-semibold mb-4">Recent Documents</h1>
+                    <h1 className="text-1xl font-semibold mb-4">RECENT DOCUMENTS</h1>
                         {error ? (
                             <div className="text-red-500 p-4 text-center">{error}</div>
                         ) : projects.length === 0 ? (
@@ -194,9 +194,9 @@ const VPALADashboard = () => {
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Type</th>
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Title</th>
                                                 <th className="px- py-3 text-center text-xs font-bold text-gray-600 uppercase">Date Created</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Your Review</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Review Date</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Project Status</th>
+                                                <th className="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase">Your Review</th>
+                                                <th className="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase">Review Date</th>
+                                                <th className="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase">Project Status</th>
                                             </tr>
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
@@ -205,17 +205,17 @@ const VPALADashboard = () => {
                                                     <td className="px-6 py-4 whitespace-nowrap">{doc.fullname}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap capitalize">{doc.documentType}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">{doc.projectTitle}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-center justify-items-center">
                                                         {new Date(doc.dateCreated).toLocaleDateString()}
                                                     </td>
-                                                    <td className={`px-6 py-3 text-center 
+                                                    <td className={`px-6 py-3 text-center text-center justify-items-center 
                                                         ${doc.reviewStatus === 'approved' 
                                                         ? 'text-green-500' : doc.reviewStatus === 'pending' 
                                                         ? 'text-yellow-500' : 'text-red-500'}`}>
                                                         {doc.reviewStatus}
                                                     </td>
-                                                    <td className="px-6 py-3 ">{doc.reviewDate ? new Date(doc.reviewDate).toLocaleDateString() : "N/A"}</td>
-                                                    <td className={`px-6 py-3 text-center 
+                                                    <td className="px-6 py-3 text-center justify-items-center">{doc.reviewDate ? new Date(doc.reviewDate).toLocaleDateString() : "N/A"}</td>
+                                                    <td className={`px-6 py-3 text-center text-center justify-items-center 
                                                         ${doc.status === 'approved' 
                                                         ? 'text-green-500' : doc.status === 'pending' 
                                                         ? 'text-yellow-500' : 'text-red-500'}`}>

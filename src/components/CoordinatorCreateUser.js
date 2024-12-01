@@ -245,7 +245,7 @@ const CoordinatorCreateUser = () => {
       <div className="w-1/5 fixed h-full"></div>
       <div className="flex-1 ml-0">
         <div className="flex flex-col">
-          <h1 className="text-2xl font-semibold m-7">Create User Account</h1>
+          <h1 className="text-2xl font-bold m-7 uppercase">CREATE USER ACCOUNT</h1>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col mx-10 mb-5 bg-white rounded-xl p-6 h-fit">
               <div className="flex flex-row mx-1">

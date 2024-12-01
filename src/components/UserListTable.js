@@ -206,11 +206,11 @@ const UserListTable = () => {
                 <table className="min-w-full table-auto bg-white shadow-md">
                     <thead className="bg-vlu text-white">
                         <tr>
-                            <th className="py-4 px-6 text-left font-medium">Full Name</th>
-                            <th className="py-4 px-6 text-left font-medium">Email</th>
-                            <th className="py-4 px-6 text-left font-medium">Role</th>
-                            <th className="py-4 px-6 text-left font-medium">Edit User Details</th>
-                            <th className="py-4 px-6 text-left font-medium">Change Role</th>
+                            <th className="py-4 px-6 text-left font-medium">FULL NAME</th>
+                            <th className="py-4 px-6 text-left font-medium">EMAIL</th>
+                            <th className="py-4 px-6 text-center font-medium">ROLE</th>
+                            <th className="py-4 px-6 text-center font-medium">EDIT USER DETAILS</th>
+                            <th className="py-4 px-6 text-center font-medium">CHANGE ROLE</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -221,8 +221,8 @@ const UserListTable = () => {
                             >
                                 <td className="py-4 px-6">{user.fullName}</td>
                                 <td className="py-4 px-6">{user.email}</td>
-                                <td className="py-4 px-6">{user.role}</td>
-                                <td className="py-4 px-6 items-center">
+                                <td className="py-4 px-6 text-center justify-items-center">{user.role}</td>
+                                <td className="py-4 px-6 items-center text-center justify-items-center">
                                     <button
                                         className="text-blue-600 hover:text-blue-800 font-medium"
                                         onClick={() => handleEditClick(user)}
@@ -230,7 +230,7 @@ const UserListTable = () => {
                                         Edit Account
                                     </button>
                                 </td>
-                                <td className="py-4 px-6 items-center">
+                                <td className="py-4 px-6 items-center text-center justify-items-center">
                                     <button
                                         className="text-blue-600 hover:text-blue-800 font-medium"
                                         onClick={() => handleEditRoleClick(user)}

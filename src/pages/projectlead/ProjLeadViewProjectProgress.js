@@ -78,7 +78,7 @@ const ProjectProgressStep = ({ projectID }) => {
         return {
           label: college,
           description: (
-            <Box style={{ overflowY: 'auto', padding: '20px' }} >
+            <Box style={{ overflowY: '200', padding: '20px' }} >
               <Stepper orientation="vertical" nonLinear>
                 {collegeReviews.map((review, index) => (
                   <Step key={review.reviewID} active={true} completed={review.reviewStatus === "approved"}>

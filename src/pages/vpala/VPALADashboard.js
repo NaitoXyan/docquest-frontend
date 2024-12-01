@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import Topbar from "../../components/Topbar";
 import VPALASideBar from '../../components/VPALASideBar';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import { NavLink } from 'react-router-dom';
 
 const VPALADashboard = () => {
     const [projects, setProjects] = useState([]);
-    const [statusCounts, setStatusCounts] = useState({ 
-        moa: { approved: 0, pending: 0, rejected: 0 }
+    const [statusCounts, setStatusCounts] = useState({
+        yourReview: { approved: 0, pending: 0, rejected: 0 }
     });
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
@@ -66,8 +67,8 @@ const VPALADashboard = () => {
                             : null,
                         comment: proj.comment || "",
                         reviewID: proj.reviewID,
-                        content_type_name: proj.content_type_name,
-                        status: proj.status
+                        status: proj.status,
+                        content_type_name: proj.content_type_name
                     }));
 
                 const sortedProjects = formattedProjects.sort((a, b) =>
@@ -78,15 +79,14 @@ const VPALADashboard = () => {
                 setError(null);
 
                 const counts = {
-                    project: { approved: 0, pending: 0, rejected: 0 },
-                    moa: { approved: 0, pending: 0, rejected: 0 }
+                    yourReview: { approved: 0, pending: 0, rejected: 0 }
                 };
 
+                // Count based on reviewStatus for "Your Review"
                 sortedProjects.forEach(proj => {
-                    const type = proj.content_type_name;
-                    const status = proj.status.toLowerCase();
-                    if (type && ['approved', 'pending', 'rejected'].includes(status)) {
-                        counts[type][status]++;
+                    const reviewStatus = proj.reviewStatus.toLowerCase();
+                    if (['approved', 'pending', 'rejected'].includes(reviewStatus)) {
+                        counts.yourReview[reviewStatus]++;
                     }
                 });
 
@@ -149,37 +149,47 @@ const VPALADashboard = () => {
             <div className="flex-1 ml-[20%]">
                 <Topbar />
                 <div className="flex flex-col mt-16 px-10">
-                    <div className="flex">
-                        <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 mb-2 ml-2 flex-1">
-                            <h1 className="text-2xl font-semibold mb-4">MOA Overview</h1>
-                            <div className="grid grid-cols-3 gap-4 mb-1">
-                                <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
-                                    <h2 className="text-lg font-semibold">Approved</h2>
-                                    <h2 className="text-4xl font-bold">{statusCounts.moa.approved}</h2>
-                                    <button className="mt-2 underline" onClick={() => handleNavigate("approved", "moa")}>
-                                        View
-                                    </button>
-                                </div>
-                                <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
-                                    <h2 className="text-lg font-semibold">Pending</h2>
-                                    <h2 className="text-4xl font-bold">{statusCounts.moa.pending}</h2>
-                                    <button className="mt-2 underline" onClick={() => handleNavigate("pending", "moa")}>
-                                        View
-                                    </button>
-                                </div>
-                                <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
-                                    <h2 className="text-lg font-semibold">Rejected</h2>
-                                    <h2 className="text-4xl font-bold">{statusCounts.moa.rejected}</h2>
-                                    <button className="mt-2 underline" onClick={() => handleNavigate("rejected", "moa")}>
-                                        View
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div className="flex">
+        <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 mb-2 ml-2 flex-1">
+            <h1 className="text-2xl font-semibold mb-4">Your Review Overview</h1>
+            <div className="grid grid-cols-3 gap-4 mb-1">
+                <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                    <h2 className="text-lg font-semibold">Approved</h2>
+                    <h2 className="text-4xl font-bold">{statusCounts.yourReview.approved}</h2>
+                    <NavLink
+                        to="/review-list/approved/review"
+                        className="mt-2 underline"
+                    >
+                        View
+                    </NavLink>
+                </div>
+                <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                    <h2 className="text-lg font-semibold">Pending</h2>
+                    <h2 className="text-4xl font-bold">{statusCounts.yourReview.pending}</h2>
+                    <NavLink
+                        to="/review-list/pending/review"
+                        className="mt-2 underline"
+                    >
+                        View
+                    </NavLink>
+                </div>
+                <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
+                    <h2 className="text-lg font-semibold">Rejected</h2>
+                    <h2 className="text-4xl font-bold">{statusCounts.yourReview.rejected}</h2>
+                    <NavLink
+                        to="/review-list/rejected/review"
+                        className="mt-2 underline"
+                    >
+                        View
+                    </NavLink>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
                     <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 mb-8">
-                    <h1 className="text-2xl font-semibold mb-4">Recent Documents</h1>
+                        <h1 className="text-2xl font-semibold mb-4">Recent Documents</h1>
                         {error ? (
                             <div className="text-red-500 p-4 text-center">{error}</div>
                         ) : projects.length === 0 ? (

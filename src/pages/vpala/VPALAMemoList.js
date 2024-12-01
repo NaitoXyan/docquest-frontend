@@ -1,220 +1,312 @@
-import React, { useState, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import VPALASideBar from '../../components/VPALASideBar';
 import Topbar from "../../components/Topbar";
-import VPALASideBar from "../../components/VPALASideBar";
 
 const VPALAMemoList = () => {
-  const [documents, setDocuments] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [documentType, setDocumentType] = useState("");
-  const [showDownloadModal, setShowDownloadModal] = useState(false);
-  const [currentDownload, setCurrentDownload] = useState(null);
-  const itemsPerPage = 5;
+    const [projects, setProjects] = useState([]);
+    const [statusCounts, setStatusCounts] = useState({
+        moa: { approved: 0, pending: 0, rejected: 0 }
+    });
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
+    const navigate = useNavigate();
+    const [error, setError] = useState(null);
+    const token = localStorage.getItem('token');
+    const [showDownloadModal, setShowDownloadModal] = useState(false);
+    const [selectedReviewID, setSelectedReviewID] = useState(null);
+    const [selectedFormat, setSelectedFormat] = useState('pdf');
+    
+    // State for filter selection
+    const [reviewFilter, setReviewFilter] = useState('all');
 
-  useEffect(() => {
-    const mockData = [
-      {
-        id: 1,
-        projectLeader: "Project A",
-        college: "College of Science",
-        date: "2024-11-01",
-        status: "Approved",
-        downloadLink: "/files/project-a",
-      },
-      {
-        id: 2,
-        projectLeader: "Project B",
-        college: "College of Engineering",
-        date: "2024-11-15",
-        status: "Pending",
-        downloadLink: "/files/project-b",
-      },
-      {
-        id: 3,
-        projectLeader: "Project C",
-        college: "College of Arts",
-        date: "2024-11-20",
-        status: "Rejected",
-        downloadLink: "/files/project-c",
-      },
-    ];
-    setDocuments(mockData);
-  }, []);
+    useEffect(() => {
+        if (!token) {
+            localStorage.clear();
+            navigate('/login', { replace: true });
+            return;
+        }
 
-  const handleNextPage = () => {
-    if (currentPage * itemsPerPage < documents.length) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
+        const roles = JSON.parse(localStorage.getItem('roles') || '[]');
+        
+        if (!roles.includes("vpala")) {
+            localStorage.clear();
+            navigate('/login', { replace: true });
+        }
+    }, [token, navigate]);
 
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                const response = await axios({
+                    method: 'get',
+                    url: 'http://127.0.0.1:8000/get_review',
+                    headers: {
+                        'Authorization': `Token ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
 
-  const handleSearch = (e) => {
-    setSearch(e.target.value);
-  };
+                if (!response.data || !Array.isArray(response.data.reviews)) {
+                    console.error("Invalid data structure received:", response.data);
+                    setError("Invalid data format received from server");
+                    setProjects([]);
+                    return;
+                }
 
-  const handleDocumentTypeFilter = (e) => {
-    setDocumentType(e.target.value);
-  };
+                const formattedProjects = response.data.reviews
+                    .filter(proj => proj !== null)
+                    .map((proj) => ({
+                        fullname: proj.firstname && proj.lastname 
+                            ? `${proj.firstname} ${proj.lastname}` 
+                            : "N/A",
+                        documentType: proj.content_type_name || "N/A",
+                        projectTitle: proj.projectTitle || "Untitled Document",
+                        dateCreated: proj.dateCreated 
+                            ? new Date(proj.dateCreated).toISOString() 
+                            : new Date().toISOString(),
+                        reviewStatus: proj.reviewStatus,
+                        reviewDate: proj.reviewDate 
+                            ? new Date(proj.reviewDate).toISOString() 
+                            : null,
+                        comment: proj.comment || "",
+                        reviewID: proj.reviewID,
+                        content_type_name: proj.content_type_name,
+                        status: proj.status
+                    }));
 
-  const openDownloadModal = (doc) => {
-    setCurrentDownload(doc);
-    setShowDownloadModal(true);
-  };
+                const sortedProjects = formattedProjects.sort((a, b) =>
+                    new Date(b.dateCreated) - new Date(a.dateCreated)
+                );
 
-  const handleDownload = (format) => {
-    if (currentDownload) {
-      const downloadLink = `${currentDownload.downloadLink}.${format.toLowerCase()}`;
-      alert(`Downloading as ${format}: ${downloadLink}`);
-      setShowDownloadModal(false);
-    }
-  };
+                setProjects(sortedProjects);
+                setError(null);
 
-  const filteredDocuments = documents.filter(
-    (doc) =>
-      doc.projectLeader.toLowerCase().includes(search.toLowerCase()) &&
-      (documentType === "" || doc.status === documentType)
-  );
+                const counts = {
+                    project: { approved: 0, pending: 0, rejected: 0 },
+                    moa: { approved: 0, pending: 0, rejected: 0 }
+                };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProjects = filteredDocuments.slice(indexOfFirstItem, indexOfLastItem);
+                sortedProjects.forEach(proj => {
+                    const type = proj.content_type_name;
+                    const status = proj.status.toLowerCase();
+                    if (type && ['approved', 'pending', 'rejected'].includes(status)) {
+                        counts[type][status]++;
+                    }
+                });
 
-  return (
-    <div className="bg-gray-200 min-h-screen flex">
-      <div className="w-1/5 fixed h-full">
-        <VPALASideBar />
-      </div>
-      <div className="flex-1 ml-[20%]">
-        <Topbar />
-        <div className="flex flex-col mt-14 px-10 pt-5">
-          <div className="flex justify-end items-center mb-4">
-            {/* <h1 className="text-2xl font-bold mt-10">MEMORANDUM LIST</h1> */}
-            <div className="flex justify-between items-center mb-1">
-              <input
-                type="text"
-                placeholder="Search by Project Title"
-                className="p-2 border"
-                value={search}
-                onChange={handleSearch}
-              />
-              <select
-                className="ml-3 p-2 border"
-                value={documentType}
-                onChange={handleDocumentTypeFilter}
-              >
-                <option value="">All</option>
-                <option value="Pending">Pending</option>
-                <option value="Approved">Approved</option>
-                <option value="Rejected">Rejected</option>
-              </select>
-            </div>
-          </div>
-          <table className="min-w-full bg-white border">
-            <thead>
-              <tr className="bg-vlu text-white">
-                <th className="py-2 px-4 text-left">PROJECT TITLE</th>
-                <th className="py-2 px-4 text-left">COLLEGE</th>
-                <th className="py-2 px-4 text-left">DATE SUBMITTED</th>
-                <th className="py-2 px-4 text-center">STATUS</th>
-                <th className="py-2 px-4 text-center">ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentProjects.map((doc, index) => (
-                <tr key={index} className="even:bg-gray-200">
-                  <td className="py-2 px-4">{doc.projectLeader}</td>
-                  <td className="py-2 px-4">{doc.college}</td>
-                  <td className="py-2 px-4">{doc.date}</td>
-                  <td className="py-2 px-4 justify-items-center">
-                    <span 
-                      className={`ipx-2 py-1 rounded-md text-white w-24 text-center block items-center
-                        ${doc.status === 'Approved' ? 'bg-green-500 text-white' : 
-                        doc.status === 'Pending' ? 'bg-yellow-500 text-white' : 'bg-red-500'}`}
-                    >
-                      {doc.status}
-                    </span>
-                  </td>
-                  <td className="py-2 px-4 text-center justify-items-center">
-                    <NavLink
-                      to={`/view/${doc.id}`}
-                      className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
-                    >
-                      View Copy
-                    </NavLink>
+                setStatusCounts(counts);
+            } catch (error) {
+                console.error("Error fetching projects:", error);
+                setError(error.message || "Failed to fetch projects");
+                setProjects([]);
+            }
+        };
+    
+        fetchProjects();
+    }, [token]);
+
+    const handleNavigate = (statusFilter, documentType) => {
+        navigate(`/review-list/${statusFilter.toLowerCase()}/${documentType}`);
+    };
+
+    const handleDownload = () => {
+        // Request download in the selected format
+        axios.get(`http://127.0.0.1:8000/download_document/${selectedReviewID}?format=${selectedFormat}`, {
+            responseType: 'blob', // Set responseType to 'blob' for binary data
+            headers: {
+                'Authorization': `Token ${token}`,
+            }
+        })
+        .then(response => {
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `document_${selectedReviewID}.${selectedFormat}`);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setShowDownloadModal(false); // Close the modal after download
+        })
+        .catch(error => {
+            console.error("Error downloading document:", error);
+            alert("Failed to download document.");
+            setShowDownloadModal(false); // Close the modal on error
+        });
+    };
+
+    const handleView = (reviewID) => {
+        // Implement logic to view the document (you can show a modal or open in a new tab)
+        window.open(`http://127.0.0.1:8000/view_document/${reviewID}`, '_blank');
+    };
+
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    
+    // Filter projects based on the review status
+    const filteredProjects = reviewFilter === 'all' ? projects : projects.filter(proj => proj.reviewStatus.toLowerCase() === reviewFilter.toLowerCase());
+    
+    const currentProjects = filteredProjects.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
+
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const renderPageNumbers = () => {
+        const pageNumbers = [];
+        if (totalPages <= 5) {
+            for (let i = 1; i <= totalPages; i++) {
+                pageNumbers.push(
                     <button
-                      onClick={() => openDownloadModal(doc)}
-                      className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
+                        key={i}
+                        onClick={() => handlePageChange(i)}
+                        className={`px-3 py-1 rounded-md ${i === currentPage ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-600"}`}
                     >
-                      Download
+                        {i}
                     </button>
-                    <NavLink
-                      to={`/scan/${doc.id}`}
-                      className="bg-green-500 text-white px-3 py-1 rounded"
-                    >
-                      Upload Copy
-                    </NavLink>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="flex justify-between mt-5">
-            <button
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-              className="px-4 py-2 bg-gray-300 disabled:opacity-50"
-            >
-              Previous
-            </button>
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage * itemsPerPage >= filteredDocuments.length}
-              className="px-4 py-2 bg-gray-300 disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
-          <p className="mt-3">
-            Page {currentPage} of {Math.ceil(filteredDocuments.length / itemsPerPage)}
-          </p>
-        </div>
-      </div>
+                );
+            }
+        } else {
+            // Ellipsis logic remains the same
+        }
 
-      {showDownloadModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded shadow-md">
-            <h2 className="text-lg font-bold mb-4">Choose File Format</h2>
-            <div className="flex justify-between">
-              <button
-                onClick={() => handleDownload("PDF")}
-                className="px-4 py-2 bg-blue-500 text-white rounded mr-2"
-              >
-                PDF
-              </button>
-              <button
-                onClick={() => handleDownload("MS Word")}
-                className="px-4 py-2 bg-green-500 text-white rounded"
-              >
-                MS Word
-              </button>
+        return pageNumbers;
+    };
+
+    return (
+        <div className="bg-gray-200 min-h-screen flex">
+            <div className="w-1/5 fixed h-full">
+                <VPALASideBar />
             </div>
-            <button
-              onClick={() => setShowDownloadModal(false)}
-              className="mt-4 px-4 py-2 bg-gray-300 rounded"
-            >
-              Cancel
-            </button>
-          </div>
+            <div className="flex-1 ml-[20%]">
+                <Topbar />
+                <div className="flex flex-col mt-16 px-10">
+                    <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 mb-8">
+                        <h1 className="text-2xl font-semibold mb-4">Recent Documents</h1>
+                        <div className="mb-4">
+                            {/* Review Status Filter */}
+                            <label htmlFor="reviewFilter" className="mr-2 text-gray-600">Filter by Review Status:</label>
+                            <select
+                                id="reviewFilter"
+                                value={reviewFilter}
+                                onChange={(e) => setReviewFilter(e.target.value)}
+                                className="px-4 py-2 border rounded-md"
+                            >
+                                <option value="all">All</option>
+                                <option value="approved">Approved</option>
+                                <option value="pending">Pending</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                        {error ? (
+                            <div className="text-red-500 p-4 text-center">{error}</div>
+                        ) : filteredProjects.length === 0 ? (
+                            <div className="text-gray-500 p-4 text-center">No documents found</div>
+                        ) : (
+                            <>
+                                <div className="overflow-x-auto">
+                                    <table className="min-w-full table-auto">
+                                        <thead className="bg-gray-100">
+                                            <tr>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Owner</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Type</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Title</th>
+                                                <th className="px- py-3 text-center text-xs font-bold text-gray-600 uppercase">Date Created</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Your Review</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Review Date</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Project Status</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="bg-white divide-y divide-gray-200">
+                                            {currentProjects.map((doc, index) => (
+                                                <tr key={doc.reviewID || index} className="hover:bg-gray-50">
+                                                    <td className="px-6 py-4 whitespace-nowrap">{doc.fullname}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap capitalize">{doc.documentType}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">{doc.projectTitle}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap">
+                                                        {new Date(doc.dateCreated).toLocaleDateString()}
+                                                    </td>
+                                                    <td className={`px-6 py-3 text-center 
+                                                        ${doc.reviewStatus === 'approved' 
+                                                        ? 'text-green-500' : doc.reviewStatus === 'pending' 
+                                                        ? 'text-yellow-500' : 'text-red-500'}`} >
+                                                        {doc.reviewStatus}
+                                                    </td>
+                                                    <td className="px-6 py-3 ">{doc.reviewDate ? new Date(doc.reviewDate).toLocaleDateString() : "N/A"}</td>
+                                                    <td className={`px-6 py-3 text-center 
+                                                        ${doc.status === 'approved' 
+                                                        ? 'text-green-500' : doc.status === 'pending' 
+                                                        ? 'text-yellow-500' : 'text-red-500'}`} >
+                                                        {doc.status}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-center">
+                                                        <button 
+                                                            onClick={() => handleView(doc.reviewID)} 
+                                                            className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700 transition">
+                                                            View
+                                                        </button>
+                                                        <button 
+                                                            onClick={() => {
+                                                                setSelectedReviewID(doc.reviewID);
+                                                                setShowDownloadModal(true);
+                                                            }} 
+                                                            className="bg-green-600 text-white px-3 py-1 rounded-md hover:bg-green-700 transition ml-2">
+                                                            Download
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="mt-4 flex justify-center items-center space-x-2">
+                                    {renderPageNumbers()}
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            {/* Modal for Download Options */}
+            {showDownloadModal && (
+                <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center z-10">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-72">
+                        <h3 className="text-xl font-semibold mb-4">Select Download Format</h3>
+                        <div className="flex justify-between space-x-4">
+                            <button 
+                                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition w-full"
+                                onClick={() => {
+                                    setSelectedFormat('pdf');
+                                    handleDownload();
+                                }}
+                            >
+                                PDF
+                            </button>
+                            <button 
+                                className="px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition w-full"
+                                onClick={() => {
+                                    setSelectedFormat('word');
+                                    handleDownload();
+                                }}
+                            >
+                                MS Word
+                            </button>
+                        </div>
+                        <button 
+                            className="mt-4 bg-gray-500 text-white px-6 py-2 rounded-md w-full hover:bg-gray-600 transition"
+                            onClick={() => setShowDownloadModal(false)}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
-      )}
-    </div>
-  );
+    );
 };
 
 export default VPALAMemoList;

@@ -133,7 +133,7 @@ const ProgramChairDashboard = () => {
                     <button
                         key={i}
                         onClick={() => handlePageChange(i)}
-                        className={`px-3 py-1 rounded-lg ${i === currentPage ? "bg-blue-500 text-white" : "bg-gray-100"}`}
+                        className={`px-3 py-1 rounded-lg ${i === currentPage ? "bg-vlu text-white" : "bg-gray-100"}`}
                     >
                         {i}
                     </button>
@@ -144,7 +144,7 @@ const ProgramChairDashboard = () => {
                 <button
                     key={1}
                     onClick={() => handlePageChange(1)}
-                    className={`px-3 py-1 rounded-lg ${currentPage === 1 ? "bg-blue-500 text-white" : "bg-gray-100"}`}
+                    className={`px-3 py-1 rounded-lg ${currentPage === 1 ? "bg-vlu text-white" : "bg-gray-100"}`}
                 >
                     1
                 </button>
@@ -159,7 +159,7 @@ const ProgramChairDashboard = () => {
                     <button
                         key={i}
                         onClick={() => handlePageChange(i)}
-                        className={`px-3 py-1 rounded-lg ${i === currentPage ? "bg-blue-500 text-white" : "bg-gray-100"}`}
+                        className={`px-3 py-1 rounded-lg ${i === currentPage ? "bg-vlu text-white" : "bg-gray-100"}`}
                     >
                         {i}
                     </button>
@@ -174,7 +174,7 @@ const ProgramChairDashboard = () => {
                 <button
                     key={totalPages}
                     onClick={() => handlePageChange(totalPages)}
-                    className={`px-3 py-1 rounded-lg ${currentPage === totalPages ? "bg-blue-500 text-white" : "bg-gray-100"}`}
+                    className={`px-3 py-1 rounded-lg ${currentPage === totalPages ? "bg-vlu text-white" : "bg-gray-100"}`}
                 >
                     {totalPages}
                 </button>
@@ -192,7 +192,7 @@ const ProgramChairDashboard = () => {
             <div className="flex-1 ml-[20%]">
                 <Topbar />
                 <div className="flex flex-col mt-16 px-10">
-                    <h1 className="text-2xl font-semibold mb-2">Documents Overview</h1>
+                    <h1 className="text-2xl font-semibold mb-2">DOCUMENTS OVERVIEW</h1>
                     <div className="grid grid-cols-3 gap-4 mb-5">
                         <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                             <h2 className="text-lg font-semibold">Approved</h2>
@@ -217,8 +217,8 @@ const ProgramChairDashboard = () => {
                         </div>
                     </div>
 
-                    <h1 className="text-2xl font-semibold mb-2">Documents</h1>
-                    <div className="bg-white shadow-lg rounded-lg py-4 px-4">
+                    <h1 className="text-2xl font-semibold mb-2">DOCUMENTS</h1>
+                    <div className="bg-white rounded-lg py-4 px-4">
                         {error ? (
                             <div className="text-red-500 p-4 text-center">
                                 {error}
@@ -232,20 +232,20 @@ const ProgramChairDashboard = () => {
                                 <div className="overflow-x-auto">
                                     <table className="min-w-full table-auto">
                                         <thead className="bg-gray-100">
-                                            <tr>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Full Name</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Document Type</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Project Title</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Date Created</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Your Review</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Review Date</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-500">Project Status</th>
+                                        <tr>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600">FULL NAME</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600">DOCUMENT TYPE</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600">PROJECT TITLE</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600">DATE CREATED</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600">YOUR REVIEW</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600">REVIEW DATE</th>
+                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600">PROJECT STATUS</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {currentProjects.map((project) => (
                                                 <tr key={project.reviewID} className="border-t border-gray-200">
-                                                    <td className="px-6 py-3">{project.fullname}</td>
+                                                    <td className="px-6 py-5">{project.fullname}</td>
                                                     <td className="px-6 py-3">{project.documentType}</td>
                                                     <td className="px-6 py-3">{project.projectTitle}</td>
                                                     <td className="px-6 py-3">{new Date(project.dateCreated).toLocaleDateString()}</td>

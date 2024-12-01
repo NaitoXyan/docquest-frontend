@@ -138,7 +138,7 @@ const ProjLeadProjectStatus = () => {
         <div className="flex flex-col mt-16 px-4 md:px-10">
           {/* Title, Filter, and Search Row */}
           <div className="flex flex-col sm:flex-row flex-wrap justify-between items-center mb-4 space-y-4 sm:space-y-0">
-            <h2 className="text-xl sm:text-2xl font-bold w-full sm:w-auto">PROJECT LIST</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold w-full sm:w-auto">PROJECT LIST</h2>
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 w-full sm:w-auto">
               <div className="relative w-full sm:w-48">
                 <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />

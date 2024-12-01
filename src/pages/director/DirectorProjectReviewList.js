@@ -10,7 +10,7 @@ const DirectorReviewList = () => {
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState('');
-  const [documentFilter, setDocumentFilter] = useState('');
+  const [documentFilter, setDocumentFilter] = useState('project');
   const [searchTerm, setSearchTerm] = useState('');
   const [characterLimit, setCharacterLimit] = useState(42);
   const itemsPerPage = 8;
@@ -143,7 +143,7 @@ const DirectorReviewList = () => {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`px-3 py-1 rounded-lg ${i === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
+          className={`px-3 py-1 rounded-lg ${i === currentPage ? 'bg-vlu text-white' : 'bg-gray-100'}`}
         >
           {i}
         </button>
@@ -186,7 +186,7 @@ const DirectorReviewList = () => {
         <Topbar />
         <div className="flex flex-col mt-16 px-4 md:px-10">
           <div className="flex flex-col sm:flex-row flex-wrap justify-between items-center mb-4 space-y-4 sm:space-y-0">
-            <h2 className="text-xl sm:text-2xl font-bold w-full sm:w-auto">PROJECT LIST</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold w-full sm:w-auto">PROJECT LIST</h2>
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 w-full sm:w-auto">
               <div className="relative w-full sm:w-48">
                 <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
@@ -198,7 +198,7 @@ const DirectorReviewList = () => {
                   className="w-full pl-10 pr-3 py-1.5 border rounded-md"
                 />
               </div>
-              <div className="w-full sm:w-auto">
+              {/* <div className="w-full sm:w-auto">
                 <label htmlFor="documentFilter" className="mr-2">Filter by Document Type:</label>
                 <select
                   id="documentFilter"
@@ -210,7 +210,7 @@ const DirectorReviewList = () => {
                   <option value="project">Project</option>
                   <option value="moa">MOA</option>
                 </select>
-              </div>
+              </div> */}
 
               <div className="w-full sm:w-auto">
                 <label htmlFor="statusFilter" className="mr-2">Filter by Status:</label>
@@ -253,14 +253,14 @@ const DirectorReviewList = () => {
                             ? `${project.projectTitle.substring(0, characterLimit)}...`
                             : project.projectTitle}
                         </td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-6 whitespace-nowrap">
                           {new Date(project.dateCreated).toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric',
                           })}
                         </td>
-                        <td className="px-3 sm:px-3 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-3 whitespace-nowrap">
                           {(() => {
                             // Determine the content type and approval conditions
                             const isProject = project.content_type === 'project'; // Assuming 'content_type' is available in project data
@@ -271,27 +271,27 @@ const DirectorReviewList = () => {
                             const isRejected = project.reviewStatus === 'rejected';
                             
                             const statusClass = isApproved
-                              ? 'bg-green-100 text-green-700'
+                              ? 'bg-green-400 text-white'
                               : isRejected
-                              ? 'bg-red-100 text-red-700'
+                              ? 'bg-red-400 text-white'
                               : isPending
-                              ? 'bg-yellow-100 text-yellow-700'
+                              ? 'bg-yellow-400 text-white'
                               : 'bg-gray-100 text-gray-700'; // Default for unknown conditions
                             const statusText = isApproved
-                              ? 'Approved'
+                              ? 'approved'
                               : isRejected
-                              ? 'Rejected'
+                              ? 'rejected'
                               : isPending
-                              ? 'Pending'
+                              ? 'pending'
                               : 'Unknown'; // Default status for unknown conditions
                             return (
-                              <span className={`px-4 py-2 text-m rounded-full ${statusClass}`}>
+                              <span className={`px-4 py-1.5 text-m rounded-md ${statusClass}`}>
                                 {statusText}
                               </span>
                             );
                           })()}
                         </td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
+                        <td className="px-3 sm:px-6  whitespace-nowrap text-center">
                           {(() => {
                             // Determine the action based on approval and review status
                             const canViewDocument = (project.reviewStatus === 'approved') ||
@@ -311,7 +311,7 @@ const DirectorReviewList = () => {
                             };
 
                             return (
-                              <button onClick={handleClick} className={`w-36 px-4 py-2 rounded-md text-center ${buttonClass}`}>
+                              <button onClick={handleClick} className={`w-36 px-4 py-1.5 rounded-md text-center ${buttonClass}`}>
                                 {buttonText}
                               </button>
                             );

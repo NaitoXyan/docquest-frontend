@@ -115,7 +115,9 @@ function App() {
         <Route path="/documents/:statusFilter" element={<VPALADocStatus />} /> {/* Dynamic route */}
         <Route path="/view/:id" element={<VPALAViewProgress/>} />
         <Route path="/document/:id" element={<VPALAViewProgress />} />
-        
+        <Route path="/review-list/approved/review" element={<VPALAMemoList/>}/>
+        <Route path="/review-list/pending/review" element={<VPALAMemoList/>}/>
+        <Route path="/review-list/rejected/review" element={<VPALAMemoList/>}/>
         {/* EStaff routes */}
         <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>
 

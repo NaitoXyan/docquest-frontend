@@ -122,7 +122,7 @@ const Topbar = () => {
         />
         <div>
           <Link to="/profile">
-            <h1 className="text-sm w-44 text-truncate">{firstname} {lastname}</h1>
+            <h1 className="text-sm w-44 text-truncate font-medium">{firstname} {lastname}</h1>
             <h2
               className="text-xs text-gray-500 text-truncate"
               title={formatRoles()} // Full text shown in the tooltip

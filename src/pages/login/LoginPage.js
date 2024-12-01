@@ -61,7 +61,7 @@ const LoginPage = () => {
       } else if (rolesList.includes('vpala')) {
         navigate('/vpala'); // Add a specific route for 'vpala' if needed
       } else if (rolesList.includes('coord')) {
-        navigate('/coordinatordashboard'); 
+        navigate('/coordinatordashboard');
       } else if (
         rolesList.includes('cldn') ||
         rolesList.includes('vcaa') ||
@@ -70,11 +70,11 @@ const LoginPage = () => {
         rolesList.includes('cclr') ||
         rolesList.includes('estf') ||
         rolesList.includes('') ||
-        rolesList.includes('') 
+        rolesList.includes('')
       ) {
         navigate('/estaff');
       }
-      
+
     } catch (error) {
       // Handle errors and set error message
       if (error.response) {
@@ -100,17 +100,16 @@ const LoginPage = () => {
       className="flex  min-h-screen bg-cover bg-center"
     >
       <div
-        className="h-screen w-3/4"
+        className="h-28 w-3/4"
         style={{
           width: '70%',
-          height: '101vh',
+          height: '100vh',
           backgroundImage: "url('/images/bg-login2.png')",
-          backgroundSize: 'cover', // Ensures the image covers the entire div
-          backgroundRepeat: 'no-repeat', // Prevents the image from repeating
-          backgroundPosition: 'center' // Centers the image within the div
+          backgroundSize: 'cover',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center'
         }}
       >
-
       </div>
       <div className=" flex absolute bottom-5 left-5 items-center" style={{ height: '13%' }}>
         <img src="/images/U1.png" alt="UstpLogo" style={{ height: '65%', }} />
@@ -118,7 +117,7 @@ const LoginPage = () => {
         <img src="/images/C1.png" alt="CITCLogo" style={{ height: '70%', marginRight: 13 }} />
         <img src="/images/D1.png" alt="DITLogo" style={{ height: '70%', }} />
       </div>
-      <div className="h-screen p-12 bg-white absolute right-0" style={{ width: '30%' }}>
+      <div className="h-20 p-12 bg-white absolute right-0" style={{ width: '30%' }}>
         <div className="flex justify-center mb-1 mt-16">
           <img src="/images/logo1.png" alt="DocQuestLogo" className="w-48" />
         </div>

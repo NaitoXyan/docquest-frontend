@@ -56,7 +56,7 @@ const ProjectProgressStep = ({ projectID }) => {
     const allApproved = reviews.every((review) => review.reviewStatus === "approved");
     const anyRejected = reviews.some((review) => review.reviewStatus === "rejected");
     const allCompleted = reviews.every((review) => review.reviewStatus && review.reviewStatus !== "pending");
-  
+
     if (allApproved) {
       return "green"; // Approved
     } else if (anyRejected) {
@@ -74,18 +74,14 @@ const ProjectProgressStep = ({ projectID }) => {
       .filter(([college]) => college !== "No College") // Exclude null/undefined colleges
       .map(([college, collegeReviews]) => {
         const stepColor = calculateStepStatus(collegeReviews);
-  
+
         return {
           label: college,
           description: (
-            <Box>
+            <Box style={{ overflowY: 'auto', padding: '20px' }} >
               <Stepper orientation="vertical" nonLinear>
                 {collegeReviews.map((review, index) => (
-                  <Step
-                    key={review.reviewID}
-                    active={true}
-                    completed={review.reviewStatus === "approved"}
-                  >
+                  <Step key={review.reviewID} active={true} completed={review.reviewStatus === "approved"}>
                     <StepLabel
                       StepIconProps={{
                         style: {
@@ -93,18 +89,28 @@ const ProjectProgressStep = ({ projectID }) => {
                             review.reviewStatus === "approved"
                               ? "green"
                               : review.reviewStatus === "rejected"
-                              ? "red"
-                              : "orange",
+                                ? "red"
+                                : "orange",
                         },
                       }}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                      }}
                     >
-                      {review.fullname} - {review.program || "Dean"}
+                      <Typography style={{ fontWeight: 'bold', fontSize: '14px' }}>
+                        {review.fullname}
+                      </Typography>
+                      <Typography style={{ fontSize: '12px', color: 'gray' }}>
+                        {review.program || "Dean"}
+                      </Typography>
                     </StepLabel>
                     <StepContent>
                       <Typography>Status: {review.reviewStatus || "Pending"}</Typography>
                       <Typography>Comment: {review.comment || "None"}</Typography>
                     </StepContent>
                   </Step>
+
                 ))}
               </Stepper>
             </Box>
@@ -113,7 +119,7 @@ const ProjectProgressStep = ({ projectID }) => {
         };
       }),
     {
-      label: "Director",
+      label: "Director, Extension & Community Relations",
       description: (() => {
         const directorReview = reviews.find(
           (review) => !review.college && !review.program
@@ -165,48 +171,48 @@ const ProjLeadViewProjectProgress = () => {
   }, [token, navigate]);
 
   return (
-  <div className="bg-gray-200 min-h-screen flex flex-col">
-    {/* Topbar */}
-    <div className="flex-none">
-      <Topbar />
-    </div>
-  
-    {/* Main Content */}
-    <div className="flex flex-1">
-      {/* Sidebar */}
+    <div className="bg-gray-200 min-h-screen flex flex-col">
+      {/* Topbar */}
       <div className="flex-none">
-        <ProjLeadSidebar />
-      </div>
-  
-      {/* PDF Viewer */}
-      <div className="flex-1 mt-14 ml-[19%] w-80">
-        <PDFViewer className="w-full h-full border shadow-lg">
-          <MyDocument projectID={projectID} />
-        </PDFViewer>
+        <Topbar />
       </div>
 
-      <div className="flex-none mt-20 ml-[2%]">
-        {/* Progress Legend */}
-        <div className="flex space-x-4 mb-4">
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-green-600 rounded-full mr-2"></div>
-            <span>Approved</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-orange-400 rounded-full mr-2"></div>
-            <span>Pending</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 bg-red-600 rounded-full mr-2"></div>
-            <span>Rejected</span>
-          </div>
+      {/* Main Content */}
+      <div className="flex flex-1">
+        {/* Sidebar */}
+        <div className="flex-none">
+          <ProjLeadSidebar />
         </div>
 
-        {/* Project Progress Step */}
-        <ProjectProgressStep projectID={projectID} />
+        {/* PDF Viewer */}
+        <div className="flex-1 mt-14 ml-[19%] w-80">
+          <PDFViewer className="w-full h-full border shadow-lg">
+            <MyDocument projectID={projectID} />
+          </PDFViewer>
+        </div>
+
+        <div className="flex-none mt-20 ml-[2%]">
+          {/* Progress Legend */}
+          <div className="flex space-x-4 mb-4">
+            <div className="flex items-center">
+              <div className="w-3 h-3 bg-green-600 rounded-full mr-2"></div>
+              <span>Approved</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-3 h-3 bg-orange-400 rounded-full mr-2"></div>
+              <span>Pending</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-3 h-3 bg-red-600 rounded-full mr-2"></div>
+              <span>Rejected</span>
+            </div>
+          </div>
+
+          {/* Project Progress Step */}
+          <ProjectProgressStep projectID={projectID} />
+        </div>
       </div>
     </div>
-  </div>
   );
 };
 

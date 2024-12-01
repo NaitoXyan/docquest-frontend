@@ -44,7 +44,7 @@ const UserListTable = () => {
                 firstname: user.firstname,
                 middlename: user.middlename,
                 lastname: user.lastname,
-                contactNumber: user.contactNumber, // Include contactNumber if available
+                contactNumber: user.contactNumber,
                 role: user.role.map((role) => role.role).join(", "),
             }));
 
@@ -54,29 +54,37 @@ const UserListTable = () => {
         }
     }, []);
 
+    const fetchRoles = useCallback(async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await fetch("http://127.0.0.1:8000/coordinator_get_roles", {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Token ${token}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error("Failed to fetch roles");
+            }
+            const data = await response.json();
+    
+            // Transform roles to match the backend structure
+            const transformedRoles = data.map((roleItem) => ({
+                roleID: roleItem.roleID,
+                role: roleItem.role,
+                code: roleItem.code,
+            }));
+    
+            setRoles(transformedRoles);
+        } catch (error) {
+            console.error("Error fetching roles:", error);
+        }
+    }, []);
+
     useEffect(() => {
         fetchUsers();
-    }, [fetchUsers]);
-
-    // const fetchRoles = useCallback(async () => {
-    //     try {
-    //         const token = localStorage.getItem("token");
-    //         const response = await fetch("http://127.0.0.1:8000/coordinator_get_roles", {
-    //             headers: {
-    //                 "Content-Type": "application/json",
-    //                 Authorization: `Token ${token}`,
-    //             }
-    //         });
-    //         if (!response.ok) {
-    //             throw new Error("Failed to fetch users");
-    //         }
-    //         const data = await response.json();
-
-    //         const transformedRoles = data.map((roles) => ({
-
-    //         }));
-    //     }
-    // });
+        fetchRoles();
+    }, [fetchUsers, fetchRoles]);
 
     const filteredUsers = users.filter((user) =>
         user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -96,13 +104,13 @@ const UserListTable = () => {
         });
     };
 
-    // Handle delete button click
+    // Handle edit role button click
     const handleEditRoleClick = (user) => {
         setIsRoleEditing(true);
         setCurrentRoleUser({
             userID: user.userID,
-        })
-
+            roleID: null, // Initialize roleID as null
+        });
     };
 
     // Handle save button click (Update user)
@@ -142,6 +150,35 @@ const UserListTable = () => {
             setIsEditing(false);
         } catch (error) {
             console.error("Error updating user:", error.response || error.message);
+        }
+    };
+
+    const handleRoleSave = async () => {
+        const token = localStorage.getItem("token");
+    
+        try {
+            const payload = {
+                userID: currentRoleUser.userID,
+                role: [currentRoleUser.roleID], // Send as array to match backend expectation
+            };
+    
+            await axios.patch(
+                `http://127.0.0.1:8000/coordinator_edit_user_role`,
+                payload,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Token ${token}`,
+                    },
+                }
+            );
+    
+            // Refresh the user list
+            await fetchUsers();
+            setIsRoleEditing(false);
+        } catch (error) {
+            console.error("Error updating user role:", error.response?.data || error.message);
+            // You might want to show an error message to the user here
         }
     };
 
@@ -323,17 +360,23 @@ const UserListTable = () => {
                         <div className="flex flex-col space-y-4">
                             <div>
                                 <label className="block text-gray-600">Role</label>
-                                <input
-                                    type="text"
-                                    value={currentUser.firstname}
+                                <select
+                                    value={currentRoleUser.roleID || ''}
                                     onChange={(e) =>
-                                        setCurrentUser({
-                                            ...currentUser,
-                                            firstname: e.target.value,
+                                        setCurrentRoleUser({
+                                            ...currentRoleUser,
+                                            roleID: parseInt(e.target.value), // Correctly set roleID
                                         })
                                     }
                                     className="w-full p-2 border rounded-lg"
-                                />
+                                >
+                                    <option value="">Select a Role</option>
+                                    {roles.map((role) => (
+                                        <option key={role.roleID} value={role.roleID}>
+                                            {role.role}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                         </div>
 
@@ -345,8 +388,9 @@ const UserListTable = () => {
                                 Cancel
                             </button>
                             <button
-                                onClick={handleSave}
+                                onClick={handleRoleSave}
                                 className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                                disabled={currentRoleUser.roleID === null}// Disable save if no role selected
                             >
                                 Save
                             </button>

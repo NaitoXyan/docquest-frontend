@@ -9,7 +9,9 @@ const MOAForm = ({ projectID }) => {
 
   const [formData, setFormData] = useState({
     projectID: projectID,
-    partyDescription: `**UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS**, a State University created and existing under the laws of the Republic of the Philippines, with principal office address located at Claro M. Recto Avenue, Lapasan, Cagayan de Oro City, represented herein by its System President,  **DR. AMBROSIO B. CULTURA II**, hereafter referred to as the **“FIRST PARTY”**;`,
+    partyADescription: `**UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS**, a State University created and existing under the laws of the Republic of the Philippines, with principal office address located at Claro M. Recto Avenue, Lapasan, Cagayan de Oro City, represented herein by its System President,  **DR. AMBROSIO B. CULTURA II**, hereafter referred to as the **“FIRST PARTY”**;`,
+    partyBDescription: ``,
+    partyCDescription: ``,
     coverageAndEffectivity: `This Agreement shall cover  CY 2024-2025 and take effect upon the date it is signed by the parties until the completion of the training  and research collaboration program.`,
     confidentialityClause: `The parties mutually agree to process personal information and sensitive personal information in conformity with the provisions of Republic Act No. 10173 (Data Privacy Act of 2012) and all other applicable laws and regulations of all the parties regarding data privacy protection laws.
 
@@ -35,6 +37,12 @@ Both parties shall ensure that appropriate organizational, physical, and technic
         title: ""
       }
     ],
+    thirdParty: [
+      {
+        name: "",
+        title: ""
+      }
+    ],
     witnesses: [
       {
         name: "DR. MARIA TERESA M. FAJARDO",
@@ -55,6 +63,12 @@ Both parties shall ensure that appropriate organizational, physical, and technic
       {
         obligation: "",
         party: "party B"
+      }
+    ],
+    partyCObligation: [
+      {
+        obligation: "",
+        party: "party C"
       }
     ]
   });
@@ -96,6 +110,15 @@ Both parties shall ensure that appropriate organizational, physical, and technic
     });
   };
 
+  // Handle changes for THIRD PARTY obligations
+  const handleThirdPartyObligationChange = (index, value) => {
+    setFormData((prevData) => {
+      const updatedObligations = [...prevData.partyCObligation];
+      updatedObligations[index].obligation = value;
+      return { ...prevData, partyCObligation: updatedObligations };
+    });
+  };
+
   // Add obligation for FIRST PARTY
   const handleAddFirstPartyObligation = () => {
     setFormData((prevData) => ({
@@ -114,6 +137,17 @@ Both parties shall ensure that appropriate organizational, physical, and technic
       partyBObligation: [
         ...prevData.partyBObligation,
         { obligation: "", party: "party B" }
+      ]
+    }));
+  };
+
+  // Add obligation for THIRD PARTY
+  const handleAddThirdPartyObligation = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      partyCObligation: [
+        ...prevData.partyCObligation,
+        { obligation: "", party: "party C" }
       ]
     }));
   };
@@ -137,6 +171,17 @@ Both parties shall ensure that appropriate organizational, physical, and technic
         updatedObligations.splice(index, 1);
       }
       return { ...prevData, partyBObligation: updatedObligations };
+    });
+  };
+
+  // Remove obligation for THIRD PARTY
+  const handleRemoveThirdPartyObligation = (index) => {
+    setFormData((prevData) => {
+      const updatedObligations = [...prevData.partyCObligation];
+      if (updatedObligations.length > 1) {
+        updatedObligations.splice(index, 1);
+      }
+      return { ...prevData, partyCObligation: updatedObligations };
     });
   };
 
@@ -179,6 +224,17 @@ Both parties shall ensure that appropriate organizational, physical, and technic
     });
   };
 
+  const handleThirdPartyChange = (index, field, value) => {
+    setFormData((prevData) => {
+      const updatedThirdParty = [...prevData.thirdParty];
+      updatedThirdParty[index][field] = value;
+      return {
+        ...prevData,
+        thirdParty: updatedThirdParty
+      };
+    });
+  };
+
   const handleWitnessChange = (index, field, value) => {
     const updatedWitnesses = [...formData.witnesses];
     updatedWitnesses[index][field] = value;
@@ -214,13 +270,15 @@ Both parties shall ensure that appropriate organizational, physical, and technic
 
     const partyObligation = [
       ...formData.partyAObligation,
-      ...formData.partyBObligation
+      ...formData.partyBObligation,
+      ...formData.partyCObligation
     ];
 
     modifiedData.partyObligation = partyObligation;
 
     delete modifiedData.partyAObligation;
     delete modifiedData.partyBObligation;
+    delete modifiedData.partyCObligation;
 
     console.log("formData to be sent:", modifiedData); // Check the structure
 
@@ -270,13 +328,37 @@ Both parties shall ensure that appropriate organizational, physical, and technic
               <label className="block mb-2 font-semibold">
                 This Memorandum of Agreement executed and entered into by and between:
               </label>
+              <label className="block mb-2 font-semibold">
+                First Party
+              </label>
               <textarea
                 required
-                name="partyDescription"
-                value={formData.partyDescription}
+                name="partyADescription"
+                value={formData.partyADescription}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
-                placeholder="Ex: UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS (USTP CDO), a state educational institution duly established  under Philippine law, whose office address located at Claro M. Recto Avenue, Lapasan, Cagayan  de Oro City, represented herein by its Chancellor ATTY. DIONEL O. ALBINA, hereafter referred  to as the FIRST PARTY;"
+                placeholder="First party"
+              ></textarea>
+              <label className="block mb-2 font-semibold">
+                Second Party
+              </label>
+              <textarea
+                required
+                name="partyBDescription"
+                value={formData.partyBDescription}
+                onChange={handleFormChange}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder="Second party"
+              ></textarea>
+              <label className="block mb-2 font-semibold">
+                Third Party
+              </label>
+              <textarea
+                name="partyCDescription"
+                value={formData.partyCDescription}
+                onChange={handleFormChange}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder="Third party (Leave blank if there is no third party)"
               ></textarea>
             </div>
           </div>
@@ -333,7 +415,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
                 value={partyAObligation.obligation}
                 onChange={(e) => handleFirstPartyObligationChange(index, e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded mb-2"
-                placeholder="Provide the faculty experts who will conduct the training on journalism."
+                placeholder="First party obligation and responsibilities"
               ></textarea>
             ))}
           </div>
@@ -366,7 +448,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
                 value={partyBObligation.obligation}
                 onChange={(e) => handleSecondPartyObligationChange(index, e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded mb-2"
-                placeholder="Identify the target trainees/participants."
+                placeholder="Second party obligation and responsibilities"
               ></textarea>
             ))}
           </div>
@@ -387,6 +469,43 @@ Both parties shall ensure that appropriate organizational, physical, and technic
               Remove
             </button>
           </div>
+
+          {formData.partyCDescription && (
+            <div>
+              <div>
+                <label className="block mb-2 font-semibold">
+                  OBLIGATIONS AND RESPONSIBILITIES of the THIRD PARTY:
+                </label>
+                {formData.partyCObligation.map((partyCObligation, index) => (
+                  <textarea
+                    key={`partyC-${index}`}
+                    value={partyCObligation.obligation}
+                    onChange={(e) => handleThirdPartyObligationChange(index, e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded mb-2"
+                    placeholder="Third Party Obligation and Responsibilities"
+                  ></textarea>
+                ))}
+              </div>
+              <div className="flex space-x-2 mb-2">
+                <button
+                  type="button"
+                  onClick={handleAddThirdPartyObligation}
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Add obligation and responsibility
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveThirdPartyObligation(formData.partyCObligation.length - 1)}
+                  className="bg-red-500 text-white px-4 py-2 rounded"
+                  disabled={formData.partyCObligation.length === 1}
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          )}
+
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -395,13 +514,13 @@ Both parties shall ensure that appropriate organizational, physical, and technic
               COVERAGE AND EFFECTIVITY:
             </label>
             <textarea
-            required
-            name="coverageAndEffectivity"
-            value={formData.coverageAndEffectivity}
-            onChange={handleFormChange}
-            className="w-full p-2 border border-gray-300 rounded"
-            placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-          ></textarea>
+              required
+              name="coverageAndEffectivity"
+              value={formData.coverageAndEffectivity}
+              onChange={handleFormChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
+            ></textarea>
           </div>
         </div>
 
@@ -411,13 +530,13 @@ Both parties shall ensure that appropriate organizational, physical, and technic
               CONFIDENTIALITY CLAUSE:
             </label>
             <textarea
-            required
-            name="confidentialityClause"
-            value={formData.confidentialityClause}
-            onChange={handleFormChange}
-            className="w-full p-2 border border-gray-300 rounded"
-            placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-          ></textarea>
+              required
+              name="confidentialityClause"
+              value={formData.confidentialityClause}
+              onChange={handleFormChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
+            ></textarea>
           </div>
         </div>
 
@@ -436,7 +555,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-        <label className="block font-semibold">WITNESSES:</label>
+          <label className="block font-semibold">WITNESSES:</label>
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="block mb-2 font-semibold">
@@ -506,7 +625,42 @@ Both parties shall ensure that appropriate organizational, physical, and technic
               ))}
             </div>
           </div>
-
+          {formData.partyCDescription && (
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block mb-2 font-semibold">
+                  Third Party Name
+                </label>
+                {formData.thirdParty.map((party, index) => (
+                  <input
+                    required
+                    key={`thirdParty-name-${index}`}
+                    type="text"
+                    value={party.name}
+                    onChange={(e) => handleThirdPartyChange(index, 'name', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                    placeholder="name"
+                  />
+                ))}
+              </div>
+              <div>
+                <label className="block mb-2 font-semibold">
+                  Third Party Title
+                </label>
+                {formData.thirdParty.map((party, index) => (
+                  <input
+                    required
+                    key={`thirdParty-title-${index}`}
+                    type="text"
+                    value={party.title}
+                    onChange={(e) => handleThirdPartyChange(index, 'title', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                    placeholder="title"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
           <div>
             <label className="block mb-2 font-semibold">WITNESSES:</label>
             {formData.witnesses.map((witness, index) => (

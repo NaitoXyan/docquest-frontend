@@ -65,21 +65,24 @@ const styles = StyleSheet.create({
 });
 
 const parseText = (text) => {
-  // Split text into parts based on ** markers
-  const parts = text.split(/(\*\*.*?\*\*)/); // Matches text enclosed in ** **
+  // Check if text is null or undefined
+  if (!text) {
+    return null; // or return an empty array, or handle it as appropriate for your use case
+  }
 
-  return parts.map((part, index) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      // Render bold text
-      return (
-        <Text key={index} style={{ fontFamily: 'TimesNR-B' }}>
-          {part.slice(2, -2)} {/* Remove the ** markers */}
-        </Text>
-      );
-    }
-    // Render regular text
-    return <Text key={index}>{part}</Text>;
-  });
+  const parts = text.split(/(\*\*.*?\*\*)/); // Matches text enclosed in ** **    
+  return parts.map((part, index) => {     
+    if (part.startsWith('**') && part.endsWith('**')) {       
+      // Render bold text       
+      return (         
+        <Text key={index} style={{ fontFamily: 'TimesNR-B' }}>           
+          {part.slice(2, -2)} {/* Remove the ** markers */}         
+        </Text>       
+      );     
+    }     
+    // Render regular text     
+    return <Text key={index}>{part}</Text>;   
+  }); 
 };
 
 

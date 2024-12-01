@@ -10,7 +10,7 @@ const DirectorReviewList = () => {
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState('');
-  const [documentFilter, setDocumentFilter] = useState('');
+  const [documentFilter, setDocumentFilter] = useState('project');
   const [searchTerm, setSearchTerm] = useState('');
   const [characterLimit, setCharacterLimit] = useState(42);
   const itemsPerPage = 8;
@@ -198,7 +198,7 @@ const DirectorReviewList = () => {
                   className="w-full pl-10 pr-3 py-1.5 border rounded-md"
                 />
               </div>
-              <div className="w-full sm:w-auto">
+              {/* <div className="w-full sm:w-auto">
                 <label htmlFor="documentFilter" className="mr-2">Filter by Document Type:</label>
                 <select
                   id="documentFilter"
@@ -210,7 +210,7 @@ const DirectorReviewList = () => {
                   <option value="project">Project</option>
                   <option value="moa">MOA</option>
                 </select>
-              </div>
+              </div> */}
 
               <div className="w-full sm:w-auto">
                 <label htmlFor="statusFilter" className="mr-2">Filter by Status:</label>

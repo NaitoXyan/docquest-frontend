@@ -18,7 +18,6 @@ const DirectorDashboard = () => {
     const navigate = useNavigate();
     const [error, setError] = useState(null);
     const token = localStorage.getItem('token');
-    const [moaReviews, setMoaReviews] = useState([]);
 
     useEffect(() => {
         if (!token) {
@@ -109,6 +108,7 @@ const DirectorDashboard = () => {
     useEffect(() => {
         const fetchMoaReviews = async () => {
             try {
+                // Fetch MOA reviews data from the API
                 const response = await axios({
                     method: 'get',
                     url: 'http://127.0.0.1:8000/get_moa_reviews',
@@ -118,43 +118,38 @@ const DirectorDashboard = () => {
                     },
                 });
     
-                if (response.data && Array.isArray(response.data)) {
-                    const formattedMoaReviews = response.data.map((review) => ({
-                        moaID: review.moaID,
-                        status: review.status,
-                        project: review.project || "N/A",
-                        reviewID: review.reviewID,
-                        reviewStatus: review.reviewStatus,
-                        reviewerResponsible: review.reviewerResponsible,
-                    }));
-    
-                    setMoaReviews(formattedMoaReviews);
-                } else {
-                    console.error("Invalid MOA Reviews data structure:", response.data);
+                if (!response.data) {
+                    console.error("Invalid data structure received:", response.data);
+                    setError("Invalid data format received from server");
+                    return;
                 }
+    
+                // Initialize counts for each MOA status
+                const counts = { approved: 0, pending: 0, rejected: 0 };
+    
+                // Iterate through the response and count statuses
+                response.data.forEach((moa) => {
+                    if (moa.status && ['approved', 'pending', 'rejected'].includes(moa.status.toLowerCase())) {
+                        counts[moa.status.toLowerCase()]++;
+                    }
+                });
+    
+                // Update the status counts in the state
+                setStatusCounts(prevState => ({
+                    ...prevState,
+                    moa: counts,
+                }));
+    
             } catch (error) {
                 console.error("Error fetching MOA reviews:", error);
+                setError(error.message || "Failed to fetch MOA reviews");
             }
         };
     
+        // Fetch MOA reviews on component mount
         fetchMoaReviews();
-    }, [token]);    
-
-    useEffect(() => {
-        const updatedCounts = { ...statusCounts }; // Start with the existing counts
     
-        // Reset MOA counts before recalculating
-        updatedCounts.moa = { approved: 0, pending: 0, rejected: 0 };
-    
-        moaReviews.forEach((review) => {
-            const status = review.status?.toLowerCase(); // Safely access status
-            if (['approved', 'pending', 'rejected'].includes(status)) {
-                updatedCounts.moa[status]++;
-            }
-        });
-    
-        setStatusCounts(updatedCounts); // Update state with new counts
-    }, [moaReviews, statusCounts]);
+    }, [token]); // Depend on token, or set to an empty array if you don't need it to run more than once    
 
     const handleNavigate = (statusFilter, documentType) => {
         navigate(`/review-list/${statusFilter.toLowerCase()}/${documentType}`);

@@ -108,7 +108,7 @@ const CreateUserStaffCoord = () => {
       <div className="flex-1 ml-[20%]">
         <Topbar />
         <div className="flex flex-col mt-14">
-          <h1 className="text-2xl font-semibold m-7">Create User Account</h1>
+          <h1 className="text-2xl font-bold m-7">CREATE USER ACCOUNT</h1>
           <form
             className="flex flex-col mx-10 mb-7 bg-white rounded-xl p-16 h-fit"
             onSubmit={handleSubmit}

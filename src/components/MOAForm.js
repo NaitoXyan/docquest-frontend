@@ -314,7 +314,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
   return (
     <div className="flex flex-col mt-14 px-10">
       <h1 className="text-2xl font-bold mb-5 mt-5 text-center">
-        MEMORANDUM OF AGREEMENT / MEMORANDUM OF UNDERSTANDING
+        MEMORANDUM OF AGREEMENT
       </h1>
       <form onSubmit={handleSubmit}>
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">

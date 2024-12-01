@@ -66,6 +66,7 @@ import VPALAScanCall from "./pages/vpala/VPALAScanCall";
 import VPALADocStatus from "./pages/vpala/VPALADocStatus";
 import VPALAViewProgress from "./pages/vpala/VPALAViewProgress";
 import CoordViewProjectProgress from "./pages/coordinator/CoordViewProjectProgress";
+import DirectorMOAReviewList from "./pages/director/DirectorMOAReviewList";
 
 function App() {
   return (
@@ -103,6 +104,7 @@ function App() {
         <Route path="/director" element={<DirectorDashboard/>} />
         <Route path="/review-project/:reviewID/:projectID" element={<DirectorReviewProject/>} />
         <Route path="/review-list/:status/:document" element={<DirectorReviewList/>}/>
+        <Route path="/moa-review-list/:status/:document" element={<DirectorMOAReviewList/>}/>
         <Route path="director-project-statistics" element={<DirectorProjectStatistics/>}/>
 
         {/*VPAPLA Routes  */}

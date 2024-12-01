@@ -1,1235 +1,3 @@
-import axios from "axios";
-import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
-import ProponentsDeliverables from "./ProposalFormFirstPage_Deliverables";
-import ReactTooltip from 'react-tooltip';
-import Select from 'react-select';
-import CreatableSelect from "react-select/creatable";
-import Modal from 'react-modal';
-
-Modal.setAppElement('#root'); // Ensure accessibility for screen readers
-
-const ProposalFormFirstPage = () => {
-  const userID = localStorage.getItem('userid');
-  const token = localStorage.getItem('token');
-  const storedFirstname = JSON.parse(localStorage.getItem('firstname'));
-  const storedLastname = JSON.parse(localStorage.getItem('lastname'));
-  const username = storedFirstname + " " + storedLastname;
-  const [regions, setRegions] = useState([]);
-  const [province, setProvince] = useState([]);
-  const [city, setCity] = useState([]);
-  const [barangay, setBarangay] = useState([]);
-  const [error, setError] = useState([]);
-  const [proponents, setProponents] = useState([]);
-  const [programCategory, setProgramCategory] = useState([]);
-  const [projectCategory, setProjectCategory] = useState([]);
-  const [campus, setCampus] = useState([]);
-  const [college, setCollege] = useState([]);
-  const [program, setProgram] = useState([]);
-  const [nonUserProponents, setNonUserProponents] = useState([]);
-  const [isChecked, setIsChecked] = useState(false);
-  const [showTrainers, setShowTrainers] = useState(false);
-  const [programChair, setProgramChair] = useState("");
-  const [collegeDean, setCollegeDean] = useState("");
-  var director = "Dr. Maria Teresa M. Fajardo";
-  var vcaa = "Dr. Jocelyn B. Barbosa";
-  var vcri = "Engr. Alex L. Maureal";
-  var accountant = "Maria Rica Paje, CPA";
-  var chancellor = "Atty. Dionel O. Albina";
-  const [agencies, setAgencies] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const navigate = useNavigate();
-  const [deliverables, setDeliverables] = useState([]);
-  const [isAgencyModalOpen, setIsAgencyModalOpen] = useState(false);
-  const [newAgencyName, setNewAgencyName] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isPersonResponsibleModalOpen, setIsPersonResponsibleModalOpen] = useState(false);
-  const [customName, setCustomName] = useState("");
-  const [pickedProponents, setPickedProponents] = useState([]);
-  const [editingRowIndex, setEditingRowIndex] = useState(null);
-  const [programChairList, setProgramChairList] = useState([]);
-  const [collegeDeanList, setCollegeDeanList] = useState([]);
-
-  const [formData, setFormData] = useState({
-    userID: userID,
-    programCategory: [],
-    projectTitle: "",
-    projectType: "",
-    projectCategory: [],
-    researchTitle: "",
-    program: [],
-    accreditationLevel: "",
-    beneficiaries: "",
-    targetStartDateImplementation: "",
-    targetEndDateImplementation: "",
-    totalHours: 0,
-    background: "",
-    projectComponent: "",
-    targetScope: "",
-    ustpBudget: 0,
-    partnerAgencyBudget: 0,
-    totalBudget: 0,
-    proponents: [],
-    nonUserProponents: [{ name: "" }],
-    projectLocationID: {
-      street: "",
-      barangayID: 0,
-    },
-    agency: [],
-    goalsAndObjectives: [
-      { goalsAndObjectives: "" }
-    ],
-    projectActivities: [
-      {
-        objective: "",
-        involved: "",
-        targetDate: "",
-        personResponsible: ""
-      }
-    ],
-    projectManagementTeam: [
-
-    ],
-    budgetRequirements: [
-      {
-        itemName: "",
-        ustpAmount: 0,
-        partnerAmount: 0,
-        totalAmount: 0,
-      }
-    ],
-    evaluationAndMonitorings: [
-      {
-        projectSummary: "",
-        indicators: "",
-        meansOfVerification: "",
-        risksAssumptions: "",
-        type: "goal"
-      },
-      {
-        projectSummary: "",
-        indicators: "",
-        meansOfVerification: "",
-        risksAssumptions: "",
-        type: "outcome"
-      },
-      {
-        projectSummary: "",
-        indicators: "",
-        meansOfVerification: "",
-        risksAssumptions: "",
-        type: "outputs"
-      },
-      {
-        projectSummary: "",
-        indicators: "",
-        meansOfVerification: "",
-        risksAssumptions: "",
-        type: "activities"
-      }
-    ],
-    monitoringPlanSchedules: [
-      {
-        approach: "",
-        dataGatheringStrategy: "",
-        schedule: "",
-        implementationPhase: "Before Implementation Phase"
-      },
-      {
-        approach: "",
-        dataGatheringStrategy: "",
-        schedule: "",
-        implementationPhase: "During Project Implementation"
-      },
-      {
-        approach: "",
-        dataGatheringStrategy: "",
-        schedule: "",
-        implementationPhase: "After Project Implementation"
-      }
-    ],
-    loadingOfTrainers: [
-      {
-        faculty: "",
-        trainingLoad: "",
-        hours: 0,
-        ustpBudget: 0,
-        agencyBudget: 0,
-        totalBudgetRequirement: 0,
-      }
-    ],
-    signatories: [],
-
-    programChair: [], // Array to handle multiple Program Chair signatories
-    collegeDean: [],  // Array to handle multiple College Dean signatories
-    director: { name: director, title: "Director, Extension & Community Relations" },
-    vcaa: { name: vcaa, title: "Vice - Chancellor for Academic Affairs" },
-    vcri: { name: vcri, title: "Vice - Chancellor for Research and Innovation" },
-    accountant: { name: accountant, title: "Accountant III" },
-    chancellor: { name: chancellor, title: "Chancellor, USTP CDO" },
-
-    deliverables: [],
-    approvers: [],
-
-    campus: [],
-    college: [],
-    region: '',
-    province: '',
-    city: '',
-    barangay: '',
-  });
-
-  const [touched, setTouched] = useState(false);
-  const handleBlur = () => setTouched(true);
-  const isFieldValid = formData.projectCategory.length > 0;
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Create a copy of formData
-    const modifiedData = { ...formData };
-
-    console.log('Program Chair:', formData.programChair);
-    console.log('College Dean:', formData.collegeDean);
-
-    const signatories = [
-      ...formData.programChair.filter(chair => chair.name).map((chair, index) => {
-        const selectedProgram = program.find(p => p.programID === chair.programId);
-        return {
-          name: chair.name,
-          title: `Program Chair, ${selectedProgram?.abbreviation || 'Program'}`,
-        };
-      }),
-      ...formData.collegeDean.filter(dean => dean.name).map((dean, index) => {
-        const selectedCollege = college.find(c => c.collegeID === dean.collegeId);
-        return {
-          name: dean.name,
-          title: `College Dean, ${selectedCollege?.abbreviation || 'College'}`,
-        };
-      }),
-      {
-        name: formData.director.name,
-        title: "Director, Extension & Community Relations",
-      },
-      {
-        name: formData.vcaa.name,
-        title: "Vice - Chancellor for Academic Affairs",
-      },
-      {
-        name: formData.vcri.name,
-        title: "Vice - Chancellor for Research and Innovation",
-      },
-      {
-        name: formData.accountant.name,
-        title: "Accountant III",
-      },
-      {
-        name: formData.chancellor.name,
-        title: "Chancellor, USTP CDO",
-      },
-      ...formData.signatories, // If there are any other signatories already in the list, keep them
-    ];
-
-    modifiedData.signatories = signatories;
-
-    // Remove the specific fields
-    delete modifiedData.programChair;
-    delete modifiedData.collegeDean;
-    delete modifiedData.director;
-    delete modifiedData.vcaa;
-    delete modifiedData.vcri;
-    delete modifiedData.accountant;
-    delete modifiedData.chancellor;
-    delete modifiedData.region;
-    delete modifiedData.province;
-    delete modifiedData.city;
-    delete modifiedData.barangay;
-    delete modifiedData.campus;
-    delete modifiedData.college;
-
-    if (showTrainers === false) {
-      delete modifiedData.loadingOfTrainers;
-    }
-
-    console.log("Modified Data to be sent:", modifiedData); // Check the structure
-
-    try {
-      // Send POST request
-      const response = await axios({
-        method: 'post',
-        url: 'http://127.0.0.1:8000/create_project',
-        headers: {
-          'Authorization': `Token ${token}`,
-          'Content-Type': 'application/json',
-        },
-        data: modifiedData, // Axios automatically stringifies the object to JSON
-      });
-
-      // Handle successful response
-      console.log('Successfully submitted:', response.data);
-      setIsModalOpen(true);
-    } catch (error) {
-      // Handle errors, particularly validation errors from Django
-      if (error.response) {
-        // Server responded with a status other than 200
-        console.error('Error:', error.response.data); // Display specific error messages
-        alert('Submission failed. Please check your input.'); // You can provide better user feedback here
-      } else {
-        // Other errors (network issues, etc.)
-        console.error('Request failed:', error.message);
-        alert('An error occurred. Please try again later.');
-      }
-    }
-  };
-
-  const handleNavigation = () => {
-    setIsModalOpen(false);
-    navigate('/user');
-  };
-
-  const handleSignatoryFormChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [name]: {
-        ...prevFormData[name],
-        name: value,
-      },
-    }));
-  };
-
-  // Handle input change for each project management team member
-  const handleProjectManagementTeamChange = (index, value) => {
-    setFormData((prevFormData) => {
-      const updatedTeam = [...prevFormData.projectManagementTeam];
-      updatedTeam[index].name = value;
-
-      return {
-        ...prevFormData,
-        projectManagementTeam: updatedTeam,
-      };
-    });
-  };
-
-  // Add a new person to the project management team
-  const handleProjectManagementTeamButtonClick = () => {
-    const customName = prompt("Enter the name of the person:");
-    if (customName) {
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        projectManagementTeam: [
-          ...prevFormData.projectManagementTeam,
-          { value: `custom-${Date.now()}`, label: customName }, // Add custom person
-        ],
-      }));
-    }
-  };
-
-  // Remove the last person from the project management team
-  const handleProjectManagementTeamRemoveClick = () => {
-    setFormData((prevFormData) => {
-      const updatedTeam = [...prevFormData.projectManagementTeam];
-      if (updatedTeam.length > 1) {
-        updatedTeam.pop();
-      }
-
-      return {
-        ...prevFormData,
-        projectManagementTeam: updatedTeam,
-      };
-    });
-  };
-
-  const handleActivityChange = (index, event) => {
-    const { name, value } = event.target;
-
-    const updatedActivities = [...formData.projectActivities];
-
-    // For date inputs (targetDate)
-    if (name === 'targetDate') {
-      // Format date to include the last day of the month
-      const formattedDate = value
-        ? `${value}-${new Date(value.split('-')[0], value.split('-')[1], 0).getDate()}`
-        : '';
-
-      updatedActivities[index][name] = formattedDate;
-    } else {
-      // Handle other inputs (objective, involved, personResponsible)
-      updatedActivities[index][name] = value;
-    }
-
-    setFormData({ ...formData, projectActivities: updatedActivities });
-  };
-
-  // onChange for Person Responsible selection
-  const handlePersonResponsibleChange = (selectedOption, index) => {
-    if (selectedOption?.value === 'add_custom') {
-      // Store the index of the row being edited
-      setEditingRowIndex(index);
-      setIsPersonResponsibleModalOpen(true);
-    } else if (selectedOption) {
-      // Update the person responsible with the selected proponent
-      const updatedActivities = [...formData.projectActivities];
-      updatedActivities[index].personResponsible = selectedOption.label;
-      setFormData({ ...formData, projectActivities: updatedActivities });
-    } else {
-      // Handle clearing the selection
-      const updatedActivities = [...formData.projectActivities];
-      updatedActivities[index].personResponsible = '';
-      setFormData({ ...formData, projectActivities: updatedActivities });
-    }
-  };
-
-  const handleAddCustomName = () => {
-    if (customName.trim() && editingRowIndex !== null) {
-      const updatedActivities = [...formData.projectActivities].map((activity, index) =>
-        index === editingRowIndex
-          ? { ...activity, personResponsible: customName }
-          : activity
-      );
-
-      setFormData({
-        ...formData,
-        projectActivities: updatedActivities
-      });
-
-      setIsPersonResponsibleModalOpen(false);
-      setCustomName('');
-      setEditingRowIndex(null);
-    } else {
-      console.error("Name cannot be empty or no row selected");
-    }
-  };
-
-  const addActivityRow = () => {
-    setFormData({
-      ...formData,
-      projectActivities: [
-        ...formData.projectActivities,
-        {
-          objective: "",
-          involved: "",
-          targetDate: "",
-          personResponsible: ""
-        }
-      ]
-    });
-  };
-
-  const removeLastActivityRow = () => {
-    if (formData.projectActivities.length > 1) {
-      const projectActivities = formData.projectActivities.slice(0, -1);
-      setFormData({ ...formData, projectActivities: projectActivities });
-    }
-  };
-
-  const handleRemoveActivityRow = (index) => {
-    if (formData.projectActivities.length > 1) {
-      const updatedActivities = formData.projectActivities.filter((_, i) => i !== index);
-      setFormData({ ...formData, projectActivities: updatedActivities });
-    }
-  };
-
-  const handleMonitoringPlanScheduleRowChange = (index, field, value) => {
-    setFormData((prevData) => {
-      const updatedSchedules = prevData.monitoringPlanSchedules.map((row, i) => {
-        if (i === index) {
-          return { ...row, [field]: value };
-        }
-        return row;
-      });
-      return { ...prevData, monitoringPlanSchedules: updatedSchedules };
-    });
-  };
-
-  const handleTrainerChange = (index, updatedTrainer) => {
-    const newLoadingOfTrainers = [...formData.loadingOfTrainers];
-    newLoadingOfTrainers[index] = {
-      faculty: updatedTrainer.faculty || '',
-      trainingLoad: updatedTrainer.trainingLoad || '',
-      hours: updatedTrainer.hours || 0,
-      ustpBudget: 150, // fixed value
-      agencyBudget: updatedTrainer.agencyBudget || 0,
-      totalBudgetRequirement:
-        (updatedTrainer.hours || 0) * 150 + (updatedTrainer.agencyBudget || 0)
-    };
-
-    setFormData(prevData => ({
-      ...prevData,
-      loadingOfTrainers: newLoadingOfTrainers
-    }));
-  };
-
-  const addTrainerRow = () => {
-    setFormData({
-      ...formData,
-      loadingOfTrainers: [
-        ...formData.loadingOfTrainers,
-        { faculty: "", trainingLoad: "", hours: 0, ustpBudget: 0, agencyBudget: 0, totalBudgetRequirement: 0 }
-      ]
-    });
-  };
-
-  const removeTrainerRow = (index) => {
-    // Prevent removal of the first row
-    if (index === 0) {
-      alert("The first row cannot be removed.");
-      return;
-    }
-
-    // Proceed to remove the specified row
-    const updatedTrainers = formData.loadingOfTrainers.filter((_, i) => i !== index);
-    setFormData({ ...formData, loadingOfTrainers: updatedTrainers });
-  };
-
-  useEffect(() => {
-    // Initialize loadingOfTrainers with the same number of rows as projectManagementTeam
-    setFormData(prevState => ({
-      ...prevState,
-      loadingOfTrainers: formData.projectManagementTeam.map(() => ({
-        faculty: '',
-        trainingLoad: '',
-        hours: '',
-        agencyBudget: ''
-      }))
-    }));
-  }, [formData.projectManagementTeam]);
-
-  // Function to handle changes in proponents inputs
-  const handleNonUserProponentChange = (index, value) => {
-    const updatedNonUserProponents = [...formData.nonUserProponents];
-    updatedNonUserProponents[index].name = value; // Correct field name
-    setFormData({ ...formData, nonUserProponents: updatedNonUserProponents });
-  };
-
-
-  const handleObjectiveChange = (index, value) => {
-    const updatedObjectives = [...formData.goalsAndObjectives];
-    updatedObjectives[index].goalsAndObjectives = value;
-    setFormData({ ...formData, goalsAndObjectives: updatedObjectives });
-  };
-
-  // Function to handle form change for each row
-  const handleEvaluationChange = (index, field, value) => {
-    const updatedEvaluation = formData.evaluationAndMonitorings.map((item, i) => {
-      if (i === index) {
-        return { ...item, [field]: value };
-      }
-      return item;
-    });
-    setFormData({ ...formData, evaluationAndMonitorings: updatedEvaluation });
-  };
-
-  // Function to add a new proponent field
-  const handleNonUserProponentButtonClick = () => {
-    setFormData({
-      ...formData,
-      nonUserProponents: [...formData.nonUserProponents, { name: "" }], // Add new object with 'name' key
-    });
-  };
-
-  const handleObjectiveButtonClick = () => {
-    setFormData({
-      ...formData,
-      goalsAndObjectives: [
-        ...formData.goalsAndObjectives,
-        { goalsAndObjectives: "" }
-      ]
-    });
-  };
-
-  const handleObjectiveRemoveClick = () => {
-    if (formData.goalsAndObjectives.length > 1) {
-      const updatedObjectives = formData.goalsAndObjectives.slice(0, -1);
-      setFormData({ ...formData, goalsAndObjectives: updatedObjectives });
-    }
-  };
-
-  // Function to remove the last proponent field
-  const handleNonUserProponentRemoveClick = () => {
-    if (formData.nonUserProponents.length > 1) {
-      const updatedNonUserProponents = formData.nonUserProponents.slice(0, -1); // Remove the last proponent
-      setFormData({ ...formData, nonUserProponents: updatedNonUserProponents });
-    }
-  };
-
-  const handleProjectLocationFormChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "barangay") {
-      // Update both formData.barangay and formData.projectLocationID.barangayID
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        barangay: value,
-        projectLocationID: {
-          ...prevFormData.projectLocationID,
-          barangayID: value,
-        },
-      }));
-    }
-  }
-
-  const handleAddressFormChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prevData) => {
-      if (name === "address") {
-        // Update nested street field inside projectLocationID
-        return {
-          ...prevData,
-          projectLocationID: {
-            ...prevData.projectLocationID,
-            street: value,
-          },
-        };
-      } else {
-        // For other fields, update as usual
-        return {
-          ...prevData,
-          [name]: value,
-        };
-      }
-    });
-  };
-
-  const handleFormChange = (eOrName, value) => {
-    // Check if the first argument is an event
-    if (typeof eOrName === "object" && eOrName.target) {
-      const { name, value } = eOrName.target;
-      setFormData((prevData) => {
-        const updatedData = { ...prevData, [name]: value };
-
-        // // Update targetGroups if beneficiaries are updated
-        // if (name === 'beneficiaries') {
-        //   updatedData.targetGroups[0].targetGroup = value;
-        // }
-
-        return updatedData;
-      });
-    } else {
-      // Handle cases where name and value are passed directly
-      const name = eOrName;
-      setFormData((prevData) => {
-        const updatedData = { ...prevData, [name]: value };
-
-        // Update targetGroups if beneficiaries are updated
-        // if (name === 'beneficiaries') {
-        //   updatedData.targetGroups[0].targetGroup = value;
-        // }
-
-        return updatedData;
-      });
-    }
-  };
-
-  useEffect(() => {
-    const fetchProgramCategory = async () => {
-      try {
-        const response = await axios.get("http://127.0.0.1:8000/get_programCategory");
-        setProgramCategory(response.data);
-      } catch (error) {
-        console.error('Error fetching proponents:', error);
-      }
-    };
-
-    fetchProgramCategory();
-  }, []);
-
-  const handleProgramCategoryFormChange = (event) => {
-    const { value } = event.target;
-    const programCategoryID = parseInt(value);
-
-    if (isNaN(programCategoryID)) {
-      console.error("Invalid program category ID");
-      return;  // Exit if value is not a valid number
-    }
-
-    setFormData((prevFormData) => {
-      const programCategory = prevFormData.programCategory.includes(programCategoryID)
-        ? prevFormData.programCategory.filter(id => id !== programCategoryID) // Remove if already selected
-        : [...prevFormData.programCategory, programCategoryID]; // Add if not selected
-
-      return {
-        ...prevFormData,
-        programCategory,
-      };
-    });
-  };
-
-  useEffect(() => {
-    const fetchProjectCategory = async () => {
-      try {
-        const response = await axios.get("http://127.0.0.1:8000/get_projectCategory");
-        setProjectCategory(response.data);
-      } catch (error) {
-        console.error('Error fetching proponents:', error);
-      }
-    };
-
-    fetchProjectCategory();
-  }, []);
-
-  const handleProjectCategoryFormChange = (event) => {
-    const { value } = event.target;
-    const projectCategoryID = parseInt(value);
-
-    if (isNaN(projectCategoryID)) {
-      console.error("Invalid project category ID");
-      return;  // Exit if value is not a valid number
-    }
-
-    setFormData((prevFormData) => {
-      const projectCategory = prevFormData.projectCategory.includes(projectCategoryID)
-        ? prevFormData.projectCategory.filter(id => id !== projectCategoryID) // Remove if already selected
-        : [...prevFormData.projectCategory, projectCategoryID]; // Add if not selected
-
-      return {
-        ...prevFormData,
-        projectCategory,
-      };
-    });
-  };
-
-  const handleProponentsFormChange = (event) => {
-    const { value } = event.target;
-    const userID = parseInt(value);
-
-    if (isNaN(userID)) {
-      console.error("Invalid user ID");
-      return;  // Exit if value is not a valid number
-    }
-
-    setFormData((prevFormData) => {
-      const proponents = prevFormData.proponents.includes(userID)
-        ? prevFormData.proponents.filter(id => id !== userID) // Remove if already selected
-        : [...prevFormData.proponents, userID]; // Add if not selected
-
-      return {
-        ...prevFormData,
-        proponents,
-      };
-    });
-  };
-
-  // Handle changes in budget items
-  const handleBudgetChange = (index, field, value) => {
-    const updatedBudgetRequirements = [...formData.budgetRequirements];
-    updatedBudgetRequirements[index][field] = value;
-
-    // Auto-calculate total amount for the current item
-    if (field === 'ustpAmount' || field === 'partnerAmount') {
-      const ustp = Number(field === 'ustpAmount' ? value : updatedBudgetRequirements[index].ustpAmount) || 0;
-      const partner = Number(field === 'partnerAmount' ? value : updatedBudgetRequirements[index].partnerAmount) || 0;
-      updatedBudgetRequirements[index].totalAmount = (ustp + partner).toString();
-    }
-
-    setFormData(prev => ({
-      ...prev,
-      budgetRequirements: updatedBudgetRequirements
-    }));
-  };
-
-  // Calculate totals and update budget requirements
-  useEffect(() => {
-    const ustpTotal = formData.budgetRequirements.reduce(
-      (sum, item) => sum + (Number(item.ustpAmount) || 0),
-      0
-    );
-
-    const partnerTotal = formData.budgetRequirements.reduce(
-      (sum, item) => sum + (Number(item.partnerAmount) || 0),
-      0
-    );
-
-    const total = ustpTotal + partnerTotal;
-
-    setFormData(prev => ({
-      ...prev,
-      ustpBudget: ustpTotal,
-      partnerAgencyBudget: partnerTotal,
-      totalBudget: total
-    }));
-  }, [formData.budgetRequirements]);
-
-  // Function to add a new budget item
-  const addBudgetItem = () => {
-    setFormData({
-      ...formData,
-      budgetRequirements: [
-        ...formData.budgetRequirements,
-        { itemName: "", ustpAmount: "", partnerAmount: "", totalAmount: "" }
-      ]
-    });
-  };
-
-  useEffect(() => {
-    const fetchProponents = async () => {
-      try {
-        const response = await axios.get("http://127.0.0.1:8000/get_users_exclude_roles");
-        setProponents(response.data);
-      } catch (error) {
-        console.error('Error fetching proponents:', error);
-      }
-    };
-
-    fetchProponents();
-  }, []);
-
-  // Fetch agencies on component mount
-  useEffect(() => {
-    const fetchAgencies = async () => {
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/get_agencies');
-        setAgencies(response.data);
-      } catch (error) {
-        console.error('Error fetching agencies:', error);
-      }
-    };
-
-    fetchAgencies();
-  }, []);
-
-  const handleAgencyFormChange = async (e) => {
-    const { value } = e.target;
-
-    if (value === 'add_new_agency') {
-      setIsAgencyModalOpen(true);
-    } else {
-      setFormData(prevData => ({
-        ...prevData,
-        agency: [value] // Maintain array structure
-      }));
-    }
-  };
-
-  const handleSubmitNewAgency = async () => {
-    if (!newAgencyName.trim()) return;
-
-    setIsSubmitting(true);
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/create_agency', {
-        agencyName: newAgencyName,
-      });
-
-      const newAgency = {
-        agencyID: response.data.agencyID,
-        agencyName: newAgencyName
-      };
-
-      // Update agencies list
-      setAgencies(prevAgencies => [...prevAgencies, newAgency]);
-
-      // Update form data maintaining the entire structure
-      setFormData(prevData => ({
-        ...prevData,
-        agency: [newAgency.agencyID] // Maintain array structure
-      }));
-
-      setIsAgencyModalOpen(false);
-      setNewAgencyName('');
-    } catch (error) {
-      console.error('Error creating new agency:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmitNewAgency();
-    }
-  };
-
-  // kuha region
-  useEffect(() => {
-    const fetchRegions = async () => {
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/get_regions');
-        setRegions(response.data);
-      } catch (error) {
-        console.error('Error fetching regions:', error);
-      }
-    };
-
-    fetchRegions();
-  }, []); // Empty dependency array means this will run only once on mount
-
-  useEffect(() => {
-    const fetchProvinces = async () => {
-      if (!formData.region) {
-        // If no region is selected, show error and don't fetch provinces
-        setError('Please select a region first.');
-        return;
-      }
-
-      try {
-        const response = await axios.get(`http://127.0.0.1:8000/get_provinces/${formData.region}`);
-        setProvince(response.data);
-        setError(''); // Clear error when provinces are successfully fetched
-      } catch (error) {
-        console.error('Error fetching province:', error);
-        setError('Error fetching province data.');
-      }
-    };
-
-    fetchProvinces();
-  }, [formData.region]); // Re-run when formData.region changes
-
-  useEffect(() => {
-    const fetchCity = async () => {
-      if (!formData.province) {
-        setError('Please select a province first.');
-        return;
-      }
-
-      try {
-        const response = await axios.get(`http://127.0.0.1:8000/get_cities/${formData.province}`);
-        setCity(response.data);
-        setError('');
-      } catch (error) {
-        console.error('Error fetching city:', error);
-        setError('Error fetching province data.');
-      }
-    };
-
-    fetchCity();
-  }, [formData.province]);
-
-  useEffect(() => {
-    const fetchBarangay = async () => {
-      if (!formData.city) {
-        setError('Please select a city first');
-        return;
-      }
-
-      try {
-        const response = await axios.get(`http://127.0.0.1:8000/get_barangays/${formData.city}`);
-        setBarangay(response.data);
-        setError('');
-      } catch (error) {
-        console.error('Error fetching barangays:', error);
-        setError('Error fetching province data.');
-      }
-    };
-
-    fetchBarangay();
-  }, [formData.city]);
-
-  const handleBudgetFormChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSkillsTraining = (selectedOptions) => {
-    // Check if 'Skills Training' is in the selected options
-    const selectedCategories = selectedOptions.map(option => option.label);
-    if (selectedCategories.includes('Skills Training/Capacity Building')) {
-      setShowTrainers(true);
-    } else {
-      setShowTrainers(false);
-    }
-  };
-
-  const handleProjTypeChange = (selectedOption) => {
-    setFormData({
-      ...formData,
-      projectType: selectedOption ? selectedOption.value : '', // Ensure it sets to an empty string if nothing is selected
-    });
-  };
-
-  const projectTypeOptions = [
-    { value: 'New Project', label: 'New Project' },
-    { value: 'Continuing Project', label: 'Continuing Project' },
-  ];
-
-  const removeBudgetItem = (index) => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      budgetRequirements: prevFormData.budgetRequirements.filter((_, i) => i !== index),
-    }));
-  };
-
-  // Fetch colleges on component mount
-  useEffect(() => {
-    const fetchCampus = async () => {
-      try {
-        const response = await axios.get('http://127.0.0.1:8000/get_campuses');
-        setCampus(response.data);
-      } catch (error) {
-        console.error('Error fetching campus:', error);
-      }
-    };
-
-    fetchCampus();
-  }, []);
-
-  // Handle college selection - toggle selection on click
-  const handleCampusChange = (campusID) => {
-    setFormData(prev => {
-      const newCampuses = prev.campus.includes(campusID)
-        ? prev.campus.filter(id => id !== campusID)  // Remove if already selected
-        : [...prev.campus, campusID];                // Add if not selected
-
-      return {
-        ...prev,
-        campus: newCampuses,
-        college: [],
-        program: [] // Clear program selection when colleges change
-      };
-    });
-  };
-
-  // Fetch programs whenever selected colleges change
-  useEffect(() => {
-    const fetchColleges = async () => {
-      if (formData.campus.length === 0) {
-        setCollege([]); // Clear programs if no college is selected
-        setFormData(prev => ({ ...prev, college: [] })); // Also clear selected programs
-        return;
-      }
-
-      try {
-        const response = await axios.post('http://127.0.0.1:8000/get_colleges/', {
-          campusIDs: formData.campus,
-        });
-        setCollege(response.data);
-      } catch (error) {
-        console.error('Error fetching colleges:', error);
-      }
-    };
-
-    fetchColleges();
-  }, [formData.campus]);
-
-  // Handle college selection - toggle selection on click
-  const handleCollegeChange = (collegeId) => {
-    setFormData(prev => {
-      const newColleges = prev.college.includes(collegeId)
-        ? prev.college.filter(id => id !== collegeId)  // Remove if already selected
-        : [...prev.college, collegeId];                // Add if not selected
-
-      return {
-        ...prev,
-        college: newColleges,
-        program: [] // Clear program selection when colleges change
-      };
-    });
-  };
-
-  useEffect(() => {
-    console.log("programChairList updated:", programChairList);
-  }, [programChairList]);
-
-  useEffect(() => {
-    console.log("CollegeDeanList updated:", collegeDeanList);
-  }, [collegeDeanList]);
-
-  // Fetch programs whenever selected colleges change
-  useEffect(() => {
-    const fetchPrograms = async () => {
-      if (formData.college.length === 0) {
-        setProgram([]); // Clear programs if no college is selected
-        setFormData(prev => ({ ...prev, program: [] })); // Also clear selected programs
-        return;
-      }
-
-      try {
-        const response = await axios.post('http://127.0.0.1:8000/get_programs/', {
-          collegeIDs: formData.college,
-        });
-        setProgram(response.data);
-      } catch (error) {
-        console.error('Error fetching programs:', error);
-      }
-    };
-
-    fetchPrograms();
-  }, [formData.college]);
-
-  // Handle program selection - toggle selection on click
-  const handleProgramChange = (programId) => {
-    setFormData(prev => {
-      const newPrograms = prev.program.includes(programId)
-        ? prev.program.filter(id => id !== programId)  // Remove if already selected
-        : [...prev.program, programId];                // Add if not selected
-
-      return {
-        ...prev,
-        program: newPrograms
-      };
-    });
-  };
-
-  const selectedOptions = formData.programCategory.map((id) => {
-    const category = programCategory.find(
-      (category) => category.programCategoryID === id
-    );
-    return category
-      ? { value: category.programCategoryID, label: category.title }
-      : null;
-  }).filter(Boolean); // Remove nulls
-
-  const CustomOption = (props) => {
-    const { data, innerRef, innerProps } = props;
-    return (
-      <div ref={innerRef} {...innerProps} className="p-2 hover:bg-gray-100">
-        <span className="font-medium">{data.title}</span> {/* Title */}
-        <br />
-        <span className="text-sm text-gray-600">{data.campus} - {data.abbreviation}</span> {/* Abbreviation */}
-      </div>
-    );
-  };
-
-  const CustomCampusOption = (props) => {
-    const { data, innerRef, innerProps } = props;
-    return (
-      <div ref={innerRef} {...innerProps} className="p-2 hover:bg-gray-100">
-        <span className="font-medium">{data.title}</span> {/* Title */}
-      </div>
-    );
-  };
-
-  const CustomSingleValue = (props) => {
-    const { data } = props;
-    return (
-      <div>
-        <div className="font-medium">{data.title}</div>
-        <div className="text-sm text-gray-600">{data.abbreviation}</div>
-      </div>
-    );
-  };
-
-  // Function to remove a specific proponent, but not the first one
-  const handleRemoveProponent = (index) => {
-    if (index > 0) {
-      const updatedProponents = formData.nonUserProponents.filter((_, i) => i !== index);
-      setFormData({
-        ...formData,
-        nonUserProponents: updatedProponents,
-      });
-    }
-  };
-
-  // Function to remove a specific objective, but not the first one
-  const handleRemoveObjective = (index) => {
-    if (index > 0) {
-      const updatedObjectives = formData.goalsAndObjectives.filter((_, i) => i !== index);
-      setFormData({
-        ...formData,
-        goalsAndObjectives: updatedObjectives,
-      });
-    }
-  };
-
-  // Function to remove a specific person, but not the first one
-  const handleRemovePerson = (index) => {
-    if (index > 0) { // Prevent removal of the first row (person)
-      const updatedTeam = formData.projectManagementTeam.filter((_, i) => i !== index);
-      setFormData({
-        ...formData,
-        projectManagementTeam: updatedTeam,
-      });
-    }
-  };
-
-  const handleTargetDateFormChange = (e) => {
-    const { name, value } = e.target;
-
-    // Convert month input to full date format (last day of the month)
-    const formattedDate = value ? `${value}-${new Date(value.split('-')[0], value.split('-')[1], 0).getDate()}` : '';
-
-    setFormData(prev => ({
-      ...prev,
-      [name]: formattedDate
-    }));
-
-    // Additional logic for start/end date validation
-    if (name === 'targetStartDateImplementation') {
-      // Reset end date if it is earlier than the new start date
-      if (
-        formData.targetEndDateImplementation &&
-        formattedDate > formData.targetEndDateImplementation
-      ) {
-        setFormData(prev => ({
-          ...prev,
-          targetEndDateImplementation: '',
-        }));
-      }
-    }
-  };
-
-  // Get the previous month in YYYY-MM format
-  const getPreviousMonth = () => {
-    const date = new Date();
-    date.setMonth(date.getMonth() - 1);
-    return date.toISOString().slice(0, 7);
-  };
-
-  // Get the current month in YYYY-MM format
-  const getCurrentMonth = () => {
-    return new Date().toISOString().slice(0, 7);
-  };
-
-  useEffect(() => {
-    const updatedApprovers = collegeDeanList.map((collegeId) => {
-      // Find the college dean's userID for this college
-      const dean = program.find(p => p.college.collegeID === collegeId)?.college.collegeDean.userID;
-
-      // Find program chairs' userIDs for this college
-      const programChairs = programChairList
-        .map(programId => {
-          const prog = program.find(p => p.programID === programId);
-          return prog?.programChair?.userID;
-        })
-        .filter(userId => userId); // Remove any undefined userIds
-
-      return {
-        collegeID: collegeId,
-        programChairs: programChairs,
-        collegeDean: dean || "", // Use the dean's userID or empty string
-      };
-    });
-
-    setFormData(prev => ({ ...prev, approvers: updatedApprovers }));
-  }, [collegeDeanList, programChairList, program]);
-
-  useEffect(() => {
-    // Populate programChair and collegeDean when component loads
-    const initialProgramChairs = formData.program.map((programId, index) => {
-      const selectedProgram = program.find(p => p.programID === programId);
-      return {
-        name: `${selectedProgram?.programChair?.firstname || ""} ${selectedProgram?.programChair?.lastname || ""}`.trim(),
-        programId: programId
-      };
-    });
-
-    const initialCollegeDeans = formData.college.map((collegeId, index) => {
-      const selectedCollege = college.find(c => c.collegeID === collegeId);
-      return {
-        name: `${selectedCollege?.collegeDean?.firstname || ""} ${selectedCollege?.collegeDean?.lastname || ""}`.trim(),
-        collegeId: collegeId
-      };
-    });
-
-    setFormData(prev => ({
-      ...prev,
-      programChair: initialProgramChairs,
-      collegeDean: initialCollegeDeans
-    }));
-  }, [formData.program, formData.college, program, college]);
-
-  return (
-    <div className="flex flex-col mt-14 px-10">
-      <h1 className="text-2xl font-semibold mb-5 mt-3">
-        EXTENSION PROJECT PROPOSAL
-      </h1>
-
-
       <form onSubmit={handleSubmit}>
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div className="grid grid-cols-2 gap-4">
@@ -1459,10 +227,10 @@ const ProposalFormFirstPage = () => {
                     });
                     // Correctly set picked proponents with full name
                     setPickedProponents(
-                      selectedOptions
+                      selectedOptions 
                         ? selectedOptions.map((option) => ({
-                          fullname: option.label, // Save the full combined name
-                        }))
+                            fullname: option.label, // Save the full combined name
+                          }))
                         : []
                     );
                   }}
@@ -1517,12 +285,13 @@ const ProposalFormFirstPage = () => {
                 <button
                   type="button" // Prevent default form submission
                   onClick={handleNonUserProponentButtonClick}
-                  className={`${formData.nonUserProponents.some(
-                    (proponentObj) => proponentObj.name.trim() === ""
-                  )
-                    ? "bg-gray-400 text-gray-300 cursor-not-allowed"
-                    : "bg-blue-500 text-white"
-                    } px-4 py-2 rounded`}
+                  className={`${
+                    formData.nonUserProponents.some(
+                      (proponentObj) => proponentObj.name.trim() === ""
+                    )
+                      ? "bg-gray-400 text-gray-300 cursor-not-allowed"
+                      : "bg-blue-500 text-white"
+                  } px-4 py-2 rounded`}
                   disabled={
                     formData.nonUserProponents.some(
                       (proponentObj) => proponentObj.name.trim() === ""
@@ -1567,14 +336,14 @@ const ProposalFormFirstPage = () => {
                 value={formData.projectManagementTeam.map((member) => ({
                   label: member.name,
                   value: member.name,
-                }))}
+                }))} 
                 onChange={(selectedOptions) => {
                   console.log('Selected Options:', selectedOptions);
                   const updatedTeam = selectedOptions
-                    ? selectedOptions.map((option) => ({
-                      name: option.label || option.value
-                    }))
-                    : [{ name: "" }];
+                    ? selectedOptions.map((option) => ({ 
+                        name: option.label || option.value 
+                      }))
+                    : [{ name: "" }]; 
 
                   setFormData((prevFormData) => ({
                     ...prevFormData,
@@ -1631,7 +400,7 @@ const ProposalFormFirstPage = () => {
           <div className="grid grid-cols-7 gap-4">
             {/* CAMPUS */}
             <div className="col-span-2">
-              <label className="block mb-2 font-semibold">
+            <label className="block mb-2 font-semibold">
                 CAMPUS
                 <span className="text-red-500 ml-1">*</span>
                 <span
@@ -1733,11 +502,11 @@ const ProposalFormFirstPage = () => {
                     const col = college.find((c) => c.collegeID === id);
                     return col
                       ? {
-                        value: col.collegeID,
-                        title: col.title,
-                        campus: col.campus?.name || 'Unknown Campus', // Ensure fallback for campus
-                        abbreviation: col.abbreviation,
-                      }
+                          value: col.collegeID,
+                          title: col.title,
+                          campus: col.campus?.name || 'Unknown Campus', // Ensure fallback for campus
+                          abbreviation: col.abbreviation,
+                        }
                       : null;
                   })
                   .filter(Boolean)}
@@ -1767,8 +536,8 @@ const ProposalFormFirstPage = () => {
                     backgroundColor: state.isSelected
                       ? 'rgba(59, 130, 246, 0.1)'
                       : state.isFocused
-                        ? 'rgba(229, 231, 235, 1)'
-                        : 'transparent',
+                      ? 'rgba(229, 231, 235, 1)'
+                      : 'transparent',
                     color: state.isSelected ? '#2563EB' : base.color,
                   }),
                   multiValue: (base) => ({
@@ -1979,14 +748,14 @@ const ProposalFormFirstPage = () => {
               <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-semibold">Add New Agency</h2>
-                  <button
+                  <button 
                     onClick={() => setIsAgencyModalOpen(false)}
                     className="text-gray-500 hover:text-gray-700"
                   >
                     ✕
                   </button>
                 </div>
-
+                
                 <div className="mb-6">
                   <label className="block mb-2 text-sm font-medium text-gray-700">
                     Agency Name
@@ -2013,8 +782,9 @@ const ProposalFormFirstPage = () => {
                   <button
                     onClick={handleSubmitNewAgency}
                     disabled={isSubmitting || !newAgencyName.trim()}
-                    className={`px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none ${(isSubmitting || !newAgencyName.trim()) && 'opacity-50 cursor-not-allowed'
-                      }`}
+                    className={`px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none ${
+                      (isSubmitting || !newAgencyName.trim()) && 'opacity-50 cursor-not-allowed'
+                    }`}
                   >
                     {isSubmitting ? 'Adding...' : 'Add Agency'}
                   </button>
@@ -2026,57 +796,57 @@ const ProposalFormFirstPage = () => {
 
           {/* Seventh Row */}
           <div className="grid grid-cols-3 gap-4">
-            {/* Target Start Date */}
-            <div>
-              <label className="block mb-2 font-semibold">
-                TARGET START DATE OF IMPLEMENTATION
-                <span className="text-red-500 ml-1">*</span>
-                <span
-                  data-tip="Select the target START date when the implementation is expected to start."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
-              <input
-                required
-                name="targetStartDateImplementation"
-                value={formData.targetStartDateImplementation.slice(0, 7)}
-                onChange={handleTargetDateFormChange}
-                type="month"
-                min={getPreviousMonth()}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-
-            {/* Target End Date */}
-            <div>
-              <label className="block mb-2 font-semibold">
-                TARGET END DATE OF IMPLEMENTATION
-                <span className="text-red-500 ml-1">*</span>
-                <span
-                  data-tip="Select the target END date when the implementation is expected to end."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
-              <input
-                required
-                name="targetEndDateImplementation"
-                value={formData.targetEndDateImplementation.slice(0, 7)}
-                onChange={handleTargetDateFormChange}
-                type="month"
-                min={
-                  formData.targetStartDateImplementation.slice(0, 7) ||
-                  getPreviousMonth()
-                }
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
+          {/* Target Start Date */}
+          <div>
+            <label className="block mb-2 font-semibold">
+              TARGET START DATE OF IMPLEMENTATION
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the target START date when the implementation is expected to start."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
+            <input
+              required
+              name="targetStartDateImplementation"
+              value={formData.targetStartDateImplementation.slice(0, 7)}
+              onChange={handleTargetDateFormChange}
+              type="month"
+              min={getPreviousMonth()}
+              className="w-full p-2 border border-gray-300 rounded"
+            />
           </div>
+
+          {/* Target End Date */}
+          <div>
+            <label className="block mb-2 font-semibold">
+              TARGET END DATE OF IMPLEMENTATION
+              <span className="text-red-500 ml-1">*</span>
+              <span
+                data-tip="Select the target END date when the implementation is expected to end."
+                className="ml-2 text-gray-500 cursor-pointer text-sm"
+              >
+                ⓘ
+              </span>
+              <ReactTooltip place="top" type="dark" effect="solid" />
+            </label>
+            <input
+              required
+              name="targetEndDateImplementation"
+              value={formData.targetEndDateImplementation.slice(0, 7)}
+              onChange={handleTargetDateFormChange}
+              type="month"
+              min={
+                formData.targetStartDateImplementation.slice(0, 7) || 
+                getPreviousMonth()
+              }
+              className="w-full p-2 border border-gray-300 rounded"
+            />
+          </div>
+        </div>
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1 mt-1">
@@ -2105,7 +875,7 @@ const ProposalFormFirstPage = () => {
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <select
-                required
+              required
                 name="region"
                 value={formData.region}
                 onChange={handleFormChange}
@@ -2126,7 +896,7 @@ const ProposalFormFirstPage = () => {
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <select
-                required
+              required
                 name="province"
                 value={formData.province}
                 onChange={handleFormChange}
@@ -2152,7 +922,7 @@ const ProposalFormFirstPage = () => {
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <select
-                required
+              required
                 name="city"
                 value={formData.city}
                 onChange={handleFormChange}
@@ -2178,7 +948,7 @@ const ProposalFormFirstPage = () => {
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <select
-                required
+              required
                 name="barangay"
                 value={formData.barangay}
                 onChange={handleProjectLocationFormChange}
@@ -2207,7 +977,7 @@ const ProposalFormFirstPage = () => {
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <input
-                required
+              required
                 name="address"
                 value={formData.projectLocationID.street}
                 onChange={handleAddressFormChange}
@@ -2234,7 +1004,7 @@ const ProposalFormFirstPage = () => {
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
               <textarea
-                required
+              required
                 name="background"
                 value={formData.background}
                 onChange={handleFormChange}
@@ -2291,12 +1061,13 @@ const ProposalFormFirstPage = () => {
                 <button
                   type="button"
                   onClick={handleObjectiveButtonClick}
-                  className={`${formData.goalsAndObjectives.some(
-                    (goal) => goal.goalsAndObjectives.trim() === ""
-                  )
-                    ? "bg-gray-400 text-gray-300 cursor-not-allowed"
-                    : "bg-blue-500 text-white"
-                    } px-4 py-2 rounded`}
+                  className={`${
+                    formData.goalsAndObjectives.some(
+                      (goal) => goal.goalsAndObjectives.trim() === ""
+                    )
+                      ? "bg-gray-400 text-gray-300 cursor-not-allowed"
+                      : "bg-blue-500 text-white"
+                  } px-4 py-2 rounded`}
                   disabled={
                     formData.goalsAndObjectives.some(
                       (goal) => goal.goalsAndObjectives.trim() === ""
@@ -2335,7 +1106,7 @@ const ProposalFormFirstPage = () => {
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
               <textarea
-                required
+              required
                 name="projectComponent"
                 value={formData.projectComponent}
                 onChange={handleFormChange}
@@ -2491,16 +1262,17 @@ const ProposalFormFirstPage = () => {
               type="button"
               onClick={addActivityRow}
               disabled={
-                formData.projectActivities.some((activity) =>
+                formData.projectActivities.some((activity) => 
                   !activity.objective || !activity.involved || !activity.targetDate || !activity.personResponsible
                 )
               }
-              className={`mt-4 p-2 bg-blue-500 text-white rounded ${formData.projectActivities.some((activity) =>
-                !activity.objective || !activity.involved || !activity.targetDate || !activity.personResponsible
-              )
-                ? 'opacity-50 cursor-not-allowed'
-                : ''
-                }`}
+              className={`mt-4 p-2 bg-blue-500 text-white rounded ${
+                formData.projectActivities.some((activity) => 
+                  !activity.objective || !activity.involved || !activity.targetDate || !activity.personResponsible
+                ) 
+                  ? 'opacity-50 cursor-not-allowed' 
+                  : ''
+              }`}
             >
               Add Row
             </button>
@@ -2520,34 +1292,39 @@ const ProposalFormFirstPage = () => {
           </div>
         </div>
 
+
+
+        
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-          <div className="grid grid-cols-1 gap-4">
-            <div>
-              <label className="block mb-2 font-bold text-base">
-                PROJECT LOCATION AND BENEFICIARIES
-                <span className="text-red-500 ml-1">*</span>
-                <span
-                  data-tip="Provide the location of the project and specify the beneficiaries it will serve."
-                  className="ml-2 text-gray-500 cursor-pointer text-sm"
-                >
-                  ⓘ
-                </span>
-                <ReactTooltip place="top" type="dark" effect="solid" />
-              </label>
-              <textarea
-                required
-                name="targetScope"
-                value={formData.targetScope}
-                onChange={handleFormChange}
-                className="w-full p-2 border border-gray-300 rounded overflow-auto resize-none"
-                style={{
-                  verticalAlign: 'top',  // Ensures content is aligned to the top
-                  paddingTop: '0',       // Removes any top padding if present
-                }}
-              ></textarea>
-            </div>
-          </div>
-        </div>
+  <div className="grid grid-cols-1 gap-4">
+    <div>
+      <label className="block mb-2 font-bold text-base">
+        PROJECT LOCATION AND BENEFICIARIES
+        <span className="text-red-500 ml-1">*</span>
+        <span
+          data-tip="Provide the location of the project and specify the beneficiaries it will serve."
+          className="ml-2 text-gray-500 cursor-pointer text-sm"
+        >
+          ⓘ
+        </span>
+        <ReactTooltip place="top" type="dark" effect="solid" />
+      </label>
+      <textarea
+        required
+        name="targetScope"
+        value={formData.targetScope}
+        onChange={handleFormChange}
+        className="w-full p-2 border border-gray-300 rounded overflow-auto resize-none"
+        style={{
+          verticalAlign: 'top',  // Ensures content is aligned to the top
+          paddingTop: '0',       // Removes any top padding if present
+        }}
+      ></textarea>
+    </div>
+  </div>
+</div>
+
+
 
         {/* BUDGETARY REQUIREMENTS */}
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -2668,15 +1445,16 @@ const ProposalFormFirstPage = () => {
                         !budgetItem.partnerAmount
                     )
                   }
-                  className={`p-3 text-white rounded ${formData.budgetRequirements.some(
-                    (budgetItem) =>
-                      !budgetItem.itemName ||
-                      !budgetItem.ustpAmount ||
-                      !budgetItem.partnerAmount
-                  )
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-blue-500'
-                    }`}
+                  className={`p-3 text-white rounded ${
+                    formData.budgetRequirements.some(
+                      (budgetItem) =>
+                        !budgetItem.itemName ||
+                        !budgetItem.ustpAmount ||
+                        !budgetItem.partnerAmount
+                    )
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-blue-500'
+                  }`}
                 >
                   Add Item
                 </button>
@@ -2701,19 +1479,19 @@ const ProposalFormFirstPage = () => {
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
-          <div>
-            <label className="block mb-2 font-bold">
-              PROJECT EVALUATION AND MONITORING
-              <span className="text-red-500 ml-1">*</span>
-              <span
-                data-tip="Describe the strategies for monitoring the project's progress and evaluating its success."
-                className="ml-2 text-gray-500 cursor-pointer text-sm"
-              >
-                ⓘ
-              </span>
-              <ReactTooltip place="top" type="dark" effect="solid" />
-            </label>
-          </div>
+                <div>
+                  <label className="block mb-2 font-bold">
+                    PROJECT EVALUATION AND MONITORING
+                    <span className="text-red-500 ml-1">*</span>
+                    <span
+                      data-tip="Describe the strategies for monitoring the project's progress and evaluating its success."
+                      className="ml-2 text-gray-500 cursor-pointer text-sm"
+                    >
+                      ⓘ
+                    </span>
+                    <ReactTooltip place="top" type="dark" effect="solid" />
+                  </label>
+                </div>
 
           <div className="grid grid-cols-4 gap-4">
             <div>
@@ -2755,8 +1533,8 @@ const ProposalFormFirstPage = () => {
                   onChange={(e) => handleEvaluationChange(index, "projectSummary", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Project Summary (${evaluation.type.toUpperCase()})`}
-                  style={{
-                    overflowY: 'hidden',
+                  style={{ 
+                    overflowY: 'hidden', 
                     verticalAlign: 'top',  // Ensures content is aligned to the top
                     paddingTop: '0',  // Removes top padding
                   }}
@@ -2777,8 +1555,8 @@ const ProposalFormFirstPage = () => {
                   onChange={(e) => handleEvaluationChange(index, "indicators", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Indicators (${evaluation.type.toUpperCase()})`}
-                  style={{
-                    overflowY: 'hidden',
+                  style={{ 
+                    overflowY: 'hidden', 
                     verticalAlign: 'top',  // Ensures content is aligned to the top
                     paddingTop: '0',  // Removes top padding
                   }}
@@ -2799,8 +1577,8 @@ const ProposalFormFirstPage = () => {
                   onChange={(e) => handleEvaluationChange(index, "meansOfVerification", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Means of Verification (${evaluation.type.toUpperCase()})`}
-                  style={{
-                    overflowY: 'hidden',
+                  style={{ 
+                    overflowY: 'hidden', 
                     verticalAlign: 'top',  // Ensures content is aligned to the top
                     paddingTop: '0',  // Removes top padding
                   }}
@@ -2821,8 +1599,8 @@ const ProposalFormFirstPage = () => {
                   onChange={(e) => handleEvaluationChange(index, "risksAssumptions", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Risks/Assumptions (${evaluation.type.toUpperCase()})`}
-                  style={{
-                    overflowY: 'hidden',
+                  style={{ 
+                    overflowY: 'hidden', 
                     verticalAlign: 'top',  // Ensures content is aligned to the top
                     paddingTop: '0',  // Removes top padding
                   }}
@@ -2835,6 +1613,7 @@ const ProposalFormFirstPage = () => {
             </div>
           ))}
         </div>
+
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <div>
@@ -2872,7 +1651,7 @@ const ProposalFormFirstPage = () => {
                 {formData.monitoringPlanSchedules.map((row, index) => (
                   <tr key={index}>
                     <td className="border border-gray-300 p-2">{row.implementationPhase}</td>
-                    <td className="border border-gray-300 p-2" style={{ verticalAlign: 'top', }}>
+                    <td className="border border-gray-300 p-2" style={{verticalAlign: 'top', }}>
                       <textarea
                         required
                         name="approach"
@@ -2894,7 +1673,7 @@ const ProposalFormFirstPage = () => {
                         }}
                       />
                     </td>
-                    <td className="border border-gray-300 p-2" style={{ verticalAlign: 'top', }}>
+                    <td className="border border-gray-300 p-2" style={{verticalAlign: 'top', }}>
                       <textarea
                         required
                         name="dataGatheringStrategy"
@@ -2916,7 +1695,7 @@ const ProposalFormFirstPage = () => {
                         }}
                       />
                     </td>
-                    <td className="border border-gray-300 p-2" style={{ verticalAlign: 'top', }}>
+                    <td className="border border-gray-300 p-2" style={{verticalAlign: 'top', }}>
                       <textarea
                         required
                         name="schedule"
@@ -2944,6 +1723,7 @@ const ProposalFormFirstPage = () => {
             </table>
           </div>
         </div>
+
 
         {showTrainers && (
           <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -3042,8 +1822,8 @@ const ProposalFormFirstPage = () => {
                             name="totalBudgetRequirement"
                             value={
                               formData.loadingOfTrainers[memberIndex]?.hours
-                                ? formData.loadingOfTrainers[memberIndex].hours * 150 +
-                                (formData.loadingOfTrainers[memberIndex]?.agencyBudget || 0)
+                                ? formData.loadingOfTrainers[memberIndex].hours * 150 + 
+                                  (formData.loadingOfTrainers[memberIndex]?.agencyBudget || 0)
                                 : (formData.loadingOfTrainers[memberIndex]?.agencyBudget || 0)
                             }
                             readOnly
@@ -3077,14 +1857,14 @@ const ProposalFormFirstPage = () => {
                       readOnly={true}
                       name={`programChair-${programId}`}
                       value={
-                        formData.programChair[index]?.name ||
+                        formData.programChair[index]?.name || 
                         `${selectedProgram?.programChair?.firstname || ""} ${selectedProgram?.programChair?.lastname || ""}`.trim()
                       }
                       onChange={(e) => {
                         const updatedList = [...formData.programChair];
-                        updatedList[index] = {
-                          name: e.target.value,
-                          programId: programId
+                        updatedList[index] = { 
+                          name: e.target.value, 
+                          programId: programId 
                         };
                         setFormData({ ...formData, programChair: updatedList });
                       }}
@@ -3110,14 +1890,14 @@ const ProposalFormFirstPage = () => {
                       readOnly={true}
                       name={`collegeDean-${collegeId}`}
                       value={
-                        formData.collegeDean[index]?.name ||
+                        formData.collegeDean[index]?.name || 
                         `${selectedCollege?.collegeDean?.firstname || ""} ${selectedCollege?.collegeDean?.lastname || ""}`.trim()
                       }
                       onChange={(e) => {
                         const updatedList = [...formData.collegeDean];
-                        updatedList[index] = {
-                          name: e.target.value,
-                          collegeId: collegeId
+                        updatedList[index] = { 
+                          name: e.target.value, 
+                          collegeId: collegeId 
                         };
                         setFormData({ ...formData, collegeDean: updatedList });
                       }}
@@ -3230,24 +2010,3 @@ const ProposalFormFirstPage = () => {
           Submit
         </button>
       </form>
-
-      {/* Success Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-6 rounded shadow-md text-center space-y-4">
-            <h2 className="text-xl font-semibold">Project Submission Success!</h2>
-            <p>Your project has been successfully submitted and is now awaiting review.</p>
-            <button
-              onClick={handleNavigation}
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Go to Dashboard
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-export default ProposalFormFirstPage;

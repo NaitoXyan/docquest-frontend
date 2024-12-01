@@ -76,7 +76,7 @@ function ProjLeadSidebar({ onFilterChange }) {
                                         }`
                                     }
                                 >
-                                    Project Status
+                                    Proposal Status
                                 </NavLink>
                             </li>
                             <li>

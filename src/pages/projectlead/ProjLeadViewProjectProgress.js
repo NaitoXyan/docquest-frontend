@@ -78,7 +78,7 @@ const ProjectProgressStep = ({ projectID }) => {
         return {
           label: college,
           description: (
-            <Box style={{ overflowY: 'auto', padding: '20px' }} >
+            <Box style={{ overflowY: '200', padding: '20px' }} >
               <Stepper orientation="vertical" nonLinear>
                 {collegeReviews.map((review, index) => (
                   <Step key={review.reviewID} active={true} completed={review.reviewStatus === "approved"}>
@@ -162,6 +162,10 @@ const ProjLeadViewProjectProgress = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
+  const handleEditProposal = () => {
+    navigate(`/edit-project/${projectID}`);
+  };
+
   useEffect(() => {
     // Check if token is present
     if (!token) {
@@ -210,6 +214,11 @@ const ProjLeadViewProjectProgress = () => {
 
           {/* Project Progress Step */}
           <ProjectProgressStep projectID={projectID} />
+          <div className="flex mt-12">
+            <button 
+            onClick={handleEditProposal}
+            className="ml-8 p-4 bg-yellow-500 rounded-md w-9/12 text-white">Edit Proposal</button>
+          </div>
         </div>
       </div>
     </div>

@@ -61,13 +61,13 @@ function VPALASideBar({ onFilterChange }) {
 
                     <li>
                         <NavLink
-                            to="/vpalamemolist"
+                            to="/vpala-review-list/all/moa"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
                                 }`
                             }
                         >
-                            Memorandum List
+                            Documents
                         </NavLink>
                     </li>
                     {/* <li>

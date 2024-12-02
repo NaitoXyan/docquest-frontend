@@ -3,9 +3,16 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Topbar from "../../components/Topbar";
 import ProjLeadSidebar from "../../components/ProjLeadSideBar";
+import { SearchIcon } from '@heroicons/react/solid';
 
 const PickProjCreateMoa = () => {
   const [projects, setProjects] = useState([]);
+  const [filteredProjects, setFilteredProjects] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [statusFilter, setStatusFilter] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [characterLimit, setCharacterLimit] = useState(42);
+  const itemsPerPage = 8;
   const userID = localStorage.getItem('userid');
   const navigate = useNavigate();
 
@@ -14,151 +21,174 @@ const PickProjCreateMoa = () => {
     axios.get(`http://127.0.0.1:8000/get_project_status/${userID}/`)
       .then(response => {
         // Filter projects with status 'approved' (case-insensitive)
-        const approvedProjects = response.data.filter(project => 
-          project.status.toLowerCase() === 'approved'
-        );
+        const approvedProjects = response.data
+          .filter(project => project.status.toLowerCase() === 'approved')
+          .sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
+
         setProjects(approvedProjects);
+        setFilteredProjects(approvedProjects);
       })
       .catch(error => {
         console.error('Error fetching data:', error);
       });
   }, [userID]);
 
+  // Adjust character limit based on window width
+  useEffect(() => {
+    const updateCharacterLimit = () => {
+      if (window.innerWidth < 640) {
+        setCharacterLimit(20); // Small screens
+      } else if (window.innerWidth < 1024) {
+        setCharacterLimit(30); // Medium screens
+      } else {
+        setCharacterLimit(42); // Large screens
+      }
+    };
+
+    updateCharacterLimit();
+    window.addEventListener('resize', updateCharacterLimit);
+    return () => window.removeEventListener('resize', updateCharacterLimit);
+  }, []);
+
+  const handleSearchChange = (event) => {
+    const term = event.target.value.toLowerCase();
+    setSearchTerm(term);
+    setFilteredProjects(
+      projects.filter(project =>
+        `${project.projectUser.firstname} ${project.projectUser.lastname}`.toLowerCase().includes(term) ||
+        project.projectTitle.toLowerCase().includes(term)
+      )
+    );
+    setCurrentPage(1);
+  };
+
+  const handleStatusFilterChange = (event) => {
+    const status = event.target.value;
+    setStatusFilter(status);
+    const filtered = status
+      ? projects.filter(project => project.status.toLowerCase() === status)
+      : projects;
+    setFilteredProjects(filtered);
+    setCurrentPage(1);
+  };
+
   // Handler for creating MOA
   const handleCreateMOA = (projectID) => {
-    console.log('Creating MOA for project ID:', projectID);
     navigate(`/create_moa/${projectID}`);
-    // Alternatively, if you prefer to pass state:
-    // navigate('/create_moa', { state: { projectID } });
+  };
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentProjects = filteredProjects.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          className={`px-3 py-1 rounded-lg ${i === currentPage ? "bg-vlu text-white" : "bg-gray-100"}`}
+        >
+          {i}
+        </button>
+      );
+    }
+    return pageNumbers;
   };
 
   return (
     <div className="bg-gray-200 min-h-screen flex">
       <div className="w-1/5 fixed h-full">
-                <ProjLeadSidebar />
+        <ProjLeadSidebar />
       </div>
-      <h2 style={{ marginTop: '20px' }}>Approved Projects</h2>
-      <div className="flex-1 ml-[10%]">
-         <Topbar />
-         
-        <div className="flex flex-col mt-16 px-10">
-        <div className="p-1 mt-4 ml-5 font-bold text-lg text-black-500">APPROVED PROJECTS</div>
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px', fontFamily: 'Arial, sans-serif' }}>
-          <thead>
-            <tr className="text-white">
-              <th style={{ backgroundColor: '#1a1851', border: '1px solid #ddd', padding: '8px', textAlign: 'center', fontWeight: 'bold', width: '50%' }}>
-                Project Title
-              </th>
-              <th style={{ backgroundColor: '#1a1851', border: '1px solid #ddd', padding: '8px', textAlign: 'center', fontWeight: 'bold', width: '20%' }}>
-                Date Submitted
-              </th>
-              <th style={{ backgroundColor: '#1a1851', border: '1px solid #ddd', padding: '8px', textAlign: 'center', fontWeight: 'bold', width: '15%' }}>
-                Document Status
-              </th>
-              <th style={{ backgroundColor: '#1a1851', border: '1px solid #ddd', padding: '8px', textAlign: 'center', fontWeight: 'bold', width: '10%' }}>
-                Create MOA
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {projects.length > 0 ? (
-              projects.map((project, index) => (
-                <tr
-                  key={index}
-                  style={{
-                    backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9f9f9',
-                    transition: 'background-color 0.3s',
-                  }}
-                >
-                  <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left', marginLeft:'3' }}>{project.projectTitle}</td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center' }}>
-                    {new Date(project.dateCreated).toLocaleString('en-US', {
-                      year: 'numeric',
-                      month: '2-digit',
-                      day: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      hour12: false, // 24-hour format
-                    })}
-                  </td>
-                  <td style={{ 
-                      border: '1px solid #ddd', 
-                      padding: '8px', 
-                      textAlign: 'center' 
-                  }}>
-                      <span style={{ 
-                          display: 'inline-block', 
-                          padding: '5px 10px', 
-                          borderRadius: '15px', 
-                          backgroundColor: '#e0f7e9', /* Light green background */
-                          color: 'green' /* Green text */,
-                      }}>
-                          {project.status}
-                      </span>
-                  </td>
-                  <td style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>
-                    <button
-                      onClick={() => handleCreateMOA(project.projectID)}
-                      style={{
-                        backgroundColor: '#007BFF',
-                        color: '#fff',
-                        border: 'none',
-                        padding: '5px 10px',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      Create MOA
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="4" style={{ textAlign: 'center', padding: '8px', border: '1px solid #ddd' }}>
-                  No approved projects available.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
 
+      <div className="flex-1 ml-[20%]">
+        <Topbar />
+        <div className="flex flex-col mt-16 px-4 md:px-10">
+          {/* Title, Filter, and Search Row */}
+          <div className="flex flex-col sm:flex-row flex-wrap justify-between items-center mb-4 space-y-4 sm:space-y-0">
+            <h2 className="text-xl sm:text-2xl font-bold w-full sm:w-auto">APPROVED PROJECTS</h2>
+            <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 w-full sm:w-auto">
+              <div className="relative w-full sm:w-48">
+                <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  className="w-full pl-10 pr-3 py-1.5 border rounded-md"
+                />
+              </div>
+
+            </div>
+          </div>
+
+          {/* Project List Table */}
+          <div className="bg-white shadow-lg rounded-lg py-4 px-2 sm:px-4">
+            <div className="overflow-x-auto">
+              <table className="min-w-full table-auto">
+                <thead className="bg-gray-100">
+                  <tr>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Leader</th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Title</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Status</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Create MOA</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {currentProjects.length > 0 ? (
+                    currentProjects.map((project, index) => (
+                      <tr key={index}>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-left">{`${project.projectUser.firstname} ${project.projectUser.lastname}`}</td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap overflow-hidden text-ellipsis">
+                          <span title={project.projectTitle}>
+                            {project.projectTitle.length > characterLimit 
+                              ? `${project.projectTitle.slice(0, characterLimit)}...` 
+                              : project.projectTitle}
+                          </span>
+                        </td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center justify-items-center">
+                          {new Date(project.dateCreated).toLocaleDateString()}
+                        </td>
+                        <td className="px-3 sm:px-4 py-3 text-center justify-items-end">
+                          <span className="px-2 py-1 rounded-md text-white bg-green-500">
+                            {project.status}
+                          </span>
+                        </td>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
+                          <button
+                            onClick={() => handleCreateMOA(project.projectID)}
+                            className="text-blue-900 underline"
+                          >
+                            Create MOA
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="5" className="text-center py-4">No approved projects available</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-2 flex justify-center items-center space-x-2">
+              {renderPageNumbers()}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
-};
-
-// Define common styles
-const styles = {
-  th: {
-    border: '2px solid #ddd',
-    padding: '12px',
-    backgroundColor: '#f2f2f2',
-    textAlign: 'center',
-    fontSize: '13px', 
-    color: '#333', 
-  },
-  td: {
-    border: '1px solid #ddd',
-    padding: '12px',
-    textAlign: 'left',
-    marginLeft: '1%',
-  },
-  tr: {
-    // Optional: Add hover effect
-    ':hover': {
-      backgroundColor: '#f5f5f5',
-    },
-  },
-  button: {
-    padding: '8px 12px',
-    backgroundColor: '#4CAF50',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-  },
 };
 
 export default PickProjCreateMoa;

@@ -36,10 +36,6 @@ const ProjLeadProjectStatus = () => {
       });
   }, [userID, statusFilterParam]);
 
-
-
-
-
   useEffect(() => {
     if (statusFilterParam) {
       setStatusFilter(statusFilterParam.toLowerCase());
@@ -179,7 +175,7 @@ const ProjLeadProjectStatus = () => {
                   <tr>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Leader</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Title</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
                     <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Status</th>
                     <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">View Document</th>
                     <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">View Progress</th>
@@ -195,12 +191,12 @@ const ProjLeadProjectStatus = () => {
                             {project.projectTitle.length > characterLimit ? `${project.projectTitle.slice(0, characterLimit)}...` : project.projectTitle}
                           </span>
                         </td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center justify-items-center">
                           {new Date(project.dateCreated).toLocaleDateString()}
                         </td>
-                        <td className="px-3 sm:px-4 py-3">
+                        <td className="px-3 sm:px-4 py-3 justify-items-center">
                           <span
-                            className={`px-2 py-1 rounded-md text-white ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
+                            className={`px-2 py-1 rounded-md text-white w-24 text-center block ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
                                 project.status.toLowerCase() === 'pending' ? 'bg-amber-300' :
                                   'bg-red-400'
                               }`}

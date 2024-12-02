@@ -144,7 +144,7 @@ const ProgramChairReviewList = () => {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`px-3 py-1 rounded-lg ${i === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
+          className={`px-3 py-1 rounded-lg ${i === currentPage ? 'bg-vlu text-white' : 'bg-gray-100'}`}
         >
           {i}
         </button>
@@ -187,7 +187,7 @@ const ProgramChairReviewList = () => {
         <Topbar />
         <div className="flex flex-col mt-16 px-4 md:px-10">
           <div className="flex flex-col sm:flex-row flex-wrap justify-between items-center mb-4 space-y-4 sm:space-y-0">
-            <h2 className="text-xl sm:text-2xl font-semibold w-full sm:w-auto">Project List</h2>
+            <h2 className="text-xl sm:text-2xl font-bold w-full sm:w-auto">PROJECT LIST</h2>
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 w-full sm:w-auto">
               <div className="relative w-full sm:w-48">
                 <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
@@ -216,7 +216,7 @@ const ProgramChairReviewList = () => {
             </div>
           </div>
 
-          <div className="bg-white shadow-lg rounded-lg py-4 px-2 sm:px-4">
+          <div className="bg-white rounded-lg py-4 px-2 sm:px-4">
             <div className="overflow-x-auto">
               <table className="min-w-full table-auto">
                 <thead className="bg-gray-100">
@@ -224,44 +224,57 @@ const ProgramChairReviewList = () => {
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Leader</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Type</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Title</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Your Review</th>
-                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Review</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
                     <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Project Status</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Your Review</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Review</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {currentProjects.length > 0 ? (
                     currentProjects.map((project) => (
                       <tr key={project.reviewID}>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">{`${project.firstname} ${project.lastname}`}</td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">{project.content_type_name}</td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-6  whitespace-nowrap">{`${project.firstname} ${project.lastname}`}</td>
+                        <td className="px-3 sm:px-6  whitespace-nowrap">{project.content_type_name}</td>
+                        <td className="px-3 sm:px-6  whitespace-nowrap">
                           {project.projectTitle.length > characterLimit
                             ? `${project.projectTitle.substring(0, characterLimit)}...`
                             : project.projectTitle}
                         </td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-6  whitespace-nowrap text-center justify-items-center">
                           {new Date(project.dateCreated).toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric',
                           })}
                         </td>
-                        <td className="px-3 sm:px-3 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-3 py-4 whitespace-nowrap text-center justify-items-center">
                             <span
                               className={`px-4 py-2 text-m rounded-full ${
+                                project.status === 'approved'
+                                  ? 'text-green-600'
+                                  : project.status === 'rejected'
+                                  ? 'text-red-600'
+                                  : 'text-yellow-600'
+                              }`}
+                            >
+                              {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                            </span>
+                        </td>
+                        <td className="px-3 sm:px-3 whitespace-nowrap text-center justify-items-center">
+                            <span
+                              className={`px-2 py-1 text-m rounded-md text-center justify-items-center text-white w-24 block ${
                                 project.reviewStatus === 'approved'
-                                  ? 'bg-green-100 text-green-700'
+                                  ? 'bg-green-400 text-white'
                                   : project.reviewStatus === 'rejected'
-                                  ? 'bg-red-100 text-red-700'
-                                  : 'bg-yellow-100 text-yellow-700'
+                                  ? 'bg-red-400 text-white'
+                                  : 'bg-yellow-400 text-white'
                               }`}
                             >
                               {project.reviewStatus.charAt(0).toUpperCase() + project.reviewStatus.slice(1)}
                             </span>
                         </td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
+                        <td className="px-3 sm:px-6  whitespace-nowrap text-center justify-items-center">
                           <button
                             onClick={() =>
                               project.reviewStatus === 'approved' || project.reviewStatus === 'rejected'
@@ -279,19 +292,7 @@ const ProgramChairReviewList = () => {
                               : 'Review'}
                           </button>
                         </td>
-                        <td className="px-3 sm:px-3 py-4 whitespace-nowrap">
-                            <span
-                              className={`px-4 py-2 text-m rounded-full ${
-                                project.status === 'approved'
-                                  ? 'text-green-600'
-                                  : project.status === 'rejected'
-                                  ? 'text-red-600'
-                                  : 'text-yellow-600'
-                              }`}
-                            >
-                              {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
-                            </span>
-                        </td>
+
 
                       </tr>
                     ))
@@ -305,9 +306,8 @@ const ProgramChairReviewList = () => {
                 </tbody>
               </table>
             </div>
+            <div className="flex justify-center items-center mt-4">{renderPageNumbers()}</div>
           </div>
-
-          <div className="flex justify-center items-center mt-4">{renderPageNumbers()}</div>
         </div>
       </div>
     </div>

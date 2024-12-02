@@ -10,7 +10,7 @@ const DirectorReviewList = () => {
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState('');
-  const [documentFilter, setDocumentFilter] = useState('');
+  const [documentFilter, setDocumentFilter] = useState('project');
   const [searchTerm, setSearchTerm] = useState('');
   const [characterLimit, setCharacterLimit] = useState(42);
   const itemsPerPage = 8;
@@ -143,7 +143,7 @@ const DirectorReviewList = () => {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`px-3 py-1 rounded-lg ${i === currentPage ? 'bg-blue-500 text-white' : 'bg-gray-100'}`}
+          className={`px-3 py-1 rounded-lg ${i === currentPage ? 'bg-vlu text-white' : 'bg-gray-100'}`}
         >
           {i}
         </button>
@@ -198,7 +198,7 @@ const DirectorReviewList = () => {
                   className="w-full pl-10 pr-3 py-1.5 border rounded-md"
                 />
               </div>
-              <div className="w-full sm:w-auto">
+              {/* <div className="w-full sm:w-auto">
                 <label htmlFor="documentFilter" className="mr-2">Filter by Document Type:</label>
                 <select
                   id="documentFilter"
@@ -210,7 +210,7 @@ const DirectorReviewList = () => {
                   <option value="project">Project</option>
                   <option value="moa">MOA</option>
                 </select>
-              </div>
+              </div> */}
 
               <div className="w-full sm:w-auto">
                 <label htmlFor="statusFilter" className="mr-2">Filter by Status:</label>
@@ -237,8 +237,8 @@ const DirectorReviewList = () => {
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Leader</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Type</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Title</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Status</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Status</th>
                     <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Review</th>
                   </tr>
                 </thead>
@@ -253,14 +253,14 @@ const DirectorReviewList = () => {
                             ? `${project.projectTitle.substring(0, characterLimit)}...`
                             : project.projectTitle}
                         </td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-6 whitespace-nowrap text-center justify-items-center">
                           {new Date(project.dateCreated).toLocaleDateString('en-US', {
                             month: 'short',
                             day: 'numeric',
                             year: 'numeric',
                           })}
                         </td>
-                        <td className="px-3 sm:px-3 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-3 whitespace-nowrap text-center justify-items-center">
                           {(() => {
                             // Determine the content type and approval conditions
                             const isProject = project.content_type === 'project'; // Assuming 'content_type' is available in project data
@@ -271,27 +271,27 @@ const DirectorReviewList = () => {
                             const isRejected = project.reviewStatus === 'rejected';
                             
                             const statusClass = isApproved
-                              ? 'bg-green-100 text-green-700'
+                              ? 'bg-green-400 text-white'
                               : isRejected
-                              ? 'bg-red-100 text-red-700'
+                              ? 'bg-red-400 text-white'
                               : isPending
-                              ? 'bg-yellow-100 text-yellow-700'
+                              ? 'bg-yellow-400 text-white'
                               : 'bg-gray-100 text-gray-700'; // Default for unknown conditions
                             const statusText = isApproved
-                              ? 'Approved'
+                              ? 'approved'
                               : isRejected
-                              ? 'Rejected'
+                              ? 'rejected'
                               : isPending
-                              ? 'Pending'
+                              ? 'pending'
                               : 'Unknown'; // Default status for unknown conditions
                             return (
-                              <span className={`px-4 py-2 text-m rounded-full ${statusClass}`}>
+                              <span className={`px-4 py-1.5 text-m rounded-md ${statusClass}`}>
                                 {statusText}
                               </span>
                             );
                           })()}
                         </td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
+                        <td className="px-3 sm:px-6  whitespace-nowrap text-center">
                           {(() => {
                             // Determine the action based on approval and review status
                             const canViewDocument = (project.reviewStatus === 'approved') ||
@@ -311,7 +311,7 @@ const DirectorReviewList = () => {
                             };
 
                             return (
-                              <button onClick={handleClick} className={`w-36 px-4 py-2 rounded-md text-center ${buttonClass}`}>
+                              <button onClick={handleClick} className={`w-36 px-4 py-1.5 rounded-md text-center ${buttonClass}`}>
                                 {buttonText}
                               </button>
                             );

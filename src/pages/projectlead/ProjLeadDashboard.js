@@ -7,7 +7,7 @@ const ProjLeadDashboard = () => {
     const [projects, setProjects] = useState([]);
     const [statusCounts, setStatusCounts] = useState({ approved: 0, pending: 0, rejected: 0 });
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5;
+    const itemsPerPage = 4;
     const userID = localStorage.getItem('userid');
     const navigate = useNavigate();
 
@@ -74,7 +74,7 @@ const ProjLeadDashboard = () => {
                 <button
                     key={1}
                     onClick={() => handlePageChange(1)}
-                    className={`px-3 py-1 rounded-lg ${currentPage === 1 ? "bg-amber-400 text-white" : "bg-gray-100"}`}
+                    className={`px-3 py-1 rounded-lg ${currentPage === 1 ? "bg-vlu text-white" : "bg-gray-100"}`}
                 >
                     1
                 </button>
@@ -89,7 +89,7 @@ const ProjLeadDashboard = () => {
                     <button
                         key={i}
                         onClick={() => handlePageChange(i)}
-                        className={`px-3 py-1 rounded-lg ${i === currentPage ? "bg-blue-500 text-white" : "bg-gray-100"}`}
+                        className={`px-3 py-1 rounded-lg ${i === currentPage ? "bg-vlu text-white" : "bg-gray-100"}`}
                     >
                         {i}
                     </button>
@@ -104,7 +104,7 @@ const ProjLeadDashboard = () => {
                 <button
                     key={totalPages}
                     onClick={() => handlePageChange(totalPages)}
-                    className={`px-3 py-1 rounded-lg ${currentPage === totalPages ? "bg-blue-500 text-white" : "bg-gray-100"}`}
+                    className={`px-3 py-1 rounded-lg ${currentPage === totalPages ? "bg-vlu text-white" : "bg-gray-100"}`}
                 >
                     {totalPages}
                 </button>
@@ -122,7 +122,7 @@ const ProjLeadDashboard = () => {
             <div className="flex-1 ml-[20%]">
                 <Topbar />
                 <div className="flex flex-col mt-16 px-10">
-                    <h1 className="text-2xl font-bold mb-3 mt-3">PROJECTS OVERVIEW</h1>
+                    <h1 className="text-2xl font-bold mb-3">PROJECTS OVERVIEW</h1>
                     <div className="grid grid-cols-3 gap-4 mb-5">
                         <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center shadow-lg">
                             <h2 className="text-lg font-semibold">Approved</h2>
@@ -181,11 +181,11 @@ const ProjLeadDashboard = () => {
                                                 </span>
                                             </td>
                                             <td style={{ width: "15%" }} className="px-6 py-4 whitespace-nowrap">{new Date(project.dateCreated).toLocaleDateString()}</td>
-                                            <td style={{ width: "15%" }} className="px-6 py-4 text-center">
+                                            <td style={{ width: "15%" }} className="px-6 py-4 text-center justify-items-center">
                                                 <span
-                                                    className={`px-2 py-1 rounded-md text-white w-24 text-center block ${project.status.toLowerCase() === 'approved' ? 'bg-green-500' :
-                                                            project.status.toLowerCase() === 'pending' ? 'bg-yellow-500' :
-                                                                'bg-red-500'
+                                                    className={`px-2 py-1 rounded-md text-white w-24 text-center block ${project.status.toLowerCase() === 'approved' ? 'bg-green-400' :
+                                                            project.status.toLowerCase() === 'pending' ? 'bg-yellow-400' :
+                                                                'bg-red-400'
                                                         }`}
                                                 >
                                                     {project.status}

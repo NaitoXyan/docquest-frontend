@@ -8,17 +8,15 @@ const EditMOAForm = ({ moaID }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    partyADescription: "",
-    partyBDescription: "",
-    coverageAndEffectivity: "",
-    confidentialityClause: "",
-    termination: "",
+    partyDescription: ``,
+    coverageAndEffectivity: ``,
+    confidentialityClause: ``,
+    termination: ``,
     witnesseth: [
       {
-        whereas: ""
+        whereas: ``
       }
     ],
-    partyObligation: [],
     firstParty: [
       {
         name: "",
@@ -26,6 +24,12 @@ const EditMOAForm = ({ moaID }) => {
       }
     ],
     secondParty: [
+      {
+        name: "",
+        title: ""
+      }
+    ],
+    thirdParty: [
       {
         name: "",
         title: ""
@@ -47,6 +51,12 @@ const EditMOAForm = ({ moaID }) => {
       {
         obligation: "",
         party: "party B"
+      }
+    ],
+    partyCObligation: [
+      {
+        obligation: "",
+        party: "party C"
       }
     ]
   });
@@ -76,6 +86,12 @@ const EditMOAForm = ({ moaID }) => {
           .map(obligation => ({
             obligation: obligation.obligation,
             party: "party B",
+          })),
+        partyCObligation: response.data.partyObligation
+          .filter(obligation => obligation.party === "party C")
+          .map(obligation => ({
+            obligation: obligation.obligation,
+            party: "party C",
           })),
       }));
       console.log("Form data:", formData);
@@ -126,6 +142,15 @@ const EditMOAForm = ({ moaID }) => {
     });
   };
 
+  // Handle changes for SECOND PARTY obligations
+  const handleThirdPartyObligationChange = (index, value) => {
+    setFormData((prevData) => {
+      const updatedObligations = [...prevData.partyCObligation];
+      updatedObligations[index].obligation = value;
+      return { ...prevData, partyCObligation: updatedObligations };
+    });
+  };
+
   // Add obligation for FIRST PARTY
   const handleAddFirstPartyObligation = () => {
     setFormData((prevData) => ({
@@ -144,6 +169,17 @@ const EditMOAForm = ({ moaID }) => {
       partyBObligation: [
         ...prevData.partyBObligation,
         { obligation: "", party: "party B" }
+      ]
+    }));
+  };
+
+  // Add obligation for SECOND PARTY
+  const handleAddThirdPartyObligation = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      partyCObligation: [
+        ...prevData.partyCObligation,
+        { obligation: "", party: "party C" }
       ]
     }));
   };
@@ -167,6 +203,17 @@ const EditMOAForm = ({ moaID }) => {
         updatedObligations.splice(index, 1);
       }
       return { ...prevData, partyBObligation: updatedObligations };
+    });
+  };
+
+  // Remove obligation for THIRD PARTY
+  const handleRemoveThirdPartyObligation = (index) => {
+    setFormData((prevData) => {
+      const updatedObligations = [...prevData.partyCObligation];
+      if (updatedObligations.length > 1) {
+        updatedObligations.splice(index, 1);
+      }
+      return { ...prevData, partyCObligation: updatedObligations };
     });
   };
 
@@ -208,6 +255,17 @@ const EditMOAForm = ({ moaID }) => {
     });
   };
 
+  const handleThirdPartyChange = (index, field, value) => {
+    setFormData((prevData) => {
+      const updatedThirdParty = [...prevData.thirdParty];
+      updatedThirdParty[index][field] = value;
+      return {
+        ...prevData,
+        thirdParty: updatedThirdParty
+      };
+    });
+  };
+
   const handleWitnessChange = (index, field, value) => {
     const updatedWitnesses = [...formData.witnesses];
     updatedWitnesses[index][field] = value;
@@ -243,13 +301,15 @@ const EditMOAForm = ({ moaID }) => {
 
     const partyObligation = [
       ...formData.partyAObligation,
-      ...formData.partyBObligation
+      ...formData.partyBObligation,
+      ...formData.partyCObligation
     ];
 
     modifiedData.partyObligation = partyObligation;
 
     delete modifiedData.partyAObligation;
     delete modifiedData.partyBObligation;
+    delete modifiedData.partyCObligation;
 
     console.log("formData to be sent:", modifiedData); // Check the structure
 
@@ -299,28 +359,39 @@ const EditMOAForm = ({ moaID }) => {
               <label className="block mb-2 font-semibold">
                 This Memorandum of Agreement executed and entered into by and between:
               </label>
+              <label className="block mb-2 font-semibold">
+                First Party
+              </label>
               <textarea
+                required
                 name="partyADescription"
                 value={formData.partyADescription}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
-                placeholder="Ex: UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS (USTP CDO), a state educational institution duly established  under Philippine law, whose office address located at Claro M. Recto Avenue, Lapasan, Cagayan  de Oro City, represented herein by its Chancellor ATTY. DIONEL O. ALBINA, hereafter referred  to as the FIRST PARTY;"
+                placeholder="First party"
               ></textarea>
-            </div>
-
-            <div>
               <label className="block mb-2 font-semibold">
-                and
+                Second Party
               </label>
               <textarea
+                required
                 name="partyBDescription"
                 value={formData.partyBDescription}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
-                placeholder="Ex: DEPARTMENT OF EDUCATION DIVISION OF CAGAYAN DE ORO CITY, a state educational institution duly established under Philippine law, whose office address located at Fr.  William F. Masterson Avenue, Upper Balulang, Cagayan de Oro City Misamis Oriental, represented herein by the School Divisions Superintendent ROY ANGELO E. GAZO, Ph.D., hereafter referred to as the SECOND PARTY;"
+                placeholder="Second party"
+              ></textarea>
+              <label className="block mb-2 font-semibold">
+                Third Party
+              </label>
+              <textarea
+                name="partyCDescription"
+                value={formData.partyCDescription}
+                onChange={handleFormChange}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder="Third party (Leave blank if there is no third party)"
               ></textarea>
             </div>
-
           </div>
         </div>
 
@@ -426,6 +497,43 @@ const EditMOAForm = ({ moaID }) => {
               Remove
             </button>
           </div>
+
+          {formData.partyCDescription && (
+            <div>
+              <div>
+                <label className="block mb-2 font-semibold">
+                  OBLIGATIONS AND RESPONSIBILITIES of the THIRD PARTY:
+                </label>
+                {formData.partyCObligation.map((partyCObligation, index) => (
+                  <textarea
+                    key={`partyC-${index}`}
+                    value={partyCObligation.obligation}
+                    onChange={(e) => handleThirdPartyObligationChange(index, e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded mb-2"
+                    placeholder="Third Party Obligation and Responsibilities"
+                  ></textarea>
+                ))}
+              </div>
+              <div className="flex space-x-2 mb-2">
+                <button
+                  type="button"
+                  onClick={handleAddThirdPartyObligation}
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Add obligation and responsibility
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveThirdPartyObligation(formData.partyCObligation.length - 1)}
+                  className="bg-red-500 text-white px-4 py-2 rounded"
+                  disabled={formData.partyCObligation.length === 1}
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          )}
+
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -436,13 +544,13 @@ const EditMOAForm = ({ moaID }) => {
             <label className="block mb-2 font-semibold">
               COVERAGE AND EFFECTIVITY:
             </label>
-            <input
-              name="coverageAndEffectivty"
+            <textarea
+              name="coverageAndEffectivity"
               value={formData.coverageAndEffectivity}
               onChange={handleFormChange}
               className="w-full p-2 border border-gray-300 rounded"
               placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-            ></input>
+            ></textarea>
           </div>
         </div>
 
@@ -451,13 +559,13 @@ const EditMOAForm = ({ moaID }) => {
             <label className="block mb-2 font-semibold">
               CONFIDENTIALITY CLAUSE:
             </label>
-            <input
+            <textarea
               name="confidentialityClause"
               value={formData.confidentialityClause}
               onChange={handleFormChange}
               className="w-full p-2 border border-gray-300 rounded"
               placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-            ></input>
+            ></textarea>
           </div>
         </div>
 
@@ -465,13 +573,13 @@ const EditMOAForm = ({ moaID }) => {
           <label className="block mb-2 font-semibold">
             TERMINATION:
           </label>
-          <input
+          <textarea
             name="termination"
             value={formData.termination}
             onChange={handleFormChange}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-          ></input>
+          ></textarea>
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -540,7 +648,42 @@ const EditMOAForm = ({ moaID }) => {
               ))}
             </div>
           </div>
-
+          {formData.partyCDescription && (
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block mb-2 font-semibold">
+                  Third Party Name
+                </label>
+                {formData.thirdParty.map((party, index) => (
+                  <input
+                    required
+                    key={`thirdParty-name-${index}`}
+                    type="text"
+                    value={party.name}
+                    onChange={(e) => handleThirdPartyChange(index, 'name', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                    placeholder="name"
+                  />
+                ))}
+              </div>
+              <div>
+                <label className="block mb-2 font-semibold">
+                  Third Party Title
+                </label>
+                {formData.thirdParty.map((party, index) => (
+                  <input
+                    required
+                    key={`thirdParty-title-${index}`}
+                    type="text"
+                    value={party.title}
+                    onChange={(e) => handleThirdPartyChange(index, 'title', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                    placeholder="title"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
           <div>
             <label className="block mb-2 font-semibold">Witnesses:</label>
             {formData.witnesses.map((witness, index) => (
@@ -590,7 +733,7 @@ const EditMOAForm = ({ moaID }) => {
 
         {/* submit naa */}
         <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-4 mb-4">
-          Create
+          Confirm Changes
         </button>
       </form>
 

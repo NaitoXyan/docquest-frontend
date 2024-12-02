@@ -79,6 +79,18 @@ function DirectorSidebar({ onFilterChange }) {
 
                     <li>
                         <NavLink
+                            to="/director-project-statistics"
+                            className={({ isActive }) =>
+                                `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                }`
+                            }
+                        >
+                            Project Statistics
+                        </NavLink>
+                    </li>
+
+                    <li>
+                        <NavLink
                             to="/review-list/pending/project"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
@@ -91,7 +103,7 @@ function DirectorSidebar({ onFilterChange }) {
 
                     <li>
                         <NavLink
-                            to="/review-list/pending/moa"
+                            to="/moa-review-list/pending/moa"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
                                 }`

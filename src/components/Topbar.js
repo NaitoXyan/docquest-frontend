@@ -19,6 +19,15 @@ const Topbar = () => {
     }
   };
 
+  const truncateText = (text, maxLength) => {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    const truncated = text.slice(0, maxLength);
+    return truncated.slice(0, truncated.lastIndexOf(' ')) + '...';
+  };
+
+
+
   // Check if there are any unread notifications
   const hasNotifications = notifications.some((notif) => !notif.read);
 
@@ -37,7 +46,7 @@ const Topbar = () => {
   };
 
   const formatRoles = () => {
-    return roles.map((role) => {
+    const formattedRoles = roles.map((role) => {
       if (role === 'rglr') {
         return 'Project Leader';
       } else if (role === 'prch') {
@@ -54,11 +63,18 @@ const Topbar = () => {
         return 'Accountant II';
       } else if (role === 'cclr') {
         return 'Chancellor, USTP CDO';
+      } else if (role === 'coord') {
+        return 'Coordinator';
+      } else if (role === 'vpala') {
+        return 'Vice President for Administration and Legal Affair';
       } else {
         return role;
       }
     }).join(', ');
+
+    return truncateText(formattedRoles, 30); // Truncate roles
   };
+
 
   return (
     <div className="flex w-4/5 items-center mb-14 px-3 h-14 bg-white fixed right-0 z-50">
@@ -110,8 +126,14 @@ const Topbar = () => {
         />
         <div>
           <Link to="/profile">
-            <h1 className="text-sm w-44">{firstname} {lastname}</h1>
-            <h2 className="text-xs text-gray-500">{formatRoles()}</h2>
+            <h1 className="text-sm w-44 text-truncate font-medium">{firstname} {lastname}</h1>
+            <h2
+              className="text-xs text-gray-500 text-truncate"
+              title={formatRoles()} // Full text shown in the tooltip
+            >
+              {formatRoles()}
+            </h2>
+
           </Link>
         </div>
       </div>

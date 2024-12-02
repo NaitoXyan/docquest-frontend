@@ -71,18 +71,18 @@ const parseText = (text) => {
   }
 
   const parts = text.split(/(\*\*.*?\*\*)/); // Matches text enclosed in ** **    
-  return parts.map((part, index) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
+  return parts.map((part, index) => {     
+    if (part.startsWith('**') && part.endsWith('**')) {       
       // Render bold text       
-      return (
-        <Text key={index} style={{ fontFamily: 'TimesNR-B' }}>
-          {part.slice(2, -2)} {/* Remove the ** markers */}
-        </Text>
-      );
-    }
+      return (         
+        <Text key={index} style={{ fontFamily: 'TimesNR-B' }}>           
+          {part.slice(2, -2)} {/* Remove the ** markers */}         
+        </Text>       
+      );     
+    }     
     // Render regular text     
-    return <Text key={index}>{part}</Text>;
-  });
+    return <Text key={index}>{part}</Text>;   
+  }); 
 };
 
 
@@ -101,9 +101,7 @@ const MOADocument = ({ data }) => {
   if (!data) return null;
 
   const {
-    partyADescription,
-    partyBDescription,
-    partyCDescription,
+    partyDescription,
     coverageAndEffectivity,
     confidentialityClause,
     termination,
@@ -111,7 +109,6 @@ const MOADocument = ({ data }) => {
     partyObligation,
     firstParty,
     secondParty,
-    thirdParty,
     witnesses
   } = data;
 
@@ -156,29 +153,9 @@ const MOADocument = ({ data }) => {
         </View>
         <View style={[]}>
           <Text style={[{ textAlign: 'justify', marginBottom: 15, fontFamily: 'TimesNR', textIndent: 39 }]}>
-            ☐{parseText(partyADescription)}
+            ☐{parseText(partyDescription)}
           </Text>
         </View>
-        <Text style={[{ textAlign: 'center', marginBottom: 15, fontFamily: 'TimesNR' }]}>
-          -and-
-        </Text>
-        <View style={[]}>
-          <Text style={[{ textAlign: 'justify', marginBottom: 15, fontFamily: 'TimesNR', textIndent: 39 }]}>
-            ☐{parseText(partyBDescription)}
-          </Text>
-        </View>
-        {partyCDescription && (
-          <View>
-            <Text style={[{ textAlign: 'center', marginBottom: 15, fontFamily: 'TimesNR' }]}>
-              -and-
-            </Text>
-            <View style={[]}>
-              <Text style={[{ textAlign: 'justify', marginBottom: 15, fontFamily: 'TimesNR', textIndent: 39 }]}>
-                ☐{parseText(partyCDescription)}
-              </Text>
-            </View>
-          </View>
-        )}
         <View style={[{ alignItems: 'center' }]}>
           <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR', }]}>
             Collectively herein referred to as the “PARTIES”
@@ -256,32 +233,6 @@ const MOADocument = ({ data }) => {
                 </Text>
               ))}
             <View style={[{ marginBottom: 15 }]}></View>
-            {partyCDescription && (
-              <View>
-                <View style={[{ alignItems: 'start' }]}>
-                  <Text style={[{ marginBottom: 15, fontFamily: 'TimesNR-B', }]}>
-                    OBLIGATIONS AND RESPONSIBILITIES of the THIRD PARTY:
-                  </Text>
-                </View>
-                {partyObligation
-                  .filter((obligation) => obligation.party === "party C")
-                  .map((obligation, index) => (
-                    <Text
-                      key={obligation.poID}
-                      style={{
-                        marginBottom: 2,
-                        fontFamily: 'TimesNR',
-                        textAlign: 'justify',
-                        paddingHorizontal: 20
-                      }}
-                    >
-                      {index === 0 && <Text></Text>}
-                      {index + 1}.  {obligation.obligation}
-                    </Text>
-                  ))}
-                <View style={[{ marginBottom: 15 }]}></View>
-              </View>
-            )}
           </>
         )}
         <View style={[{ alignItems: 'start' }]}>
@@ -323,7 +274,7 @@ const MOADocument = ({ data }) => {
             ☐{parseText('**IN WITNESS WHEREOF**, the parties have hereunto signed this Contract this __ day of ________ 2024 at ________________________, Philippines.')}
           </Text>
         </View>
-        <View style={[{ marginBottom: 12, flexDirection: 'row', fontFamily: 'TimesNR-B' }]}>
+        <View style={[{ marginBottom: 20, flexDirection: 'row', fontFamily: 'TimesNR-B' }]}>
           <View style={[{ width: '50%' }]}>
             <Text>
               FIRST PARTY:
@@ -335,11 +286,11 @@ const MOADocument = ({ data }) => {
             </Text>
           </View>
         </View>
-        <View style={[{ marginBottom: 20, flexDirection: 'row' }]}>
+        <View style={[{ marginBottom: 20, flexDirection: 'row', fontFamily: 'TimesNR-B' }]}>
           <View style={[{ width: '50%' }]}>
             {firstParty.map((party, index) => (
               <View key={index}>
-                <Text style={[{ fontFamily: 'TimesNR-B' }]}>{party.name}</Text>
+                <Text style={[{ fontFamily: 'TimesNR' }]}>{party.name}</Text>
                 <Text>{party.title}</Text>
               </View>
             ))}
@@ -347,32 +298,12 @@ const MOADocument = ({ data }) => {
           <View style={[{ width: '50%' }]}>
             {secondParty.map((party, index) => (
               <View key={index}>
-                <Text style={[{ fontFamily: 'TimesNR-B' }]}>{party.name}</Text>
+                <Text style={[{ fontFamily: 'TimesNR' }]}>{party.name}</Text>
                 <Text>{party.title}</Text>
               </View>
             ))}
           </View>
         </View>
-
-        {partyCDescription && (
-          <View>
-            <View style={[{ marginBottom: 12, flexDirection: 'row', fontFamily: 'TimesNR-B' }]}>
-              <Text>
-                THIRD PARTY:
-              </Text>
-            </View>
-            <View style={[{ marginBottom: 20, flexDirection: 'row' }]}>
-              <View style={[{ width: '50%' }]}>
-                {thirdParty.map((party, index) => (
-                  <View key={index}>
-                    <Text style={[{ fontFamily: 'TimesNR-B' }]}>{party.name}</Text>
-                    <Text>{party.title}</Text>
-                  </View>
-                ))}
-              </View>
-            </View>
-          </View>
-        )}
         <View style={[{ alignItems: 'center' }]}>
           <Text style={[{ marginBottom: 20, fontFamily: 'TimesNR-B', }]}>
             WITNESSES:
@@ -437,7 +368,7 @@ const MOADocument = ({ data }) => {
           </View>
         </View>
         <View style={[styles.rowNormal, { borderTop: 0, height: 30, fontFamily: 'TimesNR-B' }]}>
-          <View style={[{ justifyContent: 'center', width: '40%', paddingHorizontal: 4, borderRight: 1, borderStyle: 'solid' }]}>
+          <View style={[{ justifyContent: 'center', width: '40%', paddingHorizontal: 2, borderRight: 1, borderStyle: 'solid' }]}>
             {firstParty.map((party, index) => (
               <View key={index}>
                 <Text>{party.name}</Text>
@@ -451,8 +382,8 @@ const MOADocument = ({ data }) => {
             <Text></Text>
           </View>
         </View>
-        <View style={[styles.rowNormal, { borderTop: 0, height: 30, fontFamily: 'TimesNR-B' }]}>
-          <View style={[{ justifyContent: 'center', width: '40%', paddingHorizontal: 4, borderRight: 1, borderStyle: 'solid' }]}>
+        <View style={[styles.rowNormal, { borderTop: 0, marginBottom: 20, height: 30, fontFamily: 'TimesNR-B' }]}>
+          <View style={[{ justifyContent: 'center', width: '40%', paddingHorizontal: 2, borderRight: 1, borderStyle: 'solid' }]}>
             {secondParty.map((party, index) => (
               <View key={index}>
                 <Text>{party.name}</Text>
@@ -466,24 +397,6 @@ const MOADocument = ({ data }) => {
             <Text></Text>
           </View>
         </View>
-        {partyCDescription && (
-          <View style={[styles.rowNormal, { borderTop: 0, height: 30, fontFamily: 'TimesNR-B' }]}>
-            <View style={[{ justifyContent: 'center', width: '40%', paddingHorizontal: 4, borderRight: 1, borderStyle: 'solid' }]}>
-              {thirdParty.map((party, index) => (
-                <View key={index}>
-                  <Text>{party.name}</Text>
-                </View>
-              ))}
-            </View>
-            <View style={[{ justifyContent: 'center', textAlign: 'center', width: '30%', paddingHorizontal: 2, borderRight: 1, borderStyle: 'solid' }]}>
-              <Text></Text>
-            </View>
-            <View style={[{ justifyContent: 'center', textAlign: 'center', width: '30%', paddingHorizontal: 2 }]}>
-              <Text></Text>
-            </View>
-          </View>
-        )}
-        <View style={[{marginBottom: 20}]}></View>
         <View style={[{}]}>
           <Text
             style={[{ textAlign: 'justify', marginBottom: 20, fontFamily: 'TimesNR' }]}
@@ -525,8 +438,7 @@ const MOADocument = ({ data }) => {
 };
 
 // Main Component
-const ProjLeadViewMoa = () => {
-  const { moaID } = useParams();
+const DirectorViewMoa = ({ moaID }) => {
   const [formData, setFormData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -579,4 +491,4 @@ const ProjLeadViewMoa = () => {
   );
 };
 
-export default ProjLeadViewMoa;
+export default DirectorViewMoa;

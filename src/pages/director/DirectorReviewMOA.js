@@ -47,7 +47,7 @@ const DirectorReviewMOA = () => {
     try {
       const response = await axios({
         method: "post",
-        url: `https://web-production-4b16.up.railway.app/${moaID}/`,
+        url: `https://web-production-4b16.up.railway.app/director_review_moa/${moaID}/`,
         headers: {
            Authorization: `Token ${token}`,
           "Content-Type": "application/json"

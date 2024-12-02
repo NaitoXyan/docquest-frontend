@@ -3,7 +3,7 @@ import axios from "axios";
 
 const CoordinatorCreateUser = () => {
   const token = localStorage.getItem("token");
-  const BASE_URL = "http://127.0.0.1:8000";
+  const BASE_URL = "https://web-production-4b16.up.railway.app";
 
   const initialFormState = {
     firstName: "",

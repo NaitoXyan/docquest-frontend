@@ -15,7 +15,7 @@ const ProponentsDeliverables = ({ formData, setFormData, showTrainers }) => {
   useEffect(() => {
     const fetchDeliverables = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/get_checklist");
+        const response = await axios.get("https://web-production-4b16.up.railway.app/get_checklist");
         setDeliverables(response.data);
       } catch (error) {
         console.error("Error fetching deliverables:", error);

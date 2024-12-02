@@ -34,7 +34,7 @@ const ProgramChairDashboard = () => {
             try {
                 const response = await axios({
                     method: 'get',
-                    url: 'http://127.0.0.1:8000/get_review',
+                    url: 'https://web-production-4b16.up.railway.app/get_review',
                     headers: {
                         'Authorization': `Token ${token}`,
                         'Content-Type': 'application/json',

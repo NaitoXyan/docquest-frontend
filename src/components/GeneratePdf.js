@@ -180,7 +180,7 @@ const InlineHeaderProjectProposal = ({ dateCreated, documentCode = 'FM-USTP-ECRD
                 },
               ]}
             >
-              <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
+              <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages - 1}`} />
             </View>
           </View>
         </View>
@@ -356,7 +356,7 @@ const InlineHeaderLoadingofTrainers = ({ dateCreated, documentCode = 'FM-USTP-EC
               },
             ]}
           >
-            <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`} />
+            <Text render={({ pageNumber, totalPages }) => `Page ${pageNumber - pageNumber + 1} of ${totalPages - totalPages + 1}`} />
           </View>
         </View>
       </View>
@@ -584,10 +584,14 @@ const MyDocument = ({ projectID }) => {
     }).join(', ');
   };
 
-  const totalBudgetaryRequirement = formData.loadingOfTrainers.reduce(
-    (total, trainer) => trainer.totalBudgetRequirement,
-    0 // Initial value for total
-  );
+  const totalBudgetaryRequirement = formData.loadingOfTrainers
+    ? formData.loadingOfTrainers.reduce((sum, trainer) => {
+      const ustpBudget = Number(trainer.ustpBudget || 0); // Ensure ustpBudget is a number
+      const agencyBudget = Number(trainer.agencyBudget || 0); // Ensure agencyBudget is a number
+      return sum + ustpBudget + agencyBudget; // Add both budgets to the total sum
+    }, 0) // Initial value for the total is 0
+    : 0; // Default to 0 if formData.loadingOfTrainers is not available
+
 
   return (
     <Document
@@ -683,19 +687,23 @@ const MyDocument = ({ projectID }) => {
             <Text>PROJECT CATEGORY: </Text>
             {formData.projectCategory?.length
               ? formData.projectCategory.map((projectCategory, index) => (
-                <Text style={{ paddingHorizontal: 3, flexShrink: 1 }} key={index}>
-                  <Image
-                    src={selected}
-                    style={{
-                      marginTop: 2,
-                      width: 7,
-                      height: 7,
-                      paddingRight: 3,
-                      paddingLeft: 3,
-                    }}
-                  />
-                  {projectCategory.title}
-                </Text>
+                <View style={[{ flexDirection: 'row' }]}>
+                  <Text style={{ paddingRight: 2, paddingLeft: 5, flexShrink: 1 }} key={index}>
+                    <Image
+                      src={selected}
+                      style={{
+                        marginTop: 2,
+                        width: 7,
+                        height: 7,
+                      }}
+                    />
+
+                  </Text>
+                  <Text>
+                    {projectCategory.title}
+                  </Text>
+                </View>
+
               ))
               : 'No agencies available'}
           </View>
@@ -865,27 +873,31 @@ const MyDocument = ({ projectID }) => {
               {roles.length > 0 ? formatRoles(roles) : 'No roles available'}
             </Text>
           </View>
-          <View style={[{ border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
-            <Text>
-              Endorsed by:
-            </Text>
-            <View style={[{ flexDirection: 'row', paddingTop: '1%' }]}>
-              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', }]}>
-                {formData.signatories && formData.signatories.length > 0 &&
-                  formData.signatories.find(signatory => signatory.title.includes('Program Chair'))?.name}
-              </Text>
-              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', }]}>
-                {formData.signatories && formData.signatories.length > 0 &&
-                  formData.signatories.find(signatory => signatory.title.includes('College Dean'))?.name}
-              </Text>
-            </View>
-            <View style={[{ flexDirection: 'row', paddingBottom: '1%' }]}>
-              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', fontFamily: 'Arial', }]}>
-                Program Chair
-              </Text>
-              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', fontFamily: 'Arial', }]}>
-                College Dean
-              </Text>
+          <View style={[{ border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB' }]}>
+            <Text>Endorsed by:</Text>
+
+            {/* Render rows with a maximum of two signatories */}
+            <View style={[{ flexDirection: 'column', paddingTop: '1%' }]}>
+              {formData.signatories && formData.signatories.length > 0 &&
+                formData.signatories
+                  .filter(signatory =>
+                    signatory.title.includes('Program Chair') || signatory.title.includes('College Dean')
+                  )
+                  .reduce((rows, signatory, index) => {
+                    if (index % 2 === 0) rows.push([]); // Start a new row every two items
+                    rows[rows.length - 1].push(signatory);
+                    return rows;
+                  }, [])
+                  .map((row, rowIndex) => (
+                    <View key={`row-${rowIndex}`} style={[{ flexDirection: 'row', paddingBottom: '1%' }]}>
+                      {row.map((signatory, colIndex) => (
+                        <View key={`col-${colIndex}`} style={[{ width: '50%' }]}>
+                          <Text style={[{ textAlign: 'center', textDecoration: 'underline' }]}>{signatory.name}</Text>
+                          <Text style={[{ textAlign: 'center', fontFamily: 'Arial' }]}>{signatory.title}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  ))}
             </View>
           </View>
           <View style={[{ border: 1, borderBottom: 0, paddingLeft: '1%', paddingRight: '1%' }]}>
@@ -948,7 +960,6 @@ const MyDocument = ({ projectID }) => {
           </View>
         </View>
       </Page>
-
       {/* second page */}
       <Page style={styles.page}>
         <View style={styles.header} fixed>
@@ -982,103 +993,114 @@ const MyDocument = ({ projectID }) => {
               {formData.goalsAndObjectives?.length ? (
                 formData.goalsAndObjectives.map((gaoItem, index) => (
                   <Text key={index}>
-                    {index + 1}. {gaoItem.goalsAndObjectives}{"\n"}
+                    {gaoItem.goalsAndObjectives}
+                    {"\n"}
+                    {"\n"}
                   </Text>
                 ))
               ) : (
                 <Text>No objectives available</Text>
               )}
             </Text>
-            <Text style={[{ fontFamily: 'ArialB' }]}>
-              III. Project Component (i.e. Training Design and Content)
-            </Text>
+            <View style={[{flexDirection: 'row'}]}>
+              <Text style={[{ fontFamily: 'ArialB' }]}>
+                III. Project Component
+              </Text>
+              <Text style={[{paddingLeft: 3}]}>
+                (i.e. Training Design and Content)
+              </Text>
+            </View>
+
             <Text style={[{ paddingTop: '1%', paddingBottom: '4%', textIndent: 39 }]}>
               {formData.projectComponent}
             </Text>
           </View>
-          <Text style={[{ fontFamily: 'ArialB' }]}>
-            IV. Project Implementation Plan and Management
-          </Text>
-          <Text style={[{ padding: '1%' }]}>
-            A. Project Activities
-          </Text>
-          <View style={[{ flexDirection: 'row', borderBottom: 1 }]}>
-            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
-              <Text>
-                Project Objective
-              </Text>
+          <View wrap={false} style={[{ paddingBottom: '4%', }]}>
+            <Text style={[{ fontFamily: 'ArialB' }]}>
+              IV. Project Implementation Plan and Management
+            </Text>
+            <Text style={[{ padding: '1%' }]}>
+              A. Project Activities
+            </Text>
+            <View style={[{ flexDirection: 'row', borderBottom: 1 }]}>
+              <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
+                <Text>
+                  Project Objective
+                </Text>
+              </View>
+              <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
+                <Text>
+                  Activities Involved
+                </Text>
+              </View>
+              <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
+                <Text>
+                  Target Date
+                </Text>
+              </View>
+              <View style={[styles.tableColfour, { borderBottom: 0, }]}>
+                <Text>
+                  Person Responsible
+                </Text>
+              </View>
             </View>
-            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
-              <Text>
-                Activities Involved
-              </Text>
-            </View>
-            <View style={[styles.tableColfour, { borderRight: 0, borderBottom: 0, }]}>
-              <Text>
-                Target Date
-              </Text>
-            </View>
-            <View style={[styles.tableColfour, { borderBottom: 0, }]}>
-              <Text>
-                Person Responsible
-              </Text>
+            <View style={{ flexDirection: 'column' }}>
+              {formData.projectActivities?.length ? (
+                formData.projectActivities.map((activityItem, index) => (
+                  <View
+                    key={index}
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'stretch', // Ensures columns stretch to the height of the tallest item
+                    }}
+                  >
+                    {/* Column for Project Objective */}
+                    <View style={[styles.tableColfour, { width: '25%', padding: 1, borderTop: 0, borderRight: 0, }]}>
+                      <Text style={[{ textAlign: 'justify', padding: 3 }]}>
+                        {activityItem.objective}
+                      </Text>
+                    </View>
+
+                    {/* Column for Activities Involved */}
+                    <View style={[styles.tableColfour, { width: '25%', padding: 1, borderTop: 0, borderRight: 0, }]}>
+                      <Text style={[{ textAlign: 'start', padding: 3 }]}>
+                        {activityItem.involved}
+                      </Text>
+                    </View>
+
+                    {/* Column for Target Date */}
+                    <View style={[styles.tableColfour, { width: '25%', padding: 1, borderRight: 0, borderTop: 0, padding: 3 }]}>
+                      <Text
+                        style={{
+                          overflow: 'hidden',
+                          maxWidth: '100%',
+                          flexWrap: 'wrap'
+                        }}
+                      >
+                        {activityItem.targetDate}
+                      </Text>
+                    </View>
+
+                    {/* Column for Person Responsible */}
+                    <View style={[styles.tableColfour, { width: '25%', padding: 1, borderTop: 0, padding: 3 }]}>
+                      <Text
+                        style={{
+                          overflow: 'hidden',
+                          maxWidth: '100%',
+                          flexWrap: 'wrap'
+                        }}
+                      >
+                        {activityItem.personResponsible}
+                      </Text>
+                    </View>
+                  </View>
+                ))
+              ) : (
+                <Text>No project activities available</Text>
+              )}
             </View>
           </View>
-          <View style={{ flexDirection: 'column', paddingBottom: '4%', }}>
-            {formData.projectActivities?.length ? (
-              formData.projectActivities.map((activityItem, index) => (
-                <View
-                  key={index}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'stretch', // Ensures columns stretch to the height of the tallest item
-                  }}
-                >
-                  {/* Column for Project Objective */}
-                  <View style={[styles.tableColfour, { width: '25%', padding: 1, borderTop: 0, borderRight: 0, }]}>
-                    <Text style={[{ textAlign: 'justify', padding: 3 }]}>
-                      {activityItem.objective}
-                    </Text>
-                  </View>
 
-                  {/* Column for Activities Involved */}
-                  <View style={[styles.tableColfour, { width: '25%', padding: 1, borderTop: 0, borderRight: 0, }]}>
-                    <Text style={[{ textAlign: 'start', padding: 3 }]}>
-                      {activityItem.involved}
-                    </Text>
-                  </View>
-
-                  {/* Column for Target Date */}
-                  <View style={[styles.tableColfour, { width: '25%', padding: 1, borderRight: 0, borderTop: 0, padding: 3 }]}>
-                    <Text
-                      style={{
-                        overflow: 'hidden',
-                        maxWidth: '100%',
-                        flexWrap: 'wrap'
-                      }}
-                    >
-                      {activityItem.targetDate}
-                    </Text>
-                  </View>
-
-                  {/* Column for Person Responsible */}
-                  <View style={[styles.tableColfour, { width: '25%', padding: 1, borderTop: 0, padding: 3 }]}>
-                    <Text
-                      style={{
-                        overflow: 'hidden',
-                        maxWidth: '100%',
-                        flexWrap: 'wrap'
-                      }}
-                    >
-                      {activityItem.personResponsible}
-                    </Text>
-                  </View>
-                </View>
-              ))
-            ) : (
-              <Text>No project activities available</Text>
-            )}
-          </View>
           <View wrap={false} style={[{ paddingBottom: '4%', }]}>
             <View>
               <Text style={[{ padding: '1%' }]}>
@@ -1100,7 +1122,7 @@ const MyDocument = ({ projectID }) => {
                   .map((teamItem, index) => {
                     const label = String.fromCharCode(97 + index); // generates a, b, c, d, etc.
                     return (
-                      <Text key={index} style={[{ paddingBottom: '1%', }]}>
+                      <Text key={index} style={[{ paddingBottom: '1%', textIndent: 20}]}>
                         {`${label}. ${teamItem.name}`}
                       </Text>
                     );
@@ -1372,7 +1394,7 @@ const MyDocument = ({ projectID }) => {
                   Format or Strategy for Data Gathering
                 </Text>
               </View>
-              <View style={[styles.tableColfour, { borderBottom: 0, }]}>
+              <View style={[styles.tableColfour, { borderBottom: 0, justifyContent: 'center', padding: 5 }]}>
                 <Text>
                   Schedule *As agreed with community/{'\n'}organization partner
                 </Text>
@@ -1549,29 +1571,114 @@ const MyDocument = ({ projectID }) => {
                   Faculty
                 </Text>
               </View>
-              {/* More headers */}
-              ...
-            </View>
-            {loadingOfTrainers.map((trainer, index) => (
-              <View key={index} style={{ flexDirection: 'row' }}>
-                <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1, width: '15%' }]}>
-                  <Text>{trainer.faculty}</Text>
-                </View>
-                {/* More table rows */}
-                ...
+              <View style={[styles.tableColfive1, { borderRight: 0, borderBottom: 0, justifyContent: 'center', width: '30%' }]}>
+                <Text>
+                  Training Load
+                </Text>
               </View>
-            ))}
-            <View style={[{ flexDirection: 'row', marginBottom: '1%' }]}>
-              {/* Footer Rows */}
-              ...
+              <View style={[styles.tableColfive1, { borderRight: 0, borderBottom: 0, justifyContent: 'center', width: '10%' }]}>
+                <Text>
+                  No. of Hours
+                </Text>
+              </View>
+              <View style={[styles.tableColfive1, { borderRight: 0, borderBottom: 0, justifyContent: 'center', width: '30%' }]}>
+                <Text style={[{ borderBottom: 1 }]}>
+                  Budget
+                </Text>
+                <View style={[{ flexDirection: 'row', }]}>
+                  <View style={[styles.tableColtwo, { borderRight: 1, justifyContent: 'center', paddingVertical: 5 }]}>
+                    <Text>
+                      USTP
+                    </Text>
+                  </View>
+                  <View style={[styles.tableColtwo, { justifyContent: 'center' }]}>
+                    <Text>
+                      Partner{'\n'}Agency
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <View style={[styles.tableColfive1, { borderBottom: 0, justifyContent: 'center', width: '15%' }]}>
+                <Text>
+                  Total{'\n'}Budgetary{'\n'}Requirement
+                </Text>
+
+              </View>
             </View>
+            {loadingOfTrainers && loadingOfTrainers.length > 0 ? (
+              <>
+                {loadingOfTrainers.map((trainer, index) => (
+                  <View key={index} style={{ flexDirection: 'row' }}>
+                    {/* Faculty Name */}
+                    <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1, width: '15%' }]}>
+                      <Text>{trainer.faculty}</Text>
+                    </View>
+                    {/* Training Load */}
+                    <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1, width: '30%' }]}>
+                      <Text>{trainer.trainingLoad}</Text>
+                    </View>
+                    {/* Hours */}
+                    <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1, width: '10%' }]}>
+                      <Text>{trainer.hours}</Text>
+                    </View>
+                    {/* Budget */}
+                    <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1, width: '30%' }]}>
+                      <View style={{ flexDirection: 'row' }}>
+                        <View style={[styles.tableColtwo, { borderRight: 1 }]}>
+                          <Text>{trainer.ustpBudget?.toLocaleString()}</Text>
+                        </View>
+                        <View style={styles.tableColtwo}>
+                          <Text>{trainer.agencyBudget?.toLocaleString()}</Text>
+                        </View>
+                      </View>
+                    </View>
+                    {/* Row Total */}
+                    <View style={[styles.tableColthree, { border: 1, borderTop: 0, width: '15%' }]}>
+                      <Text>
+                        {(Number(trainer.ustpBudget || 0) + Number(trainer.agencyBudget || 0)).toLocaleString()}
+                      </Text>
+                    </View>
+                  </View>
+                ))}
+                {/* Total Row */}
+                <View style={[{ flexDirection: 'row', marginBottom: '1%' }]}>
+                  <View style={[styles.tableColfive1, { border: 1, borderRight: 0, borderTop: 0, width: '15%' }]}>
+                    <Text></Text>
+                  </View>
+                  <View style={[styles.tableColfive1, { border: 1, borderRight: 0, borderLeft: 0, borderTop: 0, width: '30%' }]}>
+                    <Text></Text>
+                  </View>
+                  <View style={[styles.tableColfive1, { border: 1, borderRight: 0, borderLeft: 0, borderTop: 0, width: '10%' }]}>
+                    <Text></Text>
+                  </View>
+                  <View style={[styles.tableColfive1, { borderTop: 0, borderBottom: 1, borderRight: 0, borderLeft: 0, width: '30%' }]}>
+                    <View style={[{ flexDirection: 'row' }]}>
+                      <View style={[styles.tableColtwo, {}]}>
+                        <Text></Text>
+                      </View>
+                      <View style={[styles.tableColtwo, {}]}>
+                        <Text style={[{ fontFamily: 'ArialB' }]}>TOTAL</Text>
+                      </View>
+                    </View>
+                  </View>
+                  <View style={[styles.tableColfive1, { border: 1, borderTop: 0, width: '15%' }]}>
+                    <Text style={[{ textAlign: 'center', fontFamily: 'ArialB' }]}>
+                      {totalBudgetaryRequirement?.toLocaleString()}
+                    </Text>
+                  </View>
+                </View>
+              </>
+            ) : (
+              <Text>No trainers available</Text>
+            )}
+
             <Text style={[{ fontFamily: 'ArialB', paddingTop: 25 }]}>
               Prepared by:
             </Text>
-            <Text style={[{ paddingTop: 10, textDecoration: 'underline', fontFamily: 'ArialB', marginTop: 10 }]}>
+            <Text style={[{ textDecoration: 'underline', fontFamily: 'ArialB', marginTop: 20 }]}>
               {`${formData.userID?.firstname} ${formData.userID?.lastname}`}
             </Text>
-            <Text style={[{ paddingBottom: 50 }]}>
+            <Text style={[{ paddingBottom: 40 }]}>
               {roles.length > 0 ? formatRoles(roles) : ''}
             </Text>
             <Text style={[{ fontFamily: 'ArialB' }]}>
@@ -1582,22 +1689,18 @@ const MyDocument = ({ projectID }) => {
                 {formData.signatories
                   .filter(signatory => signatory.title.includes('College Dean'))
                   .map((dean, index) => (
-                    <Text
-                      key={index}
-                      style={[{ fontFamily: 'ArialB', textDecoration: 'underline', paddingTop: index === 0 ? 20 : 10 }]}
-                    >
-                      {dean.name}
-                    </Text>
-                  ))}
-                {formData.signatories
-                  .filter(signatory => signatory.title.includes('College Dean'))
-                  .map((dean, index) => (
-                    <Text key={index}>
-                      {dean.title}
-                    </Text>
+                    <View key={index} style={{ paddingTop: index === 0 ? 20 : 30 }}>
+                      <Text style={{ fontFamily: 'ArialB', textDecoration: 'underline' }}>
+                        {dean.name}
+                      </Text>
+                      <Text>
+                        {dean.title}
+                      </Text>
+                    </View>
                   ))}
               </>
             )}
+
           </Page>
         )
       }

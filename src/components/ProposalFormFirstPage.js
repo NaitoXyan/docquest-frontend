@@ -1227,7 +1227,7 @@ const ProposalFormFirstPage = () => {
 
   return (
     <div className="flex flex-col mt-14 px-10">
-      <h1 className="text-2xl font-semibold mb-5 mt-3">
+      <h1 className="text-2xl font-bold mb-5 mt-3 text-center">
         EXTENSION PROJECT PROPOSAL
       </h1>
       <form onSubmit={handleSubmit}>
@@ -1946,6 +1946,16 @@ const ProposalFormFirstPage = () => {
                 value={formData.beneficiaries}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',
+                  minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
               ></textarea>
             </div>
           </div>

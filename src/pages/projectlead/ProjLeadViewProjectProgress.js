@@ -36,7 +36,7 @@ const ProjectProgressStep = ({ projectID }) => {
     const fetchProjectReviews = async () => {
       try {
         const response = await axios.get(
-          `https://web-production-4b16.up.railway.app/${projectID}/`,
+          `https://web-production-4b16.up.railway.app/get_reviews_with_projectID/${projectID}/`,
           {
             headers: { Authorization: `Token ${token}` },
           }

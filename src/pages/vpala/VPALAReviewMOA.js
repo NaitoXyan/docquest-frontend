@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from "react";
-import DirectorSidebar from "../../components/DirectorSidebar";
 import Topbar from "../../components/Topbar";
 import { useParams, useNavigate } from "react-router-dom";
-import { PDFViewer } from "@react-pdf/renderer";
-import MyDocument from "../../components/GeneratePdf";
 import axios from "axios";
-import ProjLeadViewMoa from "../../components/GenerateMOA-PDF";
-import MOADocument from "./DirectorMoaViewer";
-import DirectorViewMoa from "./DirectorMoaViewer";
+import DirectorViewMoa from "../director/DirectorMoaViewer";
+import VPALASideBar from "../../components/VPALASideBar";
 
-const DirectorReviewMOA = () => {
+const VPALAReviewMOA = () => {
   const { moaID } = useParams();
   const navigate = useNavigate();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
@@ -32,7 +28,7 @@ const DirectorReviewMOA = () => {
     const roles = JSON.parse(localStorage.getItem('roles') || '[]');
     
     // Redirect if "ecrd" role is not found
-    if (!roles.includes("ecrd")) {
+    if (!roles.includes("vpala")) {
       navigate('/login', { replace: true });
     }
   }, [token, navigate]);
@@ -47,7 +43,7 @@ const DirectorReviewMOA = () => {
     try {
       const response = await axios({
         method: "post",
-        url: `http://127.0.0.1:8000/director_review_moa/${moaID}/`,
+        url: `http://127.0.0.1:8000/vpala_final_review_moa/${moaID}/`,
         headers: {
            Authorization: `Token ${token}`,
           "Content-Type": "application/json"
@@ -83,14 +79,14 @@ const DirectorReviewMOA = () => {
 
   const closeSuccessModal = () => {
     setShowSuccessModal(false);
-    navigate("/moa-review-list/pending/all");
+    navigate("/vpala-review-list/pending/all");
   };
 
   return (
     <div className="bg-gray-200 min-h-screen flex">
       {/* Sidebar */}
       <div className="w-1/5 fixed h-full">
-        <DirectorSidebar />
+        <VPALASideBar />
       </div>
 
       {/* Main Content */}
@@ -159,4 +155,4 @@ const DirectorReviewMOA = () => {
   );
 };
 
-export default DirectorReviewMOA;
+export default VPALAReviewMOA;

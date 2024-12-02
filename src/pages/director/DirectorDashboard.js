@@ -196,7 +196,7 @@ const DirectorDashboard = () => {
                 <div className="flex flex-col mt-16 px-10 w-full">
                     <div className="flex">
                         <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 mb-2 mr-2 flex-1">
-                            <h1 className="text-2xl font-semibold mb-4">Projects Overview</h1>
+                            <h1 className="text-2xl font-bold mb-4">PROJECTS OVERVIEW</h1>
                             <div className="grid grid-cols-3 gap-4 mb-1">
                                 <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                                     <h2 className="text-lg font-semibold">Approved</h2>
@@ -223,7 +223,7 @@ const DirectorDashboard = () => {
                         </div>
 
                         <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 mb-2 ml-2 flex-1">
-                            <h1 className="text-2xl font-semibold mb-4">MOA Overview</h1>
+                            <h1 className="text-2xl font-bold mb-4">MOA OVERVIEW</h1>
                             <div className="grid grid-cols-3 gap-4 mb-1">
                                 <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                                     <h2 className="text-lg font-semibold">Approved</h2>
@@ -253,7 +253,7 @@ const DirectorDashboard = () => {
 
 
                     <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 mb-8">
-                        <h1 className="text-2xl font-semibold mb-4">Recent Documents</h1>
+                        <h1 className="text-1xl font-semibold mb-4">RECENT DOCUMENTS</h1>
                         {error ? (
                             <div className="text-red-500 p-4 text-center">{error}</div>
                         ) : projects.length === 0 ? (

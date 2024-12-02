@@ -156,7 +156,7 @@ const DirectorDashboard = () => {
                     <div className="flex flex-row w-full">
                         <div className="w-1/3 m-5 mt-4">
                             <div className="bg-white shadow-lg rounded-lg py-4 px-4">
-                                <h1 className="text-2xl font-semibold mb-2">Projects Overview</h1>
+                                <h1 className="text-2xl font-bold mb-2">PROJECTS OVERVIEW</h1>
                                 <div className="grid grid-cols-3 gap-4 mb-14">
                                     <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                                         <h2 className="text-lg font-semibold">Approved</h2>
@@ -180,7 +180,7 @@ const DirectorDashboard = () => {
                                         </button>
                                     </div>
                                 </div>
-                                <h1 className="text-2xl font-semibold mb-2">MOA Overview</h1>
+                                <h1 className="text-2xl font-bold mb-2">MOA OVERVIEW</h1>
                                 <div className="grid grid-cols-3 gap-4 mb-1">
                                     <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                                         <h2 className="text-lg font-semibold">Approved</h2>

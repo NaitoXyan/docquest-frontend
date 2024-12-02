@@ -8,7 +8,7 @@ const CreateUserPage = () => {
       <div className="w-1/5 fixed h-full" />
       <div className="flex-1 ml-0">
         <div className="flex flex-col">
-          <h1 className="text-2xl font-semibold m-7">Create User Account</h1>
+          <h1 className="text-2xl font-bold m-7">CREATE USER ACCOUNT</h1>
           <div className="mx-10">
             <CreateUserForm />
           </div>

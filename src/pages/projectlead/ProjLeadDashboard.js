@@ -122,7 +122,7 @@ const ProjLeadDashboard = () => {
             <div className="flex-1 ml-[20%]">
                 <Topbar />
                 <div className="flex flex-col mt-16 px-10">
-                    <h1 className="text-2xl font-semibold mb-3">PROJECTS OVERVIEW</h1>
+                    <h1 className="text-2xl font-bold mb-3">PROJECTS OVERVIEW</h1>
                     <div className="grid grid-cols-3 gap-4 mb-5">
                         <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center shadow-lg">
                             <h2 className="text-lg font-semibold">Approved</h2>
@@ -181,7 +181,7 @@ const ProjLeadDashboard = () => {
                                                 </span>
                                             </td>
                                             <td style={{ width: "15%" }} className="px-6 py-4 whitespace-nowrap">{new Date(project.dateCreated).toLocaleDateString()}</td>
-                                            <td style={{ width: "15%" }} className="px-6 py-4 text-center">
+                                            <td style={{ width: "15%" }} className="px-6 py-4 text-center justify-items-center">
                                                 <span
                                                     className={`px-2 py-1 rounded-md text-white w-24 text-center block ${project.status.toLowerCase() === 'approved' ? 'bg-green-400' :
                                                             project.status.toLowerCase() === 'pending' ? 'bg-yellow-400' :

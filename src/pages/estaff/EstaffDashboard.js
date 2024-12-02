@@ -104,7 +104,7 @@ const EstaffDashboard = () => {
                         </div>
                     </div>
 
-                    <h1 className="text-2xl font-semibold mb-5">Users</h1>
+                    <h1 className="text-2xl font-semibold mb-5">USERS</h1>
                     <div className="bg-white shadow-lg rounded-lg p-6">
                         <div className="overflow-x-auto">
                             <table className="min-w-full table-auto">

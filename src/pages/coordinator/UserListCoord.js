@@ -21,7 +21,7 @@ const UserListCoord = () => {
                 {/* Content below Topbar */}
                 <div className="flex flex-col flex-grow p-10 mt-10">
                     {/* Title */}
-                    <h1 className="text-3xl font-semibold mb-8">ACCOUNTS LIST</h1>
+                    <h1 className="text-2xl font-bold mb-8">ACCOUNTS LIST</h1>
 
                     {/* User List Table */}
                     <div className="bg-white shadow-xl rounded-lg flex-grow">

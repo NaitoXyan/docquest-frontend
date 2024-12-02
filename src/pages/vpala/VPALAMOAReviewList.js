@@ -3,9 +3,10 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import Topbar from '../../components/Topbar';
 import { SearchIcon } from '@heroicons/react/solid';
-import DirectorSidebar from '../../components/DirectorSidebar';
+import VPALASideBar from '../../components/VPALASideBar';
 
-const DirectorMOAReviewList = () => {
+
+const VPALAMOAReviewList = () => {
   const [moas, setMoas] = useState([]);
   const [filteredMoas, setFilteredMoas] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -28,7 +29,7 @@ const DirectorMOAReviewList = () => {
     const roles = JSON.parse(localStorage.getItem('roles') || '[]');
     
     // Redirect if "ecrd" role is not found
-    if (!roles.includes("ecrd")) {
+    if (!roles.includes("vpala")) {
       localStorage.clear();
       navigate('/login', { replace: true });
     }
@@ -90,7 +91,7 @@ const DirectorMOAReviewList = () => {
   const handleStatusFilterChange = (event) => {
     const status = event.target.value;
     setStatusFilter(status);
-    navigate(`/moa-review-list/${status}/moa`);
+    navigate(`/vpala-review-list/${status}/moa`);
   };
 
   const handleSearchChange = (event) => {
@@ -98,7 +99,7 @@ const DirectorMOAReviewList = () => {
   };
 
   const reviewMoa = (moaID) => {
-    navigate(`/review-moa/${moaID}`);
+    navigate(`/vpala-review-moa/${moaID}`);
   };
 
   const MOAPDFviewer = (moaID) => {
@@ -138,7 +139,7 @@ const DirectorMOAReviewList = () => {
   return (
     <div className="bg-gray-200 min-h-screen flex">
       <div className="w-1/5 fixed h-full">
-        <DirectorSidebar />
+        <VPALASideBar />
       </div>
 
       <div className="flex-1 ml-[20%]">
@@ -264,4 +265,4 @@ const DirectorMOAReviewList = () => {
   );
 };
 
-export default DirectorMOAReviewList;
+export default VPALAMOAReviewList;

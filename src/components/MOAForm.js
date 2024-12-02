@@ -286,7 +286,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
       // Send POST request
       const response = await axios({
         method: 'post',
-        url: 'http://127.0.0.1:8000/create_moa',
+        url: 'https://web-production-4b16.up.railway.app/create_moa',
         headers: {
           'Authorization': `Token ${token}`,
           'Content-Type': 'application/json',

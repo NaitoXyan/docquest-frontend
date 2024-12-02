@@ -64,7 +64,7 @@ const EditMOAForm = ({ moaID }) => {
   const fetchData = async () => {
     try {
       console.log("Fetching data using moaID:", moaID);
-      const response = await axios.get(`http://127.0.0.1:8000/get_moa/${moaID}/`, {
+      const response = await axios.get(`https://web-production-4b16.up.railway.app/get_moa/${moaID}/`, {
         headers: {
           'Authorization': `Token ${token}`,
           'Content-Type': 'application/json',
@@ -317,7 +317,7 @@ const EditMOAForm = ({ moaID }) => {
       // Send POST request
       const response = await axios({
         method: 'put',
-        url: `http://127.0.0.1:8000/edit_moa/${moaID}/`,
+        url: `https://web-production-4b16.up.railway.app/edit_moa/${moaID}/`,
         headers: {
           'Authorization': `Token ${token}`,
           'Content-Type': 'application/json',

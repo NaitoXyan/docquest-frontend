@@ -20,7 +20,7 @@ const ProjLeadMoaStatus = () => {
 
   // Fetch MOA data
   useEffect(() => {
-    axios.get(`http://127.0.0.1:8000/get_moa_status/${userID}/`)
+    axios.get(`https://web-production-4b16.up.railway.app/get_moa_status/${userID}/`)
       .then(response => {
         const sortedProjects = response.data.sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
 

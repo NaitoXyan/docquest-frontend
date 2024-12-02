@@ -18,7 +18,7 @@ const PickProjCreateMoa = () => {
 
   // Fetch data with GET request
   useEffect(() => {
-    axios.get(`http://127.0.0.1:8000/get_project_status/${userID}/`)
+    axios.get(`https://web-production-4b16.up.railway.app/get_project_status/${userID}/`)
       .then(response => {
         // Filter projects with status 'approved' (case-insensitive)
         const approvedProjects = response.data

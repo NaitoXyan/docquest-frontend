@@ -114,7 +114,7 @@ const PickProjCreateMoa = () => {
         <div className="flex flex-col mt-16 px-4 md:px-10">
           {/* Title, Filter, and Search Row */}
           <div className="flex flex-col sm:flex-row flex-wrap justify-between items-center mb-4 space-y-4 sm:space-y-0">
-            <h2 className="text-xl sm:text-2xl font-semibold w-full sm:w-auto">APPROVED PROJECTS</h2>
+            <h2 className="text-xl sm:text-2xl font-bold w-full sm:w-auto">APPROVED PROJECTS</h2>
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 w-full sm:w-auto">
               <div className="relative w-full sm:w-48">
                 <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
@@ -138,7 +138,7 @@ const PickProjCreateMoa = () => {
                   <tr>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Leader</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Title</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
                     <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Status</th>
                     <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Create MOA</th>
                   </tr>
@@ -155,10 +155,10 @@ const PickProjCreateMoa = () => {
                               : project.projectTitle}
                           </span>
                         </td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center">
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-center justify-items-center">
                           {new Date(project.dateCreated).toLocaleDateString()}
                         </td>
-                        <td className="px-3 sm:px-4 py-3">
+                        <td className="px-3 sm:px-4 py-3 text-center justify-items-end">
                           <span className="px-2 py-1 rounded-md text-white bg-green-500">
                             {project.status}
                           </span>

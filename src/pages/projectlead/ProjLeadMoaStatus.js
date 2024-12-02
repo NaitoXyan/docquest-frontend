@@ -137,7 +137,7 @@ const ProjLeadMoaStatus = () => {
         <Topbar />
         <div className="flex flex-col mt-16 px-4 md:px-10">
           <div className="flex flex-col sm:flex-row flex-wrap justify-between items-center mb-4 space-y-4 sm:space-y-0">
-            <h2 className="text-xl sm:text-2xl font-semibold w-full sm:w-auto">MEMORANDUM OF AGREEMENT LIST</h2>
+            <h2 className="text-xl sm:text-2xl font-bold w-full sm:w-auto">MEMORANDUM OF AGREEMENT LIST</h2>
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6 w-full sm:w-auto">
               <div className="relative w-full sm:w-48">
                 <SearchIcon className="absolute left-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500" />
@@ -205,7 +205,7 @@ const ProjLeadMoaStatus = () => {
                             year: 'numeric',
                           })}
                         </td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap justify-items-center">
                           <span
                             className={`px-2 py-1 rounded-md text-white w-24 text-center block${
                               moa.status.toLowerCase() === 'approved'

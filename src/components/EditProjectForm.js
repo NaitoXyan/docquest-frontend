@@ -1945,6 +1945,16 @@ const EditProposalForm = () => {
                 value={formData.beneficiaries}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',
+                  minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
               ></textarea>
             </div>
           </div>

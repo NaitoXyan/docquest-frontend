@@ -9,20 +9,26 @@ const MOAForm = ({ projectID }) => {
 
   const [formData, setFormData] = useState({
     projectID: projectID,
-    partyADescription: "",
-    partyBDescription: "",
-    coverageAndEffectivity: "",
-    confidentialityClause: "",
-    termination: "",
+    partyADescription: `**UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS**, a State University created and existing under the laws of the Republic of the Philippines, with principal office address located at Claro M. Recto Avenue, Lapasan, Cagayan de Oro City, represented herein by its System President,  **DR. AMBROSIO B. CULTURA II**, hereafter referred to as the **“FIRST PARTY”**;`,
+    partyBDescription: ``,
+    partyCDescription: ``,
+    coverageAndEffectivity: `This Agreement shall cover  CY 2024-2025 and take effect upon the date it is signed by the parties until the completion of the training  and research collaboration program.`,
+    confidentialityClause: `The parties mutually agree to process personal information and sensitive personal information in conformity with the provisions of Republic Act No. 10173 (Data Privacy Act of 2012) and all other applicable laws and regulations of all the parties regarding data privacy protection laws.
+
+Both parties shall ensure that appropriate organizational, physical, and technical measures are in place to maintain the confidentiality, integrity and security of personal information and sensitive personal information that may come to their knowledge or possession by reason of any provision of this MOA and that their employees, agents, representatives, or any person under their authority shall hold said information under strict confidentiality at all times.`,
+    termination: `Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party.`,
     witnesseth: [
       {
-        whereas: ""
-      }
+        whereas: `WHEREAS, the FIRST PARTY is mandated to provide advanced education, higher technological, professional and advanced instructions in mathematics, science, technology, engineering, and advance research and extension work in human resource development in critical skills and competencies required for global competitiveness (Republic Act 10919);`
+      },
+      {
+        whereas: `WHEREAS, the FIRST PARTY, has its extension function to serve the underprivileged communities/groups and other stakeholders within its sphere of influence by providing competency-based training programs, transfer of technology, technical services and/or advisory;`
+      },
     ],
     firstParty: [
       {
-        name: "",
-        title: ""
+        name: "DR. AMBROSIO B. CULTURA II",
+        title: "President, USTP System"
       }
     ],
     secondParty: [
@@ -31,10 +37,20 @@ const MOAForm = ({ projectID }) => {
         title: ""
       }
     ],
-    witnesses: [
+    thirdParty: [
       {
         name: "",
         title: ""
+      }
+    ],
+    witnesses: [
+      {
+        name: "DR. MARIA TERESA M. FAJARDO",
+        title: "Director, Extension & Community Relations"
+      },
+      {
+        name: "ENGR. ALEX L. MAUREAL",
+        title: "Vice Chancellor for Research and Innovation "
       }
     ],
     partyAObligation: [
@@ -47,6 +63,12 @@ const MOAForm = ({ projectID }) => {
       {
         obligation: "",
         party: "party B"
+      }
+    ],
+    partyCObligation: [
+      {
+        obligation: "",
+        party: "party C"
       }
     ]
   });
@@ -88,6 +110,15 @@ const MOAForm = ({ projectID }) => {
     });
   };
 
+  // Handle changes for THIRD PARTY obligations
+  const handleThirdPartyObligationChange = (index, value) => {
+    setFormData((prevData) => {
+      const updatedObligations = [...prevData.partyCObligation];
+      updatedObligations[index].obligation = value;
+      return { ...prevData, partyCObligation: updatedObligations };
+    });
+  };
+
   // Add obligation for FIRST PARTY
   const handleAddFirstPartyObligation = () => {
     setFormData((prevData) => ({
@@ -106,6 +137,17 @@ const MOAForm = ({ projectID }) => {
       partyBObligation: [
         ...prevData.partyBObligation,
         { obligation: "", party: "party B" }
+      ]
+    }));
+  };
+
+  // Add obligation for THIRD PARTY
+  const handleAddThirdPartyObligation = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      partyCObligation: [
+        ...prevData.partyCObligation,
+        { obligation: "", party: "party C" }
       ]
     }));
   };
@@ -129,6 +171,17 @@ const MOAForm = ({ projectID }) => {
         updatedObligations.splice(index, 1);
       }
       return { ...prevData, partyBObligation: updatedObligations };
+    });
+  };
+
+  // Remove obligation for THIRD PARTY
+  const handleRemoveThirdPartyObligation = (index) => {
+    setFormData((prevData) => {
+      const updatedObligations = [...prevData.partyCObligation];
+      if (updatedObligations.length > 1) {
+        updatedObligations.splice(index, 1);
+      }
+      return { ...prevData, partyCObligation: updatedObligations };
     });
   };
 
@@ -171,6 +224,17 @@ const MOAForm = ({ projectID }) => {
     });
   };
 
+  const handleThirdPartyChange = (index, field, value) => {
+    setFormData((prevData) => {
+      const updatedThirdParty = [...prevData.thirdParty];
+      updatedThirdParty[index][field] = value;
+      return {
+        ...prevData,
+        thirdParty: updatedThirdParty
+      };
+    });
+  };
+
   const handleWitnessChange = (index, field, value) => {
     const updatedWitnesses = [...formData.witnesses];
     updatedWitnesses[index][field] = value;
@@ -206,13 +270,15 @@ const MOAForm = ({ projectID }) => {
 
     const partyObligation = [
       ...formData.partyAObligation,
-      ...formData.partyBObligation
+      ...formData.partyBObligation,
+      ...formData.partyCObligation
     ];
 
     modifiedData.partyObligation = partyObligation;
 
     delete modifiedData.partyAObligation;
     delete modifiedData.partyBObligation;
+    delete modifiedData.partyCObligation;
 
     console.log("formData to be sent:", modifiedData); // Check the structure
 
@@ -247,10 +313,9 @@ const MOAForm = ({ projectID }) => {
 
   return (
     <div className="flex flex-col mt-14 px-10">
-      <h1 className="text-2xl font-semibold mb-5 mt-5">
-        MEMORANDUM OF AGREEMENT / MEMORANDUM OF UNDERSTANDING
+      <h1 className="text-2xl font-bold mb-5 mt-5 text-center">
+        MEMORANDUM OF AGREEMENT
       </h1>
-
       <form onSubmit={handleSubmit}>
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           {/* First Row */}
@@ -262,19 +327,29 @@ const MOAForm = ({ projectID }) => {
               <label className="block mb-2 font-semibold">
                 This Memorandum of Agreement executed and entered into by and between:
               </label>
+              <label className="block mb-2 font-semibold">
+                First Party
+              </label>
               <textarea
                 required
                 name="partyADescription"
                 value={formData.partyADescription}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
-                placeholder="Ex: UNIVERSITY OF SCIENCE AND TECHNOLOGY OF SOUTHERN PHILIPPINES CAGAYAN DE ORO CAMPUS (USTP CDO), a state educational institution duly established  under Philippine law, whose office address located at Claro M. Recto Avenue, Lapasan, Cagayan  de Oro City, represented herein by its Chancellor ATTY. DIONEL O. ALBINA, hereafter referred  to as the FIRST PARTY;"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',
+                  minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
+                placeholder="First party"
               ></textarea>
-            </div>
-
-            <div>
               <label className="block mb-2 font-semibold">
-                and
+                Second Party
               </label>
               <textarea
                 required
@@ -282,10 +357,39 @@ const MOAForm = ({ projectID }) => {
                 value={formData.partyBDescription}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
-                placeholder="Ex: DEPARTMENT OF EDUCATION DIVISION OF CAGAYAN DE ORO CITY, a state educational institution duly established under Philippine law, whose office address located at Fr.  William F. Masterson Avenue, Upper Balulang, Cagayan de Oro City Misamis Oriental, represented herein by the School Divisions Superintendent ROY ANGELO E. GAZO, Ph.D., hereafter referred to as the SECOND PARTY;"
+                placeholder="Second party"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',
+                  minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
+              ></textarea>
+              <label className="block mb-2 font-semibold">
+                Third Party
+              </label>
+              <textarea
+                name="partyCDescription"
+                value={formData.partyCDescription}
+                onChange={handleFormChange}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder="Third party (Leave blank if there is no third party)"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',
+                  minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
               ></textarea>
             </div>
-
           </div>
         </div>
 
@@ -304,6 +408,16 @@ const MOAForm = ({ projectID }) => {
                 }
                 className="w-full p-2 border border-gray-300 rounded mb-2"
                 placeholder="Enter a witnesseth statement"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',
+                  minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
               ></textarea>
             ))}
           </div>
@@ -340,7 +454,17 @@ const MOAForm = ({ projectID }) => {
                 value={partyAObligation.obligation}
                 onChange={(e) => handleFirstPartyObligationChange(index, e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded mb-2"
-                placeholder="Provide the faculty experts who will conduct the training on journalism."
+                placeholder="First party obligation and responsibilities"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',
+                  minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
               ></textarea>
             ))}
           </div>
@@ -373,7 +497,17 @@ const MOAForm = ({ projectID }) => {
                 value={partyBObligation.obligation}
                 onChange={(e) => handleSecondPartyObligationChange(index, e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded mb-2"
-                placeholder="Identify the target trainees/participants."
+                placeholder="Second party obligation and responsibilities"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',
+                  minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
               ></textarea>
             ))}
           </div>
@@ -394,6 +528,53 @@ const MOAForm = ({ projectID }) => {
               Remove
             </button>
           </div>
+
+          {formData.partyCDescription && (
+            <div>
+              <div>
+                <label className="block mb-2 font-semibold">
+                  OBLIGATIONS AND RESPONSIBILITIES of the THIRD PARTY:
+                </label>
+                {formData.partyCObligation.map((partyCObligation, index) => (
+                  <textarea
+                    key={`partyC-${index}`}
+                    value={partyCObligation.obligation}
+                    onChange={(e) => handleThirdPartyObligationChange(index, e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded mb-2"
+                    placeholder="Third Party Obligation and Responsibilities"
+                    style={{
+                      overflowY: 'hidden', // Hides vertical scrollbar
+                      resize: 'none',
+                      minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                    }}
+                    onInput={(e) => {
+                      // Adjusts the height of the textarea based on content length
+                      e.target.style.height = 'auto'; // Reset height before adjusting
+                      e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                    }}
+                  ></textarea>
+                ))}
+              </div>
+              <div className="flex space-x-2 mb-2">
+                <button
+                  type="button"
+                  onClick={handleAddThirdPartyObligation}
+                  className="bg-blue-500 text-white px-4 py-2 rounded"
+                >
+                  Add obligation and responsibility
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveThirdPartyObligation(formData.partyCObligation.length - 1)}
+                  className="bg-red-500 text-white px-4 py-2 rounded"
+                  disabled={formData.partyCObligation.length === 1}
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          )}
+
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
@@ -401,14 +582,24 @@ const MOAForm = ({ projectID }) => {
             <label className="block mb-2 font-semibold">
               COVERAGE AND EFFECTIVITY:
             </label>
-            <input
-            required
-            name="coverageAndEffectivity"
-            value={formData.coverageAndEffectivity}
-            onChange={handleFormChange}
-            className="w-full p-2 border border-gray-300 rounded"
-            placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-          ></input>
+            <textarea
+              required
+              name="coverageAndEffectivity"
+              value={formData.coverageAndEffectivity}
+              onChange={handleFormChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
+              style={{
+                overflowY: 'hidden', // Hides vertical scrollbar
+                resize: 'none',
+                minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+              }}
+              onInput={(e) => {
+                // Adjusts the height of the textarea based on content length
+                e.target.style.height = 'auto'; // Reset height before adjusting
+                e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+              }}
+            ></textarea>
           </div>
         </div>
 
@@ -417,14 +608,24 @@ const MOAForm = ({ projectID }) => {
             <label className="block mb-2 font-semibold">
               CONFIDENTIALITY CLAUSE:
             </label>
-            <input
-            required
-            name="confidentialityClause"
-            value={formData.confidentialityClause}
-            onChange={handleFormChange}
-            className="w-full p-2 border border-gray-300 rounded"
-            placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-          ></input>
+            <textarea
+              required
+              name="confidentialityClause"
+              value={formData.confidentialityClause}
+              onChange={handleFormChange}
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
+              style={{
+                overflowY: 'hidden', // Hides vertical scrollbar
+                resize: 'none',
+                minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+              }}
+              onInput={(e) => {
+                // Adjusts the height of the textarea based on content length
+                e.target.style.height = 'auto'; // Reset height before adjusting
+                e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+              }}
+            ></textarea>
           </div>
         </div>
 
@@ -432,17 +633,28 @@ const MOAForm = ({ projectID }) => {
           <label className="block mb-2 font-semibold">
             TERMINATION:
           </label>
-          <input
+          <textarea
             required
             name="termination"
             value={formData.termination}
             onChange={handleFormChange}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Ex: Either of the parties may terminate this agreement based on a valid ground and after giving 30-day notice to the other party."
-          ></input>
+            style={{
+              overflowY: 'hidden', // Hides vertical scrollbar
+              resize: 'none',
+              minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+            }}
+            onInput={(e) => {
+              // Adjusts the height of the textarea based on content length
+              e.target.style.height = 'auto'; // Reset height before adjusting
+              e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+            }}
+          ></textarea>
         </div>
 
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
+          <label className="block font-semibold">WITNESSES:</label>
           <div className="grid grid-cols-2 gap-2">
             <div>
               <label className="block mb-2 font-semibold">
@@ -512,9 +724,44 @@ const MOAForm = ({ projectID }) => {
               ))}
             </div>
           </div>
-
+          {formData.partyCDescription && (
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block mb-2 font-semibold">
+                  Third Party Name
+                </label>
+                {formData.thirdParty.map((party, index) => (
+                  <input
+                    required
+                    key={`thirdParty-name-${index}`}
+                    type="text"
+                    value={party.name}
+                    onChange={(e) => handleThirdPartyChange(index, 'name', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                    placeholder="name"
+                  />
+                ))}
+              </div>
+              <div>
+                <label className="block mb-2 font-semibold">
+                  Third Party Title
+                </label>
+                {formData.thirdParty.map((party, index) => (
+                  <input
+                    required
+                    key={`thirdParty-title-${index}`}
+                    type="text"
+                    value={party.title}
+                    onChange={(e) => handleThirdPartyChange(index, 'title', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded"
+                    placeholder="title"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
           <div>
-            <label className="block mb-2 font-semibold">Witnesses:</label>
+            <label className="block mb-2 font-semibold">WITNESSES:</label>
             {formData.witnesses.map((witness, index) => (
               <div key={index} className="grid grid-cols-2 gap-2 mb-2">
                 <div>

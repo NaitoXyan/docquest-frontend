@@ -18,7 +18,7 @@ const ProjLeadProjectStatus = () => {
   const { statusFilterParam } = useParams();
 
   useEffect(() => {
-    axios.get(`https://web-production-4b16.up.railway.app/${userID}/`)
+    axios.get(`https://web-production-4b16.up.railway.app/get_project_status/${userID}/`)
       .then(response => {
         const sortedProjects = response.data.sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
 

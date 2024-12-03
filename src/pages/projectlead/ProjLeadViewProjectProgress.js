@@ -115,7 +115,25 @@ const ProjectProgressStep = ({ projectID }) => {
                       </Typography>
                     </StepLabel>
                     <StepContent>
-                      <Typography>Status: {review.reviewStatus || "Pending"}</Typography>
+                    <Typography>
+                      Status:{" "}
+                      <span
+                        style={{ 
+                          color: review.reviewStatus === "approved"
+                            ? "green"
+                            : review.reviewStatus === "pending"
+                            ? "orange"
+                            : review.reviewStatus === "rejected"
+                            ? "red"
+                            : "inherit",
+                          fontWeight: "bold", 
+                        }}
+                      >
+                        {review.reviewStatus
+                        ? review.reviewStatus.charAt(0).toUpperCase() + review.reviewStatus.slice(1)
+                        : "Pending"}
+                      </span>
+                    </Typography>
                       <Typography>Comment: {review.comment || "None"}</Typography>
                     </StepContent>
                   </Step>

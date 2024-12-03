@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { PDFViewer } from '@react-pdf/renderer';
 import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+import { useNavigate } from 'react-router-dom';
 
 Font.register({
   family: 'TimesNR',
@@ -442,9 +443,16 @@ const DirectorViewMoa = ({ moaID }) => {
   const [formData, setFormData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const navigate = useNavigate();
   // Get token from localStorage or wherever you store it
   const token = localStorage.getItem('token');
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
 
   useEffect(() => {
     const fetchData = async () => {

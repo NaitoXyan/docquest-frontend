@@ -11,6 +11,15 @@ const ProjLeadDashboard = () => {
     const userID = localStorage.getItem('userid');
     const navigate = useNavigate();
 
+    const token = localStorage.getItem('token');
+    useEffect(() => {
+      if (!token) {
+          localStorage.clear();
+          navigate('/login', { replace: true });
+          return;
+      }
+    }, [token]);
+
     useEffect(() => {
         const fetchProjects = async () => {
             try {

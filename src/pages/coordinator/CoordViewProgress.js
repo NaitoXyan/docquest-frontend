@@ -20,6 +20,14 @@ const ProjectProgressStep = ({ projectID }) => {
   const [activeStep, setActiveStep] = useState(0);
   const token = localStorage.getItem("token");
 
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
+
   // Group reviews by college
   const groupByCollege = (reviews) => {
     return reviews.reduce((acc, review) => {

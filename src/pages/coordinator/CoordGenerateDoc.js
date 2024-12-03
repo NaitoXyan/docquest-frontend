@@ -4,6 +4,16 @@ import Topbar from "../../components/Topbar";
 import axios from 'axios';
 
 const CoordGenerateDoc = () => {
+
+    const token = localStorage.getItem('token');
+    useEffect(() => {
+      if (!token) {
+          localStorage.clear();
+          navigate('/login', { replace: true });
+          return;
+      }
+    }, [token]);
+
     // Mock data for documents
     const mockDocuments = [
         {

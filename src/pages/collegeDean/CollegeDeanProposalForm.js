@@ -1,9 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Topbar from "../../components/Topbar";
 import ProposalFormFirstPage from "../../components/ProposalFormFirstPage";
 import CollegeDeanSidebar from "../../components/CollegeDeanSideBar";
+import { useNavigate } from "react-router-dom";
 
 const CollegeDeanProposalForm = () => {
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
+
   return (
     <div className="bg-gray-200 min-h-screen flex">
       {/* Sidebar */}

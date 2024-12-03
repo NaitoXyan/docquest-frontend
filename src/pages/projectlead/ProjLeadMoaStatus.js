@@ -18,6 +18,15 @@ const ProjLeadMoaStatus = () => {
   const { statusFilterParam } = useParams();
   const [characterLimit, setCharacterLimit] = useState(42);
 
+  const token = localStorage.getItem('token');
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
+
   // Fetch MOA data
   useEffect(() => {
     axios.get(`https://web-production-4b16.up.railway.app/get_moa_status/${userID}/`)

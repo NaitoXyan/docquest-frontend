@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import EstaffSideBar from "../../components/EstaffSideBar";
 import Topbar from "../../components/Topbar";
 import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const CampusProposal = () => {
     const [documents, setDocuments] = useState([]);
@@ -11,6 +12,15 @@ const CampusProposal = () => {
     const [documentType, setDocumentType] = useState('');
     const [showDownloadModal, setShowDownloadModal] = useState(false);
     const [currentDocument, setCurrentDocument] = useState(null);
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token');
+    useEffect(() => {
+      if (!token) {
+          localStorage.clear();
+          navigate('/login', { replace: true });
+          return;
+      }
+    }, [token]);
 
     useEffect(() => {
         fetchDocuments();

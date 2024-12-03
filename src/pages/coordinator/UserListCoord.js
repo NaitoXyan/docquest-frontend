@@ -1,9 +1,20 @@
-import React from "react";
+import React, {useEffect} from "react";
 import UserListTable from "../../components/UserListTable"; // Adjust path as needed
 import CoordinatorSidebar from "../../components/CoordinatorSideBar";
 import Topbar from "../../components/Topbar";
+import { useNavigate } from "react-router-dom";
 
 const UserListCoord = () => {
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token');
+    useEffect(() => {
+      if (!token) {
+          localStorage.clear();
+          navigate('/login', { replace: true });
+          return;
+      }
+    }, [token]);
+
     return (
         <div className="bg-gray-200 min-h-screen flex">
             {/* Sidebar */}

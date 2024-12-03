@@ -16,6 +16,14 @@ const ProjLeadProjectStatus = () => {
   const userID = localStorage.getItem('userid');
   const navigate = useNavigate();
   const { statusFilterParam } = useParams();
+  const token = localStorage.getItem('token');
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
 
   useEffect(() => {
     axios.get(`https://web-production-4b16.up.railway.app/get_project_status/${userID}/`)

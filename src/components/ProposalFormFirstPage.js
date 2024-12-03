@@ -1894,7 +1894,7 @@ const ProposalFormFirstPage = () => {
 
             {/* ACCREDITATION LEVEL Section */}
             <div className="col-span-1">
-              <label className="block mb-2 font-semibold">
+              <label className="block mb-2 font-semibold" style={{ fontSize: '12px' }}>
                 ACCREDITATION LEVEL
                 <span className="text-red-500 ml-1">*</span>
                 <span

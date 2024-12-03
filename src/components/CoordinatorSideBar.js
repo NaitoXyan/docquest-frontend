@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function CoordinatorSidebar() {
     const [isProposalMenuVisible, setProposalMenuVisible] = useState(false);
@@ -19,17 +20,19 @@ function CoordinatorSidebar() {
         setStatusMenuVisible(!isStatusMenuVisible); // Toggle visibility of status menu
     };
 
-    // Function to handle logout
-    const handleLogout = () => {
-        // Clear localStorage items related to authentication
-        localStorage.removeItem("token");
-        localStorage.removeItem("userid");
-        localStorage.removeItem("firstname");
-        localStorage.removeItem("lastname");
-        localStorage.removeItem("roles");
-
-        // Redirect to the login page
-        navigate("/login");
+    const handleLogout = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            await axios.post('https://web-production-4b16.up.railway.app/auth/token/logout/', {}, {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                },
+            });
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+        localStorage.clear();
+        navigate('/login');
     };
 
     return (

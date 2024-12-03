@@ -53,27 +53,21 @@ const LoginPage = () => {
       
       if (rolesList.includes('ecrd')) {
         navigate('/director');
-      }
-      else if (rolesList.includes('estf')) {
+      } else if (rolesList.includes('estf')) {
         navigate('/estaff');
-      } 
-      else if (rolesList.includes('vpala')) {
+      } else if (rolesList.includes('vpala')) {
         navigate('/vpala'); // Add a specific route for 'vpala' if needed
-      } 
-      else if (rolesList.includes('coord')) {
+      } else if (rolesList.includes('coord')) {
         navigate('/coordinatordashboard');
-      }
-      else if (rolesList.includes('cldn')) {
+      } else if (rolesList.includes('cldn')) {
         navigate('/college-dean');
-      }
-      if (rolesList.includes('prch')) {
+      } else if (rolesList.includes('prch')) {
         navigate('/program-chair');
-      }  
-      else if (rolesList.includes('rglr')) {
+      } else if (rolesList.includes('rglr')) {
         navigate('/user');
-      }
-      else {
+      } else {
         navigate('/login')
+        console.log('oops failed ka sa navigating by role: ', rolesList);
       }
       
     } catch (error) {

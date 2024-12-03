@@ -67,6 +67,8 @@ const Topbar = () => {
         return 'Coordinator';
       } else if (role === 'vpala') {
         return 'Vice President for Administration and Legal Affair';
+      } else if (role === 'estf') {
+        return 'ECRD Staff';
       } else {
         return role;
       }

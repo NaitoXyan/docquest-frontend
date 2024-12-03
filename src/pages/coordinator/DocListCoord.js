@@ -1,9 +1,20 @@
-import React from "react";
+import React, {useEffect} from "react";
 import CoordinatorSidebar from "../../components/CoordinatorSideBar";
 import Topbar from "../../components/Topbar";
 import DocumentsListCoord from "../../components/DocumentsListCoord";
+import { useNavigate } from "react-router-dom";
 
 const DocListCoord = () => {
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token');
+    useEffect(() => {
+      if (!token) {
+          localStorage.clear();
+          navigate('/login', { replace: true });
+          return;
+      }
+    }, [token]);
+
     return (
         <div className="bg-gray-200 min-h-screen flex">
             {/* Sidebar */}

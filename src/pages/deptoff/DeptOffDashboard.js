@@ -1,6 +1,7 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Topbar from "../../components/Topbar";
 import DeptOffSideBar from "../../components/DeptOffSideBar";
+import { useNavigate } from "react-router-dom";
 
 const DeptOffDashboard = () => {
   // Placeholder data for users (you should replace this with real data)

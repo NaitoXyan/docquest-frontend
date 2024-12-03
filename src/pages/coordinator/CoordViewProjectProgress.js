@@ -10,12 +10,21 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
 import Typography from '@mui/material/Typography';
-import CoordinatorSidebar from "../../components/CoordinatorSideBar";
+import CoordinatorSidebar from "../../components/CoordinatorSideBar"
 
 const ProjectProgressStep = ({ projectID }) => {
   const [reviews, setReviews] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
 
   // Group reviews by college
   const groupByCollege = (reviews) => {

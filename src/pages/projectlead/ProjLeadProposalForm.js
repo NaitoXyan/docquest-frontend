@@ -1,9 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProjLeadSidebar from "../../components/ProjLeadSideBar";
 import Topbar from "../../components/Topbar";
 import ProposalFormFirstPage from "../../components/ProposalFormFirstPage";
+import { useNavigate } from "react-router-dom";
 
 const ProjLeadProposalForm = () => {
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
+
   const [formData, setFormData] = useState({
     projectCategory: "",
     projectTitle: "",

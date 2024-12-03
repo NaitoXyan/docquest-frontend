@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from "react";
 import EstaffSideBar from "../../components/EstaffSideBar";
 import Topbar from "../../components/Topbar";
+import { useNavigate } from "react-router-dom";
 
 const UserList = () => {
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token');
+    useEffect(() => {
+      if (!token) {
+          localStorage.clear();
+          navigate('/login', { replace: true });
+          return;
+      }
+    }, [token]);
+
     const [users, setUsers] = useState([
         { id: 1, fullName: "Valueno, Rabosa A.", email: "valueno.rabosa@gmail.com", position: "Project Leader", password: "password123" },
     ]);

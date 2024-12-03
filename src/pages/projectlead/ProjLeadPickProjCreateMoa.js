@@ -15,6 +15,14 @@ const PickProjCreateMoa = () => {
   const itemsPerPage = 8;
   const userID = localStorage.getItem('userid');
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
 
   // Fetch data with GET request
   useEffect(() => {

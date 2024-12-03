@@ -4,6 +4,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import DirectorSidebar from '../../components/DirectorSidebar';
 import Topbar from '../../components/Topbar';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from 'react-router-dom';
 
 const DirectorProjectStatistics = () => {
   const token = localStorage.getItem('token');
@@ -34,6 +35,15 @@ const DirectorProjectStatistics = () => {
     program: '',
     status: 'all'
   });
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
 
   useEffect(() => {
     const fetchProjects = async () => {

@@ -1,8 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Topbar from "../../components/Topbar";
 import ProjLeadSidebar from "../../components/ProjLeadSideBar";
+import { useNavigate } from "react-router-dom";
 
 const ProjLeadMOA = () => {
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token');
+    useEffect(() => {
+      if (!token) {
+          localStorage.clear();
+          navigate('/login', { replace: true });
+          return;
+      }
+    }, [token]);
+
     // State to hold the list of "Whereas" descriptions
     const [whereasList, setWhereasList] = useState(["", ""]); // Initialize with two empty strings
 

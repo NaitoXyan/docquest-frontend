@@ -669,6 +669,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
                   onChange={(e) => handleFirstPartyChange(index, 'name', e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder="name"
+                  readOnly
                 />
               ))}
             </div>
@@ -685,6 +686,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
                   onChange={(e) => handleFirstPartyChange(index, 'title', e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder="title"
+                  readOnly
                 />
               ))}
             </div>

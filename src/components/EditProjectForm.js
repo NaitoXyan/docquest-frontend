@@ -1413,6 +1413,9 @@ const EditProposalForm = () => {
                 </span>
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
+              <label className="block mb-2 text-ellipsis text-gray-500">
+                Write "N/A" if not applicable.
+              </label>
               <input
                 required
                 name="researchTitle"
@@ -1497,6 +1500,9 @@ const EditProposalForm = () => {
                   ⓘ
                 </span>
                 <ReactTooltip place="top" type="dark" effect="solid" />
+              </label>
+              <label className="block mb-2 text-ellipsis text-gray-500">
+                Just leave it blank if not applicable.
               </label>
               {/* Render input fields for each proponent */}
               {formData.nonUserProponents.map((proponentObj, index) => (
@@ -2258,6 +2264,16 @@ const EditProposalForm = () => {
                 value={formData.background}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',
+                  minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
               ></textarea>
             </div>
           </div>
@@ -2292,6 +2308,16 @@ const EditProposalForm = () => {
                     onChange={(e) => handleObjectiveChange(index, e.target.value)}
                     className="w-full p-2 border border-gray-300 rounded mt-2"
                     placeholder={`Objective ${index + 1}`}
+                    style={{
+                      overflowY: 'hidden', // Hides vertical scrollbar
+                      resize: 'none',
+                      minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                    }}
+                    onInput={(e) => {
+                      // Adjusts the height of the textarea based on content length
+                      e.target.style.height = 'auto'; // Reset height before adjusting
+                      e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                    }}
                   />
                   {/* Remove button visible only for rows other than the first */}
                   {index > 0 && (
@@ -2359,6 +2385,16 @@ const EditProposalForm = () => {
                 value={formData.projectComponent}
                 onChange={handleFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
+                style={{
+                  overflowY: 'hidden', // Hides vertical scrollbar
+                  resize: 'none',
+                  minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                }}
+                onInput={(e) => {
+                  // Adjusts the height of the textarea based on content length
+                  e.target.style.height = 'auto'; // Reset height before adjusting
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                }}
               ></textarea>
             </div>
           </div>
@@ -2395,6 +2431,16 @@ const EditProposalForm = () => {
                   value={activity.objective}
                   onChange={(e) => handleActivityChange(index, e)}
                   className="w-full p-2 border border-gray-300 rounded"
+                  style={{
+                    overflowY: 'hidden', // Hides vertical scrollbar
+                    resize: 'none',
+                    minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                  }}
+                  onInput={(e) => {
+                    // Adjusts the height of the textarea based on content length
+                    e.target.style.height = 'auto'; // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                  }}
                 ></textarea>
               </div>
 
@@ -2403,14 +2449,24 @@ const EditProposalForm = () => {
                   ACTIVITIES INVOLVED
                   <span className="text-red-500 ml-1">*</span>
                 </label>
-                <input
+                <textarea
                   required
                   name="involved"
                   value={activity.involved}
                   onChange={(e) => handleActivityChange(index, e)}
                   type="text"
                   className="w-full p-2 border border-gray-300 rounded"
-                />
+                  style={{
+                    overflowY: 'hidden', // Hides vertical scrollbar
+                    resize: 'none',
+                    minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                  }}
+                  onInput={(e) => {
+                    // Adjusts the height of the textarea based on content length
+                    e.target.style.height = 'auto'; // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                  }}
+                ></textarea>
               </div>
 
               <div>
@@ -2593,17 +2649,23 @@ const EditProposalForm = () => {
                   ITEM NAME
                   <span className="text-red-500 ml-1">*</span>
                 </label>
-                <input
+                <textarea
                   required
                   name="itemName"
                   value={budgetItem.itemName}
                   onChange={(e) => handleBudgetChange(index, "itemName", e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                   style={{
-                    verticalAlign: 'top',  // Ensures content is aligned to the top
-                    paddingTop: '0',       // Removes any top padding if present
+                    overflowY: 'hidden', // Hides vertical scrollbar
+                    resize: 'none',
+                    minHeight: '5px'      // Prevents manual resizing  // Ensures enough height for the placeholder
                   }}
-                />
+                  onInput={(e) => {
+                    // Adjusts the height of the textarea based on content length
+                    e.target.style.height = 'auto'; // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                  }}
+                ></textarea>
               </div>
               <div>
                 <label className="block font-semibold">
@@ -2775,13 +2837,14 @@ const EditProposalForm = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Project Summary (${evaluation.type.toUpperCase()})`}
                   style={{
-                    overflowY: 'hidden',
-                    verticalAlign: 'top',  // Ensures content is aligned to the top
-                    paddingTop: '0',  // Removes top padding
+                    overflowY: 'hidden', // Hides vertical scrollbar
+                    resize: 'none',
+                    minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
                   }}
                   onInput={(e) => {
-                    e.target.style.height = 'auto';  // Reset height before adjusting
-                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                    // Adjusts the height of the textarea based on content length
+                    e.target.style.height = 'auto'; // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                   }}
                 ></textarea>
               </div>
@@ -2797,13 +2860,14 @@ const EditProposalForm = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Indicators (${evaluation.type.toUpperCase()})`}
                   style={{
-                    overflowY: 'hidden',
-                    verticalAlign: 'top',  // Ensures content is aligned to the top
-                    paddingTop: '0',  // Removes top padding
+                    overflowY: 'hidden', // Hides vertical scrollbar
+                    resize: 'none',
+                    minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
                   }}
                   onInput={(e) => {
-                    e.target.style.height = 'auto';  // Reset height before adjusting
-                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                    // Adjusts the height of the textarea based on content length
+                    e.target.style.height = 'auto'; // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                   }}
                 ></textarea>
               </div>
@@ -2819,13 +2883,14 @@ const EditProposalForm = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Means of Verification (${evaluation.type.toUpperCase()})`}
                   style={{
-                    overflowY: 'hidden',
-                    verticalAlign: 'top',  // Ensures content is aligned to the top
-                    paddingTop: '0',  // Removes top padding
+                    overflowY: 'hidden', // Hides vertical scrollbar
+                    resize: 'none',
+                    minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
                   }}
                   onInput={(e) => {
-                    e.target.style.height = 'auto';  // Reset height before adjusting
-                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                    // Adjusts the height of the textarea based on content length
+                    e.target.style.height = 'auto'; // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                   }}
                 ></textarea>
               </div>
@@ -2841,13 +2906,14 @@ const EditProposalForm = () => {
                   className="w-full p-2 border border-gray-300 rounded"
                   placeholder={`Risks/Assumptions (${evaluation.type.toUpperCase()})`}
                   style={{
-                    overflowY: 'hidden',
-                    verticalAlign: 'top',  // Ensures content is aligned to the top
-                    paddingTop: '0',  // Removes top padding
+                    overflowY: 'hidden', // Hides vertical scrollbar
+                    resize: 'none',
+                    minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
                   }}
                   onInput={(e) => {
-                    e.target.style.height = 'auto';  // Reset height before adjusting
-                    e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                    // Adjusts the height of the textarea based on content length
+                    e.target.style.height = 'auto'; // Reset height before adjusting
+                    e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                   }}
                 ></textarea>
               </div>
@@ -2906,10 +2972,15 @@ const EditProposalForm = () => {
                             "Effect of Project to Participants and Community Questionnaire Trainings Need Assessment",
                           ][index] || "Default placeholder for Approach"
                         }
-                        style={{ overflowY: 'hidden', verticalAlign: 'top', }}
+                        style={{
+                          overflowY: 'hidden', // Hides vertical scrollbar
+                          resize: 'none',
+                          minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                        }}
                         onInput={(e) => {
-                          e.target.style.height = 'auto';  // Reset height before adjusting
-                          e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                          // Adjusts the height of the textarea based on content length
+                          e.target.style.height = 'auto'; // Reset height before adjusting
+                          e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                         }}
                       />
                     </td>
@@ -2928,10 +2999,15 @@ const EditProposalForm = () => {
                             "Survey Questionnaire, Interview with Key Informant or FGD",
                           ][index] || "Default placeholder for Data Gathering Strategy"
                         }
-                        style={{ overflowY: 'hidden', verticalAlign: 'top', }}
+                        style={{
+                          overflowY: 'hidden', // Hides vertical scrollbar
+                          resize: 'none',
+                          minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                        }}
                         onInput={(e) => {
-                          e.target.style.height = 'auto';  // Reset height before adjusting
-                          e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                          // Adjusts the height of the textarea based on content length
+                          e.target.style.height = 'auto'; // Reset height before adjusting
+                          e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                         }}
                       />
                     </td>
@@ -2950,10 +3026,15 @@ const EditProposalForm = () => {
                             "May be periodically scheduled based on the objectives of the extension project (e.g. after 3 months, after 6 months, etc.)",
                           ][index] || "Default placeholder for Schedule"
                         }
-                        style={{ overflowY: 'hidden', verticalAlign: 'top', }}
+                        style={{
+                          overflowY: 'hidden', // Hides vertical scrollbar
+                          resize: 'none',
+                          minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                        }}
                         onInput={(e) => {
-                          e.target.style.height = 'auto';  // Reset height before adjusting
-                          e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                          // Adjusts the height of the textarea based on content length
+                          e.target.style.height = 'auto'; // Reset height before adjusting
+                          e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                         }}
                       />
                     </td>
@@ -3007,22 +3088,26 @@ const EditProposalForm = () => {
                             className="w-full p-1 border border-gray-300 rounded resize-none"
                             placeholder="Training Load"
                             rows="1"  // Initial row size (height of the textarea)
-                            style={{ overflowY: 'hidden' }}  // Hides vertical scrollbar
+                            style={{
+                              overflowY: 'hidden', // Hides vertical scrollbar
+                              resize: 'none',
+                              minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                            }}
                             onInput={(e) => {
                               // Adjusts the height of the textarea based on content length
-                              e.target.style.height = 'auto';  // Reset height before adjusting
-                              e.target.style.height = `${e.target.scrollHeight}px`;  // Set height to scrollHeight
+                              e.target.style.height = 'auto'; // Reset height before adjusting
+                              e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
                             }}
                           />
                         </td>
                         <td className="px-4 py-2 border">
                           <input
                             name="hours"
-                            value={formData.loadingOfTrainers[memberIndex]?.hours || 0}
+                            value={formData.loadingOfTrainers[memberIndex]?.hours || ''}
                             onChange={(e) => handleTrainerChange(memberIndex, {
                               ...formData.loadingOfTrainers[memberIndex],
                               faculty: member.name,
-                              hours: parseInt(e.target.value) || 0
+                              hours: e.target.value === '' ? '' : Math.max(0, parseInt(e.target.value) || 0)
                             })}
                             type="number"
                             required
@@ -3043,11 +3128,11 @@ const EditProposalForm = () => {
                         <td className="px-4 py-2 border">
                           <input
                             name="agencyBudget"
-                            value={formData.loadingOfTrainers[memberIndex]?.agencyBudget || 0}
+                            value={formData.loadingOfTrainers[memberIndex]?.agencyBudget || ''}
                             onChange={(e) => handleTrainerChange(memberIndex, {
                               ...formData.loadingOfTrainers[memberIndex],
                               faculty: member.name,
-                              agencyBudget: parseFloat(e.target.value) || 0
+                              agencyBudget: e.target.value === '' ? '' : Math.max(0, parseInt(e.target.value) || 0)
                             })}
                             type="number"
                             required
@@ -3164,6 +3249,7 @@ const EditProposalForm = () => {
                 onChange={handleSignatoryFormChange}
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded"
+                readOnly
               />
             </div>
           </div>
@@ -3180,6 +3266,7 @@ const EditProposalForm = () => {
                 onChange={handleSignatoryFormChange}
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded"
+                readOnly
               />
             </div>
 
@@ -3194,6 +3281,7 @@ const EditProposalForm = () => {
                 onChange={handleSignatoryFormChange}
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded"
+                readOnly
               />
             </div>
           </div>
@@ -3210,6 +3298,7 @@ const EditProposalForm = () => {
                 onChange={handleSignatoryFormChange}
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded"
+                readOnly
               />
             </div>
 
@@ -3224,6 +3313,7 @@ const EditProposalForm = () => {
                 onChange={handleSignatoryFormChange}
                 type="text"
                 className="w-full p-2 border border-gray-300 rounded"
+                readOnly
               />
             </div>
           </div>

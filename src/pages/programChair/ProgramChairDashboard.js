@@ -190,7 +190,7 @@ const ProgramChairDashboard = () => {
                 <ProgramChairSidebar />
             </div>
             <div className="flex-1 ml-[20%]">
-                <Topbar />
+                <Topbar/>
                 <div className="flex flex-col mt-16 px-10">
                     <h1 className="text-2xl font-bold mb-2">DOCUMENTS OVERVIEW</h1>
                     <div className="grid grid-cols-3 gap-4 mb-5">

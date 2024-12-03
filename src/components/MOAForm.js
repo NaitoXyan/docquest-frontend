@@ -329,6 +329,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
               </label>
               <label className="block mb-2 font-semibold">
                 First Party
+                <span className="text-red-500 ml-1">*</span>
               </label>
               <textarea
                 required
@@ -350,6 +351,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
               ></textarea>
               <label className="block mb-2 font-semibold">
                 Second Party
+                <span className="text-red-500 ml-1">*</span>
               </label>
               <textarea
                 required
@@ -397,6 +399,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
           <div>
             <label className="block mb-2 font-semibold">
               Witnesseth that:
+              <span className="text-red-500 ml-1">*</span>
             </label>
             {formData.witnesseth.map((witness, index) => (
               <textarea
@@ -446,6 +449,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
             </label>
             <label className="block mb-2 font-semibold">
               OBLIGATIONS AND RESPONSIBILITIES of the FIRST PARTY:
+              <span className="text-red-500 ml-1">*</span>
             </label>
             {formData.partyAObligation.map((partyAObligation, index) => (
               <textarea
@@ -489,6 +493,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
           <div>
             <label className="block mb-2 font-semibold">
               OBLIGATIONS AND RESPONSIBILITIES of the SECOND PARTY:
+              <span className="text-red-500 ml-1">*</span>
             </label>
             {formData.partyBObligation.map((partyBObligation, index) => (
               <textarea
@@ -581,6 +586,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
           <div>
             <label className="block mb-2 font-semibold">
               COVERAGE AND EFFECTIVITY:
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <textarea
               required
@@ -607,6 +613,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
           <div>
             <label className="block mb-2 font-semibold">
               CONFIDENTIALITY CLAUSE:
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <textarea
               required
@@ -632,6 +639,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
         <div className="bg-white p-8 rounded-lg shadow-md space-y-6 text-sm mb-1">
           <label className="block mb-2 font-semibold">
             TERMINATION:
+            <span className="text-red-500 ml-1">*</span>
           </label>
           <textarea
             required
@@ -696,6 +704,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
             <div>
               <label className="block mb-2 font-semibold">
                 Second Party Name
+                <span className="text-red-500 ml-1">*</span>
               </label>
               {formData.secondParty.map((party, index) => (
                 <input
@@ -705,13 +714,14 @@ Both parties shall ensure that appropriate organizational, physical, and technic
                   value={party.name}
                   onChange={(e) => handleSecondPartyChange(index, 'name', e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
-                  placeholder="name"
+                  placeholder="Name"
                 />
               ))}
             </div>
             <div>
               <label className="block mb-2 font-semibold">
                 Second Party Title
+                <span className="text-red-500 ml-1">*</span>
               </label>
               {formData.secondParty.map((party, index) => (
                 <input
@@ -721,7 +731,7 @@ Both parties shall ensure that appropriate organizational, physical, and technic
                   value={party.title}
                   onChange={(e) => handleSecondPartyChange(index, 'title', e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
-                  placeholder="title"
+                  placeholder="Title"
                 />
               ))}
             </div>

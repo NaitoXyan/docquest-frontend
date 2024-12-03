@@ -71,6 +71,7 @@ import DirectorReviewMOA from "./pages/director/DirectorReviewMOA";
 import VPALAMOAReviewList from "./pages/vpala/VPALAMOAReviewList";
 import VPALAReviewMOA from "./pages/vpala/VPALAReviewMOA";
 import CollegeDeanProposalForm from "./pages/collegeDean/CollegeDeanProposalForm";
+import ProgramChairProposalForm from "./pages/programChair/ProgramChairProposalForm";
 
 function App() {
   return (
@@ -96,6 +97,7 @@ function App() {
 
         {/* programchair routes */}
         <Route path="/program-chair" element={<ProgramChairDashboard/>}/>
+        <Route path="/program-chair-create-project" element={<ProgramChairProposalForm/>}/>
         <Route path="/program-chair-review-list/:status/:document" element={<ProgramChairReviewList/>}/>
         <Route path="/program-chair-review-project/:reviewID/:projectID" element={<ProgramChairReviewProject/>}/>
 

@@ -72,6 +72,10 @@ import VPALAMOAReviewList from "./pages/vpala/VPALAMOAReviewList";
 import VPALAReviewMOA from "./pages/vpala/VPALAReviewMOA";
 import CollegeDeanProposalForm from "./pages/collegeDean/CollegeDeanProposalForm";
 import ProgramChairProposalForm from "./pages/programChair/ProgramChairProposalForm";
+import EstaffReviewList from "./pages/estaff/EstaffProjectReviewList";
+import EstaffMOAViewList from "./pages/estaff/EstaffMOAViewList";
+import EstaffUserList from "./pages/estaff/EstaffUserList";
+import EstaffProjectStatistics from "./pages/estaff/EstaffProjectStatistics";
 
 function App() {
   return (
@@ -130,7 +134,12 @@ function App() {
         <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>
 
          {/* ESTAFF ROUTING */}
-         
+         <Route path="/estaff" element={<EstaffDashboard />} />
+         <Route path="/estaff-project-view-list/:status/:document" element={<EstaffReviewList />} /> 
+         <Route path="/estaff-moa-view-list/:status/:document" element={<EstaffMOAViewList />} /> 
+         <Route path="/estaff-userlist" element={<EstaffUserList />} />
+         <Route path="estaff-project-statistics" element={<EstaffProjectStatistics/>}/>
+
         <Route path="/documents-list" element={<EStaffDocumentsList />} />  {/* Add this line */}
         <Route path="/view-download/:id" element={<ProjectPDFViewer />} />  {/* Add this line */}
         <Route path="/user-list" element={<UserList />} />  {/* Add this line */}
@@ -161,7 +170,7 @@ function App() {
         {/* Other Unorganized */}
         <Route path="/pdf-viewer/:projectID" element={<ProjectPDFViewer />} />
         <Route path="/edit-project/:projectID" element={<ProjLeadEditProject />} />
-        <Route path="/estaff" element={<EstaffDashboard />} />
+        
         <Route path="/deptoff" element={<DeptOffDashboard />} />
        
         <Route path="/signatory" element={<EstaffDashboard />} />

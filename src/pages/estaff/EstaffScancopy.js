@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import EstaffSideBar from '../../components/EstaffSideBar';
 import Topbar from '../../components/Topbar';
+import { useNavigate } from 'react-router-dom';
 
 const EstaffScancopy = () => {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);

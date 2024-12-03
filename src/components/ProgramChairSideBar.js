@@ -61,6 +61,18 @@ function ProgramChairSidebar({ onFilterChange }) {
 
                     <li>
                         <NavLink
+                            to="/program-chair-create-project"
+                            className={({ isActive }) =>
+                                `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                }`
+                            }
+                        >
+                            Create Project
+                        </NavLink>
+                    </li>
+
+                    <li>
+                        <NavLink
                             to="/program-chair-review-list/pending/project"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'

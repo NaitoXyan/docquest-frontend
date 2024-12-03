@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import EstaffSideBar from '../../components/EstaffSideBar';
 import Topbar from '../../components/Topbar';
-import { NavLink } from 'react-router-dom'; // Import NavLink for routing
+import { NavLink, useNavigate } from 'react-router-dom'; // Import NavLink for routing
 
 const EstaffDocumentsList = () => {
     const [documents, setDocuments] = useState([]);
@@ -11,6 +11,15 @@ const EstaffDocumentsList = () => {
     const [documentType, setDocumentType] = useState('');
     const [showDownloadModal, setShowDownloadModal] = useState(false);
     const [currentDocument, setCurrentDocument] = useState(null);
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token');
+    useEffect(() => {
+      if (!token) {
+          localStorage.clear();
+          navigate('/login', { replace: true });
+          return;
+      }
+    }, [token]);
 
     useEffect(() => {
         fetchDocuments();

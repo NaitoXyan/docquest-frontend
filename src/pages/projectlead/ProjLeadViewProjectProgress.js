@@ -18,6 +18,15 @@ const ProjectProgressStep = ({ projectID }) => {
   const [reviews, setReviews] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
 
   // Group reviews by college
   const groupByCollege = (reviews) => {

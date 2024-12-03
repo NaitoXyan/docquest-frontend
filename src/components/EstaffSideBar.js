@@ -10,31 +10,18 @@ function EstaffSideBar({ onFilterChange }) {
     // Helper function to check if the pathname is related to a specific section
     const isPathActive = (path) => location.pathname.startsWith(path);
 
-    // Logout function to clear the session
     const handleLogout = async () => {
-        console.log('Logging out...'); // Debugging log
-        const token = localStorage.getItem('token');  // Get token from localStorage
-        if (!token) {
-            console.log("No token found. User might be already logged out.");
-            navigate('/login');
-            return;
-        }
-
+        const token = localStorage.getItem('token');
         try {
-            // Make API call to logout
-            await axios.post('https://docquest-production.up.railway.app/auth/token/logout/', {}, {
+            await axios.post('https://web-production-4b16.up.railway.app/auth/token/logout/', {}, {
                 headers: {
                     'Authorization': `Token ${token}`,
                 },
             });
-            console.log("Logout successful.");
         } catch (error) {
-            // Catch any errors during logout process
             console.error("Logout failed:", error);
         }
-
-        // Clear local storage and navigate to login page
-        localStorage.removeItem('token');
+        localStorage.clear();
         navigate('/login');
     };
 

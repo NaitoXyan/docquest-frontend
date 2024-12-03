@@ -20,6 +20,7 @@ const EditProposalForm = () => {
   const storedFirstname = JSON.parse(localStorage.getItem('firstname'));
   const storedLastname = JSON.parse(localStorage.getItem('lastname'));
   const username = storedFirstname + " " + storedLastname;
+  const [selectedProjectType, setSelectedProjectType] = useState(null);
   const [regions, setRegions] = useState([]);
   const [province, setProvince] = useState([]);
   const [city, setCity] = useState([]);
@@ -27,6 +28,7 @@ const EditProposalForm = () => {
   const [error, setError] = useState([]);
   const [proponents, setProponents] = useState([]);
   const [programCategory, setProgramCategory] = useState([]);
+  const [pickedProgramCategory, setPickedProgramCategory] = useState([]);
   const [projectCategory, setProjectCategory] = useState([]);
   const [campus, setCampus] = useState([]);
   const [college, setCollege] = useState([]);
@@ -197,6 +199,9 @@ const EditProposalForm = () => {
         userID: response.data.userID.userID,
         agency: response.data.agency.agencyID ? [response.data.agency.agencyID] : [],
         proponents: response.data.proponents.map(proponent => proponent.userID),
+        programCategory: response.data.programCategory.map(programCategory => programCategory.programCategoryID),
+        projectCategory: response.data.projectCategory.map(projectCategory => projectCategory.projectCategoryID),
+        
         region: response.data.projectLocationID.barangay.city.province.region.regionID,
         province: response.data.projectLocationID.barangay.city.province.provinceID,
         city: response.data.projectLocationID.barangay.city.cityID,
@@ -732,6 +737,7 @@ const EditProposalForm = () => {
     });
   };
 
+
   // Handle changes in budget items
   const handleBudgetChange = (index, field, value) => {
     const updatedBudgetRequirements = [...formData.budgetRequirements];
@@ -974,7 +980,7 @@ const EditProposalForm = () => {
     }));
   };
 
-  // Fetch colleges on component mount
+  // Fetch colleges on component mount    
   useEffect(() => {
     const fetchCampus = async () => {
       try {
@@ -1243,6 +1249,24 @@ const EditProposalForm = () => {
     }));
   }, [formData.program, formData.college, program, college]);
 
+  useEffect(() => {
+    // Assuming you're getting the project type from somewhere (e.g., previous data, API, etc.)
+    const previousProjectType = "New Project";
+
+    // Find the corresponding option
+    const initialSelectedOption = projectTypeOptions.find(
+      option => option.value === previousProjectType
+    );
+
+    // Set the selected value
+    setSelectedProjectType(initialSelectedOption);
+  }, []);
+
+
+  const handleProjectTypeChange = (selectedOption) => {
+    setSelectedProjectType(selectedOption);
+  };
+
   return (
     <div className="flex flex-col mt-14 px-10">
       <h1 className="text-2xl font-semibold mb-5 mt-3">
@@ -1279,7 +1303,7 @@ const EditProposalForm = () => {
                 </span>
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
-              <CreatableSelect
+              <Select
                 required
                 options={
                   programCategory.map((category) => ({
@@ -1328,13 +1352,10 @@ const EditProposalForm = () => {
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
               <Select
-                id="projectType"
-                name="projectType"
-                value={projectTypeOptions.find((option) => option.value === formData.projectType)} // Find the selected option
-                onChange={handleProjTypeChange}
+                value={selectedProjectType}
+                onChange={handleProjectTypeChange}
                 options={projectTypeOptions}
-                className="w-full rounded"
-                placeholder="Select a project type"
+                placeholder="Select Project Type"
               />
             </div>
 

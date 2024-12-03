@@ -1002,11 +1002,11 @@ const MyDocument = ({ projectID }) => {
                 <Text>No objectives available</Text>
               )}
             </Text>
-            <View style={[{flexDirection: 'row'}]}>
+            <View style={[{ flexDirection: 'row' }]}>
               <Text style={[{ fontFamily: 'ArialB' }]}>
                 III. Project Component
               </Text>
-              <Text style={[{paddingLeft: 3}]}>
+              <Text style={[{ paddingLeft: 3 }]}>
                 (i.e. Training Design and Content)
               </Text>
             </View>
@@ -1122,7 +1122,7 @@ const MyDocument = ({ projectID }) => {
                   .map((teamItem, index) => {
                     const label = String.fromCharCode(97 + index); // generates a, b, c, d, etc.
                     return (
-                      <Text key={index} style={[{ paddingBottom: '1%', textIndent: 20}]}>
+                      <Text key={index} style={[{ paddingBottom: '1%', textIndent: 20 }]}>
                         {`${label}. ${teamItem.name}`}
                       </Text>
                     );
@@ -1610,7 +1610,7 @@ const MyDocument = ({ projectID }) => {
                 {loadingOfTrainers.map((trainer, index) => (
                   <View key={index} style={{ flexDirection: 'row' }}>
                     {/* Faculty Name */}
-                    <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1, width: '15%' }]}>
+                    <View style={[styles.tableColthree, { padding: 1, borderLeft: 1, borderBottom: 1, width: '15%' }]}>
                       <Text>{trainer.faculty}</Text>
                     </View>
                     {/* Training Load */}
@@ -1618,22 +1618,21 @@ const MyDocument = ({ projectID }) => {
                       <Text>{trainer.trainingLoad}</Text>
                     </View>
                     {/* Hours */}
-                    <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1, width: '10%' }]}>
+                    <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1, width: '10%', alignItems: 'center', justifyContent: 'center'}]}>
                       <Text>{trainer.hours}</Text>
                     </View>
                     {/* Budget */}
-                    <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1, width: '30%' }]}>
-                      <View style={{ flexDirection: 'row' }}>
-                        <View style={[styles.tableColtwo, { borderRight: 1 }]}>
+                    <View style={[styles.tableColthree, { flexDirection: 'row', borderLeft: 1, borderBottom: 1, width: '30%' }]}>
+                      <View style={{ flexDirection: 'row' , width: '50%', borderRight:  1, alignItems: 'center', justifyContent: 'center'}}>
                           <Text>{trainer.ustpBudget?.toLocaleString()}</Text>
-                        </View>
-                        <View style={styles.tableColtwo}>
-                          <Text>{trainer.agencyBudget?.toLocaleString()}</Text>
-                        </View>
                       </View>
+                      <View style={{ flexDirection: 'row' , width: '50%', alignItems: 'center', justifyContent: 'center'}}>
+                          <Text>{trainer.agencyBudget?.toLocaleString()}</Text>
+                      </View>
+
                     </View>
                     {/* Row Total */}
-                    <View style={[styles.tableColthree, { border: 1, borderTop: 0, width: '15%' }]}>
+                    <View style={[styles.tableColthree, { border: 1, borderTop: 0, width: '15%' , alignItems: 'center', justifyContent: 'center'}]}>
                       <Text>
                         {(Number(trainer.ustpBudget || 0) + Number(trainer.agencyBudget || 0)).toLocaleString()}
                       </Text>

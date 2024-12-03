@@ -125,7 +125,7 @@ const Topbar = () => {
           className="w-8 h-8 rounded-full mr-3"
         />
         <div>
-          <Link to="/profile">
+          {/* <Link to="/profile"> */}
             <h1 className="text-sm w-44 text-truncate font-medium">{firstname} {lastname}</h1>
             <h2
               className="text-xs text-gray-500 text-truncate"
@@ -134,7 +134,7 @@ const Topbar = () => {
               {formatRoles()}
             </h2>
 
-          </Link>
+          {/* </Link> */}
         </div>
       </div>
     </div>

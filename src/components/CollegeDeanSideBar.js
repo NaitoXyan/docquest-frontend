@@ -78,6 +78,18 @@ function CollegeDeanSidebar({ onFilterChange }) {
 
                     <li>
                         <NavLink
+                            to="/college-dean"
+                            className={({ isActive }) =>
+                                `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                }`
+                            }
+                        >
+                            Create Project
+                        </NavLink>
+                    </li>
+
+                    <li>
+                        <NavLink
                             to="/college-dean-review-list/pending/project"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'

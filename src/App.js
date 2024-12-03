@@ -70,6 +70,7 @@ import DirectorMOAReviewList from "./pages/director/DirectorMOAReviewList";
 import DirectorReviewMOA from "./pages/director/DirectorReviewMOA";
 import VPALAMOAReviewList from "./pages/vpala/VPALAMOAReviewList";
 import VPALAReviewMOA from "./pages/vpala/VPALAReviewMOA";
+import CollegeDeanProposalForm from "./pages/collegeDean/CollegeDeanProposalForm";
 
 function App() {
   return (
@@ -100,6 +101,7 @@ function App() {
 
         {/* College Dean routes */}
         <Route path="/college-dean" element={<CollegeDeanDashboard/>}/>
+        <Route path="/college-dean-create-project" element={<CollegeDeanProposalForm/>}/>
         <Route path="/college-dean-review-list/:status/:document" element={<CollegeDeanReviewList/>}/>
         <Route path="/college-dean-review-project/:reviewID/:projectID" element={<CollegeDeanReviewProject/>}/>
 

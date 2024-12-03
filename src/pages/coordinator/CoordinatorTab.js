@@ -1,9 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "../../components/Sidebar";
 import Topbar from "../../components/Topbar";
 import DocumentsTable from "../../components/DocumentsTable";
+import { useNavigate } from "react-router-dom";
 
 const CoordinatorTab = () => {
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token');
+    useEffect(() => {
+      if (!token) {
+          localStorage.clear();
+          navigate('/login', { replace: true });
+          return;
+      }
+    }, [token]);
+
     return (
         <div className="bg-gray-200 min-h-screen flex">
             <div className="w-1/5 fixed h-full">

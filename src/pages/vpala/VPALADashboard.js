@@ -37,7 +37,7 @@ const VPALADashboard = () => {
                 // Fetch MOA reviews data from the API
                 const response = await axios({
                     method: 'get',
-                    url: 'http://127.0.0.1:8000/get_moa_reviews',
+                    url: 'https://web-production-4b16.up.railway.app/get_moa_reviews',
                     headers: {
                         'Authorization': `Token ${token}`,
                         'Content-Type': 'application/json',

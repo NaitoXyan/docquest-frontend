@@ -10,12 +10,21 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import StepContent from '@mui/material/StepContent';
 import Typography from '@mui/material/Typography';
-import CoordinatorSidebar from "../../components/CoordinatorSideBar";
+import CoordinatorSidebar from "../../components/CoordinatorSideBar"
 
 const ProjectProgressStep = ({ projectID }) => {
   const [reviews, setReviews] = useState([]);
   const [activeStep, setActiveStep] = useState(0);
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
 
   // Group reviews by college
   const groupByCollege = (reviews) => {
@@ -34,7 +43,7 @@ const ProjectProgressStep = ({ projectID }) => {
     const fetchProjectReviews = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/get_reviews_with_projectID/${projectID}/`,
+          `https://web-production-4b16.up.railway.app/get_reviews_with_projectID/${projectID}/`,
           {
             headers: { Authorization: `Token ${token}` },
           }

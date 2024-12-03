@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import ProjLeadSideBar from '../../components/ProjLeadSideBar';
 import Topbar from '../../components/Topbar';
 import Profile from '../../components/Profile';
+import { useNavigate } from 'react-router-dom';
 
 const AdminProfilePage = () => {
   const eStaff = {
@@ -14,6 +15,16 @@ const AdminProfilePage = () => {
     role: 'Administrator',
     avatar: 'https://via.placeholder.com/150',
   };
+
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
 
   return (
     <div className="bg-gray-200 min-h-screen flex">

@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
-import ProjLeadSidebar from "../../components/ProjLeadSideBar";
 import Topbar from "../../components/Topbar";
-import EditMOAForm from "../../components/EditMoaForm";
-import { useNavigate, useParams } from "react-router-dom";
+import ProposalFormFirstPage from "../../components/ProposalFormFirstPage";
+import CollegeDeanSidebar from "../../components/CollegeDeanSideBar";
+import { useNavigate } from "react-router-dom";
 
-const ProjLeadEditMoaForm = () => {
-  const { moaID } = useParams();
+const CollegeDeanProposalForm = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   useEffect(() => {
@@ -20,16 +19,16 @@ const ProjLeadEditMoaForm = () => {
     <div className="bg-gray-200 min-h-screen flex">
       {/* Sidebar */}
       <div className="w-1/5 fixed h-full">
-        <ProjLeadSidebar />
+        <CollegeDeanSidebar />
       </div>
 
       {/* Main Content */}
       <div className="flex-1 ml-[20%]">
         <Topbar />
-        <EditMOAForm moaID={moaID} />
+        <ProposalFormFirstPage />
       </div>
     </div>
   );
 };
 
-export default ProjLeadEditMoaForm;
+export default CollegeDeanProposalForm;

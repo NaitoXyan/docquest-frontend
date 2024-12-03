@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import EstaffSideBar from "../../components/EstaffSideBar";
 import Topbar from "../../components/Topbar";
 import ProjectPDFViewer from "../../components/ProjectPDFViewer";
+import { useNavigate } from "react-router-dom";
 // import { Document, Page } from 'react-pdf'; // Commenting out the imports
 // import 'react-pdf/dist/esm/Page/AnnotationLayer.css'; // Commenting out CSS import
 
@@ -11,6 +12,15 @@ const EstaffViewDocument = ({ projectLeader, documentType, documentDate, pdfFile
   // const onDocumentLoadSuccess = ({ numPages }) => {
   //   setNumPages(numPages);
   // };
+  const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
 
   const handleDownload = () => {
     const link = document.createElement('a');

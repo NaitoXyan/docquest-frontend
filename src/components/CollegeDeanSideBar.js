@@ -40,7 +40,7 @@ function CollegeDeanSidebar({ onFilterChange }) {
     const handleLogout = async () => {
         const token = localStorage.getItem('token');
         try {
-            await axios.post('http://127.0.0.1:8000/auth/token/logout/', {}, {
+            await axios.post('https://web-production-4b16.up.railway.app/auth/token/logout/', {}, {
                 headers: {
                     'Authorization': `Token ${token}`,
                 },
@@ -73,6 +73,18 @@ function CollegeDeanSidebar({ onFilterChange }) {
                             }
                         >
                             Dashboard
+                        </NavLink>
+                    </li>
+
+                    <li>
+                        <NavLink
+                            to="/college-dean-create-project"
+                            className={({ isActive }) =>
+                                `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'
+                                }`
+                            }
+                        >
+                            Create Project
                         </NavLink>
                     </li>
 

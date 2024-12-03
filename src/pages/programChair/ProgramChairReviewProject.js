@@ -43,7 +43,7 @@ const ProgramChairReviewProject = () => {
     try {
       const response = await axios({
         method: "post",
-        url: `http://127.0.0.1:8000/review_project`,
+        url: `https://web-production-4b16.up.railway.app/review_project`,
         headers: {
            Authorization: `Token ${token}`,
           "Content-Type": "application/json"

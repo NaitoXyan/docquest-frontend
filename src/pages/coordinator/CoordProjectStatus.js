@@ -18,9 +18,18 @@ const CoordProjectStatus = () => {
     const navigate = useNavigate();
     const { statusFilterParam } = useParams();
 
+    const token = localStorage.getItem('token');
+    useEffect(() => {
+      if (!token) {
+          localStorage.clear();
+          navigate('/login', { replace: true });
+          return;
+      }
+    }, [token]);
+
     useEffect(() => {
         const token = localStorage.getItem('token');
-        axios.get(`http://127.0.0.1:8000/get_all_projects_of_program`, {
+        axios.get(`https://web-production-4b16.up.railway.app/get_all_projects_of_program`, {
             headers: {
                 'Authorization': `Token ${token}`,
                 'Content-Type': 'application/json',

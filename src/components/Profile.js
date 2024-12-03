@@ -40,7 +40,7 @@ const UserProfile = () => {
     }
     console.log(userID);
     // Fetch user details
-    axios.get('http://127.0.0.1:8000/get_user_details', {
+    axios.get('https://web-production-4b16.up.railway.app/get_user_details', {
       headers: {
         'Authorization': `Token ${token}`,
       }
@@ -114,7 +114,7 @@ const UserProfile = () => {
       payload.password = formData.password;
     }
 
-    axios.patch(`http://127.0.0.1:8000/edit_user_details/${userID}/`, payload, {
+    axios.patch(`https://web-production-4b16.up.railway.app/edit_user_details/${userID}/`, payload, {
       headers: {
         'Authorization': `Token ${token}`,
         'Content-Type': 'application/json',

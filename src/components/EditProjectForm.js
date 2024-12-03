@@ -183,7 +183,7 @@ const EditProposalForm = () => {
   const fetchData = async () => {
     try {
       console.log("Fetching data using projectID:", projectID);
-      const response = await axios.get(`http://127.0.0.1:8000/get_project/${projectID}/`, {
+      const response = await axios.get(`https://web-production-4b16.up.railway.app/get_project/${projectID}/`, {
         headers: {
           'Authorization': `Token ${token}`,
           'Content-Type': 'application/json',
@@ -271,7 +271,7 @@ const EditProposalForm = () => {
     try {
       const response = await axios({
         method: 'put',
-        url: `http://127.0.0.1:8000/edit_project/${projectID}/`,
+        url: `https://web-production-4b16.up.railway.app/edit_project/${projectID}/`,
         headers: {
           'Authorization': `Token ${token}`,
           'Content-Type': 'application/json',
@@ -646,7 +646,7 @@ const EditProposalForm = () => {
   useEffect(() => {
     const fetchProgramCategory = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/get_programCategory");
+        const response = await axios.get("https://web-production-4b16.up.railway.app/get_programCategory");
         setProgramCategory(response.data);
       } catch (error) {
         console.error('Error fetching proponents:', error);
@@ -680,7 +680,7 @@ const EditProposalForm = () => {
   useEffect(() => {
     const fetchProjectCategory = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/get_projectCategory");
+        const response = await axios.get("https://web-production-4b16.up.railway.app/get_projectCategory");
         setProjectCategory(response.data);
       } catch (error) {
         console.error('Error fetching proponents:', error);
@@ -786,7 +786,7 @@ const EditProposalForm = () => {
   useEffect(() => {
     const fetchProponents = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/get_users_exclude_roles");
+        const response = await axios.get("https://web-production-4b16.up.railway.app/get_users_exclude_roles");
         setProponents(response.data);
       } catch (error) {
         console.error('Error fetching proponents:', error);
@@ -800,7 +800,7 @@ const EditProposalForm = () => {
   useEffect(() => {
     const fetchAgencies = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/get_agencies');
+        const response = await axios.get('https://web-production-4b16.up.railway.app/get_agencies');
         setAgencies(response.data);
       } catch (error) {
         console.error('Error fetching agencies:', error);
@@ -828,7 +828,7 @@ const EditProposalForm = () => {
 
     setIsSubmitting(true);
     try {
-      const response = await axios.post('http://127.0.0.1:8000/create_agency', {
+      const response = await axios.post('https://web-production-4b16.up.railway.app/create_agency', {
         agencyName: newAgencyName,
       });
 
@@ -866,7 +866,7 @@ const EditProposalForm = () => {
   useEffect(() => {
     const fetchRegions = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/get_regions');
+        const response = await axios.get('https://web-production-4b16.up.railway.app/get_regions');
         setRegions(response.data);
       } catch (error) {
         console.error('Error fetching regions:', error);
@@ -885,7 +885,7 @@ const EditProposalForm = () => {
       }
 
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/get_provinces/${formData.region}`);
+        const response = await axios.get(`https://web-production-4b16.up.railway.app/get_provinces/${formData.region}`);
         setProvince(response.data);
         setError(''); // Clear error when provinces are successfully fetched
       } catch (error) {
@@ -905,7 +905,7 @@ const EditProposalForm = () => {
       }
 
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/get_cities/${formData.province}`);
+        const response = await axios.get(`https://web-production-4b16.up.railway.app/get_cities/${formData.province}`);
         setCity(response.data);
         setError('');
       } catch (error) {
@@ -925,7 +925,7 @@ const EditProposalForm = () => {
       }
 
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/get_barangays/${formData.city}`);
+        const response = await axios.get(`https://web-production-4b16.up.railway.app/get_barangays/${formData.city}`);
         setBarangay(response.data);
         setError('');
       } catch (error) {
@@ -978,7 +978,7 @@ const EditProposalForm = () => {
   useEffect(() => {
     const fetchCampus = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/get_campuses');
+        const response = await axios.get('https://web-production-4b16.up.railway.app/get_campuses');
         setCampus(response.data);
       } catch (error) {
         console.error('Error fetching campus:', error);
@@ -1014,7 +1014,7 @@ const EditProposalForm = () => {
       }
 
       try {
-        const response = await axios.post('http://127.0.0.1:8000/get_colleges/', {
+        const response = await axios.post('https://web-production-4b16.up.railway.app/get_colleges/', {
           campusIDs: formData.campus,
         });
         setCollege(response.data);
@@ -1059,7 +1059,7 @@ const EditProposalForm = () => {
       }
 
       try {
-        const response = await axios.post('http://127.0.0.1:8000/get_programs/', {
+        const response = await axios.post('https://web-production-4b16.up.railway.app/get_programs/', {
           collegeIDs: formData.college,
         });
         setProgram(response.data);

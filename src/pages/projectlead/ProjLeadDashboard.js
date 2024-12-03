@@ -11,10 +11,19 @@ const ProjLeadDashboard = () => {
     const userID = localStorage.getItem('userid');
     const navigate = useNavigate();
 
+    const token = localStorage.getItem('token');
+    useEffect(() => {
+      if (!token) {
+          localStorage.clear();
+          navigate('/login', { replace: true });
+          return;
+      }
+    }, [token]);
+
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/get_project_status/${userID}/`);
+                const response = await fetch(`https://web-production-4b16.up.railway.app/get_project_status/${userID}/`);
                 const data = await response.json();
 
                 // Sort projects by dateCreated in descending order (latest projects first)

@@ -15,10 +15,18 @@ const PickProjCreateMoa = () => {
   const itemsPerPage = 8;
   const userID = localStorage.getItem('userid');
   const navigate = useNavigate();
+  const token = localStorage.getItem('token');
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
 
   // Fetch data with GET request
   useEffect(() => {
-    axios.get(`http://127.0.0.1:8000/get_project_status/${userID}/`)
+    axios.get(`https://web-production-4b16.up.railway.app/get_project_status/${userID}/`)
       .then(response => {
         // Filter projects with status 'approved' (case-insensitive)
         const approvedProjects = response.data

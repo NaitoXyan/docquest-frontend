@@ -16,9 +16,17 @@ const ProjLeadProjectStatus = () => {
   const userID = localStorage.getItem('userid');
   const navigate = useNavigate();
   const { statusFilterParam } = useParams();
+  const token = localStorage.getItem('token');
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
 
   useEffect(() => {
-    axios.get(`http://127.0.0.1:8000/get_project_status/${userID}/`)
+    axios.get(`https://web-production-4b16.up.railway.app/get_project_status/${userID}/`)
       .then(response => {
         const sortedProjects = response.data.sort((a, b) => new Date(b.dateCreated) - new Date(a.dateCreated));
 

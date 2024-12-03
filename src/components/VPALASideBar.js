@@ -23,7 +23,7 @@ function VPALASideBar({ onFilterChange }) {
     const handleLogout = async () => {
         const token = localStorage.getItem('token');
         try {
-            await axios.post('https://docquest-production.up.railway.app/auth/token/logout/', {}, {
+            await axios.post('https://web-production-4b16.up.railway.app/auth/token/logout/', {}, {
                 headers: {
                     'Authorization': `Token ${token}`,
                 },
@@ -31,7 +31,7 @@ function VPALASideBar({ onFilterChange }) {
         } catch (error) {
             console.error("Logout failed:", error);
         }
-        localStorage.removeItem('token');
+        localStorage.clear();
         navigate('/login');
     };
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Topbar from "../../components/Topbar";
 import EstaffSideBar from "../../components/EstaffSideBar";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 const EstaffDashboard = () => {
     const [users, setUsers] = useState([]);
@@ -11,6 +11,15 @@ const EstaffDashboard = () => {
     const [moaMouCount, setMoaMouCount] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const usersPerPage = 4;
+    const navigate = useNavigate();
+    const token = localStorage.getItem('token');
+    useEffect(() => {
+      if (!token) {
+          localStorage.clear();
+          navigate('/login', { replace: true });
+          return;
+      }
+    }, [token]);
 
     useEffect(() => {
         const fetchData = async () => {

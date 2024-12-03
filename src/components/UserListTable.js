@@ -25,7 +25,7 @@ const UserListTable = () => {
     const fetchUsers = useCallback(async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch("http://127.0.0.1:8000/users_by_program", {
+            const response = await fetch("https://web-production-4b16.up.railway.app/users_by_program", {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Token ${token}`,
@@ -57,7 +57,7 @@ const UserListTable = () => {
     const fetchRoles = useCallback(async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch("http://127.0.0.1:8000/coordinator_get_roles", {
+            const response = await fetch("https://web-production-4b16.up.railway.app/coordinator_get_roles", {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Token ${token}`,
@@ -133,7 +133,7 @@ const UserListTable = () => {
             }
 
             await axios.patch(
-                `http://127.0.0.1:8000/edit_user_details/${currentUser.userID}/`,
+                `https://web-production-4b16.up.railway.app/edit_user_details/${currentUser.userID}/`,
                 payload,
                 {
                     headers: {
@@ -163,7 +163,7 @@ const UserListTable = () => {
             };
     
             await axios.patch(
-                `http://127.0.0.1:8000/coordinator_edit_user_role`,
+                `https://web-production-4b16.up.railway.app/coordinator_edit_user_role`,
                 payload,
                 {
                     headers: {

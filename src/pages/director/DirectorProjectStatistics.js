@@ -4,6 +4,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import DirectorSidebar from '../../components/DirectorSidebar';
 import Topbar from '../../components/Topbar';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from 'react-router-dom';
 
 const DirectorProjectStatistics = () => {
   const token = localStorage.getItem('token');
@@ -35,10 +36,19 @@ const DirectorProjectStatistics = () => {
     status: 'all'
   });
 
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!token) {
+        localStorage.clear();
+        navigate('/login', { replace: true });
+        return;
+    }
+  }, [token]);
+
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/get_all_projects', {
+        const response = await axios.get('https://web-production-4b16.up.railway.app/get_all_projects', {
           headers: {
             'Authorization': `Token ${token}`,
             'Content-Type': 'application/json'

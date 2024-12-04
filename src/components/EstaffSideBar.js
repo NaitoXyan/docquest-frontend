@@ -57,7 +57,7 @@ function EstaffSideBar({ onFilterChange }) {
                     </li>
                     <li>
                         <NavLink
-                            to="/estaff-project-view-list/all/project"
+                            to="/estaff-project-view-list/approved/project"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
                         >

@@ -101,8 +101,9 @@ const EstaffMOAViewList = () => {
   };
 
   const MOAPDFviewer = (moaID) => {
-    navigate(`/moa-pdf-viewer/${moaID}`)
-  }
+    const url = `${window.location.origin}/moa-pdf-viewer/${moaID}`;
+    window.open(url, '_blank'); // Opens the URL in a new tab
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -218,10 +219,10 @@ const EstaffMOAViewList = () => {
                         </td>
                         <td className="px-3 sm:px-6 py-4 text-center text-gray-700">
                           <button
-                            onClick={() => reviewMoa(moa.moaID)}
+                            onClick={() => MOAPDFviewer(moa.moaID)}
                             className={`px-4 py-1.5 text-white rounded-md text-sm bg-blue-500`}
                           >
-                            Review
+                            View
                           </button>
                         </td>
                       </tr>

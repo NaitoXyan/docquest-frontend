@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import EstaffSideBar from '../../components/EstaffSideBar';
 import Topbar from '../../components/Topbar';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const EstaffScancopy = () => {
   const [file, setFile] = useState(null);
@@ -9,33 +10,68 @@ const EstaffScancopy = () => {
   const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
+  const { content_type_name, source_id } = useParams();
+
   useEffect(() => {
     if (!token) {
-        localStorage.clear();
-        navigate('/login', { replace: true });
-        return;
+      localStorage.clear();
+      navigate('/login', { replace: true });
+      return;
     }
-  }, [token]);
+  }, [token, navigate]);
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
     setMessage('');
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!file) {
       setMessage('Please select a file to upload.');
       return;
     }
 
-    setIsUploading(true);
+    // Validate content_type_name and source_id
+    if (!content_type_name || !source_id) {
+      setMessage('Content type or source ID is missing.');
+      return;
+    }
 
-    // Simulated upload process
-    setTimeout(() => {
+    // Validate file type
+    const allowedTypes = [
+      'application/pdf', 
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
+    if (!allowedTypes.includes(file.type)) {
+      setMessage('Only PDF and DOCX files are allowed.');
+      return;
+    }
+
+    setIsUploading(true);
+    setMessage('');
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('content_type_name', content_type_name);
+    formData.append('source_id', source_id);
+
+    try {
+      const response = await axios.post('https://web-production-4b16.up.railway.app/upload-document/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Token ${token}`
+        }
+      });
+
+      setMessage(`File "${file.name}" uploaded successfully. Document ID: ${response.data.document_id}`);
+      setFile(null);
+      document.getElementById('file-upload').value = ''; // Clear file input
+    } catch (error) {
+      const errorMessage = error.response?.data?.details || 'Upload failed. Please try again.';
+      setMessage(errorMessage);
+    } finally {
       setIsUploading(false);
-      setMessage(`File "${file.name}" uploaded successfully.`);
-      setFile(null); // Clear the selected file after upload
-    }, 1500);
+    }
   };
 
   return (
@@ -53,7 +89,7 @@ const EstaffScancopy = () => {
             Upload Copy
           </h1>
           <p className="text-gray-600 mb-6">
-            Use this page to upload scanned documents related to project proposals or agreements. Only PDF, JPG, and PNG files are allowed.
+            Use this page to upload scanned documents related to project proposals or agreements. Only PDF and DOCX files are allowed.
           </p>
 
           <div className="bg-white shadow rounded-lg p-6">
@@ -68,7 +104,7 @@ const EstaffScancopy = () => {
               <input
                 id="file-upload"
                 type="file"
-                accept=".pdf,.jpg,.png"
+                accept=".pdf, .docx"
                 onChange={handleFileChange}
                 className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
               />

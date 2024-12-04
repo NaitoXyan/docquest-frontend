@@ -133,12 +133,13 @@ function App() {
         {/* EStaff routes */}
         <Route path="/vpalamemolist" element={<VPALAMemoList/>}/>
 
-         {/* ESTAFF ROUTING */}
-         <Route path="/estaff" element={<EstaffDashboard />} />
-         <Route path="/estaff-project-view-list/:status/:document" element={<EstaffReviewList />} /> 
-         <Route path="/estaff-moa-view-list/:status/:document" element={<EstaffMOAViewList />} /> 
-         <Route path="/estaff-userlist" element={<EstaffUserList />} />
-         <Route path="estaff-project-statistics" element={<EstaffProjectStatistics/>}/>
+        {/* ESTAFF ROUTING */}
+        <Route path="/estaff" element={<EstaffDashboard />} />
+        <Route path="/estaff-project-view-list/:status/:document" element={<EstaffReviewList />} /> 
+        <Route path="/estaff-moa-view-list/:status/:document" element={<EstaffMOAViewList />} /> 
+        <Route path="/estaff-userlist" element={<EstaffUserList />} />
+        <Route path="estaff-project-statistics" element={<EstaffProjectStatistics/>}/>
+        {<Route path="/estaff-submit-scanned-copy/:content_type_name/:source_id" element={<EstaffScancopy />} />}
 
         <Route path="/documents-list" element={<EStaffDocumentsList />} />  {/* Add this line */}
         <Route path="/view-download/:id" element={<ProjectPDFViewer />} />  {/* Add this line */}
@@ -149,7 +150,6 @@ function App() {
         <Route path="/shared-proposal" element={<SharedProposal />} />
         <Route path="/load-trainers" element={<LoadTrainers />} />
         <Route path="/moa-mou" element={<MoaMou />} />
-        {<Route path="/scan-copy" element={<EstaffScancopy />} />}
         {/* <Route path="/estaff/profile-estaff" element={<EStaffProfilePage />} />  Add this line */}
 
         {/* COORDINATOR ROUTES */}

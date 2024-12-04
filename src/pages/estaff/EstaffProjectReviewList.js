@@ -9,7 +9,7 @@ const EstaffReviewList = () => {
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('approved');
   const [searchTerm, setSearchTerm] = useState('');
   const [characterLimit, setCharacterLimit] = useState(42);
   const itemsPerPage = 8;
@@ -107,6 +107,14 @@ const EstaffReviewList = () => {
     window.open(pdfUrl, '_blank');
   };
 
+  const handleNavigateScannedCopy = (content_type_name, source_id) => {
+    navigate(`/estaff-submit-scanned-copy/${content_type_name}/${source_id}`);
+  };
+
+  const handleNavigateSubmittedScannedCopy = (documentID) => {
+    navigate(`/estaff-view-scanned-copy/${documentID}`);
+  };
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProjects = filteredProjects.slice(indexOfFirstItem, indexOfLastItem);
@@ -147,6 +155,48 @@ const EstaffReviewList = () => {
     window.addEventListener('resize', updateCharacterLimit);
     return () => window.removeEventListener('resize', updateCharacterLimit);
   }, []);
+
+  const handleViewScannedCopy = async (documentID) => {
+    try {
+      // Fetch document from the server
+      const response = await axios.get(`https://web-production-4b16.up.railway.app/estaff_get_document/${documentID}/`, {
+        headers: { 'Authorization': `Token ${token}` },
+      });
+  
+      const document = response.data;
+  
+      // Check if the document has a scanned copy
+      if (!document.haveScannedCopy) {
+        alert('Scanned copy is not available.');
+        return;
+      }
+  
+      // Get the file extension or assume it's PDF
+      const fileExtension = document.fileName.split('.').pop().toLowerCase() || 'pdf';
+      const fileData = document.fileData;  // This is the Base64 encoded data
+  
+      if (fileExtension === 'pdf') {
+        // If PDF, open in a new browser tab
+        const fileBlob = new Blob([new Uint8Array(atob(fileData).split('').map(char => char.charCodeAt(0)))], { type: 'application/pdf' });
+        const fileURL = URL.createObjectURL(fileBlob);
+        window.open(fileURL, '_blank');
+      } else if (fileExtension === 'docx') {
+        // If DOCX, trigger a direct file download
+        const fileBlob = new Blob([new Uint8Array(atob(fileData).split('').map(char => char.charCodeAt(0)))], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+        const fileURL = URL.createObjectURL(fileBlob);
+        const link = document.createElement('a');
+        link.href = fileURL;
+        link.download = document.fileName;
+        link.click();
+      } else {
+        alert('Unsupported document type.');
+      }
+  
+    } catch (error) {
+      console.error('Error retrieving document:', error);
+      alert('Failed to fetch document.');
+    }
+  };  
 
   return (
     <div className="bg-gray-200 min-h-screen flex">
@@ -194,11 +244,12 @@ const EstaffReviewList = () => {
                 <thead className="bg-gray-100">
                   <tr>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Leader</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Unique Code</th>
                     <th className="px-3 sm:px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Project Title</th>
                     <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Date Submitted</th>
                     <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Status</th>
-                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Action</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">View</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Submit Scanned Copy</th>
+                    <th className="px-3 sm:px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">View Scanned Copy</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -208,7 +259,6 @@ const EstaffReviewList = () => {
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                           {`${project.projectUser?.firstname || 'N/A'} ${project.projectUser?.lastname || ''}`}
                         </td>
-                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">{project.uniqueCode}</td>
                         <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                           {project.projectTitle && project.projectTitle.length > characterLimit
                             ? `${project.projectTitle.substring(0, characterLimit)}...`
@@ -245,6 +295,36 @@ const EstaffReviewList = () => {
                             className="bg-blue-500 text-white hover:bg-blue-600 w-36 px-4 py-1.5 rounded-md"
                           >
                             View PDF
+                          </button>
+                        </td>
+                        <td className="px-3 sm:px-6 whitespace-nowrap text-center">
+                          <button
+                            onClick={() => 
+                              project.haveScannedCopy 
+                                ? handleNavigateSubmittedScannedCopy(project.documentID) 
+                                : handleNavigateScannedCopy('project', project.projectID)
+                            }
+                            className={`w-36 px-4 py-1.5 rounded-md ${
+                              project.haveScannedCopy
+                                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                                : project.status === "approved"
+                                ? "bg-blue-500 text-white hover:bg-blue-600"
+                                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                            }`}
+                            disabled={project.haveScannedCopy || project.status !== "approved"}
+                          >
+                            {project.haveScannedCopy ? "Submitted" : "Submit"}
+                          </button>
+                        </td>
+                        <td className="px-3 sm:px-6 whitespace-nowrap text-center">
+                          <button 
+                            onClick={() => handleViewScannedCopy(project.documentID, project.haveScannedCopy, project.fileName)}
+                            className={`bg-blue-500 text-white hover:bg-blue-600 w-45 px-3 py-1.5 rounded-md ${
+                              !project.haveScannedCopy ? 'cursor-not-allowed bg-gray-300 text-gray-500' : ''
+                            }`}
+                            disabled={!project.haveScannedCopy}  // Disable button if haveScannedCopy is false
+                          >
+                            View Scanned Copy
                           </button>
                         </td>
                       </tr>

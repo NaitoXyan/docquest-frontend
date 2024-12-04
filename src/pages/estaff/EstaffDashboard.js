@@ -11,6 +11,7 @@ const EstaffDashboard = () => {
         moa: { approved: 0, pending: 0, rejected: 0 }
     });
     const [currentPage, setCurrentPage] = useState(1);
+    const [documentType, setDocumentType] = useState('project');
     const itemsPerPage = 5;
     const navigate = useNavigate();
     const [error, setError] = useState(null);
@@ -37,7 +38,7 @@ const EstaffDashboard = () => {
                 // Fetch Projects
                 const projectsResponse = await axios({
                     method: 'get',
-                    url: 'https://web-production-4b16.up.railway.app/get_all_projects',
+                    url: 'https://web-production-4b16.up.railway.app/estaff_get_all_projects',
                     headers: {
                         'Authorization': `Token ${token}`,
                         'Content-Type': 'application/json',
@@ -54,28 +55,23 @@ const EstaffDashboard = () => {
                     },
                 });
 
-                console.log('project response: ', projectsResponse.data);
-                console.log('moa response: ', moasResponse.data);
-
                 const formattedProjects = (projectsResponse.data || [])
-                    .filter(proj => proj !== null && proj !== undefined)
-                    .map((proj) => ({
-                        id: proj.projectID,  // You might need to add an index if projectID is missing
-                        fullname: proj.program && proj.program[0]?.projectUser 
-                            ? `${proj.program[0].projectUser.firstname} ${proj.program[0].projectUser.lastname}`
-                            : "N/A",
-                        documentType: "Project",
-                        projectTitle: proj.program && proj.program[0]?.projectTitle 
-                            ? proj.program[0].projectTitle 
-                            : "Untitled Document",
-                        dateCreated: proj.dateCreated
-                            ? new Date(proj.dateCreated).toISOString()
-                            : new Date().toISOString(),
-                        status: proj.status || 'pending',
-                        uniqueCode: proj.program && proj.program[0]?.uniqueCode 
-                            ? proj.program[0].uniqueCode 
-                            : 'N/A'
-                    }));
+                .filter(proj => proj !== null && proj !== undefined)
+                .map((proj, index) => ({
+                    id: proj.projectID || index,
+                    fullname: proj.projectUser?.firstname && proj.projectUser?.lastname
+                    ? `${proj.projectUser.firstname} ${proj.projectUser.lastname}` 
+                    : "N/A",
+                    documentType: "Project",
+                    projectTitle: proj?.projectTitle 
+                    ? proj.projectTitle 
+                    : "Untitled Document",
+                    dateCreated: proj.dateCreated 
+                    ? new Date(proj.dateCreated).toISOString() 
+                    : new Date().toISOString(),
+                    status: proj.status || 'pending',
+                    uniqueCode: proj.uniqueCode || 'N/A'
+                }));
 
                 const formattedMoas = (moasResponse.data || [])
                     .filter(moa => moa !== null && moa !== undefined)
@@ -142,10 +138,15 @@ const EstaffDashboard = () => {
         navigate(`/estaff-moa-view-list/${statusFilter.toLowerCase()}/${documentType}`);
     };
 
+    // Filter documents based on selected type
+    const filteredDocuments = documents.filter(doc => 
+        doc.documentType.toLowerCase() === documentType
+    );
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentDocuments = documents.slice(indexOfFirstItem, indexOfLastItem);
-    const totalPages = Math.ceil(documents.length / itemsPerPage);
+    const currentDocuments = filteredDocuments.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredDocuments.length / itemsPerPage);
 
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
@@ -166,7 +167,7 @@ const EstaffDashboard = () => {
                 );
             }
         } else {
-            // Existing ellipsis logic
+            // Existing ellipsis logic can be added here if needed
         }
 
         return pageNumbers;
@@ -238,12 +239,47 @@ const EstaffDashboard = () => {
                         </div>
                     </div>
 
-                    {/* Recent Documents Section */}
+                    {/* Document Type Toggle and Recent Documents Section */}
                     <div className="bg-white shadow-lg rounded-lg py-4 px-4 mt-4 mb-8">
-                        <h1 className="text-1xl font-semibold mb-4">RECENT DOCUMENTS</h1>
+                        {/* Document Type Toggle */}
+                        <div className="flex justify-center mb-4">
+                            <div className="bg-gray-100 rounded-lg p-1 inline-flex">
+                                <button 
+                                    onClick={() => {
+                                        setDocumentType('project');
+                                        setCurrentPage(1);
+                                    }}
+                                    className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+                                        documentType === 'project' 
+                                        ? 'bg-vlu text-white' 
+                                        : 'bg-transparent text-gray-600 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    Projects
+                                </button>
+                                <button 
+                                    onClick={() => {
+                                        setDocumentType('moa');
+                                        setCurrentPage(1);
+                                    }}
+                                    className={`px-4 py-2 rounded-lg transition-colors duration-200 ${
+                                        documentType === 'moa' 
+                                        ? 'bg-vlu text-white' 
+                                        : 'bg-transparent text-gray-600 hover:bg-gray-200'
+                                    }`}
+                                >
+                                    MOAs
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Recent Documents Section */}
+                        <h1 className="text-1xl font-semibold mb-4">
+                            RECENT {documentType.toUpperCase()} DOCUMENTS
+                        </h1>
                         {error ? (
                             <div className="text-red-500 p-4 text-center">{error}</div>
-                        ) : documents.length === 0 ? (
+                        ) : filteredDocuments.length === 0 ? (
                             <div className="text-gray-500 p-4 text-center">No documents found</div>
                         ) : (
                             <>
@@ -252,7 +288,6 @@ const EstaffDashboard = () => {
                                         <thead className="bg-gray-100">
                                             <tr>
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Owner</th>
-                                                <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Type</th>
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-600 uppercase">Document Title</th>
                                                 <th className="px-6 py-3 text-center text-xs font-bold text-gray-600 uppercase">Date Created</th>
                                                 <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase">Unique Code</th>
@@ -263,13 +298,12 @@ const EstaffDashboard = () => {
                                             {currentDocuments.map((doc, index) => (
                                                 <tr key={`${doc.documentType}-${doc.id}`} className="hover:bg-gray-50">
                                                     <td className="px-6 py-4 whitespace-nowrap">{doc.fullname}</td>
-                                                    <td className="px-6 py-4 whitespace-nowrap capitalize">{doc.documentType}</td>
                                                     <td
                                                         className="px-6 py-4 whitespace-nowrap"
                                                         title={doc.projectTitle}
                                                     >
-                                                        {doc.projectTitle.length > 20
-                                                            ? `${doc.projectTitle.slice(0, 20)}...`
+                                                        {doc.projectTitle.length > 30
+                                                            ? `${doc.projectTitle.slice(0, 30)}...`
                                                             : doc.projectTitle}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-center">
@@ -289,7 +323,7 @@ const EstaffDashboard = () => {
                                         </tbody>
                                     </table>
                                 </div>
-                                <div className="mt-1 flex justify-center items-center space-x-2">
+                                <div className="mt-4 flex justify-center items-center space-x-2">
                                     {renderPageNumbers()}
                                 </div>
                             </>

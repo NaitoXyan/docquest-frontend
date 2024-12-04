@@ -10,7 +10,7 @@ import Modal from 'react-modal';
 Modal.setAppElement('#root');
 
 const EditProposalForm = () => {
-  const { projectID } = useParams(); // Get projectID from URL
+  const { projectID } = useParams();
   const token = localStorage.getItem('token');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -36,11 +36,6 @@ const EditProposalForm = () => {
   const [nonUserProponents, setNonUserProponents] = useState([]);
   const [programChair, setProgramChair] = useState("");
   const [collegeDean, setCollegeDean] = useState("");
-  var director = "Dr. Maria Teresa M. Fajardo";
-  var vcaa = "Dr. Jocelyn B. Barbosa";
-  var vcri = "Engr. Alex L. Maureal";
-  var accountant = "Maria Rica Paje, CPA";
-  var chancellor = "Atty. Dionel O. Albina";
   const [agencies, setAgencies] = useState([]);
   const [deliverables, setDeliverables] = useState([]);
   const [isAgencyModalOpen, setIsAgencyModalOpen] = useState(false);
@@ -53,6 +48,7 @@ const EditProposalForm = () => {
   const [programChairList, setProgramChairList] = useState([]);
   const [collegeDeanList, setCollegeDeanList] = useState([]);
 
+  // Initialize formData with default values to prevent undefined errors
   const [formData, setFormData] = useState({
     userID: userID,
     programCategory: [],
@@ -90,9 +86,7 @@ const EditProposalForm = () => {
         personResponsible: ""
       }
     ],
-    projectManagementTeam: [
-
-    ],
+    projectManagementTeam: [],
     budgetRequirements: [
       {
         itemName: "",
@@ -156,24 +150,21 @@ const EditProposalForm = () => {
         faculty: "",
         trainingLoad: "",
         hours: 0,
-        ustpBudget: 0,
+        ustpBudget: 150,
         agencyBudget: 0,
         totalBudgetRequirement: 0,
       }
     ],
     signatories: [],
-
-    programChair: [], // Array to handle multiple Program Chair signatories
-    collegeDean: [],  // Array to handle multiple College Dean signatories
-    director: { name: director, title: "Director, Extension & Community Relations" },
-    vcaa: { name: vcaa, title: "Vice - Chancellor for Academic Affairs" },
-    vcri: { name: vcri, title: "Vice - Chancellor for Research and Innovation" },
-    accountant: { name: accountant, title: "Accountant III" },
-    chancellor: { name: chancellor, title: "Chancellor, USTP CDO" },
-
+    programChair: [],
+    collegeDean: [],
+    director: { name: "Dr. Maria Teresa M. Fajardo", title: "Director, Extension & Community Relations" },
+    vcaa: { name: "Dr. Jocelyn B. Barbosa", title: "Vice - Chancellor for Academic Affairs" },
+    vcri: { name: "Engr. Alex L. Maureal", title: "Vice - Chancellor for Research and Innovation" },
+    accountant: { name: "Maria Rica Paje, CPA", title: "Accountant III" },
+    chancellor: { name: "Atty. Dionel O. Albina", title: "Chancellor, USTP CDO" },
     deliverables: [],
     approvers: [],
-
     campus: [],
     college: [],
     region: '',
@@ -184,50 +175,62 @@ const EditProposalForm = () => {
 
   const fetchData = async () => {
     try {
-      console.log("Fetching data using projectID:", projectID);
       const response = await axios.get(`https://web-production-4b16.up.railway.app/get_project/${projectID}/`, {
         headers: {
           'Authorization': `Token ${token}`,
           'Content-Type': 'application/json',
         }
       });
-      console.log("Fetched data:", response.data);
+
+      if (!response.data) {
+        console.error('No data received from API');
+        return;
+      }
+
+      const hasTrainers = response.data.loadingOfTrainers?.length > 0;
+      setShowTrainers(hasTrainers);
+      setIsChecked(hasTrainers);
+
+      const mappedLoadingOfTrainers = response.data.loadingOfTrainers?.map(trainer => ({
+        faculty: trainer.faculty || '',
+        trainingLoad: trainer.trainingLoad || '',
+        hours: trainer.hours || 0,
+        ustpBudget: 150,
+        agencyBudget: trainer.agencyBudget || 0,
+        totalBudgetRequirement: (trainer.hours * 150) + (trainer.agencyBudget || 0)
+      })) || [];
 
       setFormData(prevFormData => ({
         ...prevFormData,
         ...response.data,
-        userID: response.data.userID.userID,
-        agency: response.data.agency.agencyID ? [response.data.agency.agencyID] : [],
-        proponents: response.data.proponents.map(proponent => proponent.userID),
-        programCategory: response.data.programCategory.map(programCategory => programCategory.programCategoryID),
-        projectCategory: response.data.projectCategory.map(projectCategory => projectCategory.projectCategoryID),
-        
-        region: response.data.projectLocationID.barangay.city.province.region.regionID,
-        province: response.data.projectLocationID.barangay.city.province.provinceID,
-        city: response.data.projectLocationID.barangay.city.cityID,
-        barangay: response.data.projectLocationID.barangay.barangayID,
+        userID: response.data.userID?.userID || userID,
+        agency: response.data.agency ? [response.data.agency.agencyID] : [],
+        proponents: response.data.proponents?.map(proponent => proponent.userID) || [],
+        programCategory: response.data.programCategory?.map(cat => cat.programCategoryID) || [],
+        projectCategory: response.data.projectCategory?.map(cat => cat.projectCategoryID) || [],
+        campus: response.data.campus?.map(camp => camp.campusID) || [],
+        college: response.data.college?.map(col => col.collegeID) || [],
+        program: response.data.program?.map(prog => prog.programID) || [],
+        region: response.data.projectLocationID?.barangay?.city?.province?.region?.regionID || '',
+        province: response.data.projectLocationID?.barangay?.city?.province?.provinceID || '',
+        city: response.data.projectLocationID?.barangay?.city?.cityID || '',
+        barangay: response.data.projectLocationID?.barangay?.barangayID || '',
         projectLocationID: {
-          ...prevFormData.projectLocationID,
-          street: response.data.projectLocationID.street || "",
-          barangayID: response.data.projectLocationID.barangay.barangayID || 0,
+          street: response.data.projectLocationID?.street || "",
+          barangayID: response.data.projectLocationID?.barangay?.barangayID || 0,
         },
-        programChair: {
-          ...prevFormData.programChair,
-          ...(response.data.signatories.find(signatory => signatory.title === "Program Chair") || {})
-        },
-        collegeDean: {
-          ...prevFormData.collegeDean,
-          ...(response.data.signatories.find(signatory => signatory.title === "College Dean") || {})
-        },
+        loadingOfTrainers: mappedLoadingOfTrainers,
+        projectManagementTeam: response.data.projectManagementTeam?.map(member => ({
+          name: member.name || '',
+          role: member.role || ''
+        })) || []
       }));
 
-      if (response.data.loadingOfTrainers && response.data.loadingOfTrainers.length === 0) {
-        setIsChecked(false);
-        setShowTrainers(false);
-      } else {
-        setIsChecked(true);
-        setShowTrainers(true);
-      }
+      const projectTypeValue = response.data.projectType;
+      setSelectedProjectType(
+        projectTypeOptions.find(option => option.value === projectTypeValue) || null
+      );
+
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -469,22 +472,24 @@ const EditProposalForm = () => {
   };
 
   const handleTrainerChange = (index, updatedTrainer) => {
-    const newLoadingOfTrainers = [...formData.loadingOfTrainers];
-    newLoadingOfTrainers[index] = {
-      faculty: updatedTrainer.faculty || '',
-      trainingLoad: updatedTrainer.trainingLoad || '',
-      hours: updatedTrainer.hours || 0,
-      ustpBudget: 150, // fixed value
-      agencyBudget: updatedTrainer.agencyBudget || 0,
-      totalBudgetRequirement:
-        (updatedTrainer.hours || 0) * 150 + (updatedTrainer.agencyBudget || 0)
-    };
+    setFormData(prevData => {
+      const newLoadingOfTrainers = [...(prevData.loadingOfTrainers || [])];
+      newLoadingOfTrainers[index] = {
+        faculty: updatedTrainer.faculty || '',
+        trainingLoad: updatedTrainer.trainingLoad || '',
+        hours: parseInt(updatedTrainer.hours) || 0,
+        ustpBudget: 150,
+        agencyBudget: parseInt(updatedTrainer.agencyBudget) || 0,
+        totalBudgetRequirement: (parseInt(updatedTrainer.hours) || 0) * 150 + (parseInt(updatedTrainer.agencyBudget) || 0)
+      };
 
-    setFormData(prevData => ({
-      ...prevData,
-      loadingOfTrainers: newLoadingOfTrainers
-    }));
+      return {
+        ...prevData,
+        loadingOfTrainers: newLoadingOfTrainers
+      };
+    });
   };
+
 
   const addTrainerRow = () => {
     setFormData({
@@ -1603,7 +1608,7 @@ const EditProposalForm = () => {
                 value={formData.projectManagementTeam.map((member) => ({
                   label: member.name,
                   value: member.name,
-                  role:  member.role,
+                  role: member.role,
 
                 }))}
                 onChange={(selectedOptions) => {
@@ -1692,20 +1697,18 @@ const EditProposalForm = () => {
                 }}
                 getOptionLabel={(e) => `${e.title}`}
                 isMulti
-                value={formData.campus.map((id) => {
+                value={formData.campus?.map((id) => {
                   const col = campus.find((c) => c.campusID === id);
-                  return col
-                    ? {
-                      value: col.campusID,
-                      title: col.name,
-                    }
-                    : null;
-                }).filter(Boolean)}
+                  return col ? {
+                    value: col.campusID,
+                    title: col.name,
+                  } : null;
+                }).filter(Boolean) || []}
                 onChange={(selectedOptions) => {
-                  setFormData({
-                    ...formData,
-                    campus: selectedOptions.map((option) => option.value),
-                  });
+                  setFormData(prev => ({
+                    ...prev,
+                    campus: selectedOptions?.map((option) => option.value) || []
+                  }));
                 }}
                 classNamePrefix="react-select"
                 className="w-full"
@@ -1737,6 +1740,7 @@ const EditProposalForm = () => {
                   }),
                 }}
               />
+
             </div>
 
             {/* COLLEGE */}
@@ -2006,7 +2010,7 @@ const EditProposalForm = () => {
               <select
                 required
                 name="agency"
-                value={formData.agencyName}
+                value={formData.agency?.[0] || ''} // Access first element since it's an array
                 onChange={handleAgencyFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
               >
@@ -2018,6 +2022,8 @@ const EditProposalForm = () => {
                 ))}
                 <option value="add_new_agency">+ Add New Agency</option>
               </select>
+
+
             </div>
           </div>
 
@@ -3101,7 +3107,7 @@ const EditProposalForm = () => {
                         <td className="px-4 py-2 border">
                           <textarea
                             name="trainingLoad"
-                            value={formData.loadingOfTrainers[memberIndex]?.trainingLoad || ' '}
+                            value={formData.loadingOfTrainers?.[memberIndex]?.trainingLoad || ''}
                             onChange={(e) => handleTrainerChange(memberIndex, {
                               ...formData.loadingOfTrainers[memberIndex],
                               faculty: member.name,
@@ -3110,23 +3116,22 @@ const EditProposalForm = () => {
                             required
                             className="w-full p-1 border border-gray-300 rounded resize-none"
                             placeholder="Training Load"
-                            rows="1"  // Initial row size (height of the textarea)
+                            rows="1"
                             style={{
-                              overflowY: 'hidden', // Hides vertical scrollbar
+                              overflowY: 'hidden',
                               resize: 'none',
-                              minHeight: '75px'      // Prevents manual resizing  // Ensures enough height for the placeholder
+                              minHeight: '75px'
                             }}
                             onInput={(e) => {
-                              // Adjusts the height of the textarea based on content length
-                              e.target.style.height = 'auto'; // Reset height before adjusting
-                              e.target.style.height = `${e.target.scrollHeight}px`; // Set height to scrollHeight
+                              e.target.style.height = 'auto';
+                              e.target.style.height = `${e.target.scrollHeight}px`;
                             }}
                           />
                         </td>
                         <td className="px-4 py-2 border">
                           <input
                             name="hours"
-                            value={formData.loadingOfTrainers[memberIndex]?.hours || ''}
+                            value={formData.loadingOfTrainers?.[memberIndex]?.hours || ''}
                             onChange={(e) => handleTrainerChange(memberIndex, {
                               ...formData.loadingOfTrainers[memberIndex],
                               faculty: member.name,
@@ -3151,7 +3156,7 @@ const EditProposalForm = () => {
                         <td className="px-4 py-2 border">
                           <input
                             name="agencyBudget"
-                            value={formData.loadingOfTrainers[memberIndex]?.agencyBudget || ''}
+                            value={formData.loadingOfTrainers?.[memberIndex]?.agencyBudget || ''}
                             onChange={(e) => handleTrainerChange(memberIndex, {
                               ...formData.loadingOfTrainers[memberIndex],
                               faculty: member.name,
@@ -3168,16 +3173,17 @@ const EditProposalForm = () => {
                           <input
                             name="totalBudgetRequirement"
                             value={
-                              formData.loadingOfTrainers[memberIndex]?.hours
+                              formData.loadingOfTrainers?.[memberIndex]?.hours
                                 ? formData.loadingOfTrainers[memberIndex].hours * 150 +
                                 (formData.loadingOfTrainers[memberIndex]?.agencyBudget || 0)
-                                : (formData.loadingOfTrainers[memberIndex]?.agencyBudget || 0)
+                                : (formData.loadingOfTrainers?.[memberIndex]?.agencyBudget || 0)
                             }
                             readOnly
                             className="w-full p-1 bg-gray-100"
                             placeholder="Total"
                           />
                         </td>
+
                       </tr>
                     ))}
                   </tbody>

@@ -1603,6 +1603,8 @@ const EditProposalForm = () => {
                 value={formData.projectManagementTeam.map((member) => ({
                   label: member.name,
                   value: member.name,
+                  role:  member.role,
+
                 }))}
                 onChange={(selectedOptions) => {
                   console.log('Selected Options:', selectedOptions);
@@ -2004,7 +2006,7 @@ const EditProposalForm = () => {
               <select
                 required
                 name="agency"
-                value={formData.agency}
+                value={formData.agencyName}
                 onChange={handleAgencyFormChange}
                 className="w-full p-2 border border-gray-300 rounded"
               >
@@ -3099,7 +3101,7 @@ const EditProposalForm = () => {
                         <td className="px-4 py-2 border">
                           <textarea
                             name="trainingLoad"
-                            value={formData.loadingOfTrainers[memberIndex]?.trainingLoad || ''}
+                            value={formData.loadingOfTrainers[memberIndex]?.trainingLoad || ' '}
                             onChange={(e) => handleTrainerChange(memberIndex, {
                               ...formData.loadingOfTrainers[memberIndex],
                               faculty: member.name,

@@ -48,15 +48,32 @@ function EstaffSideBar({ onFilterChange }) {
                     </li>
                     <li>
                         <NavLink
-                            to="/documents-list"
+                            to="/estaff-project-statistics"
                             className={({ isActive }) =>
                                 `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
                         >
-                            Documents List
+                            Project Statistics
                         </NavLink>
                     </li>
-                    {/* Removed the Scan Copy link */}
-                    
+                    <li>
+                        <NavLink
+                            to="/estaff-project-view-list/approved/project"
+                            className={({ isActive }) =>
+                                `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
+                        >
+                            Project List
+                        </NavLink>
+                    </li>
+                    <li>
+                        <NavLink
+                            to="/estaff-moa-view-list/all/moa"
+                            className={({ isActive }) =>
+                                `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
+                        >
+                            MOA List
+                        </NavLink>
+                    </li>
+                   
                     {/* Accounts Dropdown */}
                     <li>
                         <button
@@ -69,13 +86,14 @@ function EstaffSideBar({ onFilterChange }) {
                             <ul className="pl-6">
                                 <li>
                                     <NavLink
-                                        to="/user-list"
+                                        to="/estaff-userlist"
                                         className={({ isActive }) =>
                                             `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
                                     >
                                         User List
                                     </NavLink>
                                 </li>
+
                                 <li>
                                     <NavLink
                                         to="/create-user"
@@ -88,16 +106,7 @@ function EstaffSideBar({ onFilterChange }) {
                             </ul>
                         )}
                     </li>
-                    
-                    <li>
-                        <NavLink
-                            to="/profile-estaff"
-                            className={({ isActive }) =>
-                                `text-lg block px-6 py-3 ${isActive ? 'text-yellow-500 font-bold' : 'hover:text-yellow-500'}` }
-                        >
-                            Profile Page
-                        </NavLink>
-                    </li>
+
                     <li>
                         <button
                             onClick={handleLogout}

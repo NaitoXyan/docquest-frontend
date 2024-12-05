@@ -166,7 +166,8 @@ const InlineHeaderProjectProposal = ({ dateCreated, documentCode = 'FM-USTP-ECRD
                 },
               ]}
             >
-              <Text>{dateCreated.substring(0, 10)}</Text>
+              {/* <Text>{dateCreated.substring(0, 10)}</Text> */}
+              <Text>08.01.23</Text>
             </View>
             <View
               style={[
@@ -342,7 +343,8 @@ const InlineHeaderLoadingofTrainers = ({ dateCreated, documentCode = 'FM-USTP-EC
               },
             ]}
           >
-            <Text>{dateCreated.substring(0, 10)}</Text>
+            {/* <Text>{dateCreated.substring(0, 10)}</Text> */}
+            <Text>08.01.23</Text>
           </View>
           <View
             style={[
@@ -866,7 +868,7 @@ const MyDocument = ({ projectID }) => {
             <Text>
               Submitted by:
             </Text>
-            <Text style={[{ textAlign: 'center', paddingTop: 5, textDecoration: 'underline', }]}>
+            <Text style={[{ textAlign: 'center', paddingTop: 20, textDecoration: 'underline', }]}>
               {`${formData.userID?.firstname} ${formData.userID?.lastname}`}
             </Text>
             <Text style={[{ textAlign: 'center', fontFamily: 'Arial', paddingBottom: 5 }]}>
@@ -877,7 +879,7 @@ const MyDocument = ({ projectID }) => {
             <Text>Endorsed by:</Text>
 
             {/* Render rows with a maximum of two signatories */}
-            <View style={[{ flexDirection: 'column', paddingTop: '1%' }]}>
+            <View style={[{ flexDirection: 'column', paddingTop: 20 }]}>
               {formData.signatories && formData.signatories.length > 0 &&
                 formData.signatories
                   .filter(signatory =>
@@ -904,7 +906,7 @@ const MyDocument = ({ projectID }) => {
             <Text style={{ fontFamily: 'ArialB', }}>
               Recommending Approval:
             </Text>
-            <Text style={[{ textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', }]}>
+            <Text style={[{ textAlign: 'center', textDecoration: 'underline', paddingTop: 20, fontFamily: 'ArialB', }]}>
               {formData.signatories && formData.signatories.length > 0 &&
                 formData.signatories.find(signatory => signatory.title === 'Director, Extension & Community Relations')?.name}
             </Text>
@@ -913,11 +915,11 @@ const MyDocument = ({ projectID }) => {
                 formData.signatories.find(signatory => signatory.title === 'Director, Extension & Community Relations')?.title}
             </Text>
             <View style={[{ flexDirection: 'row', }]}>
-              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', }]}>
+              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: 25, fontFamily: 'ArialB', }]}>
                 {formData.signatories && formData.signatories.length > 0 &&
                   formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Academic Affairs')?.name}
               </Text>
-              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: '1%', fontFamily: 'ArialB', }]}>
+              <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', paddingTop: 30, fontFamily: 'ArialB', }]}>
                 {formData.signatories && formData.signatories.length > 0 &&
                   formData.signatories.find(signatory => signatory.title === 'Vice - Chancellor for Research and Innovation')?.name}
               </Text>
@@ -937,7 +939,7 @@ const MyDocument = ({ projectID }) => {
             <Text style={[{ fontFamily: 'ArialB', }]}>
               Funds Available:
             </Text>
-            <View style={[{ flexDirection: 'row', paddingTop: '1%' }]}>
+            <View style={[{ flexDirection: 'row', paddingTop: 25 }]}>
               <Text style={[{ flexDirection: 'row', width: '50%', textAlign: 'center', textDecoration: 'underline', fontFamily: 'ArialB', }]}>
                 {formData.signatories && formData.signatories.length > 0 &&
                   formData.signatories.find(signatory => signatory.title.includes('Accountant'))?.name}

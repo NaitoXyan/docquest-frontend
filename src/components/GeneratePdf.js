@@ -594,7 +594,26 @@ const MyDocument = ({ projectID }) => {
     }, 0) // Initial value for the total is 0
     : 0; // Default to 0 if formData.loadingOfTrainers is not available
 
+  // Collect colleges within your component
+  const programColleges = (formData.program || [])
+    .map((prog) => prog.college?.abbreviation)
+    .filter(Boolean);
 
+  const proponentColleges = (formData.proponents || [])
+    .map((proponent) => proponent.college?.abbreviation)
+    .filter(Boolean);
+
+  const nonUserProponentColleges = (formData.nonUserProponents || [])
+    .map((proponent) => proponent.college?.abbreviation)
+    .filter(Boolean);
+
+  const allColleges = [...new Set([...programColleges, ...proponentColleges, ...nonUserProponentColleges])];
+
+  // Combine proponents
+  const allProponents = [
+    ...(formData.proponents || []),
+    ...(formData.nonUserProponents || []),
+  ];
   return (
     <Document
       title={`${formData.projectTitle} - ${formData.dateCreated} - ${new Date().toLocaleString()}`}
@@ -739,21 +758,52 @@ const MyDocument = ({ projectID }) => {
             </View>
           </View>
           <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0 }]}>
-            <View style={[styles.tableColtwo, { flexDirection: 'row', borderRight: 1, paddingLeft: '1%', paddingRight: '1%', fontFamily: 'ArialB', }]}>
-              <Text style={[{ fontSize: 9 }]}>
-                {formData.proponents && formData.proponents.length > 0
-                  ? formData.proponents
-                    .map((item) => `${item.firstname} ${item.lastname}`)
-                    .reduce((acc, name, index, array) => {
-                      // Add a newline after every second name
-                      if (index % 2 === 0 && index !== 0) acc.push('\n');
-                      acc.push(name);
-                      return acc;
-                    }, [])
-                    .join('          ') // Join with a space between names
-                  : 'None'}
-              </Text>
-
+            <View
+              style={[
+                styles.tableColtwo,
+                {
+                  flexDirection: 'column', // Arrange rows vertically
+                  borderRight: 1,
+                  paddingLeft: '1%',
+                  paddingRight: '1%',
+                  fontFamily: 'ArialB',
+                },
+              ]}
+            >
+              {allProponents.length > 0 ? (
+                allProponents
+                  .map((item) => `${item.firstname || ''} ${item.lastname || ''}`.trim())
+                  .reduce((rows, name, index) => {
+                    if (index % 2 === 0) rows.push([name]);
+                    else rows[rows.length - 1].push(name);
+                    return rows;
+                  }, [])
+                  .map((row, rowIndex) => (
+                    <View
+                      key={rowIndex}
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        marginBottom: 1,
+                      }}
+                    >
+                      {row.map((name, colIndex) => (
+                        <Text
+                          key={colIndex}
+                          style={{
+                            fontSize: 9,
+                            textAlign: 'center', // Center text within the cell
+                            flex: 1, // Ensure even spacing
+                          }}
+                        >
+                          {name}
+                        </Text>
+                      ))}
+                    </View>
+                  ))
+              ) : (
+                <Text style={{ fontSize: 9, textAlign: 'center' }}>None</Text>
+              )}
             </View>
             <View style={[styles.tableColtwo, { flexDirection: 'col', fontFamily: 'ArialB', backgroundColor: '#a4b494' }]}>
               <View style={[{ paddingLeft: '1%', paddingRight: '1%', borderBottom: 1 }]}>
@@ -764,14 +814,13 @@ const MyDocument = ({ projectID }) => {
               <View style={[{ paddingLeft: '1%', paddingRight: '1%', }]}>
                 <Text>
                   COLLEGE: {
-                    formData.program.length === 1 ?
-                      formData.program[0].college.abbreviation :
-                      formData.program.reduce((acc, prog, index) => {
-                        if (!acc.includes(prog.college.abbreviation)) {
-                          acc.push(prog.college.abbreviation);
-                        }
-                        return acc;
-                      }, []).join(', ')
+                    formData.program && formData.program.length > 0 ? (
+                      [...new Set(
+                        formData.program
+                          .map((prog) => prog.college?.abbreviation)
+                          .filter(Boolean)
+                      )].join(', ')
+                    ) : 'N/A'
                   }
                 </Text>
 
@@ -1620,21 +1669,21 @@ const MyDocument = ({ projectID }) => {
                       <Text>{trainer.trainingLoad}</Text>
                     </View>
                     {/* Hours */}
-                    <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1, width: '10%', alignItems: 'center', justifyContent: 'center'}]}>
+                    <View style={[styles.tableColthree, { borderLeft: 1, borderBottom: 1, width: '10%', alignItems: 'center', justifyContent: 'center' }]}>
                       <Text>{trainer.hours}</Text>
                     </View>
                     {/* Budget */}
                     <View style={[styles.tableColthree, { flexDirection: 'row', borderLeft: 1, borderBottom: 1, width: '30%' }]}>
-                      <View style={{ flexDirection: 'row' , width: '50%', borderRight:  1, alignItems: 'center', justifyContent: 'center'}}>
-                          <Text>{trainer.ustpBudget?.toLocaleString()}</Text>
+                      <View style={{ flexDirection: 'row', width: '50%', borderRight: 1, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text>{trainer.ustpBudget?.toLocaleString()}</Text>
                       </View>
-                      <View style={{ flexDirection: 'row' , width: '50%', alignItems: 'center', justifyContent: 'center'}}>
-                          <Text>{trainer.agencyBudget?.toLocaleString()}</Text>
+                      <View style={{ flexDirection: 'row', width: '50%', alignItems: 'center', justifyContent: 'center' }}>
+                        <Text>{trainer.agencyBudget?.toLocaleString()}</Text>
                       </View>
 
                     </View>
                     {/* Row Total */}
-                    <View style={[styles.tableColthree, { border: 1, borderTop: 0, width: '15%' , alignItems: 'center', justifyContent: 'center'}]}>
+                    <View style={[styles.tableColthree, { border: 1, borderTop: 0, width: '15%', alignItems: 'center', justifyContent: 'center' }]}>
                       <Text>
                         {(Number(trainer.ustpBudget || 0) + Number(trainer.agencyBudget || 0)).toLocaleString()}
                       </Text>

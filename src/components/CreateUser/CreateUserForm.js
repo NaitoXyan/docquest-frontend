@@ -15,12 +15,12 @@ const CreateUserForm = () => {
     confirmPassword: '',
     campus: '',
     college: '',
-    department: '',
+    programID: '',
     roleID: '',
   };
 
   const [formData, setFormData] = useState(initialFormState);
-  const [programData, setProgramData] = useState(null);
+  const [programData, setProgramData] = useState([]);
   const [roles, setRoles] = useState([]);
 
   useEffect(() => {
@@ -30,31 +30,47 @@ const CreateUserForm = () => {
           fetchProgramData(),
           fetchRoles(),
         ]);
-
-        setProgramData(programResponse.programID);
+  
+        if (programResponse.length > 0) {
+          // Safely access campus and college data
+          const firstProgram = programResponse[0];
+          const campusName = firstProgram?.college?.campus?.name || '';
+          const collegeAbbreviation = firstProgram?.college?.abbreviation || '';
+  
+          setFormData(prev => ({
+            ...prev,
+            campus: campusName,
+            college: collegeAbbreviation,
+          }));
+        }
+  
+        setProgramData(programResponse);
         setRoles(rolesResponse);
-
-        // Pre-fill form with program data
-        setFormData(prev => ({
-          ...prev,
-          campus: programResponse.programID.college.campus.name,
-          college: programResponse.programID.college.abbreviation,
-          department: programResponse.programID.abbreviation,
-        }));
       } catch (error) {
         toast.error('Failed to load initial data');
       }
     };
-
+  
     loadInitialData();
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+
+    // Update department dynamically when program changes
+    if (name === 'programID') {
+      const selectedProgram = programData.find(program => program.programID === parseInt(value));
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+        department: selectedProgram?.abbreviation || '',
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const validateForm = () => {
@@ -69,7 +85,7 @@ const CreateUserForm = () => {
       'email',
       'contactNumber',
       'password',
-      'roleID'
+      'roleID',
     ];
 
     const missingFields = requiredFields.filter(field => !formData[field]);
@@ -83,7 +99,7 @@ const CreateUserForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     const payload = {
@@ -94,8 +110,8 @@ const CreateUserForm = () => {
       lastname: formData.lastName,
       contactNumber: formData.contactNumber,
       role: [parseInt(formData.roleID)],
-      college: programData?.college?.collegeID || null,
-      program: programData?.programID || null,
+      college: programData[0]?.college?.collegeID || null, // Automatically set college
+      program: parseInt(formData.programID) || null,
     };
 
     try {
@@ -173,7 +189,7 @@ const CreateUserForm = () => {
       </div>
 
       <div className="bg-white rounded-xl p-6">
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-4 gap-4">
           <FormInput
             label="Campus"
             name="campus"
@@ -188,16 +204,19 @@ const CreateUserForm = () => {
             readOnly
             disabled
           />
-          <FormInput
-            label="Department"
-            name="department"
-            value={formData.department}
-            readOnly
-            disabled
-          />
-        </div>
 
-        <div className="mt-4">
+          <FormSelect
+            label="Program"
+            name="programID"
+            value={formData.programID}
+            onChange={handleChange}
+            required
+            options={programData.map(program => ({
+              value: program.programID,
+              label: program.title,
+            }))}
+          />
+
           <FormSelect
             label="Role"
             name="roleID"
@@ -206,7 +225,7 @@ const CreateUserForm = () => {
             required
             options={roles.map(role => ({
               value: role.roleID,
-              label: role.role
+              label: role.role,
             }))}
           />
         </div>

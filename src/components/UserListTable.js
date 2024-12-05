@@ -25,7 +25,7 @@ const UserListTable = () => {
     const fetchUsers = useCallback(async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch("https://web-production-4b16.up.railway.app/users_by_program", {
+            const response = await fetch("https://web-production-4b16.up.railway.app/users_by_college", {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Token ${token}`,

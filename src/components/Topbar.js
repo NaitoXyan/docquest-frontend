@@ -6,18 +6,54 @@ import { Link } from 'react-router-dom';
 const Topbar = () => {
   const [notifications, setNotifications] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [roles, setRoles] = useState([]);
+  const [socket, setSocket] = useState(null);
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    // WebSocket connection with token
+    const newSocket = new WebSocket(
+      `wss://web-production-4b16.up.railway.app/ws/notifications/?token=${token}`
+    );
+    
+    newSocket.onopen = () => {
+      console.log('WebSocket connected');
+      newSocket.send(JSON.stringify({ action: 'fetch_unread' }));
+    };
+
+    newSocket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      
+      if (data.type === 'unread_notifications') {
+        setNotifications(data.notifications);
+      } else if (data.type === 'new_notification') {
+        // Add new notification to the list
+        setNotifications(prev => [data.notification, ...prev]);
+      }
+    };
+
+    setSocket(newSocket);
+
+    // Cleanup on unmount
+    return () => newSocket.close();
+  }, []);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
-    if (notifications.length > 0) {
-      // Mark all notifications as read when the dropdown is opened
-      setNotifications(notifications.map((notif) => ({ ...notif, read: true })));
+    if (notifications.length > 0 && socket) {
+      // Mark all notifications as read
+      notifications.forEach(notif => 
+        socket.send(JSON.stringify({
+          action: 'mark_read', 
+          notification_id: notif.notificationID
+        }))
+      );
     }
   };
+
+  const hasNotifications = notifications.length > 0;
 
   const truncateText = (text, maxLength) => {
     if (!text) return '';
@@ -26,24 +62,14 @@ const Topbar = () => {
     return truncated.slice(0, truncated.lastIndexOf(' ')) + '...';
   };
 
-
-
-  // Check if there are any unread notifications
-  const hasNotifications = notifications.some((notif) => !notif.read);
-
   useEffect(() => {
     const storedFirstname = JSON.parse(localStorage.getItem('firstname'));
     const storedLastname = JSON.parse(localStorage.getItem('lastname'));
     const storedRoles = JSON.parse(localStorage.getItem('roles'));
-
     if (storedFirstname) setFirstname(storedFirstname);
     if (storedLastname) setLastname(storedLastname);
     if (storedRoles) setRoles(storedRoles);
   }, []);
-
-  const deleteNotification = (id) => {
-    setNotifications(notifications.filter((notif) => notif.id !== id));
-  };
 
   const formatRoles = () => {
     const formattedRoles = roles.map((role) => {
@@ -77,20 +103,21 @@ const Topbar = () => {
     return truncateText(formattedRoles, 30); // Truncate roles
   };
 
-
   return (
     <div className="flex w-4/5 items-center mb-14 px-3 h-14 bg-white fixed right-0 z-50">
-      {/* Notification Icon with Count */}
       <div className="relative w-5/6">
         <div className="w-14 rounded-lg relative">
-          <BellIcon className={`w-7 h-7 ${hasNotifications ? 'text-amber-400' : 'text-gray-400'} cursor-pointer`} onClick={toggleDropdown} />
-          {/* Display Notification Count */}
-          <div className="absolute top-1 left-6 flex items-center justify-center w-5 h-5 rounded-full text-gray-400 text-sm font-semibold">
-            {notifications.length > 0 ? notifications.length : null}
-          </div>
+          <BellIcon 
+            className={`w-7 h-7 ${hasNotifications ? 'text-amber-400' : 'text-gray-400'} cursor-pointer`} 
+            onClick={toggleDropdown} 
+          />
+          {hasNotifications && (
+            <div className="absolute top-1 left-6 flex items-center justify-center w-5 h-5 rounded-full text-gray-400 text-sm font-semibold">
+              {notifications.length}
+            </div>
+          )}
         </div>
 
-        {/* Notification Dropdown */}
         {isDropdownOpen && (
           <div className="absolute -left-3 mt-3 w-64 bg-white shadow-lg z-10">
             <div className="p-3">
@@ -100,16 +127,11 @@ const Topbar = () => {
                   <li className="text-gray-500 text-xs">No new notifications</li>
                 ) : (
                   notifications.map((notif) => (
-                    <li key={notif.id} className={`text-xs py-2 border-b ${notif.read ? 'text-gray-500' : 'text-gray-700'} flex justify-between items-center`}>
-                      {/* Notification Title */}
-                      <span className="font-semibold">{notif.title}</span>
-                      {/* Delete Button */}
-                      <button
-                        onClick={() => deleteNotification(notif.id)}
-                        className="ml-2 text-red-500 hover:text-red-700"
-                      >
-                        <TrashIcon className="w-5 h-5" />
-                      </button>
+                    <li 
+                      key={notif.notificationID} 
+                      className="text-xs py-2 border-b text-gray-700 flex justify-between items-center"
+                    >
+                      <span className="font-semibold">{notif.message}</span>
                     </li>
                   ))
                 )}

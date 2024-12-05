@@ -41,7 +41,7 @@ const CoordinatorDashboard = () => {
       try {
         const response = await axios({
           method: 'get',
-          url: 'https://web-production-4b16.up.railway.app/get_all_projects_of_program',
+          url: 'https://web-production-4b16.up.railway.app/get_all_projects_of_college',
           headers: {
             'Authorization': `Token ${token}`,
             'Content-Type': 'application/json',

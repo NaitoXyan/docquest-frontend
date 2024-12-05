@@ -1,9 +1,9 @@
 import React, {useEffect} from 'react';
 import { Toaster } from 'react-hot-toast';
-import CreateUserForm from '../../components/CreateUser/CreateUserForm';
 import { useNavigate } from 'react-router-dom';
+import EstaffCreateUserForm from './EstaffCreateUserForm';
 
-const CreateUserPage = () => {
+const EstaffCreateUserPage = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   useEffect(() => {
@@ -19,7 +19,7 @@ const CreateUserPage = () => {
         <div className="flex flex-col">
           <h1 className="text-2xl font-bold m-7">CREATE USER ACCOUNT</h1>
           <div className="mx-10">
-            <CreateUserForm />
+            <EstaffCreateUserForm />
           </div>
         </div>
       </div>
@@ -28,4 +28,4 @@ const CreateUserPage = () => {
   );
 };
 
-export default CreateUserPage;
+export default EstaffCreateUserPage;

@@ -766,13 +766,17 @@ const ProposalFormFirstPage = () => {
   useEffect(() => {
     const fetchProponents = async () => {
       try {
-        const response = await axios.get("https://web-production-4b16.up.railway.app/get_users_exclude_roles");
+        const response = await axios.get("https://web-production-4b16.up.railway.app/get_users_exclude_roles", {
+          headers: {
+            Authorization: `Token ${token}`, // Correct header format
+          },
+        });
         setProponents(response.data);
       } catch (error) {
         console.error('Error fetching proponents:', error);
       }
     };
-
+  
     fetchProponents();
   }, []);
 

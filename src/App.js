@@ -76,6 +76,7 @@ import EstaffReviewList from "./pages/estaff/EstaffProjectReviewList";
 import EstaffMOAViewList from "./pages/estaff/EstaffMOAViewList";
 import EstaffUserList from "./pages/estaff/EstaffUserList";
 import EstaffProjectStatistics from "./pages/estaff/EstaffProjectStatistics";
+import EstaffCreateUser from "./pages/estaff/EstaffCreateUser";
 
 function App() {
   return (
@@ -139,7 +140,8 @@ function App() {
         <Route path="/estaff-moa-view-list/:status/:document" element={<EstaffMOAViewList />} /> 
         <Route path="/estaff-userlist" element={<EstaffUserList />} />
         <Route path="estaff-project-statistics" element={<EstaffProjectStatistics/>}/>
-        {<Route path="/estaff-submit-scanned-copy/:content_type_name/:source_id" element={<EstaffScancopy />} />}
+        <Route path="/estaff-submit-scanned-copy/:content_type_name/:source_id" element={<EstaffScancopy />} />
+        <Route path="/estaff-create-user" element={<EstaffCreateUser />} />
 
         <Route path="/documents-list" element={<EStaffDocumentsList />} />  {/* Add this line */}
         <Route path="/view-download/:id" element={<ProjectPDFViewer />} />  {/* Add this line */}
@@ -153,7 +155,6 @@ function App() {
         {/* <Route path="/estaff/profile-estaff" element={<EStaffProfilePage />} />  Add this line */}
 
         {/* COORDINATOR ROUTES */}
-        
         {<Route path="/coordusers" element={<UserListCoord />} />}
         <Route path="/coordinatordashboard" element={<CoordinatorDashboard />} />
         <Route path="/createuser:id" element={<CreateUserCoord />} />

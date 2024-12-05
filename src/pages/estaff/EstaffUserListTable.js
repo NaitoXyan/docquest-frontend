@@ -57,7 +57,7 @@ const EstaffUserListTable = () => {
     const fetchRoles = useCallback(async () => {
         try {
             const token = localStorage.getItem("token");
-            const response = await fetch("https://web-production-4b16.up.railway.app/coordinator_get_roles", {
+            const response = await fetch("https://web-production-4b16.up.railway.app/estaff_get_roles", {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Token ${token}`,
@@ -370,10 +370,10 @@ const EstaffUserListTable = () => {
                                     }
                                     className="w-full p-2 border rounded-lg"
                                 >
-                                    <option value="">Select a Role</option>
+                                   <option value="">Select a Role</option>
                                     {roles.map((role) => (
                                         <option key={role.roleID} value={role.roleID}>
-                                            {role.role}
+                                            {role.code === 'rglr' ? 'Regular (Project Leader)' : role.role}
                                         </option>
                                     ))}
                                 </select>

@@ -13,9 +13,9 @@ const EstaffCreateUserForm = () => {
     contactNumber: '',
     password: '',
     confirmPassword: '',
-    campus: '',
+    campus: '', 
     college: '',
-    program: '',
+    program: '', 
     roleID: '',
   };
 
@@ -28,30 +28,32 @@ const EstaffCreateUserForm = () => {
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        // Fetch campuses and roles initially
         const [campusResponse, rolesResponse] = await Promise.all([
           EstaffFetchCampus(),
           EstaffFetchRoles(),
         ]);
-
+  
+        console.log('Campus Response:', campusResponse);
         setCampuses(campusResponse);
         setRoles(rolesResponse);
       } catch (error) {
         toast.error('Failed to load initial data');
       }
     };
-
+  
     loadInitialData();
   }, []);
 
   const handleCampusChange = async (e) => {
     const campusID = e.target.value;
+    console.log('Campus ID received:', campusID, 'Type:', typeof campusID);
+    
     setFormData((prev) => ({ ...prev, campus: campusID, college: '', program: '' }));
-
+  
     try {
       const collegeResponse = await EstaffFetchCollege(campusID);
       setColleges(collegeResponse);
-      setPrograms([]); // Clear programs since the campus changed
+      setPrograms([]); 
     } catch (error) {
       toast.error('Failed to load colleges');
     }
@@ -62,7 +64,7 @@ const EstaffCreateUserForm = () => {
     setFormData((prev) => ({ ...prev, college: collegeID, program: '' }));
 
     try {
-      const programResponse = await EstaffFetchProgram(collegeID);
+      const programResponse = await EstaffFetchProgram(collegeID);  // Passing as array
       setPrograms(programResponse);
     } catch (error) {
       toast.error('Failed to load programs');
@@ -204,7 +206,7 @@ const EstaffCreateUserForm = () => {
           onChange={handleCampusChange}
           required
           options={campuses.map((campus) => ({
-            value: campus.id,
+            value: campus.campusID,
             label: campus.name,
           }))}
         />
@@ -215,8 +217,8 @@ const EstaffCreateUserForm = () => {
           value={formData.college}
           onChange={handleCollegeChange}
           options={colleges.map((college) => ({
-            value: college.id,
-            label: college.name,
+            value: college.collegeID,
+            label: college.title,
           }))}
         />
 
@@ -226,8 +228,8 @@ const EstaffCreateUserForm = () => {
           value={formData.program}
           onChange={handleChange}
           options={programs.map((program) => ({
-            value: program.id,
-            label: program.name,
+            value: program.programID,
+            label: program.title,
           }))}
         />
 

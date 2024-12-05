@@ -155,6 +155,10 @@ const DirectorDashboard = () => {
         navigate(`/review-list/${statusFilter.toLowerCase()}/${documentType}`);
     };
 
+    const handleMOANavigate = (statusFilter, documentType) => {
+        navigate(`/moa-review-list/${statusFilter.toLowerCase()}/${documentType}`);
+    };
+
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentProjects = projects.slice(indexOfFirstItem, indexOfLastItem);
@@ -228,21 +232,21 @@ const DirectorDashboard = () => {
                                 <div className="bg-green-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                                     <h2 className="text-lg font-semibold">Approved</h2>
                                     <h2 className="text-4xl font-bold">{statusCounts.moa.approved}</h2>
-                                    <button className="mt-2 underline" onClick={() => handleNavigate("approved", "moa")}>
+                                    <button className="mt-2 underline" onClick={() => handleMOANavigate("approved", "moa")}>
                                         View
                                     </button>
                                 </div>
                                 <div className="bg-yellow-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                                     <h2 className="text-lg font-semibold">Pending</h2>
                                     <h2 className="text-4xl font-bold">{statusCounts.moa.pending}</h2>
-                                    <button className="mt-2 underline" onClick={() => handleNavigate("pending", "moa")}>
+                                    <button className="mt-2 underline" onClick={() => handleMOANavigate("pending", "moa")}>
                                         View
                                     </button>
                                 </div>
                                 <div className="bg-red-400 rounded-lg text-white p-6 flex flex-col items-center justify-center">
                                     <h2 className="text-lg font-semibold">Rejected</h2>
                                     <h2 className="text-4xl font-bold">{statusCounts.moa.rejected}</h2>
-                                    <button className="mt-2 underline" onClick={() => handleNavigate("rejected", "moa")}>
+                                    <button className="mt-2 underline" onClick={() => handleMOANavigate("rejected", "moa")}>
                                         View
                                     </button>
                                 </div>

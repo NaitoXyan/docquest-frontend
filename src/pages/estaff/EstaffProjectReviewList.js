@@ -297,6 +297,7 @@ const EstaffReviewList = () => {
                             View PDF
                           </button>
                         </td>
+
                         <td className="px-3 sm:px-6 whitespace-nowrap text-center">
                           <button
                             onClick={() => 
@@ -316,6 +317,7 @@ const EstaffReviewList = () => {
                             {project.haveScannedCopy ? "Submitted" : "Submit"}
                           </button>
                         </td>
+                        
                         <td className="px-3 sm:px-6 whitespace-nowrap text-center">
                           <button 
                             onClick={() => handleViewScannedCopy(project.documentID, project.haveScannedCopy, project.fileName)}

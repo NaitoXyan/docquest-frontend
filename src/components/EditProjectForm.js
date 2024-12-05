@@ -50,13 +50,13 @@ const EditProposalForm = () => {
 
   // Initialize formData with default values to prevent undefined errors
   const [formData, setFormData] = useState({
-    userID: userID,
+    userID: parseInt(userID), // Convert to integer immediately
+    agency: [],
     programCategory: [],
     projectTitle: "",
     projectType: "",
     projectCategory: [],
     researchTitle: "",
-    program: [],
     accreditationLevel: "",
     beneficiaries: "",
     targetStartDateImplementation: "",
@@ -167,11 +167,98 @@ const EditProposalForm = () => {
     approvers: [],
     campus: [],
     college: [],
+    program: [],
     region: '',
     province: '',
     city: '',
     barangay: '',
   });
+
+  useEffect(() => {
+    if (!formData.userID) {
+      setFormData(prev => ({
+        ...prev,
+        userID: parseInt(userID)
+      }));
+    }
+  }, [userID]);
+
+  useEffect(() => {
+    const fetchCampus = async () => {
+      try {
+        const response = await axios.get('https://web-production-4b16.up.railway.app/get_campuses', {
+          headers: {
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json',
+          }
+        });
+        setCampus(response.data);
+      } catch (error) {
+        console.error('Error fetching campus:', error);
+        setError('Failed to fetch campus data');
+      }
+    };
+
+    fetchCampus();
+  }, [token]);
+
+  useEffect(() => {
+    const initializeCampus = async () => {
+      try {
+        const response = await axios.get('https://web-production-4b16.up.railway.app/get_campuses', {
+          headers: {
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json',
+          }
+        });
+        setCampus(response.data);
+
+        // If we have project data but no campus data, fetch it
+        if (formData.campus.length === 0 && projectID) {
+          await fetchData();
+        }
+      } catch (error) {
+        console.error('Error fetching campus:', error);
+        setError('Failed to fetch campus data');
+      }
+    };
+
+    initializeCampus();
+  }, [token]);
+
+  useEffect(() => {
+    if (formData.campus.length > 0) {
+      console.log('Campus IDs in formData:', formData.campus);
+      console.log('Available Campus:', campus);
+      console.log('Mapped Campus Values:', formData.campus.map(id => {
+        const camp = campus.find(c => c.campusID === parseInt(id));
+        return camp ? `${camp.name} (${camp.campusID})` : `Unknown (${id})`;
+      }));
+    }
+  }, [formData.campus, campus]);
+
+  useEffect(() => {
+    console.log('Agency State:', agencies);
+    console.log('FormData Agency:', formData.agency);
+
+    if (formData.agency.length > 0) {
+      console.log('Selected Agency Details:', formData.agency.map(id => {
+        const agency = agencies.find(a => a.agencyID === parseInt(id));
+        return agency ? `${agency.agencyName} (ID: ${agency.agencyID})` : `Unknown Agency (ID: ${id})`;
+      }));
+    }
+  }, [formData.agency, agencies]);
+
+  useEffect(() => {
+    if (formData.agency.length > 0) {
+      console.log('Agency IDs:', formData.agency);
+      console.log('Available Agencies:', agencies);
+      console.log('Selected Agency:', formData.agency.map(id => {
+        const agency = agencies.find(a => a.agencyID === id);
+        return agency ? `${agency.agencyName} (ID: ${agency.agencyID})` : `Unknown Agency (ID: ${id})`;
+      }));
+    }
+  }, [formData.agency, agencies]);
 
   const fetchData = async () => {
     try {
@@ -187,6 +274,66 @@ const EditProposalForm = () => {
         return;
       }
 
+      // Initialize campusData as an empty array
+      let campusData = [];
+
+      // Function to extract campus IDs recursively from programs
+      const extractCampuses = (programs) => {
+        const campusIds = new Set();
+
+        programs.forEach(program => {
+          if (program.college && program.college.campus) {
+            const { campus } = program.college;
+            if (Array.isArray(campus)) {
+              campus.forEach(camp => {
+                if (camp.campusID) {
+                  campusIds.add(camp.campusID);
+                }
+              });
+            } else if (campus.campusID) {
+              campusIds.add(campus.campusID);
+            }
+          }
+        });
+
+        return Array.from(campusIds);
+      };
+
+      // Check if response.data.program is defined
+      if (response.data.program) {
+        // Ensure programs is an array
+        const programs = Array.isArray(response.data.program)
+          ? response.data.program
+          : [response.data.program];
+
+        // Extract campuses from the programs
+        campusData = extractCampuses(programs);
+      }
+
+      console.log('Extracted Campus Data:', campusData);
+
+      console.log('Full API Response Data:', response.data);
+      console.log('Processed Campus Data:', campusData);
+      console.log('API Response Campus Data:', response.data.campus);
+      console.log('Full API Response Data:', response.data);
+      // Extract campus to prevent it from being spread and overwriting formData.campus
+      const { campus: responseCampus, ...restResponseData } = response.data;
+
+      // Process agency data from the response
+      let agencyData = [];
+      if (response.data.agency) {
+        // Handle different possible formats of agency data
+        if (Array.isArray(response.data.agency)) {
+          agencyData = response.data.agency.map(agency =>
+            typeof agency === 'object' ? agency.agencyID : parseInt(agency)
+          );
+        } else if (typeof response.data.agency === 'object') {
+          agencyData = [response.data.agency.agencyID];
+        } else {
+          agencyData = [parseInt(response.data.agency)];
+        }
+      }
+
       const hasTrainers = response.data.loadingOfTrainers?.length > 0;
       setShowTrainers(hasTrainers);
       setIsChecked(hasTrainers);
@@ -200,17 +347,49 @@ const EditProposalForm = () => {
         totalBudgetRequirement: (trainer.hours * 150) + (trainer.agencyBudget || 0)
       })) || [];
 
+      let collegeData = [];
+      if (response.data.program) {
+        const programs = Array.isArray(response.data.program)
+          ? response.data.program
+          : [response.data.program];
+
+        // Collect unique college IDs from the programs
+        const collegeIds = new Set();
+        programs.forEach(program => {
+          if (program.college && program.college.collegeID) {
+            collegeIds.add(program.college.collegeID);
+          }
+        });
+        collegeData = Array.from(collegeIds);
+      }
+
+      console.log('Extracted College Data:', collegeData);
+
+
+      // Initialize programData as an empty array
+      let programData = [];
+      if (response.data.program) {
+        const programs = Array.isArray(response.data.program)
+          ? response.data.program
+          : [response.data.program];
+
+        programData = programs.map(program => program.programID);
+      }
+
+      console.log('Extracted Program Data:', programData);
+
       setFormData(prevFormData => ({
         ...prevFormData,
-        ...response.data,
-        userID: response.data.userID?.userID || userID,
-        agency: response.data.agency ? [response.data.agency.agencyID] : [],
-        proponents: response.data.proponents?.map(proponent => proponent.userID) || [],
+        ...restResponseData,
+        proponents: response.data.proponents?.map(proponent =>
+          typeof proponent === 'object' ? proponent.userID : proponent
+        ) || [],
+        campus: campusData,
+        agency: agencyData.filter(id => !isNaN(id)), // Ensure agencyData is processed similarly
         programCategory: response.data.programCategory?.map(cat => cat.programCategoryID) || [],
         projectCategory: response.data.projectCategory?.map(cat => cat.projectCategoryID) || [],
-        campus: response.data.campus?.map(camp => camp.campusID) || [],
-        college: response.data.college?.map(col => col.collegeID) || [],
-        program: response.data.program?.map(prog => prog.programID) || [],
+        college: collegeData,
+        program: programData,
         region: response.data.projectLocationID?.barangay?.city?.province?.region?.regionID || '',
         province: response.data.projectLocationID?.barangay?.city?.province?.provinceID || '',
         city: response.data.projectLocationID?.barangay?.city?.cityID || '',
@@ -226,38 +405,97 @@ const EditProposalForm = () => {
         })) || []
       }));
 
-      const projectTypeValue = response.data.projectType;
-      setSelectedProjectType(
-        projectTypeOptions.find(option => option.value === projectTypeValue) || null
-      );
-
     } catch (error) {
       console.error('Error fetching data:', error);
+      setError('Failed to fetch project data');
     }
   };
+
 
   useEffect(() => {
     fetchData();
   }, [projectID]);
+
+  useEffect(() => {
+    console.log('Campus State:', campus);
+    console.log('FormData Campus:', formData.campus);
+
+    if (formData.campus.length > 0) {
+      console.log('Selected Campus Details:', formData.campus.map(id => {
+        const camp = campus.find(c => c.campusID === parseInt(id));
+        return camp ? `${camp.name} (ID: ${camp.campusID})` : `Unknown Campus (ID: ${id})`;
+      }));
+    }
+  }, [formData.campus, campus]);
+
+
+  useEffect(() => {
+    const fetchProponents = async () => {
+      try {
+        const response = await axios.get("https://web-production-4b16.up.railway.app/get_users_exclude_roles", {
+          headers: {
+            'Authorization': `Token ${token}`,
+            'Content-Type': 'application/json',
+          }
+        });
+        if (response.data) {
+          setProponents(response.data);
+        }
+      } catch (error) {
+        console.error('Error fetching proponents:', error);
+        setError('Failed to fetch proponents data');
+      }
+    };
+
+    fetchProponents();
+  }, [token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const modifiedData = { ...formData };
 
+    // Ensure userID is properly set
+    modifiedData.userID = parseInt(userID); // Convert to integer
+
+    // Format signatories array
     const signatories = [
-      formData.programChair,
-      formData.collegeDean,
-      formData.director,
-      formData.vcaa,
-      formData.vcri,
-      formData.accountant,
-      formData.chancellor,
-      ...formData.signatories,
+      ...formData.programChair.map(chair => ({
+        name: chair.name,
+        title: `Program Chair - ${program.find(p => p.programID === chair.programId)?.title || ''}`
+      })),
+      ...formData.collegeDean.map(dean => ({
+        name: dean.name,
+        title: `College Dean - ${college.find(c => c.collegeID === dean.collegeId)?.title || ''}`
+      })),
+      {
+        name: formData.director.name,
+        title: formData.director.title
+      },
+      {
+        name: formData.vcaa.name,
+        title: formData.vcaa.title
+      },
+      {
+        name: formData.vcri.name,
+        title: formData.vcri.title
+      },
+      {
+        name: formData.accountant.name,
+        title: formData.accountant.title
+      },
+      {
+        name: formData.chancellor.name,
+        title: formData.chancellor.title
+      }
     ];
 
-    modifiedData.signatories = signatories;
 
+    modifiedData.signatories = signatories;
+    modifiedData.userID = parseInt(modifiedData.userID); // Convert userID to integer
+
+
+    // Remove unnecessary fields
     delete modifiedData.programChair;
     delete modifiedData.collegeDean;
     delete modifiedData.director;
@@ -270,9 +508,18 @@ const EditProposalForm = () => {
     delete modifiedData.city;
     delete modifiedData.barangay;
 
-    if (showTrainers === false) {
+    // Remove loadingOfTrainers if showTrainers is false
+    if (!showTrainers) {
       delete modifiedData.loadingOfTrainers;
     }
+
+    // Ensure arrays contain proper IDs
+    modifiedData.campus = modifiedData.campus.map(id => parseInt(id));
+    modifiedData.college = modifiedData.college.map(id => parseInt(id));
+    modifiedData.program = modifiedData.program.map(id => parseInt(id));
+    modifiedData.proponents = modifiedData.proponents.map(id => parseInt(id));
+    modifiedData.agency = modifiedData.agency.map(id => parseInt(id));
+
 
     console.log("Modified Data to be sent:", modifiedData);
 
@@ -299,6 +546,7 @@ const EditProposalForm = () => {
       }
     }
   };
+
 
   const handleNavigation = () => {
     setIsModalOpen(false);
@@ -743,6 +991,8 @@ const EditProposalForm = () => {
   };
 
 
+
+
   // Handle changes in budget items
   const handleBudgetChange = (index, field, value) => {
     const updatedBudgetRequirements = [...formData.budgetRequirements];
@@ -822,17 +1072,25 @@ const EditProposalForm = () => {
   }, []);
 
   const handleAgencyFormChange = async (e) => {
-    const { value } = e.target;
+    const { value } = e.target; // Safely destructure e.target
 
     if (value === 'add_new_agency') {
-      setIsAgencyModalOpen(true);
+      setIsAgencyModalOpen(true); // Open the "Add New Agency" modal
     } else {
-      setFormData(prevData => ({
-        ...prevData,
-        agency: [value] // Maintain array structure
-      }));
+      // Find the selected agency object
+      const selectedAgency = agencies.find(
+        (agency) => agency.agencyID === parseInt(value, 10) // Convert value to number for comparison
+      );
+
+      if (selectedAgency) {
+        setFormData((prevData) => ({
+          ...prevData,
+          agency: [selectedAgency], // Maintain array of objects
+        }));
+      }
     }
   };
+
 
   const handleSubmitNewAgency = async () => {
     if (!newAgencyName.trim()) return;
@@ -1272,6 +1530,49 @@ const EditProposalForm = () => {
     setSelectedProjectType(selectedOption);
   };
 
+  // Prepare options with string labels and additional details
+  const programOptions = program.map((prog) => ({
+    value: prog.programID,
+    label: prog.title, // Use program title as label
+    details: {
+      campusName: prog.college?.campus?.name || 'Unknown Campus',
+      collegeAbbreviation: prog.college?.abbreviation || 'Unknown College',
+      programAbbreviation: prog.abbreviation || 'Unknown Program',
+    },
+  }));
+
+  // Prepare selected values with string labels
+  const selectedPrograms = formData.program.map((id) => {
+    const prog = program.find((p) => p.programID === id);
+    return prog
+      ? {
+        value: prog.programID,
+        label: prog.title,
+        details: {
+          campusName: prog.college?.campus?.name || 'Unknown Campus',
+          collegeAbbreviation: prog.college?.abbreviation || 'Unknown College',
+          programAbbreviation: prog.abbreviation || 'Unknown Program',
+        },
+      }
+      : null;
+  }).filter(Boolean);
+
+  useEffect(() => {
+    if (proponents.length > 0 && formData.proponents.length > 0) {
+      const selectedProponents = formData.proponents.map((id) => {
+        const proponent = proponents.find((p) => p.userID === id);
+        return proponent
+          ? {
+              userID: proponent.userID,
+              fullname: `${proponent.firstname} ${proponent.lastname}`,
+            }
+          : null;
+      }).filter(Boolean);
+  
+      setPickedProponents(selectedProponents);
+    }
+  }, [formData.proponents, proponents]);
+  
   return (
     <div className="flex flex-col mt-14 px-10">
       <h1 className="text-2xl font-semibold mb-5 mt-3">
@@ -1339,6 +1640,32 @@ const EditProposalForm = () => {
                   programCategory.length ? "Select from the list" : "No options available"
                 }
                 isDisabled={!programCategory.length} // Disable when no options
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    display: 'flex',
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
+                    scrollbarWidth: 'thin',
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? 'rgba(59, 130, 246, 0.1)'
+                      : state.isFocused
+                        ? 'rgba(229, 231, 235, 1)'
+                        : 'transparent',
+                    color: state.isSelected ? '#2563EB' : base.color,
+                  }),
+                  multiValue: (base) => ({
+                    ...base,
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  }),
+                  multiValueLabel: (base) => ({
+                    ...base,
+                    color: '#2563EB',
+                  }),
+                }}
               />
 
 
@@ -1393,6 +1720,32 @@ const EditProposalForm = () => {
                     ...formData,
                     projectCategory: selectedOptions.map(option => option.value),
                   });
+                }}
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    display: 'flex',
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
+                    scrollbarWidth: 'thin',
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? 'rgba(59, 130, 246, 0.1)'
+                      : state.isFocused
+                        ? 'rgba(229, 231, 235, 1)'
+                        : 'transparent',
+                    color: state.isSelected ? '#2563EB' : base.color,
+                  }),
+                  multiValue: (base) => ({
+                    ...base,
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  }),
+                  multiValueLabel: (base) => ({
+                    ...base,
+                    color: '#2563EB',
+                  }),
                 }}
               />
 
@@ -1479,36 +1832,64 @@ const EditProposalForm = () => {
               <div>
                 <Select
                   required
-                  options={proponents.map((proponent) => ({
-                    value: proponent.userID, // Unique identifier
-                    label: `${proponent.firstname} ${proponent.lastname}`, // Full name
-                  }))}
+                    options={proponents.map((proponent) => ({
+                      value: proponent.userID,
+                      label: `${proponent.firstname} ${proponent.lastname}`
+                    }))}
                   isMulti
                   value={formData.proponents.map((id) => {
-                    const proponent = proponents.find((p) => p.userID === id);
-                    return proponent
-                      ? { value: proponent.userID, label: `${proponent.firstname} ${proponent.lastname}` }
-                      : null;
-                  }).filter(Boolean)} // Ensure no null values
+                    const proponent = proponents.find(p => p.userID === id);
+                    return proponent ? {
+                      value: proponent.userID,
+                      label: `${proponent.firstname} ${proponent.lastname}`
+                    } : null;
+                  }).filter(Boolean)}
                   onChange={(selectedOptions) => {
-                    setFormData({
-                      ...formData,
-                      proponents: selectedOptions.map((option) => option.value), // Map back to userIDs
-                    });
-                    // Correctly set picked proponents with full name
-                    setPickedProponents(
-                      selectedOptions
-                        ? selectedOptions.map((option) => ({
-                          fullname: option.label, // Save the full combined name
-                        }))
-                        : []
-                    );
+                    const selectedProponentIDs = selectedOptions ? selectedOptions.map(option => option.value) : [];
+                    setFormData(prev => ({
+                      ...prev,
+                      proponents: selectedProponentIDs
+                    }));
+
+                    // Update pickedProponents
+                    const selectedProponents = selectedOptions ? selectedOptions.map(option => ({
+                      userID: option.value,
+                      fullname: option.label
+                    })) : [];
+                    setPickedProponents(selectedProponents);
                   }}
+                  isLoading={!proponents.length}
+                  isDisabled={!proponents.length}
                   classNamePrefix="react-select"
                   className="w-full"
-                  placeholder="Select proponents"
+                  placeholder={proponents.length ? "Select proponents" : "Loading proponents..."}
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      display: 'flex',
+                      flexWrap: 'nowrap',
+                      overflowX: 'auto',
+                      scrollbarWidth: 'thin',
+                    }),
+                    option: (base, state) => ({
+                      ...base,
+                      backgroundColor: state.isSelected
+                        ? 'rgba(59, 130, 246, 0.1)'
+                        : state.isFocused
+                          ? 'rgba(229, 231, 235, 1)'
+                          : 'transparent',
+                      color: state.isSelected ? '#2563EB' : base.color,
+                    }),
+                    multiValue: (base) => ({
+                      ...base,
+                      backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    }),
+                    multiValueLabel: (base) => ({
+                      ...base,
+                      color: '#2563EB',
+                    }),
+                  }}
                 />
-
               </div>
             </div>
           </div>
@@ -1606,43 +1987,55 @@ const EditProposalForm = () => {
               <Select
                 isMulti
                 value={formData.projectManagementTeam.map((member) => ({
-                  label: member.name,
                   value: member.name,
-                  role: member.role,
-
+                  label: member.name
                 }))}
                 onChange={(selectedOptions) => {
-                  console.log('Selected Options:', selectedOptions);
                   const updatedTeam = selectedOptions
                     ? selectedOptions.map((option) => ({
-                      name: option.label || option.value
+                      name: option.label
                     }))
-                    : [{ name: "" }];
+                    : [];
 
                   setFormData((prevFormData) => ({
                     ...prevFormData,
-                    projectManagementTeam: updatedTeam,
+                    projectManagementTeam: updatedTeam
                   }));
                 }}
-                options={(() => {
-                  const options = pickedProponents.map((proponent) => {
-                    // Split the fullname into firstname and lastname
-                    const nameParts = proponent.fullname.split(' ');
-                    const firstname = nameParts[0];
-                    const lastname = nameParts.slice(1).join(' ');
-
-                    return {
-                      value: proponent.fullname, // Use fullname as value
-                      label: proponent.fullname
-                    };
-                  });
-                  console.log('Generated Options:', options);
-                  return options;
-                })()}
+                options={pickedProponents.map((proponent) => ({
+                  value: proponent.userID,
+                  label: proponent.fullname
+                }))}
                 isSearchable
                 placeholder="Search or select team members"
                 isClearable
                 noOptionsMessage={() => "No match found"}
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    display: 'flex',
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
+                    scrollbarWidth: 'thin',
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? 'rgba(59, 130, 246, 0.1)'
+                      : state.isFocused
+                        ? 'rgba(229, 231, 235, 1)'
+                        : 'transparent',
+                    color: state.isSelected ? '#2563EB' : base.color,
+                  }),
+                  multiValue: (base) => ({
+                    ...base,
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                  }),
+                  multiValueLabel: (base) => ({
+                    ...base,
+                    color: '#2563EB',
+                  }),
+                }}
               />
             </div>
 
@@ -1687,27 +2080,25 @@ const EditProposalForm = () => {
               </label>
               <Select
                 required
-                options={campus.map((col) => ({
-                  value: col.campusID,
-                  title: col.name
+                options={campus.map((camp) => ({
+                  value: camp.campusID,
+                  label: camp.name
                 }))}
-                components={{
-                  Option: CustomCampusOption,
-                  SingleValue: CustomSingleValue,
-                }}
-                getOptionLabel={(e) => `${e.title}`}
                 isMulti
-                value={formData.campus?.map((id) => {
-                  const col = campus.find((c) => c.campusID === id);
-                  return col ? {
-                    value: col.campusID,
-                    title: col.name,
-                  } : null;
-                }).filter(Boolean) || []}
+                value={
+                  formData.campus && campus ? formData.campus.map((id) => {
+                    const campusId = typeof id === 'string' ? parseInt(id, 10) : id;
+                    const camp = campus.find(c => c.campusID === campusId);
+                    return camp ? { value: camp.campusID, label: camp.name } : null;
+                  }).filter(Boolean) : []
+                }
                 onChange={(selectedOptions) => {
+                  const selectedCampusIds = selectedOptions ? selectedOptions.map(option => option.value) : [];
                   setFormData(prev => ({
                     ...prev,
-                    campus: selectedOptions?.map((option) => option.value) || []
+                    campus: selectedCampusIds,
+                    college: [], // Reset dependent fields
+                    program: []
                   }));
                 }}
                 classNamePrefix="react-select"
@@ -1740,7 +2131,6 @@ const EditProposalForm = () => {
                   }),
                 }}
               />
-
             </div>
 
             {/* COLLEGE */}
@@ -1842,85 +2232,68 @@ const EditProposalForm = () => {
               {/* Fixed height container with shadow to indicate scrollability */}
               <Select
                 required
-                options={Array.isArray(program) ? program.map((prog) => ({
-                  value: prog.programID,
-                  label: (
-                    <div>
-                      <div className="font-medium">{prog.title}</div>
-                      <div className="text-sm text-gray-600">
-                        {prog.college?.campus?.name} ({prog.college?.abbreviation}) - {prog.abbreviation}
-                      </div>
-                    </div>
-                  ),
-                })) : []}
+                options={programOptions}
                 isMulti
-                value={Array.isArray(formData.program) ? formData.program.map((id) => {
-                  const prog = program.find((p) => p.programID === id);
-                  return prog
-                    ? {
-                      value: prog.programID,
-                      label: (
-                        <div>
-                          <div className="font-medium">{prog.title}</div>
-                          <div className="text-sm text-gray-600">{prog.college?.abbreviation}</div>
-                        </div>
-                      ),
-                    }
-                    : null;
-                }).filter(Boolean) : []} // Filter out null values
+                value={selectedPrograms}
                 onChange={(selectedOptions) => {
                   const selectedIDs = selectedOptions.map((option) => option.value);
                   setFormData({
                     ...formData,
                     program: selectedIDs,
                   });
-                  setProgramChairList(
-                    selectedOptions.map((option) => (option.value))
-                  );
+                  setProgramChairList(selectedIDs);
                 }}
-                isDisabled={!Array.isArray(formData.college) || formData.college.length === 0} // Disable if no college is selected
+                isDisabled={!Array.isArray(formData.college) || formData.college.length === 0}
                 placeholder={
                   !Array.isArray(formData.college) || formData.college.length === 0
-                    ? "Please select college(s) first"
-                    : "Select programs"
+                    ? 'Please select college(s) first'
+                    : 'Select programs'
                 }
                 classNamePrefix="react-select"
                 className="w-full"
+                formatOptionLabel={(option, { context }) => {
+                  if (context === 'menu') {
+                    // Custom rendering for menu options
+                    return (
+                      <div>
+                        <div className="font-medium">{option.label}</div>
+                        <div className="text-sm text-gray-600">
+                          {option.details.campusName} ({option.details.collegeAbbreviation}) -{' '}
+                          {option.details.programAbbreviation}
+                        </div>
+                      </div>
+                    );
+                  } else {
+                    // Custom rendering for selected values
+                    return (
+                      <div className="font-medium">{option.label}</div>
+                    );
+                  }
+                }}
                 styles={{
                   control: (base) => ({
                     ...base,
-                    borderColor: '#d1d5db', // Tailwind gray-300
-                    boxShadow: 'none',
-                    '&:hover': {
-                      borderColor: '#9ca3af', // Tailwind gray-400
-                    },
+                    display: 'flex',
+                    flexWrap: 'nowrap',
+                    overflowX: 'auto',
+                    scrollbarWidth: 'thin',
+                  }),
+                  option: (base, state) => ({
+                    ...base,
+                    backgroundColor: state.isSelected
+                      ? 'rgba(59, 130, 246, 0.1)'
+                      : state.isFocused
+                        ? 'rgba(229, 231, 235, 1)'
+                        : 'transparent',
+                    color: state.isSelected ? '#2563EB' : base.color,
                   }),
                   multiValue: (base) => ({
                     ...base,
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)', // Light blue background
-                    borderRadius: '0.375rem', // Rounded tags
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
                   }),
                   multiValueLabel: (base) => ({
                     ...base,
-                    color: '#2563eb', // Tailwind blue-600
-                    fontWeight: '500', // Tailwind font-medium
-                  }),
-                  multiValueRemove: (base) => ({
-                    ...base,
-                    color: '#000', // Black "X" icon
-                    cursor: 'pointer',
-                    '&:hover': {
-                      color: '#ef4444', // Tailwind red-500
-                    },
-                  }),
-                  placeholder: (base) => ({
-                    ...base,
-                    color: '#6b7280', // Tailwind gray-500
-                  }),
-                  menu: (base) => ({
-                    ...base,
-                    maxHeight: '100px', // Match your original scrollable height
-                    overflowY: 'auto',
+                    color: '#2563EB',
                   }),
                 }}
               />
@@ -2007,23 +2380,29 @@ const EditProposalForm = () => {
                 </span>
                 <ReactTooltip place="top" type="dark" effect="solid" />
               </label>
-              <select
+              <Select
                 required
-                name="agency"
-                value={formData.agency?.[0] || ''} // Access first element since it's an array
-                onChange={handleAgencyFormChange}
-                className="w-full p-2 border border-gray-300 rounded"
-              >
-                <option value="" disabled hidden>Select</option>
-                {agencies.map((agency) => (
-                  <option key={agency.agencyID} value={agency.agencyID}>
-                    {agency.agencyName}
-                  </option>
-                ))}
-                <option value="add_new_agency">+ Add New Agency</option>
-              </select>
-
-
+                options={agencies.map((agency) => ({
+                  value: agency.agencyID,
+                  label: agency.agencyName
+                }))}
+                value={formData.agency.map((id) => {
+                  const agency = agencies.find(a => a.agencyID === (typeof id === 'object' ? id.agencyID : id));
+                  return agency ? {
+                    value: agency.agencyID,
+                    label: agency.agencyName
+                  } : null;
+                }).filter(Boolean)}
+                onChange={(selectedOption) => {
+                  setFormData(prev => ({
+                    ...prev,
+                    agency: selectedOption ? [selectedOption.value] : []
+                  }));
+                }}
+                classNamePrefix="react-select"
+                className="w-full"
+                placeholder="Select agency"
+              />
             </div>
           </div>
 

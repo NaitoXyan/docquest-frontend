@@ -183,6 +183,15 @@ const EditProposalForm = () => {
     }
   }, [userID]);
 
+  // useEffect to update showTrainers based on selected project categories
+useEffect(() => {
+  if (formData.projectCategory.includes(1)) {
+    setShowTrainers(true);
+  } else {
+    setShowTrainers(false);
+  }
+}, [formData.projectCategory]);
+
   useEffect(() => {
     const fetchCampus = async () => {
       try {
@@ -762,16 +771,23 @@ const EditProposalForm = () => {
   };
 
   useEffect(() => {
-    // Initialize loadingOfTrainers with the same number of rows as projectManagementTeam
-    setFormData(prevState => ({
-      ...prevState,
-      loadingOfTrainers: formData.projectManagementTeam.map(() => ({
-        faculty: '',
-        trainingLoad: '',
-        hours: '',
-        agencyBudget: ''
-      }))
-    }));
+    setFormData(prevState => {
+      // Only initialize loadingOfTrainers if it's empty or undefined
+      if (!prevState.loadingOfTrainers || prevState.loadingOfTrainers.length === 0) {
+        const newLoadingOfTrainers = formData.projectManagementTeam.map(() => ({
+          faculty: '',
+          trainingLoad: '',
+          hours: '',
+          agencyBudget: ''
+        }));
+        return {
+          ...prevState,
+          loadingOfTrainers: newLoadingOfTrainers
+        };
+      }
+      // If loadingOfTrainers already has data, keep it unchanged
+      return prevState;
+    });
   }, [formData.projectManagementTeam]);
 
   // Function to handle changes in proponents inputs

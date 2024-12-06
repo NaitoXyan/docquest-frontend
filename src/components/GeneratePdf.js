@@ -614,6 +614,15 @@ const MyDocument = ({ projectID }) => {
     ...(formData.proponents || []),
     ...(formData.nonUserProponents || []),
   ];
+
+  // Define this function in your component file
+  const formatNumber = (number) => {
+    return parseFloat(number).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  };
+
   return (
     <Document
       title={`${formData.projectTitle} - ${formData.dateCreated} - ${new Date().toLocaleString()}`}
@@ -870,21 +879,44 @@ const MyDocument = ({ projectID }) => {
               </Text>
             </View>
           </View>
-          <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, }]}>
-            <View style={[styles.tableColthree, { borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
-              <Text>
-                {formData.ustpBudget}
-              </Text>
+          <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0 }]}>
+            <View
+              style={[
+                styles.tableColthree,
+                {
+                  borderRight: 1,
+                  paddingLeft: '1%',
+                  paddingRight: '1%',
+                  justifyContent: 'center',
+                },
+              ]}
+            >
+              <Text>{formatNumber(formData.ustpBudget)}</Text>
             </View>
-            <View style={[styles.tableColthree, { borderRight: 1, paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
-              <Text>
-                {formData.partnerAgencyBudget}
-              </Text>
+            <View
+              style={[
+                styles.tableColthree,
+                {
+                  borderRight: 1,
+                  paddingLeft: '1%',
+                  paddingRight: '1%',
+                  justifyContent: 'center',
+                },
+              ]}
+            >
+              <Text>{formatNumber(formData.partnerAgencyBudget)}</Text>
             </View>
-            <View style={[styles.tableColthree, { paddingLeft: '1%', paddingRight: '1%', justifyContent: 'center' }]}>
-              <Text>
-                {formData.totalBudget}
-              </Text>
+            <View
+              style={[
+                styles.tableColthree,
+                {
+                  paddingLeft: '1%',
+                  paddingRight: '1%',
+                  justifyContent: 'center',
+                },
+              ]}
+            >
+              <Text>{formatNumber(formData.totalBudget)}</Text>
             </View>
           </View>
           <View style={[{ flexDirection: 'row', border: 1, borderBottom: 0, backgroundColor: '#a4b494', }]}>
@@ -1221,15 +1253,15 @@ const MyDocument = ({ projectID }) => {
                   <View style={[styles.tableColthree, { border: 1, borderRight: 0, borderBottom: 0 }]}>
                     <View style={[{ flexDirection: 'row' }]}>
                       <View style={[styles.tableColtwo, { borderRight: 1 }]}>
-                        <Text>{item.ustpAmount || '*'}</Text>
+                        <Text>{formatNumber(item.ustpAmount)}</Text>
                       </View>
                       <View style={[styles.tableColtwo]}>
-                        <Text>{item.partnerAmount || '*'}</Text>
+                        <Text>{formatNumber(item.partnerAmount)}</Text>
                       </View>
                     </View>
                   </View>
                   <View style={[styles.tableColthree, { border: 1, borderBottom: 0 }]}>
-                    <Text>{item.totalAmount || '*'}</Text>
+                    <Text>{formatNumber(item.totalAmount)}</Text>
                   </View>
                 </View>
               ))}
@@ -1252,7 +1284,7 @@ const MyDocument = ({ projectID }) => {
                 <View style={[styles.tableColthree, { border: 1 }]}>
                   <Text style={[{ fontFamily: 'ArialB' }]}>
                     {formData.budgetRequirements?.reduce((total, item) =>
-                      total + (Number(item.totalAmount) || 0), 0) || '*'}
+                      total + (formatNumber(item.totalAmount) || ''), '') || ''}
                   </Text>
                 </View>
               </View>
@@ -1268,7 +1300,6 @@ const MyDocument = ({ projectID }) => {
             <View style={[{ flexDirection: 'row', textAlign: 'center' }]}>
               <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
                 <Text>
-
                 </Text>
               </View>
               <View style={[styles.tableColfive, { borderRight: 0, borderBottom: 0, }]}>
@@ -1675,17 +1706,17 @@ const MyDocument = ({ projectID }) => {
                     {/* Budget */}
                     <View style={[styles.tableColthree, { flexDirection: 'row', borderLeft: 1, borderBottom: 1, width: '30%' }]}>
                       <View style={{ flexDirection: 'row', width: '50%', borderRight: 1, alignItems: 'center', justifyContent: 'center' }}>
-                        <Text>{trainer.ustpBudget?.toLocaleString()}</Text>
+                        <Text>{formatNumber(trainer.ustpBudget)}</Text>
                       </View>
                       <View style={{ flexDirection: 'row', width: '50%', alignItems: 'center', justifyContent: 'center' }}>
-                        <Text>{trainer.agencyBudget?.toLocaleString()}</Text>
+                        <Text>{formatNumber(trainer.agencyBudget)}</Text>
                       </View>
 
                     </View>
                     {/* Row Total */}
                     <View style={[styles.tableColthree, { border: 1, borderTop: 0, width: '15%', alignItems: 'center', justifyContent: 'center' }]}>
                       <Text>
-                        {(Number(trainer.ustpBudget || 0) + Number(trainer.agencyBudget || 0)).toLocaleString()}
+                        {formatNumber(Number(trainer.ustpBudget || 0) + Number(trainer.agencyBudget || 0))}
                       </Text>
                     </View>
                   </View>
@@ -1713,7 +1744,7 @@ const MyDocument = ({ projectID }) => {
                   </View>
                   <View style={[styles.tableColfive1, { border: 1, borderTop: 0, width: '15%' }]}>
                     <Text style={[{ textAlign: 'center', fontFamily: 'ArialB' }]}>
-                      {totalBudgetaryRequirement?.toLocaleString()}
+                      {formatNumber(totalBudgetaryRequirement)}
                     </Text>
                   </View>
                 </View>
